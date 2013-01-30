@@ -1,23 +1,23 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://huangbowen521.github.com/blog/2013/01/28/my-first-blog/</loc>
+        <loc>http://www.huangbowen.net/blog/2013/01/28/my-first-blog/</loc>
         <lastmod>2013-01-28T22:27:43+08:00</lastmod>
     </url>
     <url>
-        <loc>http://huangbowen521.github.com/about/</loc>
+        <loc>http://www.huangbowen.net/about/</loc>
         <lastmod>2013-01-29T19:02:11+08:00</lastmod>
     </url>
     <url>
-        <loc>http://huangbowen521.github.com/blog/archives/</loc>
+        <loc>http://www.huangbowen.net/blog/archives/</loc>
         <lastmod>2013-01-28T22:27:43+08:00</lastmod>
     </url>
     <url>
-        <loc>http://huangbowen521.github.com/</loc>
+        <loc>http://www.huangbowen.net/</loc>
         <lastmod>2013-01-28T22:27:43+08:00</lastmod>
     </url>
     <url>
-        <loc>http://huangbowen521.github.com/robots.txt</loc>
+        <loc>http://www.huangbowen.net/robots.txt</loc>
         <lastmod>2013-01-28T21:48:25+08:00</lastmod>
     </url>
 </urlset>
