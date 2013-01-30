@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[黄博文的地盘]]></title>
+  <link href="http://huangbowen521.github.com/atom.xml" rel="self"/>
+  <link href="http://huangbowen521.github.com/"/>
+  <updated>2013-01-30T11:26:47+08:00</updated>
+  <id>http://huangbowen521.github.com/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[my first blog]]></title>
+    <link href="http://huangbowen521.github.com/blog/2013/01/28/my-first-blog/"/>
+    <updated>2013-01-28T22:27:00+08:00</updated>
+    <id>http://huangbowen521.github.com/blog/2013/01/28/my-first-blog</id>
+    <content type="html"><![CDATA[<p>dfjkdjkfjkdfjjfjf</p>
+]]></content>
+  </entry>
+  
+</feed>
