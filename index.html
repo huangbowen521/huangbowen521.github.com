@@ -327,7 +327,7 @@
 
 <p>在Windows上设置很简单，主需要安装<a href="http://code.google.com/p/msysgit/">Msysgit</a>,就会自动为你设置起本地的HTML帮助文档。所以这篇文章主要讲在Mac和Linux下该如何实现。</p>
 
-<p><strong><em>一，运行git help –-web commit查看git默认的保存html文件的路径。</em></strong></p>
+<p><strong>一，运行git help –-web commit查看git默认的保存html文件的路径。</strong></p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -342,11 +342,11 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>我们得到了git默认的存放html文件的路径是’/usr/local/git/share/doc/git-doc’。当然你得到的路径有可能和这个不一样。</p>
+<p>我们得到了git默认的存放html文件的路径是<code>/usr/local/git/share/doc/git-doc</code>。当然你得到的路径有可能和这个不一样。</p>
 
-<p><strong><em>二，切换到这个路径下，迁出存放在git repo中的html文件。</em></strong></p>
+<p><strong>二，切换到这个路径下，迁出存放在git repo中的html文件。</strong></p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -357,7 +357,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><strong><em>三，运行 vim ~/.gitconfig 命令，在.gitconfig文件中加入如下配置。</em></strong></p>
+<p><strong>三，运行 vim ~/.gitconfig 命令，在.gitconfig文件中加入如下配置。</strong></p>
 
 <p>[help]</p>
 
@@ -371,16 +371,23 @@
 
 <p>当然也可以使用其他的编辑器来编辑.gitconfig文件。</p>
 
-<p>只要这三步就设置起了本地的HTML帮助文档。你可以再次运行git help -–web commit，就可以查看在浏览器中自动打开的HTML帮助说明页面了。</p>
+<p>只要这三步就设置起了本地的HTML帮助文档。你可以再次运行<code>git help -–web commit</code>，就可以查看在浏览器中自动打开的HTML帮助说明页面了。</p>
 
-<p>如果git的帮助文档更新了，如何同步到本地那？很简单，运行git pull命令就行。</p>
+<p>如果git的帮助文档更新了，如何同步到本地那？很简单，运行<code>git pull</code>命令就行。</p>
 
-<p>$ cd /usr/local/git/share/doc/git-doc
-$ sudo git pull</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd</span> /usr/local/git/share/doc/git-doc
+</span><span class='line'><span class="nv">$ </span>sudo git pull
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>如何查看这些帮助文档那？更简单了，例如：</p>
 
-<p>$ git remote &#8211;help</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git remote --help
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>就会自动在浏览器中打开针对remote的帮助文档。</p>
 </div>
