@@ -1,9 +1,9 @@
 ---
 layout: post
 title: "《卓有成效的程序员》读书笔记"
-date: 2013-02-01 23:52
+date: 2012-11-11 23:52
 comments: true
-categories: 
+categories: 生活随笔
 ---
 
 在今年的的ThoughtWorks China away day上，我见到了这本书的作者neal ford, 我们还有过简单的交流，并一起去爬了长城。惭愧的是当时我并没有读过他写的这本书。直到今天我拿到了这本书，并花了大半天的时间通读了一遍。看完以后，我觉得这本书真是太好了，非常值得一读。
