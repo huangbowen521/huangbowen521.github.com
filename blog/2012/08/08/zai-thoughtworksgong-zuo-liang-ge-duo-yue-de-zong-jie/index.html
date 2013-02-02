@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>《JavaScript语言精粹》读书笔记 - 黄博文的地盘</title>
+  <title>在ThoughtWorks工作两个多月的总结 - 黄博文的地盘</title>
   <meta name="author" content="黄博文">
 
   
-  <meta name="description" content="《JavaScript语言精粹》这本书句句是精华。如果你想只读一本书了解JavaScript,这本是你的不二选择。 这么薄的一本书讲JavaScript的特点介绍的非常清楚，是我对JavaScript的认识更加的深入。以前总觉得函数式编程很难理解，但是看了这本书以后我觉得对其有了一个新的认识。 &hellip;">
+  <meta name="description" content="从5月份加入ThoughtWorks到今天，已经接近3个月了。这3个月对我来说意义重大，时间虽然很短，但是我学到了很多很多的东西。我感到需要对自己做一番总结，使自己能够持续快速的进步。
+先说说这2个多月在ThoughtWorks中我的改变。 行为意识的改变，变得更加积极主动。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/">
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2012/08/08/zai-thoughtworksgong-zuo-liang-ge-duo-yue-de-zong-jie/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -79,7 +80,7 @@
   
   <header>
     
-      <h1 class="entry-title">《JavaScript语言精粹》读书笔记</h1>
+      <h1 class="entry-title">在ThoughtWorks工作两个多月的总结</h1>
     
     
       <p class="meta">
@@ -95,28 +96,56 @@
   
 
 
-<time datetime="2013-01-16T00:22:00+08:00" pubdate data-updated="true">Jan 16<span>th</span>, 2013</time>
+<time datetime="2012-08-08T01:49:00+08:00" pubdate data-updated="true">Aug 8<span>th</span>, 2012</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>《JavaScript语言精粹》这本书句句是精华。如果你想只读一本书了解JavaScript,这本是你的不二选择。</p>
+<div class="entry-content"><p>从5月份加入ThoughtWorks到今天，已经接近3个月了。这3个月对我来说意义重大，时间虽然很短，但是我学到了很多很多的东西。我感到需要对自己做一番总结，使自己能够持续快速的进步。
+先说说这2个多月在ThoughtWorks中我的改变。</p>
 
-<p>这么薄的一本书讲JavaScript的特点介绍的非常清楚，是我对JavaScript的认识更加的深入。以前总觉得函数式编程很难理解，但是看了这本书以后我觉得对其有了一个新的认识。严格意义上说JavaScript并不仅仅是一门函数式编程语言，书中有一句话对它的特性做了一个精彩的描述：JavaScript的许多特性都借鉴自其他语言。语法借鉴自java，函数借鉴自Scheme,原型继承借鉴自Self，而JavaScript的正则表达式特性则借鉴自Perl。</p>
+<ol>
+<li><p><strong>行为意识的改变，变得更加积极主动。</strong>在ThoughtWorks是没有Title的，每天没有人会强迫你干什么，而自己要非常的积极主动来做事情，为团队的发展贡献出自己的力量。</p></li>
+<li><p><strong>思考方式的改变，多问为什么，而不盲从。</strong>ThoughtWorks的每个人都很健谈，尤其是谈论技术来滔滔不绝，这些都是建立在对目标了解透彻的基础上。所以我在思考问题的时候，应该抓住重点，往深处挖掘，而不是停留在表面浅尝辄止。</p></li>
+<li><p><strong>学习能力的改变。</strong>一个人能力有多大，很大一部分取决于他的自我学习能力。学习能力强，接收新事物快，他的知识会源源不断的涌来。在公司这段时间，我发现大家的自我学习能力都很强，一个新技术、新工具很快就能上手使用。我在平时注意收集和观察别人的学习方式，并且尝试使用到自己身上，收到了一定的效果。</p></li>
+</ol>
 
-<p>JavaScript的简单类型有：数字、字符串、布尔值、null值和undefined值。在JavaScript中，数组是对象，函数是对象，正则表达式是对象。可以使用对象字面量来创建一个新对象： var empty_object = { };</p>
 
-<p>每个对象都连接到一个原型对象，并继承其属性。使用typeof可以确定属性的类型。使用delete可以删除对象的属性。</p>
+<p>当然，在enjoy的同时，也伴随着巨大的压力。我认真的分析了一下自身，发现自身的不足主要存在与两个方面：
+<strong>一是英语。</strong>自己大学毕业后在工作中就基本没怎么用过口语了，只是有时候看文档接触下英语。这种情况导致我的英语退化的厉害，而且这点是短时间内无法改善的。</p>
 
-<p>函数也是对象，其原型对象为Function.prototype.函数有一个call属性，当JavaScript调用函数时，可理解为调用该函数的call属性。函数有四种调用模式：方法调用模式，函数调用模式，构造器调用模式和apply调用模式。这些模式主要是初始化关键字this存在差异，分别是：调用对象，全局对象，隐藏连接到该函数的prototype成员的新对象，apply方法的第一个参数。当函数被调用时，会得到一个arguments数组，可以通过它访问传递给该函数的所有参数。一个函数总是会返回一个值，如果没有制定返回值，则返回underfined.</p>
+<p><strong>二是技术。</strong>虽然自己有三年工作经验，但是主要都是C#方面的，而自己的目前项目中却使用的是Java。自己面临短时间内迅速掌握Java Spring，Spring Web Flow，Spring security，Maven，jasmine…..等以前自己几乎没接触过的东西，这对自己是一个巨大的挑战。</p>
 
-<p>JavaScript中的数组其实是一种伪数组。她把数组的下标转变成字符串，用其作为属性。可以通过数组字面量来声明一个数组：var empty = [];数组第一个值将获得属性名0，第二个属性名将获得属性名1，以此类推。</p>
+<p>认识到了自己的不足，接下来就是要拿出实际的Action。随着这段时间的学习，我找了一些方法来尽快的弥补自身的不足。</p>
 
-<p>JavaScript中的正则表达式也是一个对象。正则表达式的分组有4中：捕获型，使用圆括号包括；非捕获型，使用(?:前缀;向前正向匹配，使用(?=前缀；向前负向匹配，使用（？！前缀。 &nbsp;</p>
+<p><strong>英语方面：</strong>
+1. 针对词汇量少的问题，在平时工作中将自己遇到的不认识的单词或发音有误的单词记在本子上或者电子词典中。每天抽出半小时时间来将这些单词过一遍，不求一次记住，随着review的次数增多，好多单词都会变成自己的亲密伙伴。</p>
 
-<p>读完这本书，彻底颠覆了我对JavaScript的理解。最近在翻译《Effective JavaScript: 68 Specific Ways to Harness the Power of JavaScript (Effective Software Development Series)》这本书，正得益于我从《JavaScript语言精粹》掌握了JavaScript的核心。</p>
+<ol>
+<li><p>针对
+自己听力差的问题，我将一些VOA的音频放在MP3里，在上下班的路上的反复的倾听，体会那种英文的感觉。</p></li>
+<li><p>针对自己浓重的“河南”口音问题，我在iCal里schedule了个时间，每天晚上的11点到12点跟着《英语导读1000句》念英语，训练口腔肌肉。</p></li>
+<li><p>针对自己英文书写的问题，每天发给团队的邮件，比较important和difficult的让同组中的英文比较好的同事帮忙review，自己从review中总结需要注意的地方，使英文表达更专业和清晰。</p></li>
+<li>在平时需要使用英语的时候，尽量克服自己胆怯的心理，发出自己的声音，不怕别人的嘲笑。（这点自己虽然意识到了，但是目前做的不是很好，还需要继续努力。）</li>
+</ol>
+
+
+<p><strong>技术方面：</strong>
+1. 积极参加公司的session和workshop，从中吸收到营养。</p>
+
+<ol>
+<li><p>平时的pair过程中积极向同伴学习。</p></li>
+<li><p>每天晚上下班回家后坚持主动学习,多多动手实践。</p></li>
+<li><p>对于自己的每个技术点，尽量拿出一定的成果，比如写成博客或者写一个demo，眼看千遍不如手过一遍。</p></li>
+<li><p>我们team规定每周每个人都要做一次内部session。通过准备session和讲session加深自己对内容的理解。</p></li>
+</ol>
+
+
+<p>当然，这些措施只是自己目前能够想到的和在做的。也许大家有更好的方法，可以互相学习。</p>
+
+<p>感谢Yaoyao同学和Matt对我英文的指导，感谢周周同学的周末Workshop和平时对我的严格要求，感谢公司其他人对我的帮助和feedback。</p>
 </div>
 
 
@@ -139,7 +168,7 @@
   
 
 
-<time datetime="2013-01-16T00:22:00+08:00" pubdate data-updated="true">Jan 16<span>th</span>, 2013</time>
+<time datetime="2012-08-08T01:49:00+08:00" pubdate data-updated="true">Aug 8<span>th</span>, 2012</time>
       
 
 <span class="categories">
@@ -153,7 +182,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.huangbowen.net/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/" data-via="huangbowen521@gmail.com" data-counturl="http://www.huangbowen.net/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.huangbowen.net/blog/2012/08/08/zai-thoughtworksgong-zuo-liang-ge-duo-yue-de-zong-jie/" data-via="huangbowen521@gmail.com" data-counturl="http://www.huangbowen.net/blog/2012/08/08/zai-thoughtworksgong-zuo-liang-ge-duo-yue-de-zong-jie/" >Tweet</a>
   
   
   
@@ -164,10 +193,10 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/11/11/%3C%3Czhuo-you-cheng-xiao-de-cheng-xu-yuan-%3E%3E-du-shu-bi-ji/" title="Previous Post: 《卓有成效的程序员》读书笔记">&laquo; 《卓有成效的程序员》读书笔记</a>
+        <a class="basic-alignment left" href="/blog/2012/08/08/zai-ben-di-an-zhuang-gitde-htmlbang-zhu-wen-dang/" title="Previous Post: 在本地安装git的HTML帮助文档">&laquo; 在本地安装git的HTML帮助文档</a>
       
       
-        <a class="basic-alignment right" href="/blog/2013/01/19/thoughtworks-immersion-xiao-ji/" title="Next Post: ThoughtWorks Immersion 小计">ThoughtWorks Immersion 小计 &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2012/11/11/%3C%3Czhuo-you-cheng-xiao-de-cheng-xu-yuan-%3E%3E-du-shu-bi-ji/" title="Next Post: 《卓有成效的程序员》读书笔记">《卓有成效的程序员》读书笔记 &raquo;</a>
       
     </p>
   </footer>
