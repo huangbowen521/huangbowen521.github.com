@@ -4,6 +4,7 @@ title: "《JavaScript语言精粹》读书笔记"
 date: 2013-01-16 00:22
 comments: true
 categories: 生活随笔
+tags: JavaScript 读书笔记
 ---
 
 《JavaScript语言精粹》这本书句句是精华。如果你想只读一本书了解JavaScript,这本是你的不二选择。

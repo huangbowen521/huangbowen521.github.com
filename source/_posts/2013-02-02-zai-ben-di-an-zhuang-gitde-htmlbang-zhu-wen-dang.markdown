@@ -3,7 +3,8 @@ layout: post
 title: "在本地安装git的HTML帮助文档"
 date: 2012-08-08 00:48
 comments: true
-categories: 
+categories: 编程开发
+tags: git HTML 帮助文档
 ---
 
 当我们想查询git某条指令如何使用时，[git](http://git-scm.com/documentation)官网有详尽的文档供我们查看。在命令行下我们也可以随时通过 git --help的方法查看某条命令的详细帮助。

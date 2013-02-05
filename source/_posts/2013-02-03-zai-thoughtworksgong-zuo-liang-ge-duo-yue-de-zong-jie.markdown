@@ -4,6 +4,7 @@ title: "在ThoughtWorks工作两个多月的总结"
 date: 2012-08-08 01:49
 comments: true
 categories: 生活随笔
+tags: 总结
 ---
 
 从5月份加入ThoughtWorks到今天，已经接近3个月了。这3个月对我来说意义重大，时间虽然很短，但是我学到了很多很多的东西。我感到需要对自己做一番总结，使自己能够持续快速的进步。

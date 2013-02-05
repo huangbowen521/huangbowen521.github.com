@@ -3,7 +3,8 @@ layout: post
 title: "避免每次输入bundler exec命令"
 date: 2013-02-04 00:24
 comments: true
-categories: 编程
+categories: 编程开发
+tags: ruby rvm bundler
 ---
 
 bundle在ruby的世界里是个好东西，它可以用来管理应用程序的依赖库。它能自动的下载和安装指定的gem，也可以随时更新指定的gem。

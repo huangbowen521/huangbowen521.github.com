@@ -4,6 +4,7 @@ title: "ThoughtWorks Immersion 小计"
 date: 2013-01-19 23:08
 comments: true
 categories: 生活随笔
+tags: TWI 培训
 ---
 
 2012年12月18日，第11期TWI在中国西安举行了。这次参加培训的角色有admin，有hr，有Ux,当然更多的是QA和Dev，估计是最齐全的一届。
