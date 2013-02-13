@@ -243,10 +243,23 @@
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
+
 <section>
-  <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/test' style='font-size: 115.0%'>test(1)</a> <a href='/blog/categories/生活随笔' style='font-size: 160.0%'>生活随笔(4)</a> <a href='/blog/categories/编程开发' style='font-size: 130.0%'>编程开发(2)</a> </span>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("huangbowen521@gmail.com", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/huangbowen521@gmail.com" class="twitter-follow-button" data-show-count="false">Follow @huangbowen521@gmail.com</a>
+  
 </section>
+
 
 
 
