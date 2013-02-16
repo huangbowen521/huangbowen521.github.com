@@ -9,7 +9,9 @@
   <meta name="author" content="黄博文">
 
   
-  <meta name="description" content="读了《正则表达式必知必会》（Regular Expressions - in 10 minutes）一书，很有收获。这本书不厚，只有120多页。但是其由浅入深的系统的介绍了正则表达式。全书内容详实，配了很多实例，是学习正则表达式的一本很好的入门书籍。 我根据这本书画了个Mind Map， &hellip;">
+  <meta name="description" content="使用场景：
+如果你有很多工作目录，需要每天在这些目录中跳来跳去。那么你就应该试试goShell. 一个使用简单、功能恰到好处的terminal下的小工具。
+gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功能。这样你就不需要在使用cd后面跟随一长串的目录名称。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +79,321 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/16/gtshell/">gtShell - 为你常用的目录建立标签并快速跳转</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-16T17:18:00+08:00" pubdate data-updated="true">Feb 16<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/16/gtshell/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>使用场景：
+如果你有很多工作目录，需要每天在这些目录中跳来跳去。那么你就应该试试goShell. 一个使用简单、功能恰到好处的terminal下的小工具。
+gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功能。这样你就不需要在使用cd后面跟随一长串的目录名称。
+它也支持自动完成，你只需要输入开头的几个字母，然后按tab键就可以自动匹配。
+目前源码被我host在<a href="https://github.com/huangbowen521/gtShell">github</a>上。</p>
+
+<p>下面是主要文件gt.sh的源码。</p>
+
+<figure class='code'><figcaption><span>gt.sh</span><a href='https://github.com/huangbowen521/gtShell/blob/master/gt.sh'>gt.sh</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#! /bin/bash</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">DIRS</span><span class="o">=</span><span class="s2">&quot;$HOME/.gtDirs&quot;</span>
+</span><span class='line'><span class="k">if </span><span class="nb">test</span> ! -e <span class="nv">$DIRS</span>
+</span><span class='line'><span class="k">then</span>
+</span><span class='line'><span class="k">  </span>touch <span class="nv">$DIRS</span>
+</span><span class='line'><span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'>gt <span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">case</span> <span class="nv">$1</span> in
+</span><span class='line'>      -d<span class="o">)</span>
+</span><span class='line'>          <span class="nv">temp</span><span class="o">=</span><span class="sb">`</span>mktemp -t .gtDirs-XXXXXX<span class="sb">`</span>
+</span><span class='line'>          sed <span class="s2">&quot;/^$2=/&quot;</span>d <span class="nv">$DIRS</span> &gt; <span class="nv">$temp</span>
+</span><span class='line'>          mv <span class="nv">$temp</span> <span class="nv">$DIRS</span>
+</span><span class='line'>          rm -f <span class="nv">$temp</span>
+</span><span class='line'>          ;;
+</span><span class='line'>      -a<span class="o">)</span>
+</span><span class='line'>          validate_bookmark_name <span class="s2">&quot;$@&quot;</span>
+</span><span class='line'>          <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;$result&quot;</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">              </span><span class="nv">CURDIR</span><span class="o">=</span><span class="k">$(</span> <span class="nv">$PWD</span><span class="k">)</span>
+</span><span class='line'>               <span class="s2">&quot;$2=$CURDIR&quot;</span> &gt;&gt; <span class="nv">$DIRS</span>
+</span><span class='line'>          <span class="k">fi</span>
+</span><span class='line'>          ;;
+</span><span class='line'>      -l<span class="o">)</span>
+</span><span class='line'>          cat <span class="nv">$DIRS</span>
+</span><span class='line'>          ;;
+</span><span class='line'>      -h<span class="o">)</span>
+</span><span class='line'>          print_usage
+</span><span class='line'>          ;;
+</span><span class='line'>      *<span class="o">)</span>
+</span><span class='line'>          <span class="k">if</span> <span class="o">[</span> -z <span class="nv">$1</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">              </span>print_usage
+</span><span class='line'>          <span class="k">elif</span> <span class="o">[[</span> ! -z <span class="sb">`</span>awk -F <span class="s1">&#39;=&#39;</span> <span class="s1">&#39;/^&#39;</span><span class="s2">&quot;$1&quot;</span><span class="s1">&#39;=/ {print $2 }&#39;</span> <span class="nv">$DIRS</span><span class="sb">`</span> <span class="o">]]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">              </span><span class="nb">cd</span> <span class="sb">`</span>awk -F <span class="s1">&#39;=&#39;</span> <span class="s1">&#39;/^&#39;</span><span class="s2">&quot;$1&quot;</span><span class="s1">&#39;=/ {print $2 }&#39;</span> <span class="nv">$DIRS</span><span class="sb">`</span>
+</span><span class='line'>              <span class="k">else</span>
+</span><span class='line'>                   <span class="s1">&#39;error: bookmark name not found&#39;</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">  esac</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#validate names</span>
+</span><span class='line'><span class="k">function </span>validate_bookmark_name <span class="o">{</span>
+</span><span class='line'>  <span class="nv">result</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="o">[</span> -z <span class="nv">$2</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">      </span><span class="nv">result</span><span class="o">=</span><span class="s1">&#39;error: bookmark name required!&#39;</span>
+</span><span class='line'>       <span class="nv">$result</span>
+</span><span class='line'>  <span class="k">elif</span> <span class="o">[</span> <span class="s2">&quot;$2&quot;</span> !<span class="o">=</span> <span class="s2">&quot;$( $2 | sed &#39;s/[^A-Za-z0-9_]//g&#39;)&quot;</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">      </span><span class="nv">result</span><span class="o">=</span><span class="s1">&#39;error: bookmark name is invalid!&#39;</span>
+</span><span class='line'>       <span class="nv">$result</span>
+</span><span class='line'>  <span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>print_usage <span class="o">{</span>
+</span><span class='line'>       <span class="s1">&#39;Usage:&#39;</span>
+</span><span class='line'>         <span class="s1">&#39;-a &lt;bookmark_name&gt; - Saves the current directory as &quot;bookmark_name&quot;&#39;</span>
+</span><span class='line'>         <span class="s1">&#39;-d &lt;bookmark_name&gt; - Deletes the bookmark&#39;</span>
+</span><span class='line'>         <span class="s1">&#39;-l                 - Lists all available bookmarks&#39;</span>
+</span><span class='line'>         <span class="s1">&#39;-h(-help,--help)   - Lists usage&#39;</span>
+</span><span class='line'>         <span class="s1">&#39;&lt;bookmark_name&gt;    - Jump to the bookmark&#39;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>_l <span class="o">{</span>
+</span><span class='line'>  awk -F <span class="s1">&#39;=&#39;</span> <span class="s1">&#39; {print $1} &#39;</span> <span class="nv">$DIRS</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>_comp <span class="o">{</span>
+</span><span class='line'>    <span class="nb">local </span>curw
+</span><span class='line'>    <span class="nv">COMPREPLY</span><span class="o">=()</span>
+</span><span class='line'>    <span class="nv">curw</span><span class="o">=</span><span class="k">${</span><span class="nv">COMP_WORDS</span><span class="p">[COMP_CWORD]</span><span class="k">}</span>
+</span><span class='line'>    <span class="nv">COMPREPLY</span><span class="o">=(</span><span class="k">$(</span><span class="nb">compgen</span> -W <span class="s1">&#39;`_l`&#39;</span> -- <span class="nv">$curw</span><span class="k">)</span><span class="o">)</span>
+</span><span class='line'>    <span class="k">return </span>0
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># ZSH completion command</span>
+</span><span class='line'><span class="k">function </span>_compzsh <span class="o">{</span>
+</span><span class='line'>    <span class="nv">reply</span><span class="o">=(</span><span class="k">$(</span>_l<span class="k">)</span><span class="o">)</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="nv">$ZSH_VERSION</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">  </span>compctl -K _compzsh gt
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'><span class="k">  </span><span class="nb">shopt</span> -s progcomp
+</span><span class='line'>  <span class="nb">complete</span> -F _comp gt
+</span><span class='line'><span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>安装:</strong></p>
+
+<ol>
+<li><p><code>git clone git@github.com:huangbowen521/gtShell.git</code> 或者直接拷贝 gt.sh文件内容。</p></li>
+<li><p>add gtShell.sh file path to your <code>~/.bash_profile</code> or <code>~/.bashrc</code> file</p></li>
+<li><p>reload your profile or restart your terminal</p></li>
+</ol>
+
+
+<p><strong>用例:</strong></p>
+
+<ul>
+<li><p><code>gt -a &lt;bookmark_name&gt;</code> - 保存当前目录的标签为 给定的bookmark_name</p></li>
+<li><p><code>gt -d &lt;bookmark_name&gt;</code> - 删除给定的标签</p></li>
+<li><p><code>gt -l</code>                 - 列除所有标签</p></li>
+<li><p><code>gt -h</code> - 帮助信息</p></li>
+<li><p><code>gt &lt;bookmark_name&gt;</code>    - 跳转到指定的标签目录</p></li>
+</ul>
+
+
+<p><strong>例子:</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>current_user:~<span class="nv">$ </span><span class="nb">cd </span>sourcecode/study/
+</span><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt -a study
+</span><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span><span class="nb">cd</span> ~
+</span><span class='line'>current_user:~<span class="nv">$ </span>gt study
+</span><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt -l
+</span><span class='line'><span class="nv">goAgent</span><span class="o">=</span>/Users/twer/sourcecode/goagent/goagent-goagent-9c1edd3/local
+</span><span class='line'><span class="nv">octopress</span><span class="o">=</span>/Users/twer/sourcecode/octopress
+</span><span class='line'><span class="nv">goShell</span><span class="o">=</span>/Users/twer/sourcecode/shell/goShell
+</span><span class='line'><span class="nv">study</span><span class="o">=</span>/Users/twer/sourcecode/study
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt -d study
+</span><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt -l
+</span><span class='line'><span class="nv">goAgent</span><span class="o">=</span>/Users/twer/sourcecode/goagent/goagent-goagent-9c1edd3/local
+</span><span class='line'><span class="nv">octopress</span><span class="o">=</span>/Users/twer/sourcecode/octopress
+</span><span class='line'><span class="nv">goShell</span><span class="o">=</span>/Users/twer/sourcecode/shell/goShell
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt -h
+</span><span class='line'>Usage:
+</span><span class='line'>-a &lt;bookmark_name&gt; - Saves the current directory as <span class="s2">&quot;bookmark_name&quot;</span>
+</span><span class='line'>-d &lt;bookmark_name&gt; - Deletes the bookmark
+</span><span class='line'>-l                 - Lists all available bookmarks
+</span><span class='line'>-h<span class="o">(</span>-help,--help<span class="o">)</span>   - Lists usage
+</span><span class='line'>&lt;bookmark_name&gt;    - Jump to the bookmark
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt go&lt;Tab&gt;
+</span><span class='line'>goAgent  goShell
+</span><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt goShell
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -677,6 +994,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/02/16/gtshell/">gtShell - 为你常用的目录建立标签并快速跳转</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/02/14/zheng-ze-biao-da-shi-bi-zhi-bi-hui/">正则表达式必知必会</a>
       </li>
     
@@ -690,10 +1011,6 @@
     
       <li class="post">
         <a href="/blog/2013/01/19/thoughtworks-immersion-xiao-ji/">ThoughtWorks Immersion 小计</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/">《JavaScript语言精粹》读书笔记</a>
       </li>
     
   </ul>
