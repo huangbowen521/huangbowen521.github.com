@@ -376,9 +376,9 @@ def ask(message, valid_options)
   answer
 end
 
-desc "Post the title and url of latest blog to Sina Weibo"
+desc "Post the title and url of latest blog to Sina Weibo & Tencent Weibo"
 task :weibo do
-  puts "Post the title and url of latest blog to Sina Weibo"
+  puts "Post the title and url of latest blog to Sina Weibo & Tencent Weibo"
   system "ruby _custom/post_weibo.rb"
 end
 
