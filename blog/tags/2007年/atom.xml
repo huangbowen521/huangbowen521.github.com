@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Tag: 总结 | 黄博文的地盘]]></title>
-  <link href="http://www.huangbowen.net/blog/tags/总结/atom.xml" rel="self"/>
+  <title><![CDATA[Tag: 2007年 | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/2007年/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
   <updated>2013-02-17T01:11:45+08:00</updated>
   <id>http://www.huangbowen.net/</id>
@@ -86,58 +86,6 @@
 <p> 我只是一个普通的计算机科学与技术专业的学生。以前我梦想成为一名计算机高手，但是现在我甚至无法描绘一个真正的计算机高手是什么样的。</p>
 
 <p> 每当我做出一个东西，哪怕只有一个人去使用它，那也是有用的。我也会高兴的。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[在ThoughtWorks工作两个多月的总结]]></title>
-    <link href="http://www.huangbowen.net/blog/2012/08/08/zai-thoughtworksgong-zuo-liang-ge-duo-yue-de-zong-jie/"/>
-    <updated>2012-08-08T01:49:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2012/08/08/zai-thoughtworksgong-zuo-liang-ge-duo-yue-de-zong-jie</id>
-    <content type="html"><![CDATA[<p>从5月份加入ThoughtWorks到今天，已经接近3个月了。这3个月对我来说意义重大，时间虽然很短，但是我学到了很多很多的东西。我感到需要对自己做一番总结，使自己能够持续快速的进步。
-先说说这2个多月在ThoughtWorks中我的改变。</p>
-
-<ol>
-<li><p><strong>行为意识的改变，变得更加积极主动。</strong>在ThoughtWorks是没有Title的，每天没有人会强迫你干什么，而自己要非常的积极主动来做事情，为团队的发展贡献出自己的力量。</p></li>
-<li><p><strong>思考方式的改变，多问为什么，而不盲从。</strong>ThoughtWorks的每个人都很健谈，尤其是谈论技术来滔滔不绝，这些都是建立在对目标了解透彻的基础上。所以我在思考问题的时候，应该抓住重点，往深处挖掘，而不是停留在表面浅尝辄止。</p></li>
-<li><p><strong>学习能力的改变。</strong>一个人能力有多大，很大一部分取决于他的自我学习能力。学习能力强，接收新事物快，他的知识会源源不断的涌来。在公司这段时间，我发现大家的自我学习能力都很强，一个新技术、新工具很快就能上手使用。我在平时注意收集和观察别人的学习方式，并且尝试使用到自己身上，收到了一定的效果。</p></li>
-</ol>
-
-
-<p>当然，在enjoy的同时，也伴随着巨大的压力。我认真的分析了一下自身，发现自身的不足主要存在与两个方面：</p>
-
-<p><strong>一是英语。</strong>自己大学毕业后在工作中就基本没怎么用过口语了，只是有时候看文档接触下英语。这种情况导致我的英语退化的厉害，而且这点是短时间内无法改善的。</p>
-
-<p><strong>二是技术。</strong>虽然自己有三年工作经验，但是主要都是C#方面的，而自己的目前项目中却使用的是Java。自己面临短时间内迅速掌握Java Spring，Spring Web Flow，Spring security，Maven，jasmine…..等以前自己几乎没接触过的东西，这对自己是一个巨大的挑战。</p>
-
-<p>认识到了自己的不足，接下来就是要拿出实际的Action。随着这段时间的学习，我找了一些方法来尽快的弥补自身的不足。</p>
-
-<p><strong>英语方面：</strong></p>
-
-<ol>
-<li><p>针对词汇量少的问题，在平时工作中将自己遇到的不认识的单词或发音有误的单词记在本子上或者电子词典中。每天抽出半小时时间来将这些单词过一遍，不求一次记住，随着review的次数增多，好多单词都会变成自己的亲密伙伴。</p></li>
-<li><p>针对
-自己听力差的问题，我将一些VOA的音频放在MP3里，在上下班的路上的反复的倾听，体会那种英文的感觉。</p></li>
-<li><p>针对自己浓重的“河南”口音问题，我在iCal里schedule了个时间，每天晚上的11点到12点跟着《英语导读1000句》念英语，训练口腔肌肉。</p></li>
-<li><p>针对自己英文书写的问题，每天发给团队的邮件，比较important和difficult的让同组中的英文比较好的同事帮忙review，自己从review中总结需要注意的地方，使英文表达更专业和清晰。</p></li>
-<li>在平时需要使用英语的时候，尽量克服自己胆怯的心理，发出自己的声音，不怕别人的嘲笑。（这点自己虽然意识到了，但是目前做的不是很好，还需要继续努力。）</li>
-</ol>
-
-
-<p><strong>技术方面：</strong></p>
-
-<ol>
-<li><p>积极参加公司的session和workshop，从中吸收到营养。</p></li>
-<li><p>平时的pair过程中积极向同伴学习。</p></li>
-<li><p>每天晚上下班回家后坚持主动学习,多多动手实践。</p></li>
-<li><p>对于自己的每个技术点，尽量拿出一定的成果，比如写成博客或者写一个demo，眼看千遍不如手过一遍。</p></li>
-<li><p>我们team规定每周每个人都要做一次内部session。通过准备session和讲session加深自己对内容的理解。</p></li>
-</ol>
-
-
-<p>当然，这些措施只是自己目前能够想到的和在做的。也许大家有更好的方法，可以互相学习。</p>
-
-<p>感谢Yaoyao同学和Matt对我英文的指导，感谢周周同学的周末Workshop和平时对我的严格要求，感谢公司其他人对我的帮助和feedback。</p>
 ]]></content>
   </entry>
   
