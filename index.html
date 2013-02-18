@@ -9,7 +9,7 @@
   <meta name="author" content="黄博文">
 
   
-  <meta name="description" content="今天整理电脑，偶然翻出一篇写于2007年的演讲稿。那是在一次班级团组织生活上向大家介绍自己学习计算机经验的一些感悟。 如今六年过去了，看到六年前自己的感悟，百般滋味涌上心头。六年的时间，从一个意气奋发的少年成长为孩子眼中的叔叔，不变的是对技术的从一而终的热爱。 看着当初稚嫩的自己进行的总结， &hellip;">
+  <meta name="description" content="作为一名合格的ThoughtWorker,每年不读个几十本书都不好意思跟别人打招呼。从读书的角度来说，我还真不算是一名合格的ThoughtWorker。不过没关系，发现了问题就要解决问题。2013年来已经读了2，3本书了，按照这个频率下去今年30本书的目标应该问题不大。但是面对庞大的书籍， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,52 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/18/thoughtworks-reading-book/">ThoughtWorks Developer 读书路线图</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-18T13:31:00+08:00" pubdate data-updated="true">Feb 18<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/18/thoughtworks-reading-book/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>作为一名合格的ThoughtWorker,每年不读个几十本书都不好意思跟别人打招呼。从读书的角度来说，我还真不算是一名合格的ThoughtWorker。不过没关系，发现了问题就要解决问题。2013年来已经读了2，3本书了，按照这个频率下去今年30本书的目标应该问题不大。但是面对庞大的书籍，那些书是值得一读的那？尤其是技术类书籍，更是种类繁多，参差不齐。作为一个合格的程序员，常常纠结如此。</p>
+
+<p>不用怕，ThoughtWorks考虑到这些问题，特推出了《ThoughtWorks Dev 读书路线图》。感谢Longjun和Zhangyi的贡献。</p>
+
+<p>请注意，这里只是列出了一些推荐书籍，难免有些遗漏。你可以把这些书籍当成一个指引，带领你进入知识的海洋。站在别人的肩上才能看的更远。</p>
+
+<p><img src="/images/reading.jpg" width="700" height="700" title="ThoughtWorks Dev 读书路线图" alt="ThoughtWorks Dev 读书路线图"></p>
+
+<p>点击<a href="/images/reading.jpg">这里</a>查看大图。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -965,122 +1011,9 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/08/08/zai-ben-di-an-zhuang-gitde-htmlbang-zhu-wen-dang/">在本地安装git的HTML帮助文档</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-08-08T00:48:00+08:00" pubdate data-updated="true">Aug 8<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/08/08/zai-ben-di-an-zhuang-gitde-htmlbang-zhu-wen-dang/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>当我们想查询git某条指令如何使用时，<a href="http://git-scm.com/documentation">git</a>官网有详尽的文档供我们查看。在命令行下我们也可以随时通过 git &#8211;help的方法查看某条命令的详细帮助。</p>
-
-<p>相对于在Terminal中内置的帮助文档，HTML格式更清晰，更详尽。</p>
-
-<p>但是如果我想在无法上网的情况下也能查看git官网的详尽的帮助文档，有没有办法那？当然有了，下面就教大家如何在本机搭建git的HTML帮助文档。</p>
-
-<p>在Windows上设置很简单，主需要安装<a href="http://code.google.com/p/msysgit/">Msysgit</a>,就会自动为你设置起本地的HTML帮助文档。所以这篇文章主要讲在Mac和Linux下该如何实现。</p>
-
-<p><strong>一，运行git help –-web commit查看git默认的保存html文件的路径。</strong></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git <span class="nb">help</span> --web commit
-</span><span class='line'>
-</span><span class='line'><span class="c">#Attempt to open the html help for the commit command</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#fatal: &#39;/usr/local/git/share/doc/git-doc&#39;: not a documentationdirectory.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们得到了git默认的存放html文件的路径是<code>/usr/local/git/share/doc/git-doc</code>。当然你得到的路径有可能和这个不一样。</p>
-
-<p><strong>二，切换到这个路径下，迁出存放在git repo中的html文件。</strong></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo mkdir -p /usr/local/git/share/doc
-</span><span class='line'><span class="c"># Create the path for the docs to be installed to cd #/usr/local/git/share/doc</span>
-</span><span class='line'><span class="nv">$ </span>sudo git clone git://git.kernel.org/pub/scm/git/git-htmldocs.git git-doc
-</span><span class='line'><span class="c"># Clone the git repo and check out the html documents branch</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>三，运行 vim ~/.gitconfig 命令，在.gitconfig文件中加入如下配置。</strong></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>[help]
-</span><span class='line'>
-</span><span class='line'>        format = web
-</span><span class='line'>
-</span><span class='line'>[web]
-</span><span class='line'>
-</span><span class='line'>        browser = open
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>当然也可以使用其他的编辑器来编辑.gitconfig文件。</p>
-
-<p>只要这三步就设置起了本地的HTML帮助文档。你可以再次运行<code>git help -–web commit</code>，就可以查看在浏览器中自动打开的HTML帮助说明页面了。</p>
-
-<p>如果git的帮助文档更新了，如何同步到本地那？很简单，运行<code>git pull</code>命令就行。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd</span> /usr/local/git/share/doc/git-doc
-</span><span class='line'><span class="nv">$ </span>sudo git pull
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如何查看这些帮助文档那？更简单了，例如：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git remote --help
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>就会自动在浏览器中打开针对remote的帮助文档。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -1097,6 +1030,10 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/02/18/thoughtworks-reading-book/">ThoughtWorks developer 读书路线图</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/02/17/2007nian-de-pian-zong-jie-wen-zhang/">2007年的一篇总结文章</a>
       </li>
     
@@ -1110,10 +1047,6 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
     
       <li class="post">
         <a href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/">避免每次输入bundler exec命令</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/01/28/my-first-blog/">my first blog</a>
       </li>
     
   </ul>
