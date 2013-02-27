@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: bash | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/bash/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-02-18T13:42:55+08:00</updated>
+  <updated>2013-02-27T15:52:08+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -51,8 +51,8 @@ then</p>
     -a)
         validate_bookmark_name "$@"
         if [ -z "$result" ]; then
-            CURDIR=$( $PWD)
-             "$2=$CURDIR" &gt;&gt; $DIRS
+            CURDIR=$PWD
+             echo "$2=$CURDIR" &gt;&gt; $DIRS
         fi
         ;;
     -l)
@@ -67,7 +67,7 @@ then</p>
         elif [[ ! -z `awk -F '=' '/^'"$1"'=/ {print $2 }' $DIRS` ]]; then
             cd `awk -F '=' '/^'"$1"'=/ {print $2 }' $DIRS`
             else
-                 'error: bookmark name not found'
+            echo 'error: bookmark name not found'
 
         fi
 
@@ -83,10 +83,10 @@ esac
 <pre><code>result=""
 if [ -z $2 ]; then
     result='error: bookmark name required!'
-     $result
-elif [ "$2" != "$( $2 | sed 's/[^A-Za-z0-9_]//g')" ]; then
+    echo $result
+elif [ -z `echo $2 | sed 's/[^A-Za-z0-9_]//g' ` ]; then
     result='error: bookmark name is invalid!'
-     $result
+    echo $result
 fi
 </code></pre>
 
@@ -94,12 +94,12 @@ fi
 
 <p>function print_usage {</p>
 
-<pre><code>     'Usage:'
-     '-a &lt;bookmark_name&gt; - Saves the current directory as "bookmark_name"'
-     '-d &lt;bookmark_name&gt; - Deletes the bookmark'
-     '-l                 - Lists all available bookmarks'
-     '-h(-help,--help)   - Lists usage'
-     '&lt;bookmark_name&gt;    - Jump to the bookmark'
+<pre><code>    echo  'Usage:'
+    echo  '-a &lt;bookmark_name&gt; - Saves the current directory as "bookmark_name"'
+    echo  '-d &lt;bookmark_name&gt; - Deletes the bookmark'
+    echo  '-l                 - Lists all available bookmarks'
+    echo  '-h(-help,--help)   - Lists usage'
+    echo  '&lt;bookmark_name&gt;    - Jump to the bookmark'
 </code></pre>
 
 <p>}</p>
@@ -150,7 +150,7 @@ complete -F _comp gt
 
 <ol>
 <li><p><code>git clone git@github.com:huangbowen521/gtShell.git</code> 或者直接拷贝 gt.sh文件内容。</p></li>
-<li><p>add gtShell.sh file path to your <code>~/.bash_profile</code> or <code>~/.bashrc</code> file</p></li>
+<li><p>add gt.sh file path to your <code>~/.bash_profile</code> or <code>~/.bashrc</code> file</p></li>
 <li><p>reload your profile or restart your terminal</p></li>
 </ol>
 

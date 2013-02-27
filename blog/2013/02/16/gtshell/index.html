@@ -223,8 +223,8 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 </span><span class='line'>      -a<span class="o">)</span>
 </span><span class='line'>          validate_bookmark_name <span class="s2">&quot;$@&quot;</span>
 </span><span class='line'>          <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;$result&quot;</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">              </span><span class="nv">CURDIR</span><span class="o">=</span><span class="k">$(</span> <span class="nv">$PWD</span><span class="k">)</span>
-</span><span class='line'>               <span class="s2">&quot;$2=$CURDIR&quot;</span> &gt;&gt; <span class="nv">$DIRS</span>
+</span><span class='line'><span class="k">              </span><span class="nv">CURDIR</span><span class="o">=</span><span class="nv">$PWD</span>
+</span><span class='line'>               <span class="nb">echo</span> <span class="s2">&quot;$2=$CURDIR&quot;</span> &gt;&gt; <span class="nv">$DIRS</span>
 </span><span class='line'>          <span class="k">fi</span>
 </span><span class='line'>          ;;
 </span><span class='line'>      -l<span class="o">)</span>
@@ -239,7 +239,7 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 </span><span class='line'>          <span class="k">elif</span> <span class="o">[[</span> ! -z <span class="sb">`</span>awk -F <span class="s1">&#39;=&#39;</span> <span class="s1">&#39;/^&#39;</span><span class="s2">&quot;$1&quot;</span><span class="s1">&#39;=/ {print $2 }&#39;</span> <span class="nv">$DIRS</span><span class="sb">`</span> <span class="o">]]</span>; <span class="k">then</span>
 </span><span class='line'><span class="k">              </span><span class="nb">cd</span> <span class="sb">`</span>awk -F <span class="s1">&#39;=&#39;</span> <span class="s1">&#39;/^&#39;</span><span class="s2">&quot;$1&quot;</span><span class="s1">&#39;=/ {print $2 }&#39;</span> <span class="nv">$DIRS</span><span class="sb">`</span>
 </span><span class='line'>              <span class="k">else</span>
-</span><span class='line'>                   <span class="s1">&#39;error: bookmark name not found&#39;</span>
+</span><span class='line'><span class="k">              </span><span class="nb">echo</span> <span class="s1">&#39;error: bookmark name not found&#39;</span>
 </span><span class='line'>
 </span><span class='line'>          <span class="k">fi</span>
 </span><span class='line'>
@@ -251,21 +251,21 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 </span><span class='line'>  <span class="nv">result</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
 </span><span class='line'>  <span class="k">if</span> <span class="o">[</span> -z <span class="nv">$2</span> <span class="o">]</span>; <span class="k">then</span>
 </span><span class='line'><span class="k">      </span><span class="nv">result</span><span class="o">=</span><span class="s1">&#39;error: bookmark name required!&#39;</span>
-</span><span class='line'>       <span class="nv">$result</span>
-</span><span class='line'>  <span class="k">elif</span> <span class="o">[</span> <span class="s2">&quot;$2&quot;</span> !<span class="o">=</span> <span class="s2">&quot;$( $2 | sed &#39;s/[^A-Za-z0-9_]//g&#39;)&quot;</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'>      <span class="nb">echo</span> <span class="nv">$result</span>
+</span><span class='line'>  <span class="k">elif</span> <span class="o">[</span> -z <span class="sb">`</span><span class="nb">echo</span> <span class="nv">$2</span> | sed <span class="s1">&#39;s/[^A-Za-z0-9_]//g&#39;</span> <span class="sb">`</span> <span class="o">]</span>; <span class="k">then</span>
 </span><span class='line'><span class="k">      </span><span class="nv">result</span><span class="o">=</span><span class="s1">&#39;error: bookmark name is invalid!&#39;</span>
-</span><span class='line'>       <span class="nv">$result</span>
+</span><span class='line'>      <span class="nb">echo</span> <span class="nv">$result</span>
 </span><span class='line'>  <span class="k">fi</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">function </span>print_usage <span class="o">{</span>
-</span><span class='line'>       <span class="s1">&#39;Usage:&#39;</span>
-</span><span class='line'>         <span class="s1">&#39;-a &lt;bookmark_name&gt; - Saves the current directory as &quot;bookmark_name&quot;&#39;</span>
-</span><span class='line'>         <span class="s1">&#39;-d &lt;bookmark_name&gt; - Deletes the bookmark&#39;</span>
-</span><span class='line'>         <span class="s1">&#39;-l                 - Lists all available bookmarks&#39;</span>
-</span><span class='line'>         <span class="s1">&#39;-h(-help,--help)   - Lists usage&#39;</span>
-</span><span class='line'>         <span class="s1">&#39;&lt;bookmark_name&gt;    - Jump to the bookmark&#39;</span>
+</span><span class='line'>      <span class="nb">echo</span>  <span class="s1">&#39;Usage:&#39;</span>
+</span><span class='line'>          <span class="nb">echo</span>  <span class="s1">&#39;-a &lt;bookmark_name&gt; - Saves the current directory as &quot;bookmark_name&quot;&#39;</span>
+</span><span class='line'>          <span class="nb">echo</span>  <span class="s1">&#39;-d &lt;bookmark_name&gt; - Deletes the bookmark&#39;</span>
+</span><span class='line'>          <span class="nb">echo</span>  <span class="s1">&#39;-l                 - Lists all available bookmarks&#39;</span>
+</span><span class='line'>          <span class="nb">echo</span>  <span class="s1">&#39;-h(-help,--help)   - Lists usage&#39;</span>
+</span><span class='line'>          <span class="nb">echo</span>  <span class="s1">&#39;&lt;bookmark_name&gt;    - Jump to the bookmark&#39;</span>
 </span><span class='line'><span class="o">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">function </span>_l <span class="o">{</span>
@@ -300,7 +300,7 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 
 <ol>
 <li><p><code>git clone git@github.com:huangbowen521/gtShell.git</code> 或者直接拷贝 gt.sh文件内容。</p></li>
-<li><p>add gtShell.sh file path to your <code>~/.bash_profile</code> or <code>~/.bashrc</code> file</p></li>
+<li><p>add gt.sh file path to your <code>~/.bash_profile</code> or <code>~/.bashrc</code> file</p></li>
 <li><p>reload your profile or restart your terminal</p></li>
 </ol>
 
