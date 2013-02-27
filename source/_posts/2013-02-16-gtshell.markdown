@@ -16,6 +16,7 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 下面是主要文件gt.sh的源码。
 
 ``` bash gt.sh https://github.com/huangbowen521/gtShell/blob/master/gt.sh gt.sh
+
 #! /bin/bash
 
 DIRS="$HOME/.gtDirs"
@@ -35,8 +36,8 @@ gt () {
 		-a)
 			validate_bookmark_name "$@"
 			if [ -z "$result" ]; then
-				CURDIR=$( $PWD)
-				 "$2=$CURDIR" >> $DIRS
+				CURDIR=$PWD
+				 echo "$2=$CURDIR" >> $DIRS
 			fi
 			;;
 		-l)
@@ -51,7 +52,7 @@ gt () {
 			elif [[ ! -z `awk -F '=' '/^'"$1"'=/ {print $2 }' $DIRS` ]]; then
 				cd `awk -F '=' '/^'"$1"'=/ {print $2 }' $DIRS`
 				else
-					 'error: bookmark name not found'
+				echo 'error: bookmark name not found'
 
 			fi
 
@@ -63,21 +64,21 @@ function validate_bookmark_name {
 	result=""
 	if [ -z $2 ]; then
 		result='error: bookmark name required!'
-		 $result
-	elif [ "$2" != "$( $2 | sed 's/[^A-Za-z0-9_]//g')" ]; then
+		echo $result
+	elif [ -z `echo $2 | sed 's/[^A-Za-z0-9_]//g' ` ]; then
 		result='error: bookmark name is invalid!'
-		 $result
+		echo $result
 	fi
 
 }
 
 function print_usage {
-	     'Usage:'
-         '-a <bookmark_name> - Saves the current directory as "bookmark_name"'
-         '-d <bookmark_name> - Deletes the bookmark'
-         '-l                 - Lists all available bookmarks'
-         '-h(-help,--help)   - Lists usage'
-         '<bookmark_name>    - Jump to the bookmark'
+	  	echo  'Usage:'
+       	echo  '-a <bookmark_name> - Saves the current directory as "bookmark_name"'
+       	echo  '-d <bookmark_name> - Deletes the bookmark'
+       	echo  '-l                 - Lists all available bookmarks'
+       	echo  '-h(-help,--help)   - Lists usage'
+       	echo  '<bookmark_name>    - Jump to the bookmark'
 }
 
 function _l {
@@ -106,13 +107,15 @@ else
 	complete -F _comp gt
 fi
 
+
+
 ```
 
 **安装:**
 
  1. `git clone git@github.com:huangbowen521/gtShell.git` 或者直接拷贝 gt.sh文件内容。
 
- 2. add gtShell.sh file path to your `~/.bash_profile` or `~/.bashrc` file
+ 2. add gt.sh file path to your `~/.bash_profile` or `~/.bashrc` file
 
  3. reload your profile or restart your terminal
 
