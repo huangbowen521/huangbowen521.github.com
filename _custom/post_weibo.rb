@@ -51,7 +51,7 @@ class WeiboPoster
 
   def latest_blog_title
     title_line = IO.readlines(latest_blog_file_name)[2]
-    title_line["title: ".length + 1..title_line.length - 3].force_encoding("utf-8")
+    title_line["title: ".length..title_line.length].force_encoding("utf-8")
   end
 
   def latest_blog_file_name
