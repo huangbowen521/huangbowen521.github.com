@@ -92,7 +92,7 @@ Prelude> 10 / (-5)
 
 注意对负数进行操作时要将其用()括起来，否则系统会报错。
 
-### 判等操作
+### 判等与比较操作
 
 ``` bash
 
@@ -104,6 +104,10 @@ Prelude> 5 /= 5
 False
 Prelude> 10 /= 8
 True
+Prelude> 5 >= 3
+True
+Prelude> 5 <= 3
+False
 Prelude> True && True
 True
 Prelude> True && False
