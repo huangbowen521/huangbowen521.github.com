@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: 读书笔记 | 黄博文的地盘]]></title>
-  <link href="http://www.huangbowen.net/blog/categories/读书笔记/atom.xml" rel="self"/>
+  <title><![CDATA[Tag: Turing | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/turing/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
   <updated>2013-03-03T00:07:55+08:00</updated>
   <id>http://www.huangbowen.net/</id>
@@ -42,21 +42,6 @@
 <p>一个图灵机无法通过程序判断另一个图灵机在限定的时间内停机。停机问题说明了图灵机的局限性，这也被很多人作为程序无法没有bug的借口。你无法写一个程序，来判断一段程序中是否没有任何bug。</p>
 
 <p>我们可以预知未来吗？根据图灵机理论，如果我们可以用确定的不含糊的步骤来描述出宇宙的发展，那么我们就可以将其作为输入到图灵机，得到未来。问题是我们如果要构造这个输入，差不多等于构造了一个新宇宙。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[正则表达式必知必会]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/02/14/zheng-ze-biao-da-shi-bi-zhi-bi-hui/"/>
-    <updated>2013-02-14T23:22:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/02/14/zheng-ze-biao-da-shi-bi-zhi-bi-hui</id>
-    <content type="html"><![CDATA[<p>读了《正则表达式必知必会》（Regular Expressions - in 10 minutes）一书，很有收获。这本书不厚，只有120多页。但是其由浅入深的系统的介绍了正则表达式。全书内容详实，配了很多实例，是学习正则表达式的一本很好的入门书籍。</p>
-
-<p>我根据这本书画了个Mind Map，来记录自己学到的东西。</p>
-
-<p><img src="/images/RegularExpression.png" width="700" height="700" title="《正则表达式必知必会》Mind Map" alt="《正则表达式必知必会》Mind Map"></p>
-
-<p>点击<a href="/images/RegularExpression.png">这里</a>查看大图。</p>
 ]]></content>
   </entry>
   
