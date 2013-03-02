@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Haskell-函数式编程语言之初体验 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="如果你是使用面向对像语言进行编程的程序员，那么你应该去了解掌握一门动态语言。而动态语言的魔力之一就是函数式编程。而要学习了解函数式编程，那么haskell是一个不错的选择。 Haskell是是一门纯函数式编程语言(purely functional programming language)。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Haskell-函数式编程语言之初体验</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-02T14:55:00+08:00" pubdate data-updated="true">Mar 2<span>nd</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>如果你是使用面向对像语言进行编程的程序员，那么你应该去了解掌握一门动态语言。而动态语言的魔力之一就是函数式编程。而要学习了解函数式编程，那么haskell是一个不错的选择。</p>
+
+<p>Haskell是是一门纯函数式编程语言(purely functional programming language)。在其世界中函数是第一等对象。并且在haskell中没有赋值，例如你指派a的值为5，然后你无法再给a分配其它的值。所以你不能像命令式语言那样命令电脑“要做什么”，而是通过函数来描述出问题“是什么”。</p>
+
+<p>作为一个纯的函数式编程语言，它支持惰性求值、模式匹配、列表解析、类型类、类型多态……</p>
+
+<p>别着急，让我们慢慢来解开函数式编程的面纱。</p>
+
+<h2>安装Haskell</h2>
+
+<ol>
+<li><p>可以去<a href="http://www.Haskell.org/Haskellwiki/Haskell">官网</a>下载安装包进行安装。</p></li>
+<li><p>mac平台的用户可以通过<a href="http://mxcl.github.com/homebrew/">homebrew</a>进行安装。</p></li>
+</ol>
+
+
+<p>在terminal下输入<code>brew install haskell-platform</code>即可。</p>
+
+<h2>使用Haskell</h2>
+
+<p>安装完毕后haskell platform的解释器GHC就已经在你的电脑上了。GHC可以解释执行Haskell脚本，即后缀名为.hs的文件。你可可以通过在terminal输入<code>ghci</code>进入交互模式。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>twer@bowen-huang:~<span class="nv">$ </span>ghci
+</span><span class='line'>GHCi, version 7.4.2: http://www.haskell.org/ghc/ :? <span class="k">for </span><span class="nb">help</span>
+</span><span class='line'>Loading package ghc-prim ... linking … <span class="k">done</span>.
+</span><span class='line'>Loading package integer-gmp ... linking … <span class="k">done</span>.
+</span><span class='line'>Loading package base ... linking … <span class="k">done</span>.
+</span><span class='line'>Prelude&gt; 1+2
+</span><span class='line'>3
+</span><span class='line'>Prelude&gt; 3*4
+</span><span class='line'>12
+</span><span class='line'>Prelude&gt; 5/1
+</span><span class='line'>5.0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于Haskell的编辑器你可以使用任何喜欢的编辑器:Vim、Emacs、Sublime、TextMate…..我比较喜欢Sublime。因为在Sublime自带Haskell的快捷编译执行。只需要按Ctrl+B来直接运行Scripts脚本。</p>
+
+<p>在ghci交互模式下可以使用<code>:l</code>命令来load一个Haskell脚本，然后就可以调用此脚本中的函数。我们先写一个&#8217;Hello world!’程序，然后通过ghci来load和调用.</p>
+
+<figure class='code'><figcaption><span>HelloWorld.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">main</span> <span class="ow">=</span> <span class="n">print</span> <span class="o">$</span> <span class="s">&quot;Hello world!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; :l HelloWorld.hs
+</span><span class='line'><span class="o">[</span>1 of 1<span class="o">]</span> Compiling Main <span class="o">(</span> HelloWorld.hs, interpreted <span class="o">)</span>
+</span><span class='line'>Ok, modules loaded: Main.
+</span><span class='line'>*Main&gt; main
+</span><span class='line'><span class="s2">&quot;Hello world!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果对文件进行了修改，也可以直接通过<code>:r</code>来重新加载文件。</p>
+
+<h2>Haskell的基本语法</h2>
+
+<h3>加减乘除操作</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; 1 + 2
+</span><span class='line'>3
+</span><span class='line'>Prelude&gt; 3 - 1
+</span><span class='line'>2
+</span><span class='line'>Prelude&gt; 3 * 4
+</span><span class='line'>12
+</span><span class='line'>Prelude&gt; 5 / 1
+</span><span class='line'>5.0
+</span><span class='line'>Prelude&gt; 10 / <span class="o">(</span>-5<span class="o">)</span>
+</span><span class='line'>-2.0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意对负数进行操作时要将其用()括起来，否则系统会报错。</p>
+
+<h3>判等操作</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nv">5</span> <span class="o">==</span> 5
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; <span class="nv">10</span> <span class="o">==</span> 8
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; 5 /<span class="o">=</span> 5
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; 10 /<span class="o">=</span> 8
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> True
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> False
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; False <span class="o">||</span> False
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; True <span class="o">||</span> False
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; not True
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; not False
+</span><span class='line'>True
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>控制流转</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nb">let </span>isHello <span class="nv">x</span> <span class="o">=</span> <span class="k">if </span><span class="nv">x</span> <span class="o">==</span> <span class="s2">&quot;Hello&quot;</span> <span class="k">then </span>True <span class="k">else </span>False
+</span><span class='line'>Prelude&gt; isHello <span class="s2">&quot;Hello&quot;</span>
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; isHello <span class="s2">&quot;World&quot;</span>
+</span><span class='line'>False
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意这里的条件判断中的else是不可以省略的，这样保证条件语句总会返回一个值。</p>
+
+<p>如果在脚本文件中写的话不需要使用<code>let</code>关键字。并且也可以采用另一个写法。</p>
+
+<figure class='code'><figcaption><span>isHello.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isHello</span> <span class="n">x</span>
+</span><span class='line'> <span class="o">|</span> <span class="n">x</span> <span class="o">==</span> <span class="s">&quot;Hello&quot;</span> <span class="ow">=</span> <span class="kt">True</span>
+</span><span class='line'> <span class="o">|</span> <span class="n">otherwise</span>     <span class="ow">=</span> <span class="kt">False</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>|表示或，otherwise关键字表示其它的情况。当然你也可以将这三行代码写成一行，这样也是能够正常运行的。分成三行只是为了更加可读。</p>
+
+<p>还有第三种写法，实际上与面对对象语言中的<code>switch…case</code>语句有些类似。</p>
+
+<figure class='code'><figcaption><span>isHello.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isHello</span> <span class="n">x</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">x</span> <span class="kr">of</span>
+</span><span class='line'> <span class="s">&quot;Hello&quot;</span> <span class="ow">-&gt;</span> <span class="kt">True</span>
+</span><span class='line'> <span class="n">otherwise</span> <span class="ow">-&gt;</span> <span class="kt">False</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>另外，在Haskell中是没有各种循环语句的，如果要实现相似的特性当然要使用递归了。</p>
+
+<p>第二节中，我们会讨论这个问题。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-02T14:55:00+08:00" pubdate data-updated="true">Mar 2<span>nd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/编程开发/'>编程开发</a>
+  
+</span>
+
+
+      
+
+<span class="tags">
+  
+    <a class='tag' href='/blog/tags/haskell/'>Haskell</a>, <a class='tag' href='/blog/tags/language/'>Language</a>, <a class='tag' href='/blog/tags/函数式编程/'>函数式编程</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch/" data-via="huangbowen521@gmail.com" data-counturl="http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/02/18/thoughtworks-reading-book/" title="Previous Post: ThoughtWorks developer 读书路线图">&laquo; ThoughtWorks developer 读书路线图</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>A little something about me.</p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/02/haskell-programming-language-first-touch/">Haskell-函数式编程语言之初体验</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/18/thoughtworks-reading-book/">ThoughtWorks developer 读书路线图</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/17/2007nian-de-pian-zong-jie-wen-zhang/">2007年的一篇总结文章</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/16/gtshell/">gtShell - 为你常用的目录建立标签并快速跳转</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/14/zheng-ze-biao-da-shi-bi-zhi-bi-hui/">正则表达式必知必会</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

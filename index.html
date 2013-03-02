@@ -9,7 +9,7 @@
   <meta name="author" content="黄博文">
 
   
-  <meta name="description" content="作为一名合格的ThoughtWorker,每年不读个几十本书都不好意思跟别人打招呼。从读书的角度来说，我还真不算是一名合格的ThoughtWorker。不过没关系，发现了问题就要解决问题。2013年来已经读了2，3本书了，按照这个频率下去今年30本书的目标应该问题不大。但是面对庞大的书籍， &hellip;">
+  <meta name="description" content="如果你是使用面向对像语言进行编程的程序员，那么你应该去了解掌握一门动态语言。而动态语言的魔力之一就是函数式编程。而要学习了解函数式编程，那么haskell是一个不错的选择。 Haskell是是一门纯函数式编程语言(purely functional programming language)。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,234 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/02/haskell-programming-language-first-touch/">Haskell-函数式编程语言之初体验</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-02T14:55:00+08:00" pubdate data-updated="true">Mar 2<span>nd</span>, 2013</time>
+        
+         | <a href="/blog/2013/03/02/haskell-programming-language-first-touch/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>如果你是使用面向对像语言进行编程的程序员，那么你应该去了解掌握一门动态语言。而动态语言的魔力之一就是函数式编程。而要学习了解函数式编程，那么haskell是一个不错的选择。</p>
+
+<p>Haskell是是一门纯函数式编程语言(purely functional programming language)。在其世界中函数是第一等对象。并且在haskell中没有赋值，例如你指派a的值为5，然后你无法再给a分配其它的值。所以你不能像命令式语言那样命令电脑“要做什么”，而是通过函数来描述出问题“是什么”。</p>
+
+<p>作为一个纯的函数式编程语言，它支持惰性求值、模式匹配、列表解析、类型类、类型多态……</p>
+
+<p>别着急，让我们慢慢来解开函数式编程的面纱。</p>
+
+<h2>安装Haskell</h2>
+
+<ol>
+<li><p>可以去<a href="http://www.Haskell.org/Haskellwiki/Haskell">官网</a>下载安装包进行安装。</p></li>
+<li><p>mac平台的用户可以通过<a href="http://mxcl.github.com/homebrew/">homebrew</a>进行安装。</p></li>
+</ol>
+
+
+<p>在terminal下输入<code>brew install haskell-platform</code>即可。</p>
+
+<h2>使用Haskell</h2>
+
+<p>安装完毕后haskell platform的解释器GHC就已经在你的电脑上了。GHC可以解释执行Haskell脚本，即后缀名为.hs的文件。你可可以通过在terminal输入<code>ghci</code>进入交互模式。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>twer@bowen-huang:~<span class="nv">$ </span>ghci
+</span><span class='line'>GHCi, version 7.4.2: http://www.haskell.org/ghc/ :? <span class="k">for </span><span class="nb">help</span>
+</span><span class='line'>Loading package ghc-prim ... linking … <span class="k">done</span>.
+</span><span class='line'>Loading package integer-gmp ... linking … <span class="k">done</span>.
+</span><span class='line'>Loading package base ... linking … <span class="k">done</span>.
+</span><span class='line'>Prelude&gt; 1+2
+</span><span class='line'>3
+</span><span class='line'>Prelude&gt; 3*4
+</span><span class='line'>12
+</span><span class='line'>Prelude&gt; 5/1
+</span><span class='line'>5.0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于Haskell的编辑器你可以使用任何喜欢的编辑器:Vim、Emacs、Sublime、TextMate…..我比较喜欢Sublime。因为在Sublime自带Haskell的快捷编译执行。只需要按Ctrl+B来直接运行Scripts脚本。</p>
+
+<p>在ghci交互模式下可以使用<code>:l</code>命令来load一个Haskell脚本，然后就可以调用此脚本中的函数。我们先写一个&#8217;Hello world!’程序，然后通过ghci来load和调用.</p>
+
+<figure class='code'><figcaption><span>HelloWorld.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">main</span> <span class="ow">=</span> <span class="n">print</span> <span class="o">$</span> <span class="s">&quot;Hello world!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; :l HelloWorld.hs
+</span><span class='line'><span class="o">[</span>1 of 1<span class="o">]</span> Compiling Main <span class="o">(</span> HelloWorld.hs, interpreted <span class="o">)</span>
+</span><span class='line'>Ok, modules loaded: Main.
+</span><span class='line'>*Main&gt; main
+</span><span class='line'><span class="s2">&quot;Hello world!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果对文件进行了修改，也可以直接通过<code>:r</code>来重新加载文件。</p>
+
+<h2>Haskell的基本语法</h2>
+
+<h3>加减乘除操作</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; 1 + 2
+</span><span class='line'>3
+</span><span class='line'>Prelude&gt; 3 - 1
+</span><span class='line'>2
+</span><span class='line'>Prelude&gt; 3 * 4
+</span><span class='line'>12
+</span><span class='line'>Prelude&gt; 5 / 1
+</span><span class='line'>5.0
+</span><span class='line'>Prelude&gt; 10 / <span class="o">(</span>-5<span class="o">)</span>
+</span><span class='line'>-2.0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意对负数进行操作时要将其用()括起来，否则系统会报错。</p>
+
+<h3>判等操作</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nv">5</span> <span class="o">==</span> 5
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; <span class="nv">10</span> <span class="o">==</span> 8
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; 5 /<span class="o">=</span> 5
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; 10 /<span class="o">=</span> 8
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> True
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> False
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; False <span class="o">||</span> False
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; True <span class="o">||</span> False
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; not True
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; not False
+</span><span class='line'>True
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>控制流转</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nb">let </span>isHello <span class="nv">x</span> <span class="o">=</span> <span class="k">if </span><span class="nv">x</span> <span class="o">==</span> <span class="s2">&quot;Hello&quot;</span> <span class="k">then </span>True <span class="k">else </span>False
+</span><span class='line'>Prelude&gt; isHello <span class="s2">&quot;Hello&quot;</span>
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; isHello <span class="s2">&quot;World&quot;</span>
+</span><span class='line'>False
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意这里的条件判断中的else是不可以省略的，这样保证条件语句总会返回一个值。</p>
+
+<p>如果在脚本文件中写的话不需要使用<code>let</code>关键字。并且也可以采用另一个写法。</p>
+
+<figure class='code'><figcaption><span>isHello.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isHello</span> <span class="n">x</span>
+</span><span class='line'> <span class="o">|</span> <span class="n">x</span> <span class="o">==</span> <span class="s">&quot;Hello&quot;</span> <span class="ow">=</span> <span class="kt">True</span>
+</span><span class='line'> <span class="o">|</span> <span class="n">otherwise</span>     <span class="ow">=</span> <span class="kt">False</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>|表示或，otherwise关键字表示其它的情况。当然你也可以将这三行代码写成一行，这样也是能够正常运行的。分成三行只是为了更加可读。</p>
+
+<p>还有第三种写法，实际上与面对对象语言中的<code>switch…case</code>语句有些类似。</p>
+
+<figure class='code'><figcaption><span>isHello.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isHello</span> <span class="n">x</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">x</span> <span class="kr">of</span>
+</span><span class='line'> <span class="s">&quot;Hello&quot;</span> <span class="ow">-&gt;</span> <span class="kt">True</span>
+</span><span class='line'> <span class="n">otherwise</span> <span class="ow">-&gt;</span> <span class="kt">False</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>另外，在Haskell中是没有各种循环语句的，如果要实现相似的特性当然要使用递归了。</p>
+
+<p>第二节中，我们会讨论这个问题。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -930,87 +1158,6 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/08/08/zai-thoughtworksgong-zuo-liang-ge-duo-yue-de-zong-jie/">在ThoughtWorks工作两个多月的总结</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-08-08T01:49:00+08:00" pubdate data-updated="true">Aug 8<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/08/08/zai-thoughtworksgong-zuo-liang-ge-duo-yue-de-zong-jie/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>从5月份加入ThoughtWorks到今天，已经接近3个月了。这3个月对我来说意义重大，时间虽然很短，但是我学到了很多很多的东西。我感到需要对自己做一番总结，使自己能够持续快速的进步。
-先说说这2个多月在ThoughtWorks中我的改变。</p>
-
-<ol>
-<li><p><strong>行为意识的改变，变得更加积极主动。</strong>在ThoughtWorks是没有Title的，每天没有人会强迫你干什么，而自己要非常的积极主动来做事情，为团队的发展贡献出自己的力量。</p></li>
-<li><p><strong>思考方式的改变，多问为什么，而不盲从。</strong>ThoughtWorks的每个人都很健谈，尤其是谈论技术来滔滔不绝，这些都是建立在对目标了解透彻的基础上。所以我在思考问题的时候，应该抓住重点，往深处挖掘，而不是停留在表面浅尝辄止。</p></li>
-<li><p><strong>学习能力的改变。</strong>一个人能力有多大，很大一部分取决于他的自我学习能力。学习能力强，接收新事物快，他的知识会源源不断的涌来。在公司这段时间，我发现大家的自我学习能力都很强，一个新技术、新工具很快就能上手使用。我在平时注意收集和观察别人的学习方式，并且尝试使用到自己身上，收到了一定的效果。</p></li>
-</ol>
-
-
-<p>当然，在enjoy的同时，也伴随着巨大的压力。我认真的分析了一下自身，发现自身的不足主要存在与两个方面：</p>
-
-<p><strong>一是英语。</strong>自己大学毕业后在工作中就基本没怎么用过口语了，只是有时候看文档接触下英语。这种情况导致我的英语退化的厉害，而且这点是短时间内无法改善的。</p>
-
-<p><strong>二是技术。</strong>虽然自己有三年工作经验，但是主要都是C#方面的，而自己的目前项目中却使用的是Java。自己面临短时间内迅速掌握Java Spring，Spring Web Flow，Spring security，Maven，jasmine…..等以前自己几乎没接触过的东西，这对自己是一个巨大的挑战。</p>
-
-<p>认识到了自己的不足，接下来就是要拿出实际的Action。随着这段时间的学习，我找了一些方法来尽快的弥补自身的不足。</p>
-
-<p><strong>英语方面：</strong></p>
-
-<ol>
-<li><p>针对词汇量少的问题，在平时工作中将自己遇到的不认识的单词或发音有误的单词记在本子上或者电子词典中。每天抽出半小时时间来将这些单词过一遍，不求一次记住，随着review的次数增多，好多单词都会变成自己的亲密伙伴。</p></li>
-<li><p>针对
-自己听力差的问题，我将一些VOA的音频放在MP3里，在上下班的路上的反复的倾听，体会那种英文的感觉。</p></li>
-<li><p>针对自己浓重的“河南”口音问题，我在iCal里schedule了个时间，每天晚上的11点到12点跟着《英语导读1000句》念英语，训练口腔肌肉。</p></li>
-<li><p>针对自己英文书写的问题，每天发给团队的邮件，比较important和difficult的让同组中的英文比较好的同事帮忙review，自己从review中总结需要注意的地方，使英文表达更专业和清晰。</p></li>
-<li>在平时需要使用英语的时候，尽量克服自己胆怯的心理，发出自己的声音，不怕别人的嘲笑。（这点自己虽然意识到了，但是目前做的不是很好，还需要继续努力。）</li>
-</ol>
-
-
-<p><strong>技术方面：</strong></p>
-
-<ol>
-<li><p>积极参加公司的session和workshop，从中吸收到营养。</p></li>
-<li><p>平时的pair过程中积极向同伴学习。</p></li>
-<li><p>每天晚上下班回家后坚持主动学习,多多动手实践。</p></li>
-<li><p>对于自己的每个技术点，尽量拿出一定的成果，比如写成博客或者写一个demo，眼看千遍不如手过一遍。</p></li>
-<li><p>我们team规定每周每个人都要做一次内部session。通过准备session和讲session加深自己对内容的理解。</p></li>
-</ol>
-
-
-<p>当然，这些措施只是自己目前能够想到的和在做的。也许大家有更好的方法，可以互相学习。</p>
-
-<p>感谢Yaoyao同学和Matt对我英文的指导，感谢周周同学的周末Workshop和平时对我的严格要求，感谢公司其他人对我的帮助和feedback。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1030,6 +1177,10 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/02/haskell-programming-language-first-touch/">Haskell-函数式编程语言之初体验</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/02/18/thoughtworks-reading-book/">ThoughtWorks developer 读书路线图</a>
       </li>
     
@@ -1043,10 +1194,6 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
     
       <li class="post">
         <a href="/blog/2013/02/14/zheng-ze-biao-da-shi-bi-zhi-bi-hui/">正则表达式必知必会</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/">避免每次输入bundler exec命令</a>
       </li>
     
   </ul>

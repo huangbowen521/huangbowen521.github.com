@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-02-27T15:52:08+08:00</updated>
+  <updated>2013-03-02T21:31:48+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,205 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Haskell-函数式编程语言之初体验]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch/"/>
+    <updated>2013-03-02T14:55:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch</id>
+    <content type="html"><![CDATA[<p>如果你是使用面向对像语言进行编程的程序员，那么你应该去了解掌握一门动态语言。而动态语言的魔力之一就是函数式编程。而要学习了解函数式编程，那么haskell是一个不错的选择。</p>
+
+<p>Haskell是是一门纯函数式编程语言(purely functional programming language)。在其世界中函数是第一等对象。并且在haskell中没有赋值，例如你指派a的值为5，然后你无法再给a分配其它的值。所以你不能像命令式语言那样命令电脑“要做什么”，而是通过函数来描述出问题“是什么”。</p>
+
+<p>作为一个纯的函数式编程语言，它支持惰性求值、模式匹配、列表解析、类型类、类型多态……</p>
+
+<p>别着急，让我们慢慢来解开函数式编程的面纱。</p>
+
+<h2>安装Haskell</h2>
+
+<ol>
+<li><p>可以去<a href="http://www.Haskell.org/Haskellwiki/Haskell">官网</a>下载安装包进行安装。</p></li>
+<li><p>mac平台的用户可以通过<a href="http://mxcl.github.com/homebrew/">homebrew</a>进行安装。</p></li>
+</ol>
+
+
+<p>在terminal下输入<code>brew install haskell-platform</code>即可。</p>
+
+<h2>使用Haskell</h2>
+
+<p>安装完毕后haskell platform的解释器GHC就已经在你的电脑上了。GHC可以解释执行Haskell脚本，即后缀名为.hs的文件。你可可以通过在terminal输入<code>ghci</code>进入交互模式。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>twer@bowen-huang:~<span class="nv">$ </span>ghci
+</span><span class='line'>GHCi, version 7.4.2: http://www.haskell.org/ghc/ :? <span class="k">for </span><span class="nb">help</span>
+</span><span class='line'>Loading package ghc-prim ... linking … <span class="k">done</span>.
+</span><span class='line'>Loading package integer-gmp ... linking … <span class="k">done</span>.
+</span><span class='line'>Loading package base ... linking … <span class="k">done</span>.
+</span><span class='line'>Prelude&gt; 1+2
+</span><span class='line'>3
+</span><span class='line'>Prelude&gt; 3*4
+</span><span class='line'>12
+</span><span class='line'>Prelude&gt; 5/1
+</span><span class='line'>5.0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于Haskell的编辑器你可以使用任何喜欢的编辑器:Vim、Emacs、Sublime、TextMate…..我比较喜欢Sublime。因为在Sublime自带Haskell的快捷编译执行。只需要按Ctrl+B来直接运行Scripts脚本。</p>
+
+<p>在ghci交互模式下可以使用<code>:l</code>命令来load一个Haskell脚本，然后就可以调用此脚本中的函数。我们先写一个&#8217;Hello world!’程序，然后通过ghci来load和调用.</p>
+
+<figure class='code'><figcaption><span>HelloWorld.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">main</span> <span class="ow">=</span> <span class="n">print</span> <span class="o">$</span> <span class="s">&quot;Hello world!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; :l HelloWorld.hs
+</span><span class='line'><span class="o">[</span>1 of 1<span class="o">]</span> Compiling Main <span class="o">(</span> HelloWorld.hs, interpreted <span class="o">)</span>
+</span><span class='line'>Ok, modules loaded: Main.
+</span><span class='line'>*Main&gt; main
+</span><span class='line'><span class="s2">&quot;Hello world!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果对文件进行了修改，也可以直接通过<code>:r</code>来重新加载文件。</p>
+
+<h2>Haskell的基本语法</h2>
+
+<h3>加减乘除操作</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; 1 + 2
+</span><span class='line'>3
+</span><span class='line'>Prelude&gt; 3 - 1
+</span><span class='line'>2
+</span><span class='line'>Prelude&gt; 3 * 4
+</span><span class='line'>12
+</span><span class='line'>Prelude&gt; 5 / 1
+</span><span class='line'>5.0
+</span><span class='line'>Prelude&gt; 10 / <span class="o">(</span>-5<span class="o">)</span>
+</span><span class='line'>-2.0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意对负数进行操作时要将其用()括起来，否则系统会报错。</p>
+
+<h3>判等操作</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nv">5</span> <span class="o">==</span> 5
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; <span class="nv">10</span> <span class="o">==</span> 8
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; 5 /<span class="o">=</span> 5
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; 10 /<span class="o">=</span> 8
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> True
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> False
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; False <span class="o">||</span> False
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; True <span class="o">||</span> False
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; not True
+</span><span class='line'>False
+</span><span class='line'>Prelude&gt; not False
+</span><span class='line'>True
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>控制流转</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nb">let </span>isHello <span class="nv">x</span> <span class="o">=</span> <span class="k">if </span><span class="nv">x</span> <span class="o">==</span> <span class="s2">&quot;Hello&quot;</span> <span class="k">then </span>True <span class="k">else </span>False
+</span><span class='line'>Prelude&gt; isHello <span class="s2">&quot;Hello&quot;</span>
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; isHello <span class="s2">&quot;World&quot;</span>
+</span><span class='line'>False
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意这里的条件判断中的else是不可以省略的，这样保证条件语句总会返回一个值。</p>
+
+<p>如果在脚本文件中写的话不需要使用<code>let</code>关键字。并且也可以采用另一个写法。</p>
+
+<figure class='code'><figcaption><span>isHello.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isHello</span> <span class="n">x</span>
+</span><span class='line'> <span class="o">|</span> <span class="n">x</span> <span class="o">==</span> <span class="s">&quot;Hello&quot;</span> <span class="ow">=</span> <span class="kt">True</span>
+</span><span class='line'> <span class="o">|</span> <span class="n">otherwise</span>     <span class="ow">=</span> <span class="kt">False</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>|表示或，otherwise关键字表示其它的情况。当然你也可以将这三行代码写成一行，这样也是能够正常运行的。分成三行只是为了更加可读。</p>
+
+<p>还有第三种写法，实际上与面对对象语言中的<code>switch…case</code>语句有些类似。</p>
+
+<figure class='code'><figcaption><span>isHello.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isHello</span> <span class="n">x</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">x</span> <span class="kr">of</span>
+</span><span class='line'> <span class="s">&quot;Hello&quot;</span> <span class="ow">-&gt;</span> <span class="kt">True</span>
+</span><span class='line'> <span class="n">otherwise</span> <span class="ow">-&gt;</span> <span class="kt">False</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>另外，在Haskell中是没有各种循环语句的，如果要实现相似的特性当然要使用递归了。</p>
+
+<p>第二节中，我们会讨论这个问题。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ThoughtWorks developer 读书路线图]]></title>
