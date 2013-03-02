@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-03-02T21:31:48+08:00</updated>
+  <updated>2013-03-02T21:49:03+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -120,7 +120,7 @@
 
 <p>注意对负数进行操作时要将其用()括起来，否则系统会报错。</p>
 
-<h3>判等操作</h3>
+<h3>判等与比较操作</h3>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -142,6 +142,10 @@
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nv">5</span> <span class="o">==</span> 5
 </span><span class='line'>True
 </span><span class='line'>Prelude&gt; <span class="nv">10</span> <span class="o">==</span> 8
@@ -150,6 +154,10 @@
 </span><span class='line'>False
 </span><span class='line'>Prelude&gt; 10 /<span class="o">=</span> 8
 </span><span class='line'>True
+</span><span class='line'>Prelude&gt; 5 &gt;<span class="o">=</span> 3
+</span><span class='line'>True
+</span><span class='line'>Prelude&gt; 5 &lt;<span class="o">=</span> 3
+</span><span class='line'>False
 </span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> True
 </span><span class='line'>True
 </span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> False
