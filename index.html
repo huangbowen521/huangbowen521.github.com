@@ -339,7 +339,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>注意这里的条件判断中的else是不可以省略的，这样保证条件语句总会返回一个值。</p>
+<p>注意这里的条件判断中的else是不可以省略的，这样保证条件语句总会返回一个值。所以我们可以将整个<code>if..then..else</code> pattern看做一个表达式。</p>
 
 <p>如果在脚本文件中写的话不需要使用<code>let</code>关键字。并且也可以采用另一个写法。</p>
 
@@ -364,6 +364,8 @@
 </span><span class='line'> <span class="n">otherwise</span> <span class="ow">-&gt;</span> <span class="kt">False</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>这和第二种写法很类似。其实第二种写法本质上就是<code>case</code>语句，它只是<code>case</code>语句的一个语法糖而已。</p>
 
 <p>另外，在Haskell中是没有各种循环语句的，如果要实现相似的特性当然要使用递归了。</p>
 
