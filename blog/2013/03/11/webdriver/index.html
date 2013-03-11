@@ -1,0 +1,555 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>webDriver入门及提高 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="第一次接触Selenium 的WebDriver，是在一个Web项目中。该项目使用它来进行功能性测试。当我看到Firefox中的页面内容被一个个自动填充并且自动跳转的时候，感觉真的很神奇。通过这段时间的学习觉得可以将我学的关于WebDriver的知识进行一个总结。 什么是Selenium &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/03/11/webdriver/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">webDriver入门及提高</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-11T09:39:00+08:00" pubdate data-updated="true">Mar 11<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>第一次接触Selenium 的WebDriver，是在一个Web项目中。该项目使用它来进行功能性测试。当我看到Firefox中的页面内容被一个个自动填充并且自动跳转的时候，感觉真的很神奇。通过这段时间的学习觉得可以将我学的关于WebDriver的知识进行一个总结。</p>
+
+<h2>什么是Selenium 和WebDriver？</h2>
+
+<p>Selenium是一个浏览器自动化操作框架。Selenium主要由三种工具组成。第一个工具SeleniumIDE，是Firefox的扩展插件，支持用户录制和回访测试。录制/回访模式存在局限性，对许多用户来说并不适合，因此第二个工具——Selenium WebDriver提供了各种语言环境的API来支持更多控制权和编写符合标准软件开发实践的应用程序。最后一个工具——SeleniumGrid帮助工程师使用Selenium API控制分布在一系列机器上的浏览器实例，支持并发运行更多测试。在项目内部，它们分别被称为“IDE”、“WebDriver”和“Grid”。</p>
+
+<p>这里主要介绍它的第二个工具：WebDriver。</p>
+
+<p>官网上是这么介绍它的：WebDriver is a clean, fast framework for automated testing of webapps. 但是我觉得它并不局限与进行自动化测试，完全可以用作其它用途。</p>
+
+<p>WebDriver针对各个浏览器而开发，取代了嵌入到被测Web应用中的JavaScript。与浏览器的紧密集成支持创建更高级的测试，避免了JavaScript安全模型导致的限制。除了来自浏览器厂商的支持，WebDriver还利用操作系统级的调用模拟用户输入。WebDriver支持Firefox(FirefoxDriver)、IE (InternetExplorerDriver)、Opera (OperaDriver)和Chrome (ChromeDriver)。 它还支持Android (AndroidDriver)和iPhone (IPhoneDriver)的移动应用测试。它还包括一个基于HtmlUnit的无界面实现，称为HtmlUnitDriver。WebDriver API可以通过Python、Ruby、Java和C#访问，支持开发人员使用他们偏爱的编程语言来创建测试。</p>
+
+<h2>如何使用？</h2>
+
+<p>首先，你需要将WebDriver的JAR包加入到你项目中CLASSPATH中。你可以Download它通过<a href="http://code.google.com/p/selenium/downloads/list">http://code.google.com/p/selenium/downloads/list</a>。</p>
+
+<p>如果你使用的是maven构建你的项目，只需要在pom.xml文件中加入下面的依赖项即可。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>
+</span><span class='line'>           <span class="nt">&lt;groupId&gt;</span>org.seleniumhq.selenium<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>
+</span><span class='line'>           <span class="nt">&lt;artifactId&gt;</span>selenium-java<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>2.25.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>
+</span><span class='line'>           <span class="nt">&lt;groupId&gt;</span>org.seleniumhq.selenium<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>
+</span><span class='line'>           <span class="nt">&lt;artifactId&gt;</span>selenium-server<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>
+</span><span class='line'>           <span class="nt">&lt;version&gt;</span>2.25.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>然后，你就可以使用它了。WebDriver的API遵从”Best Fit”原则，在保持良好的用户体验性和灵活性之间找到一个最佳的平衡点。</p>
+
+<p>下面的例子是使用HtmlUnitDriver。HtmlUnitDriver只会在内存中执行这段代码，不会弹出一个真实的页面。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">packageorg</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">example</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.openqa.selenium.By</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.openqa.selenium.WebDriver</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.openqa.selenium.WebElement</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.openqa.selenium.htmlunit.HtmlUnitDriver</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span>  <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="c1">// Create a new instance of the html unit driver</span>
+</span><span class='line'>        <span class="c1">// Notice that the remainder of the code relies onthe interface, </span>
+</span><span class='line'>        <span class="c1">// not the implementation.</span>
+</span><span class='line'>        <span class="n">WebDriver</span> <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HtmlUnitDriver</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// And now use this to visit Google</span>
+</span><span class='line'>        <span class="n">driver</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;http://www.google.com&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Find the text input element by its name</span>
+</span><span class='line'>        <span class="n">WebElement</span> <span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;q&quot;</span><span class="o">));</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Enter something to search for</span>
+</span><span class='line'>        <span class="n">element</span><span class="o">.</span><span class="na">sendKeys</span><span class="o">(</span><span class="s">&quot;Cheese!&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Now submit the form. WebDriver will find theform for us from the element</span>
+</span><span class='line'>        <span class="n">element</span><span class="o">.</span><span class="na">submit</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Check the title of the page</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Page title is: &quot;</span> <span class="o">+</span><span class="n">driver</span><span class="o">.</span><span class="na">getTitle</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果你想使用Firefox浏览器。你只需要将WebDriver driver = new FirefoxDriver()。前提是你的Firefox被安装在默认的位置。</p>
+
+<p>| 操作系统 | Firefox默认安装位置
+|Linux    | firefox (found using &#8220;which&#8221;)
+|Mac      | /Applications/Firefox.app/Contents/MacOS/firefox
+|Windows  |%PROGRAMFILES%\Mozilla Firefox\firefox.exe</p>
+
+<p>如果你的FireFox没有被安装在指定的位置，你可以设置“webdriver.firefox.bin”</p>
+
+<p>环境变量的值来指定它的位置。在Java中可以使用如下代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="s">&quot;webdriver.firefox.bin&quot;</span><span class="o">,</span><span class="s">&quot;thelocation of Firefox&quot;</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果要使用Chrome浏览器的话相对麻烦些。你需要首先下载一个ChromeDriver（下载地址：http://code.google.com/p/chromedriver/downloads/list）。这个程序是由Chrome团队提供的，你可以看做它是链接WebDriver和Chrome浏览器的桥梁。然后启动ChromeDriver，你会得到一个Url及监听端口。然后使用webDriver = newRemoteWebDriver(url, DesiredCapabilities.chrome())创建一个ChromeWebDriver进行操作。当然你可以在一个子线程中启动ChromeDriver，并设置给WebDriver。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">your</span> <span class="n">chromedriverfile</span> <span class="n">path</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">ChromeDriverService</span> <span class="n">service</span> <span class="o">=</span> <span class="n">newChromeDriverService</span><span class="o">.</span><span class="na">Builder</span><span class="o">().</span><span class="na">usingChromeDriverExecutable</span><span class="o">(</span><span class="n">file</span><span class="o">).</span><span class="na">usingAnyFreePort</span><span class="o">().</span><span class="na">build</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">service</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">WebDriver</span>  <span class="n">webDriver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ChromeDriver</span><span class="o">(</span><span class="n">service</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">……</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">……</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">……</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">service</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>WebDriver如何工作</h2>
+
+<p>WebDriver是W3C的一个标准，由Selenium主持。</p>
+
+<p>具体的协议标准可以从<a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol#Command_Reference">http://code.google.com/p/selenium/wiki/JsonWireProtocol#Command_Reference</a>查看。</p>
+
+<p>从这个协议中我们可以看到，WebDriver之所以能够实现与浏览器进行交互，是因为浏览器实现了这些协议。这个协议是使用JOSN通过HTTP进行传输。</p>
+
+<p>它的实现使用了经典的Client-Server模式。客户端发送一个requset，服务器端返回一个response。</p>
+
+<p>我们明确几个概念。</p>
+
+<p><strong>Client</strong></p>
+
+<p>调用 WebDriverAPI的机器。</p>
+
+<p><strong>Server</strong></p>
+
+<p>运行浏览器的机器。Firefox浏览器直接实现了WebDriver的通讯协议，而Chrome和IE则是通过ChromeDriver和InternetExplorerDriver实现的。</p>
+
+<p><strong>Session</strong></p>
+
+<p>服务器端需要维护浏览器的Session，从客户端发过来的请求头中包含了Session信息，服务器端将会执行对应的浏览器页面。</p>
+
+<p><strong>WebElement</strong></p>
+
+<p>这是WebDriverAPI中的对象，代表页面上的一个DOM元素。</p>
+
+<p>举个实际的例子，下面代码的作用是”命令”firefox转跳到google主页：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>   <span class="n">WebDriver</span> <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FirefoxDriver</span><span class="o">();</span>
+</span><span class='line'>    <span class="c1">//实例化一个Driver</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">driver</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;http://www.google.com&quot;</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>在执行<code>driver.get("http://www.google.com")</code>这句代码时，client，也就是我们的测试代码向<code>remote server</code>发送了如下的请求：</p>
+
+<p><code>POSTsession/285b12e4-2b8a-4fe6-90e1-c35cba245956/url  post_data{"url":"http://google.com"}</code></p>
+
+<p>通过post的方式请求localhost:port/hub/session/session_id/url地址，请求浏览器完成跳转url的操作。</p>
+
+<p>如果上述请求是可接受的，或者说remote server是实现了这个接口，那么remote server会跳转到该post data包含的url,并返回如下的response</p>
+
+<p><code>{"name":"get","sessionId":"285b12e4-2b8a-4fe6-90e1-c35cba245956","status":0,"value":""}</code></p>
+
+<p>该response中包含如下信息:</p>
+
+<ul>
+<li><p>name：remote server端的实现的方法的名称，这里是get，表示跳转到指定url；</p></li>
+<li><p>sessionId：当前session的id；</p></li>
+<li><p>status：请求执行的状态码，非0表示未正确执行，这里是0，表示一切ok不许担心；</p></li>
+<li><p>value：请求的返回值，这里返回值为空，如果client调用title接口，则该值应该是当前页面的title；</p></li>
+<li><p>如果client发送的请求是定位某个特定的页面元素，则response的返回值可能是这样的：</p></li>
+</ul>
+
+
+<p><code>{"name":"findElement","sessionId":"285b12e4-2b8a-4fe6-90e1-c35cba245956","status":0,"value":{"ELEMENT":"{2192893e-f260-44c4-bdf6-7aad3c919739}"}}</code></p>
+
+<p><code>name,sessionId，status</code>跟上面的例子是差不多的，区别是该请求的返回值是ELEMENT:{2192893e-f260-44c4-bdf6-7aad3c919739}，表示定位到元素的id，通过该id，client可以发送如click之类的请求与 server端进行交互。</p>
+
+<p>这个今天就讲到这里。以后有新东西再补充。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-11T09:39:00+08:00" pubdate data-updated="true">Mar 11<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/开发测试/'>开发测试</a>
+  
+</span>
+
+
+      
+
+<span class="tags">
+  
+    <a class='tag' href='/blog/tags/webdriver/'>webDriver</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.huangbowen.net/blog/2013/03/11/webdriver/" data-via="huangbowen521@gmail.com" data-counturl="http://www.huangbowen.net/blog/2013/03/11/webdriver/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/03/03/the-annotated-turing/" title="Previous Post: 《图灵的秘密》读后感">&laquo; 《图灵的秘密》读后感</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>程序员一枚。</p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/11/webdriver/">webDriver入门及提高</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/03/the-annotated-turing/">《图灵的秘密》读后感</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/02/haskell-programming-language-first-touch/">Haskell-函数式编程语言之初体验</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/18/thoughtworks-reading-book/">ThoughtWorks developer 读书路线图</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/17/2007nian-de-pian-zong-jie-wen-zhang/">2007年的一篇总结文章</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/03/11/webdriver/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/03/11/webdriver/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
