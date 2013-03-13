@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: webDriver | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/webdriver/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-03-12T22:58:54+08:00</updated>
+  <updated>2013-03-13T11:26:35+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -105,10 +105,25 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;</p>
 
 <p>如果你想使用Firefox浏览器。你只需要将WebDriver driver = new FirefoxDriver()。前提是你的Firefox被安装在默认的位置。</p>
 
-<p>| 操作系统 | Firefox默认安装位置
-|Linux    | firefox (found using "which")
-|Mac      | /Applications/Firefox.app/Contents/MacOS/firefox
-|Windows  |%PROGRAMFILES%\Mozilla Firefox\firefox.exe</p>
+<table>
+<tr>
+  <th>操作系统</th>
+  <th>Firefox默认安装位置</th>
+</tr>                               |
+<tr>
+  <td>Linux</td>
+  <td>firefox (found using "which")</td>
+</tr>
+<tr>
+  <td>Mac</td>
+  <td>/Applications/Firefox.app/Contents/MacOS/firefox</td>
+</tr>
+<tr>
+  <td>Windows</td>
+  <td>%PROGRAMFILES%\Mozilla Firefox\firefox.exe</td>
+</tr>
+</table>
+
 
 <p>如果你的FireFox没有被安装在指定的位置，你可以设置“webdriver.firefox.bin”</p>
 
