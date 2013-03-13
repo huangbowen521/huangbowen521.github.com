@@ -95,10 +95,24 @@ public class Example  {
 
 如果你想使用Firefox浏览器。你只需要将WebDriver driver = new FirefoxDriver()。前提是你的Firefox被安装在默认的位置。
 
-| 操作系统 | Firefox默认安装位置
-|Linux    | firefox (found using "which")
-|Mac      | /Applications/Firefox.app/Contents/MacOS/firefox
-|Windows  |%PROGRAMFILES%\Mozilla Firefox\firefox.exe
+<table>
+<tr>
+  <th>操作系统</th>
+  <th>Firefox默认安装位置</th>
+</tr>                               |
+<tr>
+  <td>Linux</td>
+  <td>firefox (found using "which")</td>
+</tr>
+<tr>
+  <td>Mac</td>
+  <td>/Applications/Firefox.app/Contents/MacOS/firefox</td>
+</tr>
+<tr>
+  <td>Windows</td>
+  <td>%PROGRAMFILES%\Mozilla Firefox\firefox.exe</td>
+</tr>
+</table>
 
 如果你的FireFox没有被安装在指定的位置，你可以设置“webdriver.firefox.bin”
 
