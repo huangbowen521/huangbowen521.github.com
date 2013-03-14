@@ -99,7 +99,7 @@ public class Example  {
 <tr>
   <th>操作系统</th>
   <th>Firefox默认安装位置</th>
-</tr>                               |
+</tr>                           
 <tr>
   <td>Linux</td>
   <td>firefox (found using "which")</td>
