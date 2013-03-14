@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Tag: haskell | 黄博文的地盘]]></title>
-  <link href="http://www.huangbowen.net/blog/tags/haskell/atom.xml" rel="self"/>
+  <title><![CDATA[Tag: functional | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/functional/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
   <updated>2013-03-14T22:18:47+08:00</updated>
   <id>http://www.huangbowen.net/</id>
