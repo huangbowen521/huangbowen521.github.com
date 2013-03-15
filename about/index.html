@@ -9,7 +9,7 @@
   <meta name="author" content="黄博文">
 
   
-  <meta name="description" content="我是谁 Jan 29th, 2013 Jan 29th, 2013 Tweet Recent Posts my first blog GitHub Repos Status updating... @huangbowen521 on GitHub $.domReady(function(){ &hellip;">
+  <meta name="description" content="我是谁 Jan 29th, 2013 Jan 29th, 2013 Tweet Comments Please enable JavaScript to view the comments powered by Disqus. About Me 程序员一枚。 Recent Posts &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://huangbowen521.github.com/about/">
+  <link rel="canonical" href="http://www.huangbowen.net/about/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -30,6 +30,18 @@
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
   
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
 
 </head>
 
@@ -49,7 +61,7 @@
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:huangbowen521.github.com" />
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -57,6 +69,7 @@
 <ul class="main-navigation">
   <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
 </ul>
 
 </nav>
@@ -106,7 +119,7 @@
       
         <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://huangbowen521.github.com/about/index.html" data-via="huangbowen521@gmail.com" data-counturl="http://huangbowen521.github.com/about/index.html" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.huangbowen.net/about/index.html" data-via="huangbowen521@gmail.com" data-counturl="http://www.huangbowen.net/about/index.html" >Tweet</a>
   
   
   
@@ -119,16 +132,42 @@
   
 </article>
 
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
 </div>
 
 <aside class="sidebar">
   
     <section>
+  <h1>About Me</h1>
+  <p>程序员一枚。</p>
+</section>
+<section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/01/28/my-first-blog/">my first blog</a>
+        <a href="/blog/2013/03/14/haskell-recursion/">Haskell函数式编程之递归</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/12/enum-in-java/">Java基础学习之Enum</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/11/webdriver/">webDriver入门及提高</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/03/the-annotated-turing/">《图灵的秘密》读后感</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/02/haskell-programming-language-first-touch/">Haskell-函数式编程语言之初体验</a>
       </li>
     
   </ul>
@@ -164,24 +203,8 @@
 </section>
 
 
-<section>
-  <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating...</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("huangbowen521@gmail.com", 4, false);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/huangbowen521@gmail.com" class="twitter-follow-button" data-show-count="false">Follow @huangbowen521@gmail.com</a>
-  
-</section>
-
-
-
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
 
 
   
@@ -192,11 +215,28 @@
   </div>
   <footer role="contentinfo"><p>
   Copyright &copy; 2013 - 黄博文 -
+  huangbowen521@gmail.com
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
 </footer>
   
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/about/index.html';
+        var disqus_url = 'http://www.huangbowen.net/about/index.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
 
 
 

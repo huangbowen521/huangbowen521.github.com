@@ -1,0 +1,324 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>《JavaScript语言精粹》读书笔记 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="《JavaScript语言精粹》这本书句句是精华。如果你想只读一本书了解JavaScript,这本是你的不二选择。 这么薄的一本书讲JavaScript的特点介绍的非常清楚，是我对JavaScript的认识更加的深入。以前总觉得函数式编程很难理解，但是看了这本书以后我觉得对其有了一个新的认识。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">《JavaScript语言精粹》读书笔记</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-16T00:22:00+08:00" pubdate data-updated="true">Jan 16<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>《JavaScript语言精粹》这本书句句是精华。如果你想只读一本书了解JavaScript,这本是你的不二选择。</p>
+
+<p>这么薄的一本书讲JavaScript的特点介绍的非常清楚，是我对JavaScript的认识更加的深入。以前总觉得函数式编程很难理解，但是看了这本书以后我觉得对其有了一个新的认识。严格意义上说JavaScript并不仅仅是一门函数式编程语言，书中有一句话对它的特性做了一个精彩的描述：JavaScript的许多特性都借鉴自其他语言。语法借鉴自java，函数借鉴自Scheme,原型继承借鉴自Self，而JavaScript的正则表达式特性则借鉴自Perl。</p>
+
+<p>JavaScript的简单类型有：数字、字符串、布尔值、null值和undefined值。在JavaScript中，数组是对象，函数是对象，正则表达式是对象。可以使用对象字面量来创建一个新对象： var empty_object = { };</p>
+
+<p>每个对象都连接到一个原型对象，并继承其属性。使用typeof可以确定属性的类型。使用delete可以删除对象的属性。</p>
+
+<p>函数也是对象，其原型对象为Function.prototype.函数有一个call属性，当JavaScript调用函数时，可理解为调用该函数的call属性。函数有四种调用模式：方法调用模式，函数调用模式，构造器调用模式和apply调用模式。这些模式主要是初始化关键字this存在差异，分别是：调用对象，全局对象，隐藏连接到该函数的prototype成员的新对象，apply方法的第一个参数。当函数被调用时，会得到一个arguments数组，可以通过它访问传递给该函数的所有参数。一个函数总是会返回一个值，如果没有制定返回值，则返回underfined.</p>
+
+<p>JavaScript中的数组其实是一种伪数组。她把数组的下标转变成字符串，用其作为属性。可以通过数组字面量来声明一个数组：var empty = [];数组第一个值将获得属性名0，第二个属性名将获得属性名1，以此类推。</p>
+
+<p>JavaScript中的正则表达式也是一个对象。正则表达式的分组有4中：捕获型，使用圆括号包括；非捕获型，使用(?:前缀;向前正向匹配，使用(?=前缀；向前负向匹配，使用（？！前缀。 &nbsp;</p>
+
+<p>读完这本书，彻底颠覆了我对JavaScript的理解。最近在翻译《Effective JavaScript: 68 Specific Ways to Harness the Power of JavaScript (Effective Software Development Series)》这本书，正得益于我从《JavaScript语言精粹》掌握了JavaScript的核心。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-16T00:22:00+08:00" pubdate data-updated="true">Jan 16<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/生活随笔/'>生活随笔</a>
+  
+</span>
+
+
+      
+
+<span class="tags">
+  
+    <a class='tag' href='/blog/tags/javascript/'>JavaScript</a>, <a class='tag' href='/blog/tags/读书笔记/'>读书笔记</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.huangbowen.net/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/" data-via="huangbowen521@gmail.com" data-counturl="http://www.huangbowen.net/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/11/11/%3C%3Czhuo-you-cheng-xiao-de-cheng-xu-yuan-%3E%3E-du-shu-bi-ji/" title="Previous Post: 《卓有成效的程序员》读书笔记">&laquo; 《卓有成效的程序员》读书笔记</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/01/19/thoughtworks-immersion-xiao-ji/" title="Next Post: ThoughtWorks Immersion 小计">ThoughtWorks Immersion 小计 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>程序员一枚。</p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/14/haskell-recursion/">Haskell函数式编程之递归</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/12/enum-in-java/">Java基础学习之Enum</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/11/webdriver/">webDriver入门及提高</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/03/the-annotated-turing/">《图灵的秘密》读后感</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/02/haskell-programming-language-first-touch/">Haskell-函数式编程语言之初体验</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

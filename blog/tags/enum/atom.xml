@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tag: enum | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/enum/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2013-03-14T22:18:47+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Java基础学习之Enum]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/03/12/enum-in-java/"/>
+    <updated>2013-03-12T22:17:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/03/12/enum-in-java</id>
+    <content type="html"><![CDATA[<p>Enum是在Java中用来定义枚举类型的关键字。Enum一般用来表示一组相同类型的常量,如性别、日期 、颜色等.</p>
+
+<p>下面是一个最简单的枚举。</p>
+
+<p>```java
+public enum Color
+{</p>
+
+<p>RED,</p>
+
+<p>GREEN,</p>
+
+<p>BLUE</p>
+
+<p>}
+```</p>
+
+<p>实际上在Java中枚举类型本质上就是一个类，其继承自java.lang.Enum类。</p>
+
+<p>通过默认提供的<code>GetValues()</code>方法可以获取所有枚举对象，其以一个数组的形式返回。</p>
+
+<p>```java</p>
+
+<p>for(Color color : Color.values())
+{</p>
+
+<p>System.out.printf("%s: %s%n",color,color.toString());</p>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>输出结果为：</p>
+
+<p>```console</p>
+
+<p>RED: RED</p>
+
+<p>GREEN: GREEN</p>
+
+<p>BLUE: BLUE</p>
+
+<p>```</p>
+
+<p>既然是enum本质上是类，那么我们当然可以给其加一些方法。注意最后一个枚举对象要使用“；”结尾，说明枚举值结束使用。</p>
+
+<p>```java</p>
+
+<p>public enum Color
+{</p>
+
+<p>RED("Red Color"),</p>
+
+<p>GREEN("Green Color"),</p>
+
+<p>BLUE("Blue Color");</p>
+
+<p>private final String color;</p>
+
+<p>private Color(String color) {</p>
+
+<pre><code>this.color = color;
+</code></pre>
+
+<p>}</p>
+
+<p>public String getColor() {</p>
+
+<p>return color;</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>注意在enum中是不能声明public的构造函数的，这样是为了避免直接实例化enum对象。</p>
+
+<p>我们可以通过<code>getValues()</code>方法调用<code>getColor()</code>方法。</p>
+
+<p>```java</p>
+
+<p>for(Color color : Color.values())
+{</p>
+
+<p>System.out.printf("%s: %s%n",color,color.getColor());</p>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>以下是输出结果：</p>
+
+<p>```console</p>
+
+<p>RED: Red Color</p>
+
+<p>GREEN: Green Color</p>
+
+<p>BLUE: Blue Color</p>
+
+<p>```</p>
+
+<p>如果大家还是看不太明白的话，我可以展示一个类来对个对比。</p>
+
+<p>```java</p>
+
+<p>public final class Color extends java.lang.Enum{</p>
+
+<pre><code>public static final Color RED;
+
+public static final Color GREEN;
+
+public static final Color  BLUE;
+
+static {};
+
+public java.lang.String getColor();
+
+public static Color[] values();
+
+public static Color valueOf(java.lang.String);
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>这个类的作用等同于我们的Color枚举对象。而每个被枚举的成员其实就是定义的枚举类型的一个实例，它们都被默认为final。无法改变常数名称所设定的值，它们也是public和static的成员，这与接口中的常量限制相同。可以通过类名称直接使用它们。</p>
+
+<p>所以我们大胆的在里面增加一些其它的方法来实现我们的新特性。</p>
+
+<p>在这里我增加了一个新的方法isRed()来判断当前枚举实例是否是红色的。</p>
+
+<p>```java</p>
+
+<p>public enum Color
+{</p>
+
+<p>RED("Red Color"),</p>
+
+<p>GREEN("Green Color"),</p>
+
+<p>BLUE("Blue Color");</p>
+
+<p>private final String color;</p>
+
+<p>private Color(String color) {</p>
+
+<pre><code>this.color = color;
+</code></pre>
+
+<p>}</p>
+
+<p>public String getColor() {</p>
+
+<p>return color;</p>
+
+<p>}</p>
+
+<p>public boolean isRed() {</p>
+
+<p>return this.equals(RED);</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>可以对其进行一个测试。</p>
+
+<p>```java</p>
+
+<p>Color green = Color.GREEN;</p>
+
+<p>System.out.print(green.isRed());</p>
+
+<p>Color red = Color.RED;</p>
+
+<p>System.out.print(red.isRed());</p>
+
+<p>```</p>
+
+<p>第一个输出结果为false，第二个输出结果为true。</p>
+
+<p>通过对Java中enum的运用，往往会产生奇效。比如有这样一个例子，有一个Rover对象，它有一个类型为Enum的direction属性，我们要给Rover实现左转的指令。你可能会写出这样的代码：</p>
+
+<p>```java Direction.java</p>
+
+<p>public enum Direction {</p>
+
+<pre><code>North,
+East,
+South,
+West
+</code></pre>
+
+<p>}</p>
+
+<p><code>
+</code>java Rover.java</p>
+
+<p>public class Rover {</p>
+
+<pre><code>private Direction direction;
+
+public Rover(Direction direction) {
+    this.direction = direction;
+}
+
+public void turnLeft() {
+    if (direction.equals(Direction.East)) {
+        direction = Direction.North;
+    } else if (direction.equals(Direction.North)) {
+        direction = Direction.West;
+    } else if (direction.equals(Direction.West)) {
+        direction = Direction.South;
+    } else if (direction.equals(Direction.South)) {
+        direction = Direction.East;
+    }
+
+}
+</code></pre>
+
+<p>}</p>
+
+<p><code>``
+一大堆</code>if...else`的代码看起来真的很丑陋。这还好，如果让你给Rover再加几个方法，比如向右转，旋转到反方向等，那代码就没法看了。
+我们可以这样分析一下，其实给定一个方向之后，向左转的方向也就确定了，所以我们可以将这些逻辑放置到Direction对象中去。下面是改进后的版本。</p>
+
+<p>```java Direction.java</p>
+
+<p>public enum Direction {</p>
+
+<pre><code>North {
+    @Override
+    public Direction turnLeft() {
+    return West;
+    }
+},
+East {
+    @Override
+    public Direction turnLeft() {
+        return North;
+    }
+
+},
+South {
+    @Override
+    public Direction turnLeft() {
+        return East;
+    }
+},
+West {
+    @Override
+    public Direction turnLeft() {
+        return South;
+    }
+};
+
+public abstract Direction turnLeft();
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>```java Rover.java</p>
+
+<p>public class Rover {</p>
+
+<pre><code>private Direction direction;
+
+public Rover(Direction direction) {
+    this.direction = direction;
+}
+
+public void turnLeft() {
+    direction = direction.turnLeft();
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>这样的代码看起来要舒服的多.</p>
+
+<h2>C#中的Enum</h2>
+
+<p>我也可以简单的讲解下c#中的枚举对象。在c#中声明枚举对象的关键字是enum。</p>
+
+<p>```c#</p>
+
+<p> 访问修辞符 enum 枚举名:基础类型</p>
+
+<pre><code>{
+    枚举成员
+}
+</code></pre>
+
+<p>```</p>
+
+<p>基础类型必须能够表示该枚举中定义的所有枚举数值。枚举声明可以显式地声明 byte、sbyte、short、ushort、int、uint、long 或 ulong 类型作为对应的基础类型。没有显式地声明基础类型的枚举声明意味着所对应的基础类型是 int.</p>
+
+<p>```c#</p>
+
+<p>public enum Color</p>
+
+<p>{</p>
+
+<p>RED,</p>
+
+<p>GREEN,</p>
+
+<p>BLUE</p>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>所以我们可以直接将一个枚举类型强制转换成其对应的基础类型。</p>
+
+<p><code>c#
+Int  num = (int)Color.Red;
+</code></p>
+
+<p>Num的值为0.</p>
+
+<p>我们也可以反向转换。</p>
+
+<p>```c#</p>
+
+<p>Color color = (Color)num;</p>
+
+<p>```</p>
+
+<p>甚至我们还可以对枚举类型进行与或运算。这些就不细说了，有兴趣的可以查阅相关资料。</p>
+]]></content>
+  </entry>
+  
+</feed>

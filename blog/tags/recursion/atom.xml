@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tag: recursion | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/recursion/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2013-03-14T22:18:47+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Haskell函数式编程之递归]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/03/14/haskell-recursion/"/>
+    <updated>2013-03-14T21:46:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/03/14/haskell-recursion</id>
+    <content type="html"><![CDATA[<p>在Haskell的世界中，没有变量赋值，流程跳转，如果要实现一些简单的功能，比如求一个数组中的最大值，都需要借助递归实现。</p>
+
+<p><strong>递归函数的定义:</strong></p>
+
+<p><strong>A function may be partly defined in terms of itself.</strong>
+<strong>即如果一个函数的定义中使用了其自身，这个函数就叫做递归函数。</strong></p>
+
+<h2>普通递归(traditional recursion)</h2>
+
+<p>我们就写一个简单的对数组求和的函数。</p>
+
+<p>```haskell</p>
+
+<p>sum' :: (Num a) => [a] -> a
+sum' (x:xs) = x + sum' xs
+sum' [] = 0</p>
+
+<p>```</p>
+
+<p>第一行定义了了一个名为<code>sum'</code>的函数的参数及返回值。这个函数接收一个类型为Num的数组并返回一个Num型的数值。（这里的<code>'</code>是函数名的一部分，因为Haskell允许<code>'</code>作为函数名的一部分。由于系统已经有了sum函数，所以我们加个<code>'</code>与标准sum函数区分开。）</p>
+
+<p>第二行的(x:xs)就是我们传入的数组参数。我们这里使用了Haskell的pattern matching。x表示的是数组中的第一个元素，xs表示数组中的其它元素。我们可以描述求数组中值的和的行为为：数组中的第一个元素与数组中剩余元素的和。所以这就是我们的实现。</p>
+
+<p>第三行则说明了如果给一个空的数组则直接返回0。这也叫做递归的退出条件，否则递归会没完没了。</p>
+
+<p>第二行和第三行共同完成了这个<code>sum'</code>函数的定义。当你传递给它一个参数时，它会根据参数的情况自动选择调用那个实现。</p>
+
+<p>假设我们这样调用它：<code>sum'  [1,2,3]</code>,程序的执行过程是这样子的：</p>
+
+<p>```console</p>
+
+<p>sum' [1,2,3] -></p>
+
+<p>1 + sum' [2,3] -></p>
+
+<p>1 + (2 + sum' [3]) -></p>
+
+<p>1 + (2 + (3 + sum' [])) -></p>
+
+<p>1 + (2 + (3 + 0)) -></p>
+
+<p>1 + (2 + 3) -></p>
+
+<p>1 + 5 -></p>
+
+<p>6</p>
+
+<p>```</p>
+
+<p>这种递归有个问题就是我们一直到等到递归结束才进行算术运算，这样在执行过程既要保存函数调用的堆栈，还要保存中间计算结果的堆栈，如果递归过深，很容易引起stackOverFlow.</p>
+
+<h2><strong>尾递归</strong>(tail recursion)</h2>
+
+<p>针对上述问题，我们可以换种写法。</p>
+
+<p>```haskell</p>
+
+<p>sum' :: (Num a) => [a] -> a -> a</p>
+
+<p>sum' (x:xs) temp = sum' xs x+ temp</p>
+
+<p>sum' [] temp = temp</p>
+
+<p>```</p>
+
+<p>我们这样调用它: <code>sum' [1,2,3] 0</code>。</p>
+
+<p>它的执行顺序是这样的:</p>
+
+<p>```console</p>
+
+<p>sum' [1,2,3] 0 -></p>
+
+<p>sum' [2,3] 1 -></p>
+
+<p>sum' [3] 3 -></p>
+
+<p>sum' []  6 -></p>
+
+<p>6</p>
+
+<p>```</p>
+
+<p>第二种写法其实就是尾递归。</p>
+
+<p><strong>尾递归的定义：</strong></p>
+
+<p><strong>A recursive function is tail recursive if the final result of the recursive call is the final result of the function itself.</strong></p>
+
+<p><strong>即:如果一个递归函数，它的最终的递归调用结果就是这个函数的最终结果，那它就是尾递归的。</strong></p>
+
+<p>所以我们可以明显看出，第一个不是尾递归，第二个是。</p>
+
+<h3>尾递归优化(tail recursion optimization)</h3>
+
+<p>在大多数编程语言中，调用函数需要消费堆栈空间，一个实现了尾递归的递归函数在进行递归调用时，其实只关心递归调用的结果，所以当我们调用下层函数时，可以舍去上层函数的堆栈调用情况，下层递归调用可以重用这个堆栈空间，这种就叫做<strong>尾递归优化</strong>。一个可能的实现方式是：只需要把汇编代码call改成jmp, 并放弃所有 局部变量压栈处理，就可以了。</p>
+
+<p>尽管尾递归比递归更节省堆栈空间，但并非所有的递归算法都可以转成尾递归的，因为尾递归本质上执行的是迭代的计算过程。这与并非所有的递归算法都可以转成迭代算法的原因是一样的。</p>
+
+<h2>互递归(mutual recursion)</h2>
+
+<p>互递归就是多个递归函数之间相互调用。互递归的一个简单的例子就是判断一个自然数是偶数还是还是奇数。</p>
+
+<p>```haskell</p>
+
+<p>isOdd :: Int -> Bool
+isOdd x
+ | x == 0 = False
+ | otherwise = isEven (x-1)</p>
+
+<p>isEven :: Int -> Bool
+isEven x
+ | x == 0 = True
+ | otherwise = isOdd (x-1)</p>
+
+<p>```
+这个实现很有意思。</p>
+
+<p>任何一个互递归都可以被转变为<strong>直接递归</strong>(direct recursion)，即将另一个调用inline到当前递归函数中。</p>
+
+<p>下面是isOdd和isEven的<strong>直接递归</strong>版本。</p>
+
+<p>```haskell</p>
+
+<p>isOdd :: Int -> Bool
+isOdd x
+ | x == 0 = False
+ | x == 1 = True
+ | otherwise = isOdd (x-2)</p>
+
+<p>isEven :: Int -> Bool
+isEven x
+ | x == 0 = True
+ | x == 1 = False
+ | otherwise = isEven (x-2)</p>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+</feed>
