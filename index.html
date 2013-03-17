@@ -9,8 +9,7 @@
   <meta name="author" content="黄博文">
 
   
-  <meta name="description" content="在Haskell的世界中，没有变量赋值，流程跳转，如果要实现一些简单的功能，比如求一个数组中的最大值，都需要借助递归实现。 递归函数的定义: A function may be partly defined in terms of itself.
-即如果一个函数的定义中使用了其自身， &hellip;">
+  <meta name="description" content="函数式编程的定义是： In computer science, functional programming is a programming paradigm that treats computation as the evaluation of mathematical functions &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -84,6 +83,78 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/03/17/haskell-functional-programming-feature/">Haskell函数式编程之特性篇</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-17T12:46:00+08:00" pubdate data-updated="true">Mar 17<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/03/17/haskell-functional-programming-feature/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>函数式编程的定义是：</p>
+
+<p>In computer science, functional programming is a programming paradigm that treats computation as the evaluation of mathematical functions and avoids stateand mutable data.
+即：函数式编程是一种编程模型，他将计算机运算看做是数学中函数的计算，并且避免了引入状态及可变数据。</p>
+
+<p>它更强调函数的应用，而不像命令式编程更强调状态的改变。</p>
+
+<h2>无副作用（side effect）</h2>
+
+<p>命令式函数可能会改变程序的状态，这就会对其产生<strong>副作用</strong>。在命令式编程中，在执行程序不同的状态下同一个函数的返回结果会发生改变。例如，下面是一个使用JavaScript写的函数。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">getVal</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">[</span>
+</span><span class='line'>     <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">getVal</span><span class="p">());</span> <span class="c1">//true</span>
+</span><span class='line'><span class="nx">state</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">getVal</span><span class="p">());</span> <span class="c1">// false</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/17/haskell-functional-programming-feature/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/03/14/haskell-recursion/">Haskell函数式编程之递归</a></h1>
     
     
@@ -129,172 +200,14 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>第一行定义了了一个名为<code>sum'</code>的函数的参数及返回值。这个函数接收一个类型为Num的数组并返回一个Num型的数值。（这里的<code>'</code>是函数名的一部分，因为Haskell允许<code>'</code>作为函数名的一部分。由于系统已经有了sum函数，所以我们加个<code>'</code>与标准sum函数区分开。）</p>
-
-<p>第二行的(x:xs)就是我们传入的数组参数。我们这里使用了Haskell的pattern matching。x表示的是数组中的第一个元素，xs表示数组中的其它元素。我们可以描述求数组中值的和的行为为：数组中的第一个元素与数组中剩余元素的和。所以这就是我们的实现。</p>
-
-<p>第三行则说明了如果给一个空的数组则直接返回0。这也叫做递归的退出条件，否则递归会没完没了。</p>
-
-<p>第二行和第三行共同完成了这个<code>sum'</code>函数的定义。当你传递给它一个参数时，它会根据参数的情况自动选择调用那个实现。</p>
-
-<p>假设我们这样调用它：<code>sum'  [1,2,3]</code>,程序的执行过程是这样子的：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">sum&#39; [1,2,3] -&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">1 + sum&#39; [2,3] -&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">1 + (2 + sum&#39; [3]) -&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">1 + (2 + (3 + sum&#39; [])) -&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">1 + (2 + (3 + 0)) -&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">1 + (2 + 3) -&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">1 + 5 -&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">6</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这种递归有个问题就是我们一直到等到递归结束才进行算术运算，这样在执行过程既要保存函数调用的堆栈，还要保存中间计算结果的堆栈，如果递归过深，很容易引起stackOverFlow.</p>
-
-<h2><strong>尾递归</strong>(tail recursion)</h2>
-
-<p>针对上述问题，我们可以换种写法。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">sum&#39;</span> <span class="ow">::</span> <span class="p">(</span><span class="kt">Num</span> <span class="n">a</span><span class="p">)</span> <span class="ow">=&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">a</span>
-</span><span class='line'>
-</span><span class='line'><span class="nf">sum&#39;</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="n">temp</span> <span class="ow">=</span> <span class="n">sum&#39;</span> <span class="n">xs</span> <span class="n">x</span><span class="o">+</span> <span class="n">temp</span>
-</span><span class='line'>
-</span><span class='line'><span class="nf">sum&#39;</span> <span class="kt">[]</span> <span class="n">temp</span> <span class="ow">=</span> <span class="n">temp</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们这样调用它: <code>sum' [1,2,3] 0</code>。</p>
-
-<p>它的执行顺序是这样的:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">sum&#39; [1,2,3] 0 -&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">sum&#39; [2,3] 1 -&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">sum&#39; [3] 3 -&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">sum&#39; []  6 -&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">6</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>第二种写法其实就是尾递归。</p>
-
-<p><strong>尾递归的定义：</strong></p>
-
-<p><strong>A recursive function is tail recursive if the final result of the recursive call is the final result of the function itself.</strong></p>
-
-<p><strong>即:如果一个递归函数，它的最终的递归调用结果就是这个函数的最终结果，那它就是尾递归的。</strong></p>
-
-<p>所以我们可以明显看出，第一个不是尾递归，第二个是。</p>
-
-<h3>尾递归优化(tail recursion optimization)</h3>
-
-<p>在大多数编程语言中，调用函数需要消费堆栈空间，一个实现了尾递归的递归函数在进行递归调用时，其实只关心递归调用的结果，所以当我们调用下层函数时，可以舍去上层函数的堆栈调用情况，下层递归调用可以重用这个堆栈空间，这种就叫做<strong>尾递归优化</strong>。一个可能的实现方式是：只需要把汇编代码call改成jmp, 并放弃所有 局部变量压栈处理，就可以了。</p>
-
-<p>尽管尾递归比递归更节省堆栈空间，但并非所有的递归算法都可以转成尾递归的，因为尾递归本质上执行的是迭代的计算过程。这与并非所有的递归算法都可以转成迭代算法的原因是一样的。</p>
-
-<h2>互递归(mutual recursion)</h2>
-
-<p>互递归就是多个递归函数之间相互调用。互递归的一个简单的例子就是判断一个自然数是偶数还是还是奇数。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isOdd</span> <span class="ow">::</span> <span class="kt">Int</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
-</span><span class='line'><span class="nf">isOdd</span> <span class="n">x</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">=</span> <span class="kt">False</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">otherwise</span> <span class="ow">=</span> <span class="n">isEven</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="nf">isEven</span> <span class="ow">::</span> <span class="kt">Int</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
-</span><span class='line'><span class="nf">isEven</span> <span class="n">x</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">=</span> <span class="kt">True</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">otherwise</span> <span class="ow">=</span> <span class="n">isOdd</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个实现很有意思。</p>
-
-<p>任何一个互递归都可以被转变为<strong>直接递归</strong>(direct recursion)，即将另一个调用inline到当前递归函数中。</p>
-
-<p>下面是isOdd和isEven的<strong>直接递归</strong>版本。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isOdd</span> <span class="ow">::</span> <span class="kt">Int</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
-</span><span class='line'><span class="nf">isOdd</span> <span class="n">x</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">=</span> <span class="kt">False</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">=</span> <span class="kt">True</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">otherwise</span> <span class="ow">=</span> <span class="n">isOdd</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="nf">isEven</span> <span class="ow">::</span> <span class="kt">Int</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
-</span><span class='line'><span class="nf">isEven</span> <span class="n">x</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">=</span> <span class="kt">True</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">=</span> <span class="kt">False</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">otherwise</span> <span class="ow">=</span> <span class="n">isEven</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
 
 
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/14/haskell-recursion/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -357,486 +270,14 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>实际上在Java中枚举类型本质上就是一个类，其继承自java.lang.Enum类。</p>
-
-<p>通过默认提供的<code>GetValues()</code>方法可以获取所有枚举对象，其以一个数组的形式返回。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">for</span><span class="o">(</span><span class="n">Color</span> <span class="n">color</span> <span class="o">:</span> <span class="n">Color</span><span class="o">.</span><span class="na">values</span><span class="o">())</span>
-</span><span class='line'><span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&quot;%s: %s%n&quot;</span><span class="o">,</span><span class="n">color</span><span class="o">,</span><span class="n">color</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
 
 
-<p>输出结果为：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">RED: RED</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">GREEN: GREEN</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">BLUE: BLUE</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>既然是enum本质上是类，那么我们当然可以给其加一些方法。注意最后一个枚举对象要使用“；”结尾，说明枚举值结束使用。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">enum</span> <span class="n">Color</span>
-</span><span class='line'><span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">RED</span><span class="o">(</span><span class="s">&quot;Red Color&quot;</span><span class="o">),</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">GREEN</span><span class="o">(</span><span class="s">&quot;Green Color&quot;</span><span class="o">),</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">BLUE</span><span class="o">(</span><span class="s">&quot;Blue Color&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">color</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">private</span> <span class="nf">Color</span><span class="o">(</span><span class="n">String</span> <span class="n">color</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">color</span> <span class="o">=</span> <span class="n">color</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">getColor</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">return</span> <span class="n">color</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>注意在enum中是不能声明public的构造函数的，这样是为了避免直接实例化enum对象。</p>
-
-<p>我们可以通过<code>getValues()</code>方法调用<code>getColor()</code>方法。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">for</span><span class="o">(</span><span class="n">Color</span> <span class="n">color</span> <span class="o">:</span> <span class="n">Color</span><span class="o">.</span><span class="na">values</span><span class="o">())</span>
-</span><span class='line'><span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&quot;%s: %s%n&quot;</span><span class="o">,</span><span class="n">color</span><span class="o">,</span><span class="n">color</span><span class="o">.</span><span class="na">getColor</span><span class="o">());</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以下是输出结果：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">RED: Red Color</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">GREEN: Green Color</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">BLUE: Blue Color</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果大家还是看不太明白的话，我可以展示一个类来对个对比。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Color</span> <span class="kd">extends</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Enum</span><span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Color</span> <span class="n">RED</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Color</span> <span class="n">GREEN</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Color</span>  <span class="n">BLUE</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">static</span> <span class="o">{};</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">String</span> <span class="nf">getColor</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Color</span><span class="o">[]</span> <span class="nf">values</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Color</span> <span class="nf">valueOf</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">String</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个类的作用等同于我们的Color枚举对象。而每个被枚举的成员其实就是定义的枚举类型的一个实例，它们都被默认为final。无法改变常数名称所设定的值，它们也是public和static的成员，这与接口中的常量限制相同。可以通过类名称直接使用它们。</p>
-
-<p>所以我们大胆的在里面增加一些其它的方法来实现我们的新特性。</p>
-
-<p>在这里我增加了一个新的方法isRed()来判断当前枚举实例是否是红色的。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">enum</span> <span class="n">Color</span>
-</span><span class='line'><span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">RED</span><span class="o">(</span><span class="s">&quot;Red Color&quot;</span><span class="o">),</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">GREEN</span><span class="o">(</span><span class="s">&quot;Green Color&quot;</span><span class="o">),</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">BLUE</span><span class="o">(</span><span class="s">&quot;Blue Color&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">color</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="kd">private</span> <span class="nf">Color</span><span class="o">(</span><span class="n">String</span> <span class="n">color</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">color</span> <span class="o">=</span> <span class="n">color</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">getColor</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">return</span> <span class="n">color</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isRed</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">RED</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>可以对其进行一个测试。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Color</span> <span class="n">green</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="na">GREEN</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">green</span><span class="o">.</span><span class="na">isRed</span><span class="o">());</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="n">Color</span> <span class="n">red</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="na">RED</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">red</span><span class="o">.</span><span class="na">isRed</span><span class="o">());</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>第一个输出结果为false，第二个输出结果为true。</p>
-
-<p>通过对Java中enum的运用，往往会产生奇效。比如有这样一个例子，有一个Rover对象，它有一个类型为Enum的direction属性，我们要给Rover实现左转的指令。你可能会写出这样的代码：</p>
-
-<figure class='code'><figcaption><span>Direction.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">enum</span> <span class="n">Direction</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">North</span><span class="o">,</span>
-</span><span class='line'>    <span class="n">East</span><span class="o">,</span>
-</span><span class='line'>    <span class="n">South</span><span class="o">,</span>
-</span><span class='line'>    <span class="n">West</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span>Rover.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Rover</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">Direction</span> <span class="n">direction</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">Rover</span><span class="o">(</span><span class="n">Direction</span> <span class="n">direction</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">direction</span> <span class="o">=</span> <span class="n">direction</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">turnLeft</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">direction</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">Direction</span><span class="o">.</span><span class="na">East</span><span class="o">))</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">direction</span> <span class="o">=</span> <span class="n">Direction</span><span class="o">.</span><span class="na">North</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">direction</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">Direction</span><span class="o">.</span><span class="na">North</span><span class="o">))</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">direction</span> <span class="o">=</span> <span class="n">Direction</span><span class="o">.</span><span class="na">West</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">direction</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">Direction</span><span class="o">.</span><span class="na">West</span><span class="o">))</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">direction</span> <span class="o">=</span> <span class="n">Direction</span><span class="o">.</span><span class="na">South</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">direction</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">Direction</span><span class="o">.</span><span class="na">South</span><span class="o">))</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">direction</span> <span class="o">=</span> <span class="n">Direction</span><span class="o">.</span><span class="na">East</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>一大堆<code>if...else</code>的代码看起来真的很丑陋。这还好，如果让你给Rover再加几个方法，比如向右转，旋转到反方向等，那代码就没法看了。
-我们可以这样分析一下，其实给定一个方向之后，向左转的方向也就确定了，所以我们可以将这些逻辑放置到Direction对象中去。下面是改进后的版本。</p>
-
-<figure class='code'><figcaption><span>Direction.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">enum</span> <span class="n">Direction</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">North</span> <span class="o">{</span>
-</span><span class='line'>        <span class="nd">@Override</span>
-</span><span class='line'>        <span class="kd">public</span> <span class="n">Direction</span> <span class="nf">turnLeft</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">West</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">},</span>
-</span><span class='line'>    <span class="n">East</span> <span class="o">{</span>
-</span><span class='line'>        <span class="nd">@Override</span>
-</span><span class='line'>        <span class="kd">public</span> <span class="n">Direction</span> <span class="nf">turnLeft</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">North</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">},</span>
-</span><span class='line'>    <span class="n">South</span> <span class="o">{</span>
-</span><span class='line'>        <span class="nd">@Override</span>
-</span><span class='line'>        <span class="kd">public</span> <span class="n">Direction</span> <span class="nf">turnLeft</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">East</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">},</span>
-</span><span class='line'>    <span class="n">West</span> <span class="o">{</span>
-</span><span class='line'>        <span class="nd">@Override</span>
-</span><span class='line'>        <span class="kd">public</span> <span class="n">Direction</span> <span class="nf">turnLeft</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">South</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">};</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">abstract</span> <span class="n">Direction</span> <span class="nf">turnLeft</span><span class="o">();</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>Rover.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Rover</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">Direction</span> <span class="n">direction</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">Rover</span><span class="o">(</span><span class="n">Direction</span> <span class="n">direction</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">direction</span> <span class="o">=</span> <span class="n">direction</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">turnLeft</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">direction</span> <span class="o">=</span> <span class="n">direction</span><span class="o">.</span><span class="na">turnLeft</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样的代码看起来要舒服的多.</p>
-
-<h2>C#中的Enum</h2>
-
-<p>我也可以简单的讲解下c#中的枚举对象。在c#中声明枚举对象的关键字是enum。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'> <span class="err">访问修辞符</span> <span class="k">enum</span> <span class="err">枚举名</span><span class="p">:</span><span class="err">基础类型</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="err">枚举成员</span>
-</span><span class='line'>    <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>基础类型必须能够表示该枚举中定义的所有枚举数值。枚举声明可以显式地声明 byte、sbyte、short、ushort、int、uint、long 或 ulong 类型作为对应的基础类型。没有显式地声明基础类型的枚举声明意味着所对应的基础类型是 int.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">enum</span> <span class="n">Color</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">RED</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">GREEN</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">BLUE</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>所以我们可以直接将一个枚举类型强制转换成其对应的基础类型。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Int</span>  <span class="n">num</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Num的值为0.</p>
-
-<p>我们也可以反向转换。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Color</span> <span class="n">color</span> <span class="p">=</span> <span class="p">(</span><span class="n">Color</span><span class="p">)</span><span class="n">num</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>甚至我们还可以对枚举类型进行与或运算。这些就不细说了，有兴趣的可以查阅相关资料。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/12/enum-in-java/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -874,269 +315,12 @@
 
   <div class="entry-content"><p>第一次接触Selenium 的WebDriver，是在一个Web项目中。该项目使用它来进行功能性测试。当我看到Firefox中的页面内容被一个个自动填充并且自动跳转的时候，感觉真的很神奇。通过这段时间的学习觉得可以将我学的关于WebDriver的知识进行一个总结。</p>
 
-<h2>什么是Selenium 和WebDriver？</h2>
-
-<p>Selenium是一个浏览器自动化操作框架。Selenium主要由三种工具组成。第一个工具SeleniumIDE，是Firefox的扩展插件，支持用户录制和回访测试。录制/回访模式存在局限性，对许多用户来说并不适合，因此第二个工具——Selenium WebDriver提供了各种语言环境的API来支持更多控制权和编写符合标准软件开发实践的应用程序。最后一个工具——SeleniumGrid帮助工程师使用Selenium API控制分布在一系列机器上的浏览器实例，支持并发运行更多测试。在项目内部，它们分别被称为“IDE”、“WebDriver”和“Grid”。</p>
-
-<p>这里主要介绍它的第二个工具：WebDriver。</p>
-
-<p>官网上是这么介绍它的：WebDriver is a clean, fast framework for automated testing of webapps. 但是我觉得它并不局限与进行自动化测试，完全可以用作其它用途。</p>
-
-<p>WebDriver针对各个浏览器而开发，取代了嵌入到被测Web应用中的JavaScript。与浏览器的紧密集成支持创建更高级的测试，避免了JavaScript安全模型导致的限制。除了来自浏览器厂商的支持，WebDriver还利用操作系统级的调用模拟用户输入。WebDriver支持Firefox(FirefoxDriver)、IE (InternetExplorerDriver)、Opera (OperaDriver)和Chrome (ChromeDriver)。 它还支持Android (AndroidDriver)和iPhone (IPhoneDriver)的移动应用测试。它还包括一个基于HtmlUnit的无界面实现，称为HtmlUnitDriver。WebDriver API可以通过Python、Ruby、Java和C#访问，支持开发人员使用他们偏爱的编程语言来创建测试。</p>
-
-<h2>如何使用？</h2>
-
-<p>首先，你需要将WebDriver的JAR包加入到你项目中CLASSPATH中。你可以Download它通过<a href="http://code.google.com/p/selenium/downloads/list">http://code.google.com/p/selenium/downloads/list</a>。</p>
-
-<p>如果你使用的是maven构建你的项目，只需要在pom.xml文件中加入下面的依赖项即可。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
-</span><span class='line'>
-</span><span class='line'>           <span class="nt">&lt;groupId&gt;</span>org.seleniumhq.selenium<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>
-</span><span class='line'>           <span class="nt">&lt;artifactId&gt;</span>selenium-java<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="nt">&lt;version&gt;</span>2.25.0<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
-</span><span class='line'>
-</span><span class='line'>           <span class="nt">&lt;groupId&gt;</span>org.seleniumhq.selenium<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>
-</span><span class='line'>           <span class="nt">&lt;artifactId&gt;</span>selenium-server<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>
-</span><span class='line'>           <span class="nt">&lt;version&gt;</span>2.25.0<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>然后，你就可以使用它了。WebDriver的API遵从”Best Fit”原则，在保持良好的用户体验性和灵活性之间找到一个最佳的平衡点。</p>
-
-<p>下面的例子是使用HtmlUnitDriver。HtmlUnitDriver只会在内存中执行这段代码，不会弹出一个真实的页面。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">packageorg</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">example</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.openqa.selenium.By</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.openqa.selenium.WebDriver</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.openqa.selenium.WebElement</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.openqa.selenium.htmlunit.HtmlUnitDriver</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span>  <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="c1">// Create a new instance of the html unit driver</span>
-</span><span class='line'>        <span class="c1">// Notice that the remainder of the code relies onthe interface, </span>
-</span><span class='line'>        <span class="c1">// not the implementation.</span>
-</span><span class='line'>        <span class="n">WebDriver</span> <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HtmlUnitDriver</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// And now use this to visit Google</span>
-</span><span class='line'>        <span class="n">driver</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;http://www.google.com&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// Find the text input element by its name</span>
-</span><span class='line'>        <span class="n">WebElement</span> <span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;q&quot;</span><span class="o">));</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// Enter something to search for</span>
-</span><span class='line'>        <span class="n">element</span><span class="o">.</span><span class="na">sendKeys</span><span class="o">(</span><span class="s">&quot;Cheese!&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// Now submit the form. WebDriver will find theform for us from the element</span>
-</span><span class='line'>        <span class="n">element</span><span class="o">.</span><span class="na">submit</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// Check the title of the page</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Page title is: &quot;</span> <span class="o">+</span><span class="n">driver</span><span class="o">.</span><span class="na">getTitle</span><span class="o">());</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果你想使用Firefox浏览器。你只需要将WebDriver driver = new FirefoxDriver()。前提是你的Firefox被安装在默认的位置。</p>
-
-<table>
-<tr>
-  <th>操作系统</th>
-  <th>Firefox默认安装位置</th>
-</tr>                           
-<tr>
-  <td>Linux</td>
-  <td>firefox (found using &#8220;which&#8221;)</td>
-</tr>
-<tr>
-  <td>Mac</td>
-  <td>/Applications/Firefox.app/Contents/MacOS/firefox</td>
-</tr>
-<tr>
-  <td>Windows</td>
-  <td>%PROGRAMFILES%\Mozilla Firefox\firefox.exe</td>
-</tr>
-</table>
-
-
-<p>如果你的FireFox没有被安装在指定的位置，你可以设置“webdriver.firefox.bin”</p>
-
-<p>环境变量的值来指定它的位置。在Java中可以使用如下代码：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="s">&quot;webdriver.firefox.bin&quot;</span><span class="o">,</span><span class="s">&quot;thelocation of Firefox&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果要使用Chrome浏览器的话相对麻烦些。你需要首先下载一个ChromeDriver（下载地址：http://code.google.com/p/chromedriver/downloads/list）。这个程序是由Chrome团队提供的，你可以看做它是链接WebDriver和Chrome浏览器的桥梁。然后启动ChromeDriver，你会得到一个Url及监听端口。然后使用webDriver = newRemoteWebDriver(url, DesiredCapabilities.chrome())创建一个ChromeWebDriver进行操作。当然你可以在一个子线程中启动ChromeDriver，并设置给WebDriver。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">your</span> <span class="n">chromedriverfile</span> <span class="n">path</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">ChromeDriverService</span> <span class="n">service</span> <span class="o">=</span> <span class="n">newChromeDriverService</span><span class="o">.</span><span class="na">Builder</span><span class="o">().</span><span class="na">usingChromeDriverExecutable</span><span class="o">(</span><span class="n">file</span><span class="o">).</span><span class="na">usingAnyFreePort</span><span class="o">().</span><span class="na">build</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">service</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">WebDriver</span>  <span class="n">webDriver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ChromeDriver</span><span class="o">(</span><span class="n">service</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">……</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">……</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">……</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">service</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>WebDriver如何工作</h2>
-
-<p>WebDriver是W3C的一个标准，由Selenium主持。</p>
-
-<p>具体的协议标准可以从<a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol#Command_Reference">http://code.google.com/p/selenium/wiki/JsonWireProtocol#Command_Reference</a>查看。</p>
-
-<p>从这个协议中我们可以看到，WebDriver之所以能够实现与浏览器进行交互，是因为浏览器实现了这些协议。这个协议是使用JOSN通过HTTP进行传输。</p>
-
-<p>它的实现使用了经典的Client-Server模式。客户端发送一个requset，服务器端返回一个response。</p>
-
-<p>我们明确几个概念。</p>
-
-<p><strong>Client</strong></p>
-
-<p>调用 WebDriverAPI的机器。</p>
-
-<p><strong>Server</strong></p>
-
-<p>运行浏览器的机器。Firefox浏览器直接实现了WebDriver的通讯协议，而Chrome和IE则是通过ChromeDriver和InternetExplorerDriver实现的。</p>
-
-<p><strong>Session</strong></p>
-
-<p>服务器端需要维护浏览器的Session，从客户端发过来的请求头中包含了Session信息，服务器端将会执行对应的浏览器页面。</p>
-
-<p><strong>WebElement</strong></p>
-
-<p>这是WebDriverAPI中的对象，代表页面上的一个DOM元素。</p>
-
-<p>举个实际的例子，下面代码的作用是”命令”firefox转跳到google主页：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>   <span class="n">WebDriver</span> <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FirefoxDriver</span><span class="o">();</span>
-</span><span class='line'>    <span class="c1">//实例化一个Driver</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">driver</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;http://www.google.com&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>在执行<code>driver.get("http://www.google.com")</code>这句代码时，client，也就是我们的测试代码向<code>remote server</code>发送了如下的请求：</p>
-
-<p><code>POSTsession/285b12e4-2b8a-4fe6-90e1-c35cba245956/url  post_data{"url":"http://google.com"}</code></p>
-
-<p>通过post的方式请求localhost:port/hub/session/session_id/url地址，请求浏览器完成跳转url的操作。</p>
-
-<p>如果上述请求是可接受的，或者说remote server是实现了这个接口，那么remote server会跳转到该post data包含的url,并返回如下的response</p>
-
-<p><code>{"name":"get","sessionId":"285b12e4-2b8a-4fe6-90e1-c35cba245956","status":0,"value":""}</code></p>
-
-<p>该response中包含如下信息:</p>
-
-<ul>
-<li><p>name：remote server端的实现的方法的名称，这里是get，表示跳转到指定url；</p></li>
-<li><p>sessionId：当前session的id；</p></li>
-<li><p>status：请求执行的状态码，非0表示未正确执行，这里是0，表示一切ok不许担心；</p></li>
-<li><p>value：请求的返回值，这里返回值为空，如果client调用title接口，则该值应该是当前页面的title；</p></li>
-<li><p>如果client发送的请求是定位某个特定的页面元素，则response的返回值可能是这样的：</p></li>
-</ul>
-
-
-<p><code>{"name":"findElement","sessionId":"285b12e4-2b8a-4fe6-90e1-c35cba245956","status":0,"value":{"ELEMENT":"{2192893e-f260-44c4-bdf6-7aad3c919739}"}}</code></p>
-
-<p><code>name,sessionId，status</code>跟上面的例子是差不多的，区别是该请求的返回值是ELEMENT:{2192893e-f260-44c4-bdf6-7aad3c919739}，表示定位到元素的id，通过该id，client可以发送如click之类的请求与 server端进行交互。</p>
-
-<p>这个今天就讲到这里。以后有新东西再补充。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/11/webdriver/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -1177,27 +361,12 @@
 <p>但是这并不妨碍我从另一个角度来重新了解了图灵、数学、计算机….去年的时候曾听过Jeff讲过的一个session:《世界及宇宙的终极答案》。我敢确定至少一半的内容都是来自这本书。
 图灵在论文中描述了一个想象出来的机器，用来论证数理逻辑中的一个问题，论文题目叫:&lt;论可计算数及其在判定性问题中的应用>（On Computable Numbers, with an Application to the Entscheidungsproblem）。这个想象出来的机器被后人成为图灵机。</p>
 
-<p>图灵在论文中让图灵机使用二进制，仅是觉得方便论证。后来研制的计算机有的使用十进制，有的使用二进制，直到冯诺依曼发表了一片论文论述了计算机使用二进制的可行性与优势后，二进制逐渐成为标准。</p>
-
-<p>如果一个集合可以与自然数意义对应起来，那么我们可以说这个集合是可数的。</p>
-
-<p>正整数和偶数个数那个多些？答案是一样多。因为他们都是可数的。</p>
-
-<p>那么有理数和无理数那个多？答案是无理数。因为无理数是不可数的。</p>
-
-<p>无理数属于实数的一部分。所以实数也是不可数的。这可以用对角线法来证明。</p>
-
-<p>这是一个反证法。</p>
-
-<p>我们假设实数是可数的。那么将0和1之间所有的实数都按照从小到大的顺序列出来。然后我们取第一个数的第一位、第二个数的第二位、第三个数的第三位…..即取对角线的数组成一个新的数。然后对这个数的每一位都加1,如果该位的值是9再加1后变成0。我们看看这个数是不是在已经枚举出来的列表中。列表中的第一个不是它，因为它比第一个数的第一位大1，第二个数也不是它，因为它比第二个数的第二位大…….这样遍历了整个列表发现这个新的数并不在列表中，也就是说我们根本无法将0和1之间的所有实数列举出来，因为我们总可以通过这个方法来找到一个新的实数。</p>
-
-<p>实数是无穷的。我们可以这样理解，世界上有数不清的数字，我们恰好找到了一些，并给它们起了一些名字，如整数，实数，有理数，但还有更多的数我们并不知道它们的存在，就算发现一个也算是意外。</p>
-
-<p>一个图灵机无法通过程序判断另一个图灵机在限定的时间内停机。停机问题说明了图灵机的局限性，这也被很多人作为程序无法没有bug的借口。你无法写一个程序，来判断一段程序中是否没有任何bug。</p>
-
-<p>我们可以预知未来吗？根据图灵机理论，如果我们可以用确定的不含糊的步骤来描述出宇宙的发展，那么我们就可以将其作为输入到图灵机，得到未来。问题是我们如果要构造这个输入，差不多等于构造了一个新宇宙。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/03/the-annotated-turing/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -1241,201 +410,12 @@
 
 <p>别着急，让我们慢慢来解开函数式编程的面纱。</p>
 
-<h2>安装Haskell</h2>
-
-<ol>
-<li><p>可以去<a href="http://www.Haskell.org/Haskellwiki/Haskell">官网</a>下载安装包进行安装。</p></li>
-<li><p>mac平台的用户可以通过<a href="http://mxcl.github.com/homebrew/">homebrew</a>进行安装。</p></li>
-</ol>
-
-
-<p>在terminal下输入<code>brew install haskell-platform</code>即可。</p>
-
-<h2>使用Haskell</h2>
-
-<p>安装完毕后haskell platform的解释器GHC就已经在你的电脑上了。GHC可以解释执行Haskell脚本，即后缀名为.hs的文件。你可可以通过在terminal输入<code>ghci</code>进入交互模式。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>twer@bowen-huang:~<span class="nv">$ </span>ghci
-</span><span class='line'>GHCi, version 7.4.2: http://www.haskell.org/ghc/ :? <span class="k">for </span><span class="nb">help</span>
-</span><span class='line'>Loading package ghc-prim ... linking … <span class="k">done</span>.
-</span><span class='line'>Loading package integer-gmp ... linking … <span class="k">done</span>.
-</span><span class='line'>Loading package base ... linking … <span class="k">done</span>.
-</span><span class='line'>Prelude&gt; 1+2
-</span><span class='line'>3
-</span><span class='line'>Prelude&gt; 3*4
-</span><span class='line'>12
-</span><span class='line'>Prelude&gt; 5/1
-</span><span class='line'>5.0
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>关于Haskell的编辑器你可以使用任何喜欢的编辑器:Vim、Emacs、Sublime、TextMate…..我比较喜欢Sublime。因为在Sublime自带Haskell的快捷编译执行。只需要按Ctrl+B来直接运行Scripts脚本。</p>
-
-<p>在ghci交互模式下可以使用<code>:l</code>命令来load一个Haskell脚本，然后就可以调用此脚本中的函数。我们先写一个&#8217;Hello world!’程序，然后通过ghci来load和调用.</p>
-
-<figure class='code'><figcaption><span>HelloWorld.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">main</span> <span class="ow">=</span> <span class="n">print</span> <span class="o">$</span> <span class="s">&quot;Hello world!&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; :l HelloWorld.hs
-</span><span class='line'><span class="o">[</span>1 of 1<span class="o">]</span> Compiling Main <span class="o">(</span> HelloWorld.hs, interpreted <span class="o">)</span>
-</span><span class='line'>Ok, modules loaded: Main.
-</span><span class='line'>*Main&gt; main
-</span><span class='line'><span class="s2">&quot;Hello world!&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果对文件进行了修改，也可以直接通过<code>:r</code>来重新加载文件。</p>
-
-<h2>Haskell的基本语法</h2>
-
-<h3>加减乘除操作</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; 1 + 2
-</span><span class='line'>3
-</span><span class='line'>Prelude&gt; 3 - 1
-</span><span class='line'>2
-</span><span class='line'>Prelude&gt; 3 * 4
-</span><span class='line'>12
-</span><span class='line'>Prelude&gt; 5 / 1
-</span><span class='line'>5.0
-</span><span class='line'>Prelude&gt; 10 / <span class="o">(</span>-5<span class="o">)</span>
-</span><span class='line'>-2.0
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>注意对负数进行操作时要将其用()括起来，否则系统会报错。</p>
-
-<h3>判等与比较操作</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nv">5</span> <span class="o">==</span> 5
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; <span class="nv">10</span> <span class="o">==</span> 8
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; 5 /<span class="o">=</span> 5
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; 10 /<span class="o">=</span> 8
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; 5 &gt;<span class="o">=</span> 3
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; 5 &lt;<span class="o">=</span> 3
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> True
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> False
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; False <span class="o">||</span> False
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; True <span class="o">||</span> False
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; not True
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; not False
-</span><span class='line'>True
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>控制流转</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nb">let </span>isHello <span class="nv">x</span> <span class="o">=</span> <span class="k">if </span><span class="nv">x</span> <span class="o">==</span> <span class="s2">&quot;Hello&quot;</span> <span class="k">then </span>True <span class="k">else </span>False
-</span><span class='line'>Prelude&gt; isHello <span class="s2">&quot;Hello&quot;</span>
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; isHello <span class="s2">&quot;World&quot;</span>
-</span><span class='line'>False
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>注意这里的条件判断中的else是不可以省略的，这样保证条件语句总会返回一个值。所以我们可以将整个<code>if..then..else</code> pattern看做一个表达式。</p>
-
-<p>如果在脚本文件中写的话不需要使用<code>let</code>关键字。并且也可以采用另一个写法。</p>
-
-<figure class='code'><figcaption><span>isHello.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isHello</span> <span class="n">x</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">x</span> <span class="o">==</span> <span class="s">&quot;Hello&quot;</span> <span class="ow">=</span> <span class="kt">True</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">otherwise</span>     <span class="ow">=</span> <span class="kt">False</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>|表示或，otherwise关键字表示其它的情况。当然你也可以将这三行代码写成一行，这样也是能够正常运行的。分成三行只是为了更加可读。</p>
-
-<p>还有第三种写法，实际上与面对对象语言中的<code>switch…case</code>语句有些类似。</p>
-
-<figure class='code'><figcaption><span>isHello.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isHello</span> <span class="n">x</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">x</span> <span class="kr">of</span>
-</span><span class='line'> <span class="s">&quot;Hello&quot;</span> <span class="ow">-&gt;</span> <span class="kt">True</span>
-</span><span class='line'> <span class="n">otherwise</span> <span class="ow">-&gt;</span> <span class="kt">False</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这和第二种写法很类似。其实第二种写法本质上就是<code>case</code>语句，它只是<code>case</code>语句的一个语法糖而已。</p>
-
-<p>另外，在Haskell中是没有各种循环语句的，如果要实现相似的特性当然要使用递归了。</p>
-
-<p>第二节中，我们会讨论这个问题。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/02/haskell-programming-language-first-touch/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -1525,68 +505,12 @@
 
 <p>现在将演讲稿的内容贴出来，以后可以继续回味与总结。</p>
 
-<p>我们学习计算机已经两年了。两年里大家到底学到多少东西，恐怕每个人的感受都不一样。无论你外表再花哨，肚子里有多少知识自己最清楚。我回顾以下自己的大学经历，并浅谈一下自己目前对学计算机的一点感受。</p>
-
-<p>刚入大一，我对计算机了解很少，只会打游戏，和简单的OFFICE操作。但是我一向对计算机高手有种崇拜的感觉，老是幻想什么时候自己能成为其中一员。</p>
-
-<p>大一的上半学期的时候，想自学 FLASH。自己就从图书馆借了好几本关于FLASH的书，找时间蹭机房钻研。恰逢那时侯要搞团组织生活，要我做个FLASH，我就带者压力开始钻研了。我发现自己钻研的好处是，我先是想实现某种效果，我才看书上是如何实现的，然后再操作实现，这样理解很深刻，能明白它的具体原理。</p>
-
-<p>从第一次打开FLASH这个软件到作出第一个FLASH，不到两个月的时间。虽然它很丑，但是我很喜欢。可惜那时侯不知道把FLASH导成自带播放器的格式，结果在开团组织生活的时候由于机子上没装播放器而无法播放。</p>
-
-<p>大一下半学期我们开了FLASH课，我渐渐明白不是所有的知识只有老师教了我们后，我们才能学会。上FLASH课的时候我基本没听过讲，因为感觉老师讲的好简单。后来就是那个第三届技能大赛开始了，我想自己既然学了FLASH，不如做个作品交上去吧。有好多人说就我那水平怎么可能获奖？我自己想贵在参与，得不得奖无所谓，就花了快一个月的时间做了个动画，在比赛截止的最后一天交过去了。最后竟然得了奖。看起来说的很轻松，做的过程中很辛苦。作动画要一层层的累加，一个场景一个场景的赶，有多少次都想放弃了，但是最终是坚持了下来。我从这个事情得出的结论是，如果你想好一件事情的话，你要付出更多的努力，要不厌其烦，想不劳而获只能让时间白白流逝。</p>
-
-<p>后来放暑假了，计协要选一批人搞技术培训，我就参加了。那时侯培训分美工和编程两部分。我之所以没有选美工是发现我1没有艺术天分。就比如做FLASH动画，我懂的如何使用这个软件，但是却创作不出原始素材。2，鉴于我们这个专业我想往深层次钻。</p>
-
-<p>师兄培训教我们的是ASP。在没培训之前我根本不知道ASP是什么东西，连dreamweaver也是第一次用。总共培训了5天，每天3个小时，其中一个半小时师兄讲，剩下的一个半小时自己上机操作，不会的问师兄。我给大家说下当时培训情况。第一天讲的是怎么配置IIS和建立站点。第二天讲dreamweaver的一些基本操作。第三天讲如何使用数据库，配数据源，并实现了登陆注册。第四天教我们做了个很简单的留言版。第五天没讲什么具体的东西，大概介绍了一个网站的开发过程。就这么短短的五天过后，师兄就让我们交个作品上来。</p>
-
-<p>我做的是小型的魔兽论坛,被选中了成了协会的编程干部。</p>
-
-<p>可是我来协会还没站稳，师兄给我们下达了一项任务，让我们几个搞编程的和搞美工的在开学前做个协会的新网站出来。我一听眼黑了。这个难度也太大了。但是心想有什么不会的可以问师兄，就硬者头皮做了。由于是第一次做网站，根本不懂什么规划，上去就编数据库写代码，结果给后来造成了不少的麻烦。</p>
-
-<p>刚开始的时候，我们编程的还有不少人做，可是做着做着我发现好多都跑光了，只有我们班的几个还坚持在，我想可能是耐不住枯燥吧。暑假那段时间我相当于要同时学三门语言，HTML语言，ASP语言，外带个SQL查询语句。我经常碰到令人头痛的问题，刚开始，师兄还给我解答，后来干脆不耐烦说自己查书去，可能嫌我问的问题太幼稚了。我只好天天在BAIDU来BAIDU去的。</p>
-
-<p>我们不是好多同学也选了网站建设课吗？不知道大家学的怎么样？这种东西就是入门有点痛苦，但是之后的路就好走多了，当你学的有感觉的时候，你就能感到你头脑中有一棵知识树，随着你知识的积累，那棵树越长越大，你越学越自信。我给大家建议个学习网站建设的方法，那网站建设课本后面不是有几个综合性的例子吗？你把那些代码都敲进去，调试运行成功，你就会发现你对ASP已经有了很深的了解了。这就是要先学会看别人的代码，要多思考。大家记得SESSION这个属性吧。老师给我们讲了如何用，但是好多人没整明白。我做协会网站的时候根本不知道有个SESSION这个属性。我在做会员专区的时候，遇到了一个问题，就是会员注册登陆后，进了会员专区要进行各种操作，可是我怎么能区别是那个会员在进行操作那，我想如果有一个变量传值能老跟着这个会员的操作多好。哪个时候我知道两种传值方式，表单传值和问号传值，但是这两种都只能传往一个页面，要在不同页面间传送很不方便。我从网上查资料，发现了SESSION这个属性，它很好的解决了我的问题。这样你就不会再犯糊涂它是干什么用的。</p>
-
-<p>本来我们计划是开学前把网站做好挂出去的，可是我能力太差劲了，边学边做很慢，而且其他人都不知道跑那里去了。后来总算是都开学了一个多月才正式把网站做好，挂出来。通过做这个网站我学到了很多的东西。这对我以后的学习起到了很大的作用。</p>
-
-<p>但在大二上半学期我走了弯路，那段时间我不知怎么想的，先弄了下XML，后来看了下ｊａｖａ的书，又编了好长时间的JSP代码，正是由于我学的太杂了，最后什么东西都没有学到，全是学一段时间觉的没什么收获就换了。我忘了当时刚开始学习ASP要吃好多的苦。而且我总想老师讲的课没用，不如自己学，忽略了对理论的学习，象数据结构，汇编我就学的不是很好。后来学期快结束时我才发现了问题的严重性，饿补了下，但是毕竟还有好多夹生的。</p>
-
-<p>寒假里我看了点VC的书，LINUX方面的光盘，但是玩心太大，没掌握多少东西，感觉这个寒假是荒废了。</p>
-
-<p>这个学期到现在，我加重了对理论的学习。这个学期的专业课我很少矿过，课上也大多认真听了。</p>
-
-<p>我已经感觉到了学习理论的好处，使你能更地层的了解一个程序的运行。</p>
-
-<p>我选了WINDOWS程序设计的课，恰巧我寒假里看了本VC的书，感觉能把书里的项目做出来。于是就花了些工夫，边看书，边听课，边做。不会了就从网上查资料，本来想问老师，可是问了一次老师后就不想问了。因为我的问题都太简单了，老师不好好给我说，不如看BAIDU来的快。</p>
-
-<p>要知道当时我对VC++的MFC编程一无所知，甚至连建个工程都不会。没办法只好咬牙坚持了下来。由于这个学期时间很紧，为了赶进度，我就经常通宵。那个课本好烂，有好多错误的地方，我改的好痛苦.我这个人比较怪，白天很难静下心来写代码，只有晚上才能保持头脑清醒。终于在前几天是完成了程序大部分功能。</p>
-
-<p>这个系统用了网络编程，数据库编程，对VC的涵盖还是很广的。我通过做这个学到了好多好多的东西。</p>
-
-<p>比如说注册表编程。不知道有多少人能说出来WINDOWS的注册表是干什么用的，更别提对它的使用了。我这个系统就是需要把软件的一些基本配置保存在注册表中，看似很高深，其实用两个函数轻松搞定。有些东西根本没有你想象中的那么难，只要你做了一次就会发现。</p>
-
-<p>说的这么乱，大家一定都晕了。</p>
-
-<p>我本来想把我的感受总结成一，二，三等几个大点的。可是写作能力太差，搞不定。</p>
-
-<p>简单说下吧。学计算机理论一定要抓好。千万不要忽略理论。理论不扎实的后果就是永远只能浮在很浅的层次上，想要深入就很难了。</p>
-
-<ul>
-<li><p><strong>学计算机要有钻劲，有恒心。</strong></p></li>
-<li><p><strong>学计算机不能跟着老师走。</strong>如果你做东西时发现那里不会的时候，不要想老师没讲我就不会，就不去钻。这是很错误的。</p></li>
-<li><p><strong>学计算机要明确自己的方向，不能东学一块，西学一块。</strong>要让自己的知识成为一个完整的系统。我上个学期就吃了这个亏，浪费了半个多学期。</p></li>
-<li><p><strong>学计算机要学会取舍。</strong>人都是有惰性的。我的惰性就很大。现在我平常要上课，平时协会还有不少的日常事务要处理，有些空闲时间还想打会游戏，休闲下，这样很难有大的成就。我现在就在努力改观。</p></li>
-<li><p><strong>学计算机要多做项目。</strong>只有做项目是最快的途径，最好的途径。我们不是开了课程设计吗？相信只要认真做了课程设计的同学每人的收获一定不少。我们以前是站在软件使用者角度上的，如果我们站在开发者角度上，就会学到很多东西。我们的VB。NET课，老师整天讲那些空间怎么用，我觉的稍微难点的有点价值听外，其他的完全可以自己去摸索，用不了多久你就会用了。如果你在学VB。NET的时候是报着做一个什么图书管理系统啊的什么的话，你如果能坚持下来的话，你就会发现你进步很快。</p></li>
-<li><p><strong>学计算机要做学会思考。</strong>思考是小到对一个算法如何实现。大到对整个计算机编程的认识。这个我无法具体说，只能意会，不能言传。举个简单的例子，VC++与C++的区别，可能很多人还没搞不明白。</p></li>
-<li><p><strong>学计算机不能浮躁，不能自嗷，不能不懂装懂。</strong>浮躁是大敌，我这方面做的还不够，但是我最起码知道要克服他。还有千万不要骄傲，目中无人，无论你是不是搞计算机的，千万不要盲目自大，这是做人的基本原则。不能不懂装懂，如果有人问了你一个问题你不会，你要勇敢的说出来你不会，并马上查资料去找答案。</p></li>
-</ul>
-
-
-<p> 我只是一个普通的计算机科学与技术专业的学生。以前我梦想成为一名计算机高手，但是现在我甚至无法描绘一个真正的计算机高手是什么样的。</p>
-
-<p> 每当我做出一个东西，哪怕只有一个人去使用它，那也是有用的。我也会高兴的。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/02/17/2007nian-de-pian-zong-jie-wen-zhang/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -1628,280 +552,12 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 它也支持自动完成，你只需要输入开头的几个字母，然后按tab键就可以自动匹配。
 目前源码被我host在<a href="https://github.com/huangbowen521/gtShell">github</a>上。</p>
 
-<p>下面是主要文件gt.sh的源码。</p>
-
-<figure class='code'><figcaption><span>gt.sh</span><a href='https://github.com/huangbowen521/gtShell/blob/master/gt.sh'>gt.sh</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#! /bin/bash</span>
-</span><span class='line'>
-</span><span class='line'><span class="nv">DIRS</span><span class="o">=</span><span class="s2">&quot;$HOME/.gtDirs&quot;</span>
-</span><span class='line'><span class="k">if </span><span class="nb">test</span> ! -e <span class="nv">$DIRS</span>
-</span><span class='line'><span class="k">then</span>
-</span><span class='line'><span class="k">  </span>touch <span class="nv">$DIRS</span>
-</span><span class='line'><span class="k">fi</span>
-</span><span class='line'>
-</span><span class='line'>gt <span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>  <span class="k">case</span> <span class="nv">$1</span> in
-</span><span class='line'>      -d<span class="o">)</span>
-</span><span class='line'>          <span class="nv">temp</span><span class="o">=</span><span class="sb">`</span>mktemp -t .gtDirs-XXXXXX<span class="sb">`</span>
-</span><span class='line'>          sed <span class="s2">&quot;/^$2=/&quot;</span>d <span class="nv">$DIRS</span> &gt; <span class="nv">$temp</span>
-</span><span class='line'>          mv <span class="nv">$temp</span> <span class="nv">$DIRS</span>
-</span><span class='line'>          rm -f <span class="nv">$temp</span>
-</span><span class='line'>          ;;
-</span><span class='line'>      -a<span class="o">)</span>
-</span><span class='line'>          validate_bookmark_name <span class="s2">&quot;$@&quot;</span>
-</span><span class='line'>          <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;$result&quot;</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">              </span><span class="nv">CURDIR</span><span class="o">=</span><span class="nv">$PWD</span>
-</span><span class='line'>               <span class="nb">echo</span> <span class="s2">&quot;$2=$CURDIR&quot;</span> &gt;&gt; <span class="nv">$DIRS</span>
-</span><span class='line'>          <span class="k">fi</span>
-</span><span class='line'>          ;;
-</span><span class='line'>      -l<span class="o">)</span>
-</span><span class='line'>          cat <span class="nv">$DIRS</span>
-</span><span class='line'>          ;;
-</span><span class='line'>      -h<span class="o">)</span>
-</span><span class='line'>          print_usage
-</span><span class='line'>          ;;
-</span><span class='line'>      *<span class="o">)</span>
-</span><span class='line'>          <span class="k">if</span> <span class="o">[</span> -z <span class="nv">$1</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">              </span>print_usage
-</span><span class='line'>          <span class="k">elif</span> <span class="o">[[</span> ! -z <span class="sb">`</span>awk -F <span class="s1">&#39;=&#39;</span> <span class="s1">&#39;/^&#39;</span><span class="s2">&quot;$1&quot;</span><span class="s1">&#39;=/ {print $2 }&#39;</span> <span class="nv">$DIRS</span><span class="sb">`</span> <span class="o">]]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">              </span><span class="nb">cd</span> <span class="sb">`</span>awk -F <span class="s1">&#39;=&#39;</span> <span class="s1">&#39;/^&#39;</span><span class="s2">&quot;$1&quot;</span><span class="s1">&#39;=/ {print $2 }&#39;</span> <span class="nv">$DIRS</span><span class="sb">`</span>
-</span><span class='line'>              <span class="k">else</span>
-</span><span class='line'><span class="k">              </span><span class="nb">echo</span> <span class="s1">&#39;error: bookmark name not found&#39;</span>
-</span><span class='line'>
-</span><span class='line'>          <span class="k">fi</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">  esac</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#validate names</span>
-</span><span class='line'><span class="k">function </span>validate_bookmark_name <span class="o">{</span>
-</span><span class='line'>  <span class="nv">result</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
-</span><span class='line'>  <span class="k">if</span> <span class="o">[</span> -z <span class="nv">$2</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">      </span><span class="nv">result</span><span class="o">=</span><span class="s1">&#39;error: bookmark name required!&#39;</span>
-</span><span class='line'>      <span class="nb">echo</span> <span class="nv">$result</span>
-</span><span class='line'>  <span class="k">elif</span> <span class="o">[</span> -z <span class="sb">`</span><span class="nb">echo</span> <span class="nv">$2</span> | sed <span class="s1">&#39;s/[^A-Za-z0-9_]//g&#39;</span> <span class="sb">`</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">      </span><span class="nv">result</span><span class="o">=</span><span class="s1">&#39;error: bookmark name is invalid!&#39;</span>
-</span><span class='line'>      <span class="nb">echo</span> <span class="nv">$result</span>
-</span><span class='line'>  <span class="k">fi</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function </span>print_usage <span class="o">{</span>
-</span><span class='line'>      <span class="nb">echo</span>  <span class="s1">&#39;Usage:&#39;</span>
-</span><span class='line'>          <span class="nb">echo</span>  <span class="s1">&#39;-a &lt;bookmark_name&gt; - Saves the current directory as &quot;bookmark_name&quot;&#39;</span>
-</span><span class='line'>          <span class="nb">echo</span>  <span class="s1">&#39;-d &lt;bookmark_name&gt; - Deletes the bookmark&#39;</span>
-</span><span class='line'>          <span class="nb">echo</span>  <span class="s1">&#39;-l                 - Lists all available bookmarks&#39;</span>
-</span><span class='line'>          <span class="nb">echo</span>  <span class="s1">&#39;-h(-help,--help)   - Lists usage&#39;</span>
-</span><span class='line'>          <span class="nb">echo</span>  <span class="s1">&#39;&lt;bookmark_name&gt;    - Jump to the bookmark&#39;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function </span>_l <span class="o">{</span>
-</span><span class='line'>  awk -F <span class="s1">&#39;=&#39;</span> <span class="s1">&#39; {print $1} &#39;</span> <span class="nv">$DIRS</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">function </span>_comp <span class="o">{</span>
-</span><span class='line'>    <span class="nb">local </span>curw
-</span><span class='line'>    <span class="nv">COMPREPLY</span><span class="o">=()</span>
-</span><span class='line'>    <span class="nv">curw</span><span class="o">=</span><span class="k">${</span><span class="nv">COMP_WORDS</span><span class="p">[COMP_CWORD]</span><span class="k">}</span>
-</span><span class='line'>    <span class="nv">COMPREPLY</span><span class="o">=(</span><span class="k">$(</span><span class="nb">compgen</span> -W <span class="s1">&#39;`_l`&#39;</span> -- <span class="nv">$curw</span><span class="k">)</span><span class="o">)</span>
-</span><span class='line'>    <span class="k">return </span>0
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># ZSH completion command</span>
-</span><span class='line'><span class="k">function </span>_compzsh <span class="o">{</span>
-</span><span class='line'>    <span class="nv">reply</span><span class="o">=(</span><span class="k">$(</span>_l<span class="k">)</span><span class="o">)</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="nv">$ZSH_VERSION</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">  </span>compctl -K _compzsh gt
-</span><span class='line'><span class="k">else</span>
-</span><span class='line'><span class="k">  </span><span class="nb">shopt</span> -s progcomp
-</span><span class='line'>  <span class="nb">complete</span> -F _comp gt
-</span><span class='line'><span class="k">fi</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>安装:</strong></p>
-
-<ol>
-<li><p><code>git clone git@github.com:huangbowen521/gtShell.git</code> 或者直接拷贝 gt.sh文件内容。</p></li>
-<li><p>add gt.sh file path to your <code>~/.bash_profile</code> or <code>~/.bashrc</code> file</p></li>
-<li><p>reload your profile or restart your terminal</p></li>
-</ol>
-
-
-<p><strong>用例:</strong></p>
-
-<ul>
-<li><p><code>gt -a &lt;bookmark_name&gt;</code> - 保存当前目录的标签为 给定的bookmark_name</p></li>
-<li><p><code>gt -d &lt;bookmark_name&gt;</code> - 删除给定的标签</p></li>
-<li><p><code>gt -l</code>                 - 列除所有标签</p></li>
-<li><p><code>gt -h</code> - 帮助信息</p></li>
-<li><p><code>gt &lt;bookmark_name&gt;</code>    - 跳转到指定的标签目录</p></li>
-</ul>
-
-
-<p><strong>例子:</strong></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>current_user:~<span class="nv">$ </span><span class="nb">cd </span>sourcecode/study/
-</span><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt -a study
-</span><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span><span class="nb">cd</span> ~
-</span><span class='line'>current_user:~<span class="nv">$ </span>gt study
-</span><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt -l
-</span><span class='line'><span class="nv">goAgent</span><span class="o">=</span>/Users/twer/sourcecode/goagent/goagent-goagent-9c1edd3/local
-</span><span class='line'><span class="nv">octopress</span><span class="o">=</span>/Users/twer/sourcecode/octopress
-</span><span class='line'><span class="nv">goShell</span><span class="o">=</span>/Users/twer/sourcecode/shell/goShell
-</span><span class='line'><span class="nv">study</span><span class="o">=</span>/Users/twer/sourcecode/study
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt -d study
-</span><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt -l
-</span><span class='line'><span class="nv">goAgent</span><span class="o">=</span>/Users/twer/sourcecode/goagent/goagent-goagent-9c1edd3/local
-</span><span class='line'><span class="nv">octopress</span><span class="o">=</span>/Users/twer/sourcecode/octopress
-</span><span class='line'><span class="nv">goShell</span><span class="o">=</span>/Users/twer/sourcecode/shell/goShell
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt -h
-</span><span class='line'>Usage:
-</span><span class='line'>-a &lt;bookmark_name&gt; - Saves the current directory as <span class="s2">&quot;bookmark_name&quot;</span>
-</span><span class='line'>-d &lt;bookmark_name&gt; - Deletes the bookmark
-</span><span class='line'>-l                 - Lists all available bookmarks
-</span><span class='line'>-h<span class="o">(</span>-help,--help<span class="o">)</span>   - Lists usage
-</span><span class='line'>&lt;bookmark_name&gt;    - Jump to the bookmark
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt go&lt;Tab&gt;
-</span><span class='line'>goAgent  goShell
-</span><span class='line'>current_user:~/sourcecode/study<span class="nv">$ </span>gt goShell
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/02/16/gtshell/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -1951,115 +607,6 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/">避免每次输入bundler Exec命令</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-04T00:24:00+08:00" pubdate data-updated="true">Feb 4<span>th</span>, 2013</time>
-        
-         | <a href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>bundle在ruby的世界里是个好东西，它可以用来管理应用程序的依赖库。它能自动的下载和安装指定的gem，也可以随时更新指定的gem。</p>
-
-<p><a href="https://rvm.io/">rvm</a>则是一个命令行工具，能帮助你轻松的安装，管理多个ruby环境。每个环境可以指定一系列的gem。它允许你为每一个项目指定其ruby的版本，需要的gem的版本。这能最大限度的避免由于ruby环境的差异，或者不同版本的gem造成的各种问题。</p>
-
-<p>当我在项目中引入了rvm后，使用rake命令时，每次都会出现这样的异常。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake aborted!
-</span><span class='line'>You have already activated rake 10.0.0, but your Gemfile requires rake 0.9.2.2. Using bundle <span class="nb">exec </span>may solve this.
-</span><span class='line'>/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/runtime.rb:31:in <span class="sb">`</span>block in setup<span class="s1">&#39;</span>
-</span><span class='line'><span class="s1">/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/runtime.rb:17:in `setup&#39;</span>
-</span><span class='line'>/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler.rb:116:in <span class="sb">`</span>setup<span class="s1">&#39;</span>
-</span><span class='line'><span class="s1">/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/setup.rb:7:in `&lt;top (required)&gt;&#39;</span>
-</span><span class='line'>/Users/twer/sourcecode/octopress/Rakefile:2:in <span class="sb">`</span>&lt;top <span class="o">(</span>required<span class="o">)</span>&gt;<span class="err">&#39;</span>
-</span><span class='line'><span class="o">(</span>See full trace by running task with --trace<span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>从这个异常中我们可以看到，由于我在自己机器上已经安装了rake的<code>10.0.0</code>版本，但是这个项目中配置的rake版本却是<code>0.9.2.2</code>，所以在执行rake命令时应该使用Gemfile的。</p>
-
-<p>而<code>bundle exec</code>可以在当前bundle的上下文中执行一段脚本。通过它可以调用本项目中指定的rake版本来执行命令。</p>
-
-<p>下面是官方文档的说明。</p>
-
-<blockquote><p>In some cases, running executables without bundle exec may work, if the executable happens to be installed in your system and does not pull in any gems that conflict with your bundle. However, this is unreliable and is the source of considerable pain. Even if it looks like it works, it may not work in the future or on another machine.</p></blockquote>
-
-<p>所以我们只要每次执行命令的时候加上<code>bundle exec</code>的前缀就可以额。但是这样搞的很烦人，试想每天都要敲上百次这样的字符，而且还常常忘记。</p>
-
-<p>有一个方法可以避免每次都要键入<code>bundle exec</code>作为前缀。</p>
-
-<p>安装<a href="https://github.com/mpapis/rubygems-bundler">rubygems-bundler</a>。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem install rubygems-bundler
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后运行：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem regenerate_binstubs
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>启用RVM hook:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rvm get head <span class="o">&amp;&amp;</span> rvm reload
-</span><span class='line'><span class="nv">$ </span>chmod +x <span class="nv">$rvm_path</span>/hooks/after_cd_bundler
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>为自己的项目创建bundler stubs.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd </span>your_project_path
-</span><span class='line'><span class="nv">$ </span>bundle install --binstubs<span class="o">=</span>./bundler_stubs
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>最后重新打开terminal就可以直接执行ruby命令，不需要加上<code>bundler exec</code>前缀。</p>
-
-<p>如果想禁用次bundler的话，只需要在命令前面加上<code>NOEXEC_DISABLE=1</code>前缀。更详细的信息可以看[rubygems-bundler]的<a href="https://github.com/mpapis/rubygems-bundler">文档</a>。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2079,6 +626,10 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/17/haskell-functional-programming-feature/">Haskell函数式编程之特性篇</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/14/haskell-recursion/">Haskell函数式编程之递归</a>
       </li>
     
@@ -2092,10 +643,6 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
     
       <li class="post">
         <a href="/blog/2013/03/03/the-annotated-turing/">《图灵的秘密》读后感</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/02/haskell-programming-language-first-touch/">Haskell-函数式编程语言之初体验</a>
       </li>
     
   </ul>

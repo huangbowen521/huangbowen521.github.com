@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: 高效 | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/高效/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-03-14T22:18:47+08:00</updated>
+  <updated>2013-03-17T13:49:43+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -30,6 +30,9 @@
 <p>我觉得每个程序员都想变得高效，但是面对新的方法，新的工具总是或多或少有点畏惧心理，这是因为他们无法体会到采用一种新方法或者新工具带来的震撼的效果。所以对于我们程序员来说绝对要勇于尝试，勇于突破现状。</p>
 
 <p>回顾了一下作者在书中列举的自己感兴趣的东西，顺便对自己做一个总结。（本人使用的是mac pro，所以tool和plugin只关心mac上的。）</p>
+
+<!-- more -->
+
 
 <ol>
 <li><p>加载器。作者介绍了quicksilver，而我使用的是launcher。我一般使用它快速打开某个application，还有尝试其他功能，接下来要好好挖掘下。</p></li>

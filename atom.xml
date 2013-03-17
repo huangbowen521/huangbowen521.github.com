@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-03-14T22:18:47+08:00</updated>
+  <updated>2013-03-17T13:49:43+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,194 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Haskell函数式编程之特性篇]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature/"/>
+    <updated>2013-03-17T12:46:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature</id>
+    <content type="html"><![CDATA[<p>函数式编程的定义是：</p>
+
+<p>In computer science, functional programming is a programming paradigm that treats computation as the evaluation of mathematical functions and avoids stateand mutable data.
+即：函数式编程是一种编程模型，他将计算机运算看做是数学中函数的计算，并且避免了引入状态及可变数据。</p>
+
+<p>它更强调函数的应用，而不像命令式编程更强调状态的改变。</p>
+
+<h2>无副作用（side effect）</h2>
+
+<p>命令式函数可能会改变程序的状态，这就会对其产生<strong>副作用</strong>。在命令式编程中，在执行程序不同的状态下同一个函数的返回结果会发生改变。例如，下面是一个使用JavaScript写的函数。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">getVal</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">[</span>
+</span><span class='line'>     <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">getVal</span><span class="p">());</span> <span class="c1">//true</span>
+</span><span class='line'><span class="nx">state</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">getVal</span><span class="p">());</span> <span class="c1">// false</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!-- more -->
+
+
+<p>注意我们调用了两次getVal(),但是其输出了不同的结果。而在Haskell中，对变量只有声明，没有赋值。即如果声明了一个值为true的state变量，就无法再将其修改为false。这叫做<strong>变量的不变性</strong>。</p>
+
+<p>而函数式编程中如果描述状态的变化那，就是将状态变化作为函数的参数进行传递。</p>
+
+<h2>延迟计算（lazy evaluation）</h2>
+
+<p>正因为函数式编程无副作用，所以<strong>延迟计算</strong>（又称为惰性求值）就成为可能。
+<strong>延迟计算</strong>指将一个表达式的值推迟到直到被需要时才进行计算。（delays the evaluation of an expression until its value is needed ）</p>
+
+<p>它的优点是：</p>
+
+<ul>
+<li>避免了不需要的运算，从而提高的性能。</li>
+<li>使创建无限的数据结构成为可能。</li>
+</ul>
+
+
+<p>例如，我们写一个将指定参数放置到一个无限长的数组中的函数。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">repeat&#39;</span> <span class="ow">::</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+</span><span class='line'><span class="nf">repeat&#39;</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">repeat&#39;</span> <span class="n">x</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第一行是对repeat&#8217;参数及返回值的定义，它接收一个类型a,返回a的数组。
+第二行是repeat&#8217;函数的实现，它将x放置到一个无穷大的数组中。</p>
+
+<p>在没有延迟计算特性的编程语言中，这种函数是根本无法使用的。因为一旦调用就会陷入死循环。
+即使在支持延迟计算的编程语言中，我们直接输出这个数组:<code>print $ repeat' 10</code>,也会进入死循环。那么如何使用它那？我们可以写一个take函数，其可以返回数组中前几位元素。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">take&#39;</span> <span class="ow">::</span> <span class="kt">Int</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+</span><span class='line'><span class="nf">take&#39;</span> <span class="mi">1</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+</span><span class='line'><span class="nf">take&#39;</span> <span class="n">index</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">x</span> <span class="kt">:</span> <span class="p">(</span><span class="n">take&#39;</span> <span class="p">(</span><span class="n">index</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="n">xs</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们这样调用它，</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; take<span class="s1">&#39; 3 (repeat&#39;</span> 5<span class="o">)</span>
+</span><span class='line'><span class="o">[</span>5,5,5<span class="o">]</span>
+</span><span class='line'>Prelude&gt; take<span class="s1">&#39; 3 (repeat&#39;</span> <span class="s1">&#39;a&#39;</span><span class="o">)</span>
+</span><span class='line'><span class="s2">&quot;aaa&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Haskell对函数参数默认采取延迟计算的求值策略。所以这样在调用repeat&#8217;函数时并不是先将repeat&#8217;函数的结果数组计算出来，再进行take操作，而是take操作需要前几位元素，repeat&#8217;函数才会生成前几位元素。</p>
+
+<h2>高阶函数(Higher-order function)</h2>
+
+<p>一个函数成为<strong>高阶函数</strong>需要满足下面两条中的至少一条:</p>
+
+<ol>
+<li>将一个或多个函数作为输入。</li>
+<li>输出是一个函数。</li>
+</ol>
+
+
+<p>换句话说，<strong>高阶函数就是将函数作为参数或者作为返回值的函数</strong>。其他函数都成<strong>为一阶函数</strong>(first order function)。其实这个概念最早来源于数学领域。</p>
+
+<p>函数是Haskell世界中的一等公民，所以肯定支持高阶函数。举个例子，Haskell中有个map函数，它的定义是这样的:
+map:: (a -> b) -> [a] -> [b]
+它的作用是传入一个函数及一个数组，对该数组中的每一个元素应用此函数，从而转换为另一个数组。
+我们可以自己实现一个map函数。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">map&#39;</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span>
+</span><span class='line'><span class="nf">map&#39;</span> <span class="n">f</span> <span class="kt">[]</span> <span class="ow">=</span> <span class="kt">[]</span>
+</span><span class='line'><span class="nf">map&#39;</span> <span class="n">f</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span><span class="n">f</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">map&#39;</span> <span class="n">f</span> <span class="n">xs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>map&#8217;函数接收两个参数，第一个参数是一个函数，该函数输入值为a类型的值，输出值为b类型的值，第二个参数为源数组。
+我们调用ma p&#8217;函数时，可以直接写一个lambda表达式，对源数组进行各种操作。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; map<span class="s1">&#39; (\x -&gt; x + 5)  [1,2,3]</span>
+</span><span class='line'><span class="s1">[6,7,8]</span>
+</span><span class='line'><span class="s1">Prelude&gt; map&#39;</span> <span class="o">(</span><span class="se">\x</span> -&gt; x * x<span class="o">)</span>  <span class="o">[</span>1,2,3<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>1,4,9<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>如果我们有这样一个需求，我们想通过map&#8217;函数对数组的每个对象都加上一个值n，这个n我不想直接定义在此lambda表达式中，能实现吗？答案是可以。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">outer</span> <span class="ow">=</span> <span class="kr">let</span> <span class="n">n</span> <span class="ow">=</span> <span class="mi">5</span> <span class="kr">in</span> <span class="n">map&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+</span><span class='line'><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对于匿名函数(\x -> x + n)来说，n就是<strong>non-local variable</strong>。什么是<strong>non-local variable</strong>那？如果一个函数使用了一个变量，这个变量既不属于全局变量，也不属于在此函数中定义的变量，那这个变量对于此函数来说就是<strong>non-local variable</strong>。
+所谓的闭包就是使用了non-local variable的函数。</p>
+
+<h2>curry function</h2>
+
+<p>curry function还真比较难翻译，先看看<a href="http://en.wikipedia.org/wiki/Currying">wiki</a>百科的翻译：</p>
+
+<p>In mathematics and computer science, currying is the technique of transforming a function that takes multiple arguments (or a tuple of arguments) in such a way that it can be called as a chain of functions, each with a single argument (partial application).</p>
+
+<p><strong>在数学领域和计算机科学领域，currying是一项将接收多个参数（或参数元组）函数转换为函数的链式调用的技术，链条中的每个函数接收单个参数。</strong></p>
+
+<p>这句话看起来真费解。那么我用一个例子说明一个。</p>
+
+<p>假设现在有一个函数为<code>f(x,y) = x/y</code>。那么<code>f(2,3)</code>的执行过程是什么样的那？ 首先，我们将x替换为2.那么得到了<code>f(2,y) = 2/y</code>。我们定义一个新的函数<code>g(y)= f(2,y) = 2/y</code>。再将y替换成3，那么得到了<code>g(3) = f(2,3) = 2/3</code>。这个<code>g(y)</code>函数就是<code>f(x,y)</code>的一个curried function.</p>
+
+<p>举个例子。上文中我们构造了一个map&#8217;函数，它接收一个函数及一个数组。如果我们想实现一个名为doubleMe的函数，它接收一个数组，将数组中每个元素都翻一倍。这个可以这样写:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">doubleMe</span> <span class="ow">=</span> <span class="n">map&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意看，定义doubleMe时我们使用了map&#8217;函数，但是给map&#8217;函数只传递了一个参数，并没有提供第二个参数。所以在调用doubleMe时，要给其传递一个数组。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; doubleMe <span class="o">[</span>1,2,3<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>1,4,9<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>doubleMe的函数完全等价于:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">doubleMe</span> <span class="n">ary</span> <span class="ow">=</span> <span class="n">map&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">x</span><span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="n">ary</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Haskell函数式编程之递归]]></title>
@@ -36,6 +224,11 @@
 </span><span class='line'><span class="nf">sum&#39;</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">sum&#39;</span> <span class="n">xs</span>
 </span><span class='line'><span class="nf">sum&#39;</span> <span class="kt">[]</span> <span class="ow">=</span> <span class="mi">0</span>
 </span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!-- more -->
 
 
 <p>第一行定义了了一个名为<code>sum'</code>的函数的参数及返回值。这个函数接收一个类型为Num的数组并返回一个Num型的数值。（这里的<code>'</code>是函数名的一部分，因为Haskell允许<code>'</code>作为函数名的一部分。由于系统已经有了sum函数，所以我们加个<code>'</code>与标准sum函数区分开。）</p>
@@ -235,6 +428,11 @@
 </span><span class='line'>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!-- more -->
 
 
 <p>实际上在Java中枚举类型本质上就是一个类，其继承自java.lang.Enum类。</p>
@@ -725,6 +923,9 @@
     <id>http://www.huangbowen.net/blog/2013/03/11/webdriver</id>
     <content type="html"><![CDATA[<p>第一次接触Selenium 的WebDriver，是在一个Web项目中。该项目使用它来进行功能性测试。当我看到Firefox中的页面内容被一个个自动填充并且自动跳转的时候，感觉真的很神奇。通过这段时间的学习觉得可以将我学的关于WebDriver的知识进行一个总结。</p>
 
+<!-- more -->
+
+
 <h2>什么是Selenium 和WebDriver？</h2>
 
 <p>Selenium是一个浏览器自动化操作框架。Selenium主要由三种工具组成。第一个工具SeleniumIDE，是Firefox的扩展插件，支持用户录制和回访测试。录制/回访模式存在局限性，对许多用户来说并不适合，因此第二个工具——Selenium WebDriver提供了各种语言环境的API来支持更多控制权和编写符合标准软件开发实践的应用程序。最后一个工具——SeleniumGrid帮助工程师使用Selenium API控制分布在一系列机器上的浏览器实例，支持并发运行更多测试。在项目内部，它们分别被称为“IDE”、“WebDriver”和“Grid”。</p>
@@ -999,6 +1200,9 @@
 <p>但是这并不妨碍我从另一个角度来重新了解了图灵、数学、计算机….去年的时候曾听过Jeff讲过的一个session:《世界及宇宙的终极答案》。我敢确定至少一半的内容都是来自这本书。
 图灵在论文中描述了一个想象出来的机器，用来论证数理逻辑中的一个问题，论文题目叫:&lt;论可计算数及其在判定性问题中的应用>（On Computable Numbers, with an Application to the Entscheidungsproblem）。这个想象出来的机器被后人成为图灵机。</p>
 
+<!-- more -->
+
+
 <p>图灵在论文中让图灵机使用二进制，仅是觉得方便论证。后来研制的计算机有的使用十进制，有的使用二进制，直到冯诺依曼发表了一片论文论述了计算机使用二进制的可行性与优势后，二进制逐渐成为标准。</p>
 
 <p>如果一个集合可以与自然数意义对应起来，那么我们可以说这个集合是可数的。</p>
@@ -1033,6 +1237,9 @@
 <p>作为一个纯的函数式编程语言，它支持惰性求值、模式匹配、列表解析、类型类、类型多态……</p>
 
 <p>别着急，让我们慢慢来解开函数式编程的面纱。</p>
+
+<!-- more -->
+
 
 <h2>安装Haskell</h2>
 
@@ -1260,6 +1467,9 @@
 
 <p>现在将演讲稿的内容贴出来，以后可以继续回味与总结。</p>
 
+<!-- more -->
+
+
 <p>我们学习计算机已经两年了。两年里大家到底学到多少东西，恐怕每个人的感受都不一样。无论你外表再花哨，肚子里有多少知识自己最清楚。我回顾以下自己的大学经历，并浅谈一下自己目前对学计算机的一点感受。</p>
 
 <p>刚入大一，我对计算机了解很少，只会打游戏，和简单的OFFICE操作。但是我一向对计算机高手有种崇拜的感觉，老是幻想什么时候自己能成为其中一员。</p>
@@ -1333,6 +1543,9 @@
 gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功能。这样你就不需要在使用cd后面跟随一长串的目录名称。
 它也支持自动完成，你只需要输入开头的几个字母，然后按tab键就可以自动匹配。
 目前源码被我host在<a href="https://github.com/huangbowen521/gtShell">github</a>上。</p>
+
+<!-- more -->
+
 
 <p>下面是主要文件gt.sh的源码。</p>
 
@@ -1654,6 +1867,11 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 </span></code></pre></td></tr></table></div></figure>
 
 
+
+
+<!-- more -->
+
+
 <p>从这个异常中我们可以看到，由于我在自己机器上已经安装了rake的<code>10.0.0</code>版本，但是这个项目中配置的rake版本却是<code>0.9.2.2</code>，所以在执行rake命令时应该使用Gemfile的。</p>
 
 <p>而<code>bundle exec</code>可以在当前bundle的上下文中执行一段脚本。通过它可以调用本项目中指定的rake版本来执行命令。</p>
@@ -1705,15 +1923,6 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[my first blog]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/01/28/my-first-blog/"/>
-    <updated>2013-01-28T22:27:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/01/28/my-first-blog</id>
-    <content type="html"><![CDATA[<p>dfjkdjkfjkdfjjfjf</p>
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[ThoughtWorks Immersion 小计]]></title>
     <link href="http://www.huangbowen.net/blog/2013/01/19/thoughtworks-immersion-xiao-ji/"/>
     <updated>2013-01-19T23:08:00+08:00</updated>
@@ -1729,6 +1938,9 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 <p>虽然我们来到西安是学习滴，但是也不能委屈了自己的胃。刚到西安就先吃了羊肉泡馍，外加一个肉夹馍才感觉有些饱。第一天中午办公室定的凉皮和肉夹馍，典型的北方特色，符合我的胃口。第二天晚上我们team building，去的小杨烤肉，刚开始打不到车，气氛有些低落，但是到了饭馆气氛慢慢火热起来，最后吃完了大家大摆龙门阵，海量重量级八卦被爆出，气氛异常火热。</p>
 
 <hr />
+
+<!-- more -->
+
 
 <p><strong>玩：</strong></p>
 
@@ -1769,6 +1981,9 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 
 <p>这么薄的一本书讲JavaScript的特点介绍的非常清楚，是我对JavaScript的认识更加的深入。以前总觉得函数式编程很难理解，但是看了这本书以后我觉得对其有了一个新的认识。严格意义上说JavaScript并不仅仅是一门函数式编程语言，书中有一句话对它的特性做了一个精彩的描述：JavaScript的许多特性都借鉴自其他语言。语法借鉴自java，函数借鉴自Scheme,原型继承借鉴自Self，而JavaScript的正则表达式特性则借鉴自Perl。</p>
 
+<!-- more -->
+
+
 <p>JavaScript的简单类型有：数字、字符串、布尔值、null值和undefined值。在JavaScript中，数组是对象，函数是对象，正则表达式是对象。可以使用对象字面量来创建一个新对象： var empty_object = { };</p>
 
 <p>每个对象都连接到一个原型对象，并继承其属性。使用typeof可以确定属性的类型。使用delete可以删除对象的属性。</p>
@@ -1800,6 +2015,9 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 <p>我觉得每个程序员都想变得高效，但是面对新的方法，新的工具总是或多或少有点畏惧心理，这是因为他们无法体会到采用一种新方法或者新工具带来的震撼的效果。所以对于我们程序员来说绝对要勇于尝试，勇于突破现状。</p>
 
 <p>回顾了一下作者在书中列举的自己感兴趣的东西，顺便对自己做一个总结。（本人使用的是mac pro，所以tool和plugin只关心mac上的。）</p>
+
+<!-- more -->
+
 
 <ol>
 <li><p>加载器。作者介绍了quicksilver，而我使用的是launcher。我一般使用它快速打开某个application，还有尝试其他功能，接下来要好好挖掘下。</p></li>
@@ -1834,6 +2052,9 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 <li><p><strong>思考方式的改变，多问为什么，而不盲从。</strong>ThoughtWorks的每个人都很健谈，尤其是谈论技术来滔滔不绝，这些都是建立在对目标了解透彻的基础上。所以我在思考问题的时候，应该抓住重点，往深处挖掘，而不是停留在表面浅尝辄止。</p></li>
 <li><p><strong>学习能力的改变。</strong>一个人能力有多大，很大一部分取决于他的自我学习能力。学习能力强，接收新事物快，他的知识会源源不断的涌来。在公司这段时间，我发现大家的自我学习能力都很强，一个新技术、新工具很快就能上手使用。我在平时注意收集和观察别人的学习方式，并且尝试使用到自己身上，收到了一定的效果。</p></li>
 </ol>
+
+
+<!-- more -->
 
 
 <p>当然，在enjoy的同时，也伴随着巨大的压力。我认真的分析了一下自身，发现自身的不足主要存在与两个方面：</p>
@@ -1885,6 +2106,9 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 <p>但是如果我想在无法上网的情况下也能查看git官网的详尽的帮助文档，有没有办法那？当然有了，下面就教大家如何在本机搭建git的HTML帮助文档。</p>
 
 <p>在Windows上设置很简单，主需要安装<a href="http://code.google.com/p/msysgit/">Msysgit</a>,就会自动为你设置起本地的HTML帮助文档。所以这篇文章主要讲在Mac和Linux下该如何实现。</p>
+
+<!-- more -->
+
 
 <p><strong>一，运行git help –-web commit查看git默认的保存html文件的路径。</strong></p>
 

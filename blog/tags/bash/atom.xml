@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: bash | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/bash/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-03-14T22:18:47+08:00</updated>
+  <updated>2013-03-17T13:49:43+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -23,6 +23,9 @@
 gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功能。这样你就不需要在使用cd后面跟随一长串的目录名称。
 它也支持自动完成，你只需要输入开头的几个字母，然后按tab键就可以自动匹配。
 目前源码被我host在<a href="https://github.com/huangbowen521/gtShell">github</a>上。</p>
+
+<!-- more -->
+
 
 <p>下面是主要文件gt.sh的源码。</p>
 
