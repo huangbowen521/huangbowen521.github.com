@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: enum | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/enum/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-03-14T22:18:47+08:00</updated>
+  <updated>2013-03-17T15:48:17+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -34,6 +34,9 @@ public enum Color
 
 <p>}
 ```</p>
+
+<!-- more -->
+
 
 <p>实际上在Java中枚举类型本质上就是一个类，其继承自java.lang.Enum类。</p>
 

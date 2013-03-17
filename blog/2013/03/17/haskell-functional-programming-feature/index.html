@@ -1,0 +1,487 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Haskell函数式编程之特性篇 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="函数式编程的定义是： In computer science, functional programming is a programming paradigm that treats computation as the evaluation of mathematical functions &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Haskell函数式编程之特性篇</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-17T12:46:00+08:00" pubdate data-updated="true">Mar 17<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>函数式编程的定义是：</p>
+
+<p>In computer science, functional programming is a programming paradigm that treats computation as the evaluation of mathematical functions and avoids stateand mutable data.
+即：函数式编程是一种编程模型，他将计算机运算看做是数学中函数的计算，并且避免了引入状态及可变数据。</p>
+
+<p>它更强调函数的应用，而不像命令式编程更强调状态的改变。</p>
+
+<h2>无副作用（side effect）</h2>
+
+<p>命令式函数可能会改变程序的状态，这就会对其产生<strong>副作用</strong>。在命令式编程中，在执行程序不同的状态下同一个函数的返回结果会发生改变。例如，下面是一个使用JavaScript写的函数。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">getVal</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">[</span>
+</span><span class='line'>     <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">getVal</span><span class="p">());</span> <span class="c1">//true</span>
+</span><span class='line'><span class="nx">state</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">getVal</span><span class="p">());</span> <span class="c1">// false</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!-- more -->
+
+
+<p>注意我们调用了两次getVal(),但是其输出了不同的结果。而在Haskell中，对变量只有声明，没有赋值。即如果声明了一个值为true的state变量，就无法再将其修改为false。这叫做<strong>变量的不变性</strong>。</p>
+
+<p>而函数式编程中如果描述状态的变化那，就是将状态变化作为函数的参数进行传递。</p>
+
+<h2>延迟计算（lazy evaluation）</h2>
+
+<p>正因为函数式编程无副作用，所以<strong>延迟计算</strong>（又称为惰性求值）就成为可能。
+<strong>延迟计算</strong>指将一个表达式的值推迟到直到被需要时才进行计算。（delays the evaluation of an expression until its value is needed ）</p>
+
+<p>它的优点是：</p>
+
+<ul>
+<li>避免了不需要的运算，从而提高的性能。</li>
+<li>使创建无限的数据结构成为可能。</li>
+</ul>
+
+
+<p>例如，我们写一个将指定参数放置到一个无限长的数组中的函数。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">repeat&#39;</span> <span class="ow">::</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+</span><span class='line'><span class="nf">repeat&#39;</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">repeat&#39;</span> <span class="n">x</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第一行是对repeat&#8217;参数及返回值的定义，它接收一个类型a,返回a的数组。
+第二行是repeat&#8217;函数的实现，它将x放置到一个无穷大的数组中。</p>
+
+<p>在没有延迟计算特性的编程语言中，这种函数是根本无法使用的。因为一旦调用就会陷入死循环。
+即使在支持延迟计算的编程语言中，我们直接输出这个数组:<code>print $ repeat' 10</code>,也会进入死循环。那么如何使用它那？我们可以写一个take函数，其可以返回数组中前几位元素。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">take&#39;</span> <span class="ow">::</span> <span class="kt">Int</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+</span><span class='line'><span class="nf">take&#39;</span> <span class="mi">1</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+</span><span class='line'><span class="nf">take&#39;</span> <span class="n">index</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">x</span> <span class="kt">:</span> <span class="p">(</span><span class="n">take&#39;</span> <span class="p">(</span><span class="n">index</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="n">xs</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们这样调用它，</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; take<span class="s1">&#39; 3 (repeat&#39;</span> 5<span class="o">)</span>
+</span><span class='line'><span class="o">[</span>5,5,5<span class="o">]</span>
+</span><span class='line'>Prelude&gt; take<span class="s1">&#39; 3 (repeat&#39;</span> <span class="s1">&#39;a&#39;</span><span class="o">)</span>
+</span><span class='line'><span class="s2">&quot;aaa&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Haskell对函数参数默认采取延迟计算的求值策略。所以这样在调用repeat&#8217;函数时并不是先将repeat&#8217;函数的结果数组计算出来，再进行take操作，而是take操作需要前几位元素，repeat&#8217;函数才会生成前几位元素。</p>
+
+<h2>高阶函数(Higher-order function)</h2>
+
+<p>一个函数成为<strong>高阶函数</strong>需要满足下面两条中的至少一条:</p>
+
+<ol>
+<li>将一个或多个函数作为输入。</li>
+<li>输出是一个函数。</li>
+</ol>
+
+
+<p>换句话说，<strong>高阶函数就是将函数作为参数或者作为返回值的函数</strong>。其他函数都成<strong>为一阶函数</strong>(first order function)。其实这个概念最早来源于数学领域。</p>
+
+<p>函数是Haskell世界中的一等公民，所以肯定支持高阶函数。举个例子，Haskell中有个map函数，它的定义是这样的:
+map:: (a -> b) -> [a] -> [b]
+它的作用是传入一个函数及一个数组，对该数组中的每一个元素应用此函数，从而转换为另一个数组。
+我们可以自己实现一个map函数。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">map&#39;</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span>
+</span><span class='line'><span class="nf">map&#39;</span> <span class="n">f</span> <span class="kt">[]</span> <span class="ow">=</span> <span class="kt">[]</span>
+</span><span class='line'><span class="nf">map&#39;</span> <span class="n">f</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span><span class="n">f</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">map&#39;</span> <span class="n">f</span> <span class="n">xs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>map&#8217;函数接收两个参数，第一个参数是一个函数，该函数输入值为a类型的值，输出值为b类型的值，第二个参数为源数组。
+我们调用ma p&#8217;函数时，可以直接写一个lambda表达式，对源数组进行各种操作。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; map<span class="s1">&#39; (\x -&gt; x + 5)  [1,2,3]</span>
+</span><span class='line'><span class="s1">[6,7,8]</span>
+</span><span class='line'><span class="s1">Prelude&gt; map&#39;</span> <span class="o">(</span><span class="se">\x</span> -&gt; x * x<span class="o">)</span>  <span class="o">[</span>1,2,3<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>1,4,9<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>如果我们有这样一个需求，我们想通过map&#8217;函数对数组的每个对象都加上一个值n，这个n我不想直接定义在此lambda表达式中，能实现吗？答案是可以。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">outer</span> <span class="ow">=</span> <span class="kr">let</span> <span class="n">n</span> <span class="ow">=</span> <span class="mi">5</span> <span class="kr">in</span> <span class="n">map&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+</span><span class='line'><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对于匿名函数(\x -> x + n)来说，n就是<strong>non-local variable</strong>。什么是<strong>non-local variable</strong>那？如果一个函数使用了一个变量，这个变量既不属于全局变量，也不属于在此函数中定义的变量，那这个变量对于此函数来说就是<strong>non-local variable</strong>。
+所谓的闭包就是使用了non-local variable的函数。</p>
+
+<h2>curry function</h2>
+
+<p>curry function还真比较难翻译，先看看<a href="http://en.wikipedia.org/wiki/Currying">wiki</a>百科的翻译：</p>
+
+<p>In mathematics and computer science, currying is the technique of transforming a function that takes multiple arguments (or a tuple of arguments) in such a way that it can be called as a chain of functions, each with a single argument (partial application).</p>
+
+<p><strong>在数学领域和计算机科学领域，currying是一项将接收多个参数（或参数元组）函数转换为函数的链式调用的技术，链条中的每个函数接收单个参数。</strong></p>
+
+<p>这句话看起来真费解。那么我用一个例子说明一个。</p>
+
+<p>假设现在有一个函数为<code>f(x,y) = x/y</code>。那么<code>f(2,3)</code>的执行过程是什么样的那？ 首先，我们将x替换为2.那么得到了<code>f(2,y) = 2/y</code>。我们定义一个新的函数<code>g(y)= f(2,y) = 2/y</code>。再将y替换成3，那么得到了<code>g(3) = f(2,3) = 2/3</code>。这个<code>g(y)</code>函数就是<code>f(x,y)</code>的一个curried function.</p>
+
+<p>举个例子。上文中我们构造了一个map&#8217;函数，它接收一个函数及一个数组。如果我们想实现一个名为doubleMe的函数，它接收一个数组，将数组中每个元素都翻一倍。这个可以这样写:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">doubleMe</span> <span class="ow">=</span> <span class="n">map&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意看，定义doubleMe时我们使用了map&#8217;函数，但是给map&#8217;函数只传递了一个参数，并没有提供第二个参数。所以在调用doubleMe时，要给其传递一个数组。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; doubleMe <span class="o">[</span>1,2,3<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>1,4,9<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>doubleMe的函数完全等价于:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">doubleMe</span> <span class="n">ary</span> <span class="ow">=</span> <span class="n">map&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">x</span><span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="n">ary</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>换句话说，如果一个函数接收多个参数，那么接收部分参数的该函数也是一个函数。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-17T12:46:00+08:00" pubdate data-updated="true">Mar 17<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/编程开发/'>编程开发</a>
+  
+</span>
+
+
+      
+
+<span class="tags">
+  
+    <a class='tag' href='/blog/tags/haskell/'>Haskell</a>, <a class='tag' href='/blog/tags/curry/'>curry</a>, <a class='tag' href='/blog/tags/functional/'>functional</a>, <a class='tag' href='/blog/tags/高阶函数/'>高阶函数</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature/" data-via="huangbowen521@gmail.com" data-counturl="http://www.huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/03/14/haskell-recursion/" title="Previous Post: Haskell函数式编程之递归">&laquo; Haskell函数式编程之递归</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>程序员一枚。</p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/17/haskell-functional-programming-feature/">Haskell函数式编程之特性篇</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/14/haskell-recursion/">Haskell函数式编程之递归</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/12/enum-in-java/">Java基础学习之Enum</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/11/webdriver/">webDriver入门及提高</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/03/the-annotated-turing/">《图灵的秘密》读后感</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

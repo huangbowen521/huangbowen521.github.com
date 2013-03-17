@@ -9,8 +9,7 @@
   <meta name="author" content="黄博文">
 
   
-  <meta name="description" content="dfjkdjkfjkdfjjfjf
-">
+  <meta name="description" content="bundle在ruby的世界里是个好东西，它可以用来管理应用程序的依赖库。它能自动的下载和安装指定的gem，也可以随时更新指定的gem。 rvm则是一个命令行工具，能帮助你轻松的安装，管理多个ruby环境。每个环境可以指定一系列的gem。它允许你为每一个项目指定其ruby的版本，需要的gem的版本 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -84,7 +83,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/01/28/my-first-blog/">My First Blog</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/">避免每次输入bundler Exec命令</a></h1>
     
     
       <p class="meta">
@@ -100,18 +99,48 @@
   
 
 
-<time datetime="2013-01-28T22:27:00+08:00" pubdate data-updated="true">Jan 28<span>th</span>, 2013</time>
+<time datetime="2013-02-04T00:24:00+08:00" pubdate data-updated="true">Feb 4<span>th</span>, 2013</time>
         
-         | <a href="/blog/2013/01/28/my-first-blog/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>dfjkdjkfjkdfjjfjf</p>
+  <div class="entry-content"><p>bundle在ruby的世界里是个好东西，它可以用来管理应用程序的依赖库。它能自动的下载和安装指定的gem，也可以随时更新指定的gem。</p>
+
+<p><a href="https://rvm.io/">rvm</a>则是一个命令行工具，能帮助你轻松的安装，管理多个ruby环境。每个环境可以指定一系列的gem。它允许你为每一个项目指定其ruby的版本，需要的gem的版本。这能最大限度的避免由于ruby环境的差异，或者不同版本的gem造成的各种问题。</p>
+
+<p>当我在项目中引入了rvm后，使用rake命令时，每次都会出现这样的异常。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake aborted!
+</span><span class='line'>You have already activated rake 10.0.0, but your Gemfile requires rake 0.9.2.2. Using bundle <span class="nb">exec </span>may solve this.
+</span><span class='line'>/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/runtime.rb:31:in <span class="sb">`</span>block in setup<span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/runtime.rb:17:in `setup&#39;</span>
+</span><span class='line'>/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler.rb:116:in <span class="sb">`</span>setup<span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/setup.rb:7:in `&lt;top (required)&gt;&#39;</span>
+</span><span class='line'>/Users/twer/sourcecode/octopress/Rakefile:2:in <span class="sb">`</span>&lt;top <span class="o">(</span>required<span class="o">)</span>&gt;<span class="err">&#39;</span>
+</span><span class='line'><span class="o">(</span>See full trace by running task with --trace<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -159,35 +188,12 @@
 
 <hr />
 
-<p><strong>玩：</strong></p>
-
-<p>TWI第一天就玩了一个破冰游戏，大家将办公室地板想象成为一个中国地图，按照每个人的省份站位，并且用家乡话介绍自己，使大家尽快的熟悉起来。</p>
-
-<p>在TWI，早上有游戏，中午也有pacha chucha，下午还有大型游戏。不少的session也穿插了不少游戏。通过这些游戏，大家都很放松，也更容易从游戏中接收到知识。这种寓教于乐的方式很合我们的胃口。尤其是乐高游戏和拍卖游戏。</p>
-
-<p>乐高游戏生动的显示了一个敏捷团队是如何work的，通过游戏我们体现了：需求分析，story划分与估点，itration plan，迭代开发，用户验收测试与retro。我想通过这样的游戏大家能够快速的理解的这些名词的含义与好处。</p>
-
-<p>拍卖游戏则是最后的压轴游戏。大家分成3组，以抢答的方式来回答这几天中学到的东西。最后的梭哈把气氛带到了最高潮。</p>
-
-<hr />
-
-<p><strong>学：</strong></p>
-
-<p>前面说了那么多，大家还因为我们是去玩的。错了，最大的目的就是：好好学习，天天向上。3天N个session，真是狂轰乱炸，讲师阵容也超级豪华。</p>
-
-<p>酱油男胡凯给我们讲了两个session，就消失了。TW历史就讲了将近两个小时，让我们对TW有了一个立体全面的认识。对于Agile我也有了新认识，以前还没注意到两点：1，并不是4个准则中后半部分没有价值，而是前面的价值更大。2，agile有一个重要的前提，就是只能应用与知识工作者的生产工作。</p>
-
-<p>庆敏的soft skill training穿插各种情景剧，游戏，和同学们互动中体验到了软技能的重要性。并且经过实战演练大家迅速掌握到了技巧。</p>
-
-<p>棹显静作为我们公司知名的女developer兼这次TWI的主要组织者,也给我们带来了一系列的session，充分展现了我司女员工的强势一面。她的迭代开发session激发了我们的热烈讨论，结对编程的情景剧也给我们留下了深刻的印象。</p>
-
-<p>最后一位大师是徐昊。透露一下他是第一天晚上凌晨到的西安，由于酒店已经没有房间，他愣是写了一个通宵的代码。他的session就不用说了。我们学员轮番上阵都没challenge住他。</p>
-
-<hr />
-
-<p>据说以前TWI是在印度举行了，后来被cut了，只有中国保留了它。这次TWI还引入了pacha kucha，锻炼了大家的演讲能力。希望以后的TWI越办越红火。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/01/19/thoughtworks-immersion-xiao-ji/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -227,19 +233,12 @@
 
 <p>这么薄的一本书讲JavaScript的特点介绍的非常清楚，是我对JavaScript的认识更加的深入。以前总觉得函数式编程很难理解，但是看了这本书以后我觉得对其有了一个新的认识。严格意义上说JavaScript并不仅仅是一门函数式编程语言，书中有一句话对它的特性做了一个精彩的描述：JavaScript的许多特性都借鉴自其他语言。语法借鉴自java，函数借鉴自Scheme,原型继承借鉴自Self，而JavaScript的正则表达式特性则借鉴自Perl。</p>
 
-<p>JavaScript的简单类型有：数字、字符串、布尔值、null值和undefined值。在JavaScript中，数组是对象，函数是对象，正则表达式是对象。可以使用对象字面量来创建一个新对象： var empty_object = { };</p>
-
-<p>每个对象都连接到一个原型对象，并继承其属性。使用typeof可以确定属性的类型。使用delete可以删除对象的属性。</p>
-
-<p>函数也是对象，其原型对象为Function.prototype.函数有一个call属性，当JavaScript调用函数时，可理解为调用该函数的call属性。函数有四种调用模式：方法调用模式，函数调用模式，构造器调用模式和apply调用模式。这些模式主要是初始化关键字this存在差异，分别是：调用对象，全局对象，隐藏连接到该函数的prototype成员的新对象，apply方法的第一个参数。当函数被调用时，会得到一个arguments数组，可以通过它访问传递给该函数的所有参数。一个函数总是会返回一个值，如果没有制定返回值，则返回underfined.</p>
-
-<p>JavaScript中的数组其实是一种伪数组。她把数组的下标转变成字符串，用其作为属性。可以通过数组字面量来声明一个数组：var empty = [];数组第一个值将获得属性名0，第二个属性名将获得属性名1，以此类推。</p>
-
-<p>JavaScript中的正则表达式也是一个对象。正则表达式的分组有4中：捕获型，使用圆括号包括；非捕获型，使用(?:前缀;向前正向匹配，使用(?=前缀；向前负向匹配，使用（？！前缀。 &nbsp;</p>
-
-<p>读完这本书，彻底颠覆了我对JavaScript的理解。最近在翻译《Effective JavaScript: 68 Specific Ways to Harness the Power of JavaScript (Effective Software Development Series)》这本书，正得益于我从《JavaScript语言精粹》掌握了JavaScript的核心。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -288,25 +287,12 @@
 
 <p>回顾了一下作者在书中列举的自己感兴趣的东西，顺便对自己做一个总结。（本人使用的是mac pro，所以tool和plugin只关心mac上的。）</p>
 
-<ol>
-<li><p>加载器。作者介绍了quicksilver，而我使用的是launcher。我一般使用它快速打开某个application，还有尝试其他功能，接下来要好好挖掘下。</p></li>
-<li><p>剪贴版。我还真不知道可以有多个寄存器的剪贴板，out了，立马download了jumpcut,打算试用。</p></li>
-<li><p>IDE 快捷键。身为程序员每天与IDE打交道最多了，一定要熟练运用每一个快捷键。作者提到了快捷键我基本都在用。</p></li>
-<li><p>搜索优于导航。使用command line来进行各种搜素是我的短板，可怜的我只会基本的shell命令，这部分需要加强。</p></li>
-<li><p>虚拟桌面。这个还真没尝试过。</p></li>
-<li><p>自动化法则。我们已经使用了一些自动化技术，比如使用maven或rake来运行build，使用selenium来构建web自动化测试。但是和作者书中讲到的还差很远。</p></li>
-<li><p>规范性法则。目前我们只实现了将部分配置信息统一管理起来，这一方便还有很大的提高。</p></li>
-<li><p>TDD。在我们公司，如果你写了一段没测试的代码，你的pair会毫不留情的喊你全部删掉，先写测试，再写实现。&nbsp;</p></li>
-<li><p>代码的度量。目前我们有一些测试覆盖率之类的度量，但是圈复杂度这些还是一片空白。</p></li>
-<li><p>静态分析。这块在我们项目中是一片空白，我已经把它记到sticker,强烈需要马上应用。</p></li>
-<li><p>元编程。正在学习groovy,ruby等动态语言，只是看到了元编程的妙处，还没有切身体会。</p></li>
-<li><p>多语言编程。好吧，我承认这是目前的趋势，当我尝试了ruby on rails是如此高效时，我已经对它欲罢不能了。</p></li>
-</ol>
-
-
-<p>作者总结了这个多，我也给大家推荐一个爱不释手的tool:一款浏览器插件<a href="http://vimium.github.com/" title="vimium">vimium</a>,支持chrome和firefox。这是一款很酷的插件，能让你浏览网站的速度至少提高50%，你再也不用用鼠标去点击你想访问的链接，使用vimium只需要按几个键就行。借用作者的一句话，没有它我都不知道该怎么浏览网页了。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/11/11/%3C%3Czhuo-you-cheng-xiao-de-cheng-xu-yuan-%3E%3E-du-shu-bi-ji/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -352,42 +338,12 @@
 </ol>
 
 
-<p>当然，在enjoy的同时，也伴随着巨大的压力。我认真的分析了一下自身，发现自身的不足主要存在与两个方面：</p>
-
-<p><strong>一是英语。</strong>自己大学毕业后在工作中就基本没怎么用过口语了，只是有时候看文档接触下英语。这种情况导致我的英语退化的厉害，而且这点是短时间内无法改善的。</p>
-
-<p><strong>二是技术。</strong>虽然自己有三年工作经验，但是主要都是C#方面的，而自己的目前项目中却使用的是Java。自己面临短时间内迅速掌握Java Spring，Spring Web Flow，Spring security，Maven，jasmine…..等以前自己几乎没接触过的东西，这对自己是一个巨大的挑战。</p>
-
-<p>认识到了自己的不足，接下来就是要拿出实际的Action。随着这段时间的学习，我找了一些方法来尽快的弥补自身的不足。</p>
-
-<p><strong>英语方面：</strong></p>
-
-<ol>
-<li><p>针对词汇量少的问题，在平时工作中将自己遇到的不认识的单词或发音有误的单词记在本子上或者电子词典中。每天抽出半小时时间来将这些单词过一遍，不求一次记住，随着review的次数增多，好多单词都会变成自己的亲密伙伴。</p></li>
-<li><p>针对
-自己听力差的问题，我将一些VOA的音频放在MP3里，在上下班的路上的反复的倾听，体会那种英文的感觉。</p></li>
-<li><p>针对自己浓重的“河南”口音问题，我在iCal里schedule了个时间，每天晚上的11点到12点跟着《英语导读1000句》念英语，训练口腔肌肉。</p></li>
-<li><p>针对自己英文书写的问题，每天发给团队的邮件，比较important和difficult的让同组中的英文比较好的同事帮忙review，自己从review中总结需要注意的地方，使英文表达更专业和清晰。</p></li>
-<li>在平时需要使用英语的时候，尽量克服自己胆怯的心理，发出自己的声音，不怕别人的嘲笑。（这点自己虽然意识到了，但是目前做的不是很好，还需要继续努力。）</li>
-</ol>
-
-
-<p><strong>技术方面：</strong></p>
-
-<ol>
-<li><p>积极参加公司的session和workshop，从中吸收到营养。</p></li>
-<li><p>平时的pair过程中积极向同伴学习。</p></li>
-<li><p>每天晚上下班回家后坚持主动学习,多多动手实践。</p></li>
-<li><p>对于自己的每个技术点，尽量拿出一定的成果，比如写成博客或者写一个demo，眼看千遍不如手过一遍。</p></li>
-<li><p>我们team规定每周每个人都要做一次内部session。通过准备session和讲session加深自己对内容的理解。</p></li>
-</ol>
-
-
-<p>当然，这些措施只是自己目前能够想到的和在做的。也许大家有更好的方法，可以互相学习。</p>
-
-<p>感谢Yaoyao同学和Matt对我英文的指导，感谢周周同学的周末Workshop和平时对我的严格要求，感谢公司其他人对我的帮助和feedback。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/08/08/zai-thoughtworksgong-zuo-liang-ge-duo-yue-de-zong-jie/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -431,78 +387,12 @@
 
 <p>在Windows上设置很简单，主需要安装<a href="http://code.google.com/p/msysgit/">Msysgit</a>,就会自动为你设置起本地的HTML帮助文档。所以这篇文章主要讲在Mac和Linux下该如何实现。</p>
 
-<p><strong>一，运行git help –-web commit查看git默认的保存html文件的路径。</strong></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git <span class="nb">help</span> --web commit
-</span><span class='line'>
-</span><span class='line'><span class="c">#Attempt to open the html help for the commit command</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#fatal: &#39;/usr/local/git/share/doc/git-doc&#39;: not a documentationdirectory.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们得到了git默认的存放html文件的路径是<code>/usr/local/git/share/doc/git-doc</code>。当然你得到的路径有可能和这个不一样。</p>
-
-<p><strong>二，切换到这个路径下，迁出存放在git repo中的html文件。</strong></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo mkdir -p /usr/local/git/share/doc
-</span><span class='line'><span class="c"># Create the path for the docs to be installed to cd #/usr/local/git/share/doc</span>
-</span><span class='line'><span class="nv">$ </span>sudo git clone git://git.kernel.org/pub/scm/git/git-htmldocs.git git-doc
-</span><span class='line'><span class="c"># Clone the git repo and check out the html documents branch</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>三，运行 vim ~/.gitconfig 命令，在.gitconfig文件中加入如下配置。</strong></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>[help]
-</span><span class='line'>
-</span><span class='line'>        format = web
-</span><span class='line'>
-</span><span class='line'>[web]
-</span><span class='line'>
-</span><span class='line'>        browser = open
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>当然也可以使用其他的编辑器来编辑.gitconfig文件。</p>
-
-<p>只要这三步就设置起了本地的HTML帮助文档。你可以再次运行<code>git help -–web commit</code>，就可以查看在浏览器中自动打开的HTML帮助说明页面了。</p>
-
-<p>如果git的帮助文档更新了，如何同步到本地那？很简单，运行<code>git pull</code>命令就行。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd</span> /usr/local/git/share/doc/git-doc
-</span><span class='line'><span class="nv">$ </span>sudo git pull
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如何查看这些帮助文档那？更简单了，例如：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git remote --help
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>就会自动在浏览器中打开针对remote的帮助文档。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/08/08/zai-ben-di-an-zhuang-gitde-htmlbang-zhu-wen-dang/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -527,6 +417,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/17/haskell-functional-programming-feature/">Haskell函数式编程之特性篇</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/14/haskell-recursion/">Haskell函数式编程之递归</a>
       </li>
     
@@ -540,10 +434,6 @@
     
       <li class="post">
         <a href="/blog/2013/03/03/the-annotated-turing/">《图灵的秘密》读后感</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/02/haskell-programming-language-first-touch/">Haskell-函数式编程语言之初体验</a>
       </li>
     
   </ul>

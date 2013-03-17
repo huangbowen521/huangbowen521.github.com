@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: haskell | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/haskell/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-03-14T22:18:47+08:00</updated>
+  <updated>2013-03-17T15:48:17+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -36,6 +36,9 @@ sum' (x:xs) = x + sum' xs
 sum' [] = 0</p>
 
 <p>```</p>
+
+<!-- more -->
+
 
 <p>第一行定义了了一个名为<code>sum'</code>的函数的参数及返回值。这个函数接收一个类型为Num的数组并返回一个Num型的数值。（这里的<code>'</code>是函数名的一部分，因为Haskell允许<code>'</code>作为函数名的一部分。由于系统已经有了sum函数，所以我们加个<code>'</code>与标准sum函数区分开。）</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 读书笔记 | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/读书笔记/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-03-14T22:18:47+08:00</updated>
+  <updated>2013-03-17T15:48:17+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -22,6 +22,9 @@
 
 <p>但是这并不妨碍我从另一个角度来重新了解了图灵、数学、计算机….去年的时候曾听过Jeff讲过的一个session:《世界及宇宙的终极答案》。我敢确定至少一半的内容都是来自这本书。
 图灵在论文中描述了一个想象出来的机器，用来论证数理逻辑中的一个问题，论文题目叫:&lt;论可计算数及其在判定性问题中的应用>（On Computable Numbers, with an Application to the Entscheidungsproblem）。这个想象出来的机器被后人成为图灵机。</p>
+
+<!-- more -->
+
 
 <p>图灵在论文中让图灵机使用二进制，仅是觉得方便论证。后来研制的计算机有的使用十进制，有的使用二进制，直到冯诺依曼发表了一片论文论述了计算机使用二进制的可行性与优势后，二进制逐渐成为标准。</p>
 
