@@ -34,6 +34,7 @@ state = false;
 console.log(getVal()); // false
 
 ```
+<!-- more -->
 
 注意我们调用了两次getVal(),但是其输出了不同的结果。而在Haskell中，对变量只有声明，没有赋值。即如果声明了一个值为true的state变量，就无法再将其修改为false。这叫做**变量的不变性**。
 

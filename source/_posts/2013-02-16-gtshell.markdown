@@ -13,6 +13,8 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 它也支持自动完成，你只需要输入开头的几个字母，然后按tab键就可以自动匹配。
 目前源码被我host在[github](https://github.com/huangbowen521/gtShell)上。
 
+<!-- more -->
+
 下面是主要文件gt.sh的源码。
 
 ``` bash gt.sh https://github.com/huangbowen521/gtShell/blob/master/gt.sh gt.sh

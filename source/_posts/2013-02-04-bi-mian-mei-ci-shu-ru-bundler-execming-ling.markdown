@@ -24,6 +24,8 @@ You have already activated rake 10.0.0, but your Gemfile requires rake 0.9.2.2. 
 (See full trace by running task with --trace)
 ```
 
+<!-- more -->
+
 从这个异常中我们可以看到，由于我在自己机器上已经安装了rake的`10.0.0`版本，但是这个项目中配置的rake版本却是`0.9.2.2`，所以在执行rake命令时应该使用Gemfile的。
 
 而`bundle exec`可以在当前bundle的上下文中执行一段脚本。通过它可以调用本项目中指定的rake版本来执行命令。

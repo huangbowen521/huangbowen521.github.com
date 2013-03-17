@@ -11,6 +11,8 @@ tags: JavaScript 读书笔记
 
 这么薄的一本书讲JavaScript的特点介绍的非常清楚，是我对JavaScript的认识更加的深入。以前总觉得函数式编程很难理解，但是看了这本书以后我觉得对其有了一个新的认识。严格意义上说JavaScript并不仅仅是一门函数式编程语言，书中有一句话对它的特性做了一个精彩的描述：JavaScript的许多特性都借鉴自其他语言。语法借鉴自java，函数借鉴自Scheme,原型继承借鉴自Self，而JavaScript的正则表达式特性则借鉴自Perl。
 
+<!-- more -->
+
 JavaScript的简单类型有：数字、字符串、布尔值、null值和undefined值。在JavaScript中，数组是对象，函数是对象，正则表达式是对象。可以使用对象字面量来创建一个新对象： var empty_object = { };
 
 每个对象都连接到一个原型对象，并继承其属性。使用typeof可以确定属性的类型。使用delete可以删除对象的属性。

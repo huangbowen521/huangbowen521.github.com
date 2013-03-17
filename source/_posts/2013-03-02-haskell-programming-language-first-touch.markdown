@@ -16,6 +16,7 @@ Haskell是是一门纯函数式编程语言(purely functional programming langua
 
 别着急，让我们慢慢来解开函数式编程的面纱。
 
+<!-- more -->
 
 ## 安装Haskell
 

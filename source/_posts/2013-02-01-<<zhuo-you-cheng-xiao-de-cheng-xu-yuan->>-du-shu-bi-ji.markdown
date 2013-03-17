@@ -20,6 +20,8 @@ tags: 读书笔记 高效
 
 回顾了一下作者在书中列举的自己感兴趣的东西，顺便对自己做一个总结。（本人使用的是mac pro，所以tool和plugin只关心mac上的。）
 
+<!-- more -->
+
 1. 加载器。作者介绍了quicksilver，而我使用的是launcher。我一般使用它快速打开某个application，还有尝试其他功能，接下来要好好挖掘下。
 
 2. 剪贴版。我还真不知道可以有多个寄存器的剪贴板，out了，立马download了jumpcut,打算试用。

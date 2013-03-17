@@ -9,6 +9,7 @@ tags: [webDriver]
 
 第一次接触Selenium 的WebDriver，是在一个Web项目中。该项目使用它来进行功能性测试。当我看到Firefox中的页面内容被一个个自动填充并且自动跳转的时候，感觉真的很神奇。通过这段时间的学习觉得可以将我学的关于WebDriver的知识进行一个总结。
 
+<!-- more -->
 
 什么是Selenium 和WebDriver？
 ---

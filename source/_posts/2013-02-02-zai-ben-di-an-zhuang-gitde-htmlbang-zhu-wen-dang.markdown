@@ -15,6 +15,7 @@ tags: git HTML 帮助文档
 
 在Windows上设置很简单，主需要安装[Msysgit](http://code.google.com/p/msysgit/),就会自动为你设置起本地的HTML帮助文档。所以这篇文章主要讲在Mac和Linux下该如何实现。
 
+<!-- more -->
 
 **一，运行git help –-web commit查看git默认的保存html文件的路径。**
 
