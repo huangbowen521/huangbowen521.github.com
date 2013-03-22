@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: 泛型 | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/泛型/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-03-23T00:56:25+08:00</updated>
+  <updated>2013-03-23T00:58:01+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -29,6 +29,9 @@
 <li>避免显式强制转换。</li>
 <li>方便实现通用算法。</li>
 </ul>
+
+
+<!-- more -->
 
 
 <h2>对类使用泛型</h2>
