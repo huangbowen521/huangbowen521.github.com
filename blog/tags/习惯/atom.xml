@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: 习惯 | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/习惯/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-03-24T02:53:44+08:00</updated>
+  <updated>2013-03-24T03:06:51+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -36,13 +36,9 @@
 <li>目标必须和其他目标具有相关性（Relevant）</li>
 <li>目标必须具有明确的截止期限（Time-based）</li>
 </ul>
-</li>
-</ol>
 
 
-<p>不可被验证的目标只能说是口号，而喊口号又恰恰是中国人最擅长的。要建立起可验证的目标，还需要对目标进行追踪。在对目标进行追踪验证的过程中可以使用一些工具辅助，比如我使用的就是<a href="https://www.wunderlist.com/">wunderList</a>。</p>
-
-<ol>
+<p> 不可被验证的目标只能说是口号，而喊口号又恰恰是中国人最擅长的。要建立起可验证的目标，还需要对目标进行追踪。在对目标进行追踪验证的过程中可以使用一些工具辅助，比如我使用的就是<a href="https://www.wunderlist.com/">wunderList</a>。</p></li>
 <li><p><strong>使用代码托管网站管理你的代码。</strong> 作为程序员，学习新东西时少不了写一些代码，demo。而后随后就丢掉。这是一种不好的习惯。你应该学会管理你的代码，让它们成为你的宝贵财富。目前有很多免费的代码托管网站，首推<a href="https://github.com/">github</a>。<a href="https://github.com/">github</a>是全球最大的源代码托管网站，很多著名的开源框架都将其源代码托管在上面,如Jquery，Junit,Ruby,Clojure等。在这里，你可以上传你的源代码分享给他人。也可以方便的查看他人的优秀源码。如果你愿意，也可以成为一名志愿者，一起与他人开发一个开源项目。一切只需要一个git客户端和一个github账号就可以搞定。</p></li>
 <li><p><strong>使用日志对知识进行总结。</strong>一个不善于总结的程序员绝不是一个优秀程序员。<a href="http://wiki.mbalib.com/wiki/SMART%E5%8E%9F%E5%88%99">SMART</a>管理中有很重要的一条，那就是目标必须是可衡量的。而我们在学习技术的过程中，除了产出的code本身，日志也是一个重要的可衡量的产出物。你可以记下所犯的错误，以避免重犯，也可以记下自己的所得，梳理思路。推荐一款日志工具<a href="http://evernote.com/">evernote</a>。它支持几乎所有的操作系统和mobile平台，并可以方便的将日志同步到云端。对于一些日志你可以再加工一下发表到博客上，接受大家的检阅，并扩大自己的影响力。另外，<a href="http://en.wikipedia.org/wiki/Mind_map">mind map</a>也是不错的梳理思路、回顾总结的好方式。比如我学习了正则表达式，就画了一张mind map来记录正则表达式的全部语法，以后如有遗忘只需看一下<a href="http://huangbowen.net/images/RegularExpression.png">该图表</a>即可。</p></li>
 <li><p><strong>阅读成为你的日常习惯。</strong>软件工程是一种知识生产活动，前人的经验的载体就是文字。作为IT人士，知识更迭是很频繁的，不了解外面的世界很容易被遗弃。我们不仅要热爱阅读，还要读好书，读好文章。养成良好的阅读习惯是每个程序员应当具备的素质之一。这里推荐一个网站，<a href="http://www.douban.com/">豆瓣读书</a>。上面有很多技术书籍的信息，书评等，可以成为你阅读的一个参考。另外，鄙人也强烈推荐了一些好书，想看的可以访问<a href="http://huangbowen.net/blog/2013/02/18/thoughtworks-reading-book/">这里</a>。</p></li>
