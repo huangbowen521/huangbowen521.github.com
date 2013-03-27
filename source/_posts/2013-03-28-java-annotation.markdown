@@ -14,6 +14,7 @@ tags: [Java, annotation]
 **Annotation翻译为中文即为注解，意思就是提供除了程序本身逻辑外的额外的数据信息。**Annotation对于标注的代码没有直接的影响，它不可以直接与标注的代码产生交互，但其他组件可以使用这些信息。
 
 Annotation信息可以被编译进class文件，也可以保留在Java 虚拟机中，从而在运行时可以获取。甚至对于Annotation本身也可以加Annotation。      
+<!-- more -->
 
 ##那些对象可以加Annotation
 
