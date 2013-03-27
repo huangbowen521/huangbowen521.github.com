@@ -4,7 +4,7 @@ title: Java基础知识之Annotation
 date: 2013-03-28 01:01
 comments: true
 categories: Java学习
-tags: [Java, Annotation]
+tags: [Java, annotation]
 ---
 
 
@@ -155,8 +155,10 @@ public class Person {
 
 输出：
 
-```concole
-walking 
+```console
+
+walking
+
 ```
 
 我们也可以给自定义的Annotation加方法。 
