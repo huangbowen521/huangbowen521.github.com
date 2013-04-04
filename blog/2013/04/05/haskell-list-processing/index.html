@@ -1,0 +1,622 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Haskell函数式编程之List操作 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="List在函数式语言中是一个重要的抽象，很多事情离了它就很难做到。函数式语言的鼻祖Lisp名称就来自List processing。 Haskell本身也给List操作提供了一系列的操作符以及库函数。 对列表操作的运算符 :将一个元素放置到列表的前端。 1
+2
+3
+4
+5
+6
+7
+8 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/04/05/haskell-list-processing/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Haskell函数式编程之List操作</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-05T01:20:00+08:00" pubdate data-updated="true">Apr 5<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>List在函数式语言中是一个重要的抽象，很多事情离了它就很难做到。函数式语言的鼻祖Lisp名称就来自List processing。</p>
+
+<p>Haskell本身也给List操作提供了一系列的操作符以及库函数。</p>
+
+<!-- more -->
+
+
+<h2>对列表操作的运算符</h2>
+
+<p><strong><code>:</code>将一个元素放置到列表的前端。</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; 1 : <span class="o">[]</span>
+</span><span class='line'><span class="o">[</span>1<span class="o">]</span>
+</span><span class='line'>Prelude&gt; 2 : <span class="o">[</span>3,4,5<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>2,3,4,5<span class="o">]</span>
+</span><span class='line'>Prelude&gt; <span class="s1">&#39;a&#39;</span> : <span class="o">[</span><span class="s1">&#39;g&#39;</span>,<span class="s1">&#39;h&#39;</span>,<span class="s1">&#39;d&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="s2">&quot;aghd&quot;</span>
+</span><span class='line'>Prelude&gt; <span class="s1">&#39;a&#39;</span> : <span class="s2">&quot;ghd&quot;</span>
+</span><span class='line'><span class="s2">&quot;aghd&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>从上面例子可以看出一个字符串其实就是Char型的列表。
+我们可以这样验证。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="s2">&quot;abc&quot;</span> <span class="o">==</span> <span class="o">[</span><span class="s1">&#39;a&#39;</span>,<span class="s1">&#39;b&#39;</span>,<span class="s1">&#39;c&#39;</span><span class="o">]</span>
+</span><span class='line'>True
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong><code>++</code> 连接两个列表。</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="o">[</span>1,2,3<span class="o">]</span> ++ <span class="o">[</span>4,5,6<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>1,2,3,4,5,6<span class="o">]</span>
+</span><span class='line'>Prelude&gt; <span class="s2">&quot;abc&quot;</span> ++ <span class="s2">&quot;efg&quot;</span>
+</span><span class='line'><span class="s2">&quot;abcefg&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>使用Range</h2>
+
+<p>如果要声明一个1到20的数组，除了将这些数字一一列举出来，我们还可以使用Range来实现，操作符是<code>..</code>。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="o">[</span>1..10<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>1,2,3,4,5,6,7,8,9,10<span class="o">]</span>
+</span><span class='line'>Prelude&gt; <span class="o">[</span><span class="s1">&#39;a&#39;</span>..<span class="s1">&#39;h&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="s2">&quot;abcdefgh&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Range的默认步长是1，我们可以指定其步长。方法就是给出前两个元素再加上结尾元素，Haskell会根据前两个元素推断出步长，并应用。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="o">[</span>1,3..21<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>1,3,5,7,9,11,13,15,17,19,21<span class="o">]</span>
+</span><span class='line'>Prelude&gt; <span class="o">[</span>1,3..20<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>1,3,5,7,9,11,13,15,17,19<span class="o">]</span>
+</span><span class='line'>Prelude&gt; <span class="o">[</span><span class="s1">&#39;a&#39;</span>,<span class="s1">&#39;c&#39;</span>..<span class="s1">&#39;k&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="s2">&quot;acegik&quot;</span>
+</span><span class='line'>Prelude&gt; <span class="o">[</span>20,18..0<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>20,18,16,14,12,10,8,6,4,2,0<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>使用集合生成新的列表</h2>
+
+<p>Haskell对List的操作还有一种神奇的方式。下面是一个数学公式，我们在初中肯定学过。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">S = { x | x ∈ N, x &lt; 10}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>S是一个目标集合，N是源集合，S中的元素是属于集合N,并且小于10的元素。</p>
+
+<p>而在Haskell中可以直接使用这种语法。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nb">let </span><span class="nv">list</span> <span class="o">=</span> <span class="o">[</span>1,2,3,4,5,6<span class="o">]</span>
+</span><span class='line'>Prelude&gt; <span class="o">[</span>x | x &lt;- list, x &lt; 3<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>1,2<span class="o">]</span>
+</span><span class='line'>Prelude&gt; <span class="o">[</span>x | x &lt;- list, x &lt; 3, x &gt; 1<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>2<span class="o">]</span>
+</span><span class='line'>Prelude&gt; <span class="o">[</span>x * 2 | x &lt;- list, x &lt; 3<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>2,4<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>常用的列表操作函数</h2>
+
+<p>在<a href="http://huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature/">《Haskell函数式编程之特性篇》</a>中我们定义了一个map函数。它就是对列表的每个元素进行一个函数元素生成另一个列表。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">map&#39;</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">map&#39;</span> <span class="n">f</span> <span class="kt">[]</span> <span class="ow">=</span> <span class="kt">[]</span>
+</span><span class='line'><span class="nf">map&#39;</span> <span class="n">f</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span><span class="n">f</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">map&#39;</span> <span class="n">f</span> <span class="n">xs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们可以再定义一个filter函数，用于对列表进行过滤。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">filter&#39;</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">filter&#39;</span> <span class="n">f</span> <span class="kt">[]</span> <span class="ow">=</span> <span class="kt">[]</span>
+</span><span class='line'><span class="nf">filter&#39;</span> <span class="n">f</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span>
+</span><span class='line'>     <span class="o">|</span> <span class="n">f</span> <span class="n">x</span>       <span class="ow">=</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">filter&#39;</span> <span class="n">f</span> <span class="n">xs</span>
+</span><span class='line'>     <span class="o">|</span> <span class="n">otherwise</span> <span class="ow">=</span> <span class="n">filter&#39;</span> <span class="n">f</span> <span class="n">xs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>除此之外，Haskell还有大量的库函数用于对list进行操作。我们可以自己一一实现它。</p>
+
+<p>head函数用于获取列表的第一个元素。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">head&#39;</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">x</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>tail函数获取列表的除第一个元素外的所有元素。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">tail&#39;</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">xs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>last函数是获取列表的最后一个元素。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">last&#39;</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span>
+</span><span class='line'>     <span class="o">|</span> <span class="n">null</span> <span class="n">xs</span> <span class="ow">=</span> <span class="n">x</span>
+</span><span class='line'>     <span class="o">|</span> <span class="n">otherwise</span> <span class="ow">=</span> <span class="n">last&#39;</span> <span class="n">xs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>init函数返回列表中除最后一个的其他元素。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">init&#39;</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span>
+</span><span class='line'>     <span class="o">|</span> <span class="n">null</span> <span class="n">xs</span> <span class="ow">=</span> <span class="kt">[]</span>
+</span><span class='line'>     <span class="o">|</span> <span class="n">otherwise</span> <span class="ow">=</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">init&#39;</span> <span class="n">xs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你看使用Haskell实现这样的函数是如此的简单。注意这些函数都没有做对空列表的处理。如果给这些函数传递一个空列表会抛出异常。使用Haskll提供的库函数也一样。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="kt">Prelude</span><span class="o">&gt;</span> <span class="n">head</span> <span class="kt">[]</span>
+</span><span class='line'><span class="o">***</span> <span class="kt">Exception:</span> <span class="kt">Prelude</span><span class="o">.</span><span class="n">head</span><span class="kt">:</span> <span class="n">empty</span> <span class="n">list</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>fold</h2>
+
+<p>对list的操作中我们经常会有这样一个情况，就是给定一个初始值，对list的每个元素进行一个操作，最后得出一个结果,这就像将列表折叠起来一样。比如求数组的最大值、最小值、求和都是这样的模式。Haskell中有相应的函数来实现这种pattern。我们可以自己实现一下。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">foldl&#39;</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">a</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">foldl&#39;</span> <span class="n">f</span> <span class="n">s</span> <span class="kt">[]</span> <span class="ow">=</span> <span class="n">s</span>
+</span><span class='line'><span class="nf">foldl&#39;</span> <span class="n">f</span> <span class="n">s</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">foldl&#39;</span> <span class="n">f</span> <span class="p">(</span><span class="n">f</span> <span class="n">s</span> <span class="n">x</span><span class="p">)</span> <span class="n">xs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>foldl&#8217;函数接收一个函数（这个函数接收一个a类型的值，b类型的值，并返回一个a类型值），一个a类型的值，一个b类型的列表，返回值为a类型的值。 （注意其中的a，b类型并不是确定的类型，它只是代表某类型，这有点像其他编程语言中的泛型。a,b的具体类型是由调用fold&#8217;时传入的具体参数推断出来的。）</p>
+
+<p>我们可以用它来计算一个数组的和。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>*Main&gt; foldl<span class="err">&#39;</span> <span class="o">(</span><span class="se">\ </span>s x -&gt; s + x<span class="o">)</span>  0 <span class="o">[</span>1,2,3<span class="o">]</span>
+</span><span class='line'>6
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>它与我们在Haskell函数式编程之2中提到的sum&#8217; 函数是等价的。
+注意这是一个左flod。即它是对列表的每个元素按照从左到右的顺序进行函数运算。</p>
+
+<p>我们也可以实现一个右fold。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">foldr&#39;</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">a</span>
+</span><span class='line'><span class="nf">foldr&#39;</span> <span class="n">f</span> <span class="n">s</span> <span class="kt">[]</span> <span class="ow">=</span> <span class="n">s</span>
+</span><span class='line'><span class="nf">foldr&#39;</span> <span class="n">f</span> <span class="n">s</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">f</span> <span class="p">(</span><span class="n">foldr&#39;</span> <span class="n">f</span> <span class="n">s</span> <span class="n">xs</span><span class="p">)</span> <span class="n">x</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>*Main&gt; foldr<span class="err">&#39;</span> <span class="o">(</span><span class="se">\ </span>s x -&gt; s + x<span class="o">)</span>  0 <span class="o">[</span>1,2,3<span class="o">]</span>
+</span><span class='line'>6
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在右fold中，对列表进行函数运算的顺序是从右到左。其实我们可以使用左fold来构造一个右fold。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">foldr2</span> <span class="n">f</span> <span class="n">s</span> <span class="kt">[]</span> <span class="ow">=</span> <span class="n">s</span>
+</span><span class='line'><span class="nf">foldr2</span> <span class="n">f</span> <span class="n">s</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">f</span> <span class="n">s</span> <span class="p">(</span><span class="n">foldl&#39;</span> <span class="n">f</span> <span class="n">x</span> <span class="n">xs</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>*Main&gt; foldr2 <span class="o">(</span><span class="se">\ </span>s x -&gt; s + x<span class="o">)</span>  0 <span class="o">[</span>1,2,3<span class="o">]</span>
+</span><span class='line'>6
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>只不过这个右fold有个局限性，那就是a，b两个必须是同一个类型。</p>
+
+<p>我们甚至可以用fold来实现map及filter等函数。</p>
+
+<p>使用左fold实现map和filter。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">map2</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span>
+</span><span class='line'><span class="nf">map2</span> <span class="n">f</span> <span class="n">xs</span> <span class="ow">=</span><span class="n">foldl&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">s</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">s</span> <span class="o">++</span> <span class="p">[</span><span class="n">f</span> <span class="n">x</span><span class="p">])</span> <span class="kt">[]</span> <span class="n">xs</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">filter2</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+</span><span class='line'><span class="nf">filter2</span> <span class="n">f</span> <span class="kt">[]</span> <span class="ow">=</span> <span class="kt">[]</span>
+</span><span class='line'><span class="nf">filter2</span> <span class="n">f</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">foldl&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">s</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kr">if</span> <span class="n">f</span> <span class="n">x</span> <span class="kr">then</span> <span class="n">s</span> <span class="o">++</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="kr">else</span> <span class="n">s</span> <span class="p">)</span> <span class="kt">[]</span> <span class="n">xs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用右fold来实现map和filter。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">map3</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">b</span>
+</span><span class='line'><span class="nf">map3</span> <span class="n">f</span> <span class="n">xs</span> <span class="ow">=</span><span class="n">foldr&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">s</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">f</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">s</span><span class="p">)</span> <span class="kt">[]</span> <span class="n">xs</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">filter3</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+</span><span class='line'><span class="nf">filter3</span> <span class="n">f</span> <span class="kt">[]</span> <span class="ow">=</span> <span class="kt">[]</span>
+</span><span class='line'><span class="nf">filter3</span> <span class="n">f</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">foldr&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">s</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kr">if</span> <span class="n">f</span> <span class="n">x</span> <span class="kr">then</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">s</span> <span class="kr">else</span> <span class="n">s</span><span class="p">)</span> <span class="kt">[]</span> <span class="n">xs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由于<code>++</code>效率没有<code>:</code>高，所以生成结果为list的时候最好使用右fold。</p>
+
+<p>以上就是关于List操作的各种知识了。其实Haskell中的列表就是一个函数，一个包装了一系列元素的函数。我们甚至可以自己实现自己的List函数。等有空的时候一起实现下。</p>
+
+<p>另外，本篇文章所有源码被我放置在github中，地址是<a href="https://github.com/huangbowen521/HaskellLearning">https://github.com/huangbowen521/HaskellLearning</a>,想要源码的可以自行下载。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-05T01:20:00+08:00" pubdate data-updated="true">Apr 5<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/haskell/'>Haskell</a>
+  
+</span>
+
+
+      
+
+<span class="tags">
+  
+    <a class='tag' href='/blog/tags/fold/'>fold</a>, <a class='tag' href='/blog/tags/haskell/'>haskell</a>, <a class='tag' href='/blog/tags/list/'>list</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.huangbowen.net/blog/2013/04/05/haskell-list-processing/" data-via="huangbowen521@gmail.com" data-counturl="http://www.huangbowen.net/blog/2013/04/05/haskell-list-processing/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/04/03/change-method-signature/" title="Previous Post: 修改方法签名的重构手法">&laquo; 修改方法签名的重构手法</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>程序员一枚。</p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/05/haskell-list-processing/">Haskell函数式编程之List操作</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/03/change-method-signature/">修改方法签名的重构手法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/01/min-jie-de-xie-bo-ke/">敏捷的写博客</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/28/java-annotation/">Java基础知识之Annotation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/24/senior-programer-good-habits/">优秀程序员无他-善假于物也</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/04/05/haskell-list-processing/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/04/05/haskell-list-processing/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
