@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: Testacular | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/testacular/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-04-09T02:21:16+08:00</updated>
+  <updated>2013-04-09T02:25:08+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Karma(原名Testacular与WebStorm进行集成)]]></title>
+    <title type="html"><![CDATA[Karma(原名Testacular)与WebStorm进行集成]]></title>
     <link href="http://www.huangbowen.net/blog/2013/04/09/integrate-karma-to-webstorm/"/>
     <updated>2013-04-09T01:59:00+08:00</updated>
     <id>http://www.huangbowen.net/blog/2013/04/09/integrate-karma-to-webstorm</id>
@@ -81,10 +81,11 @@
 <ol>
 <li><p>在源代码中设置断点。</p></li>
 <li><p>在WebStorm中启动Karma server，就是运行我们定义的Karma Runner。</p></li>
-<li><p>在WebStorm中运行我们定义的Karma Debug。
-注意第一次运行时WebStorm会提醒你在浏览器上安装相应的插件。</p></li>
+<li><p>在WebStorm中运行我们定义的Karma Debug。</p></li>
 </ol>
 
+
+<p>注意第一次运行时WebStorm会提醒你在浏览器上安装相应的插件。</p>
 
 <p><img src="/images/debugging.png"></p>
 ]]></content>
