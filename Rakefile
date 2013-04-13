@@ -382,6 +382,12 @@ task :weibo do
   system "ruby _custom/post_weibo.rb"
 end
 
+desc "sync blog to bokeyuan"
+task :sync do
+  puts "Sync the latest blog to bokeyuan"
+  system "ruby _custom/sync_post.rb"
+end
+
 desc "list tasks"
 task :list do
   puts "Tasks: #{(Rake::Task.tasks - [Rake::Task[:list]]).join(', ')}"

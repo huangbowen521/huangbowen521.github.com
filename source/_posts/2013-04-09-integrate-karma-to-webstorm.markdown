@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Karma(原名Testacular与WebStorm进行集成)
+title: Karma(原名Testacular)与WebStorm进行集成
 date: 2013-04-09 01:59
 comments: true
 categories: 工具
@@ -76,6 +76,7 @@ tags: [Karma, Testacular, WebStorm]
 2. 在WebStorm中启动Karma server，就是运行我们定义的Karma Runner。
 
 3. 在WebStorm中运行我们定义的Karma Debug。
+
 注意第一次运行时WebStorm会提醒你在浏览器上安装相应的插件。
 
 
