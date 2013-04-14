@@ -382,11 +382,12 @@ task :weibo do
   system "ruby _custom/post_weibo.rb"
 end
 
-desc "sync blog to bokeyuan"
+desc "sync post to MetaWeblog site"
 task :sync do
-  puts "Sync the latest blog to bokeyuan"
+  puts "Sync the latest post to MetaWeblog site"
   system "ruby _custom/sync_post.rb"
 end
+
 
 desc "list tasks"
 task :list do
