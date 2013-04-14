@@ -32,7 +32,7 @@ The second gem is used to parse html.)
 
 * 在_config.yml文件中加入MetaWeblog的配置。
 
-```xml
+```yaml
 
 # MetaWeblog
 MetaWeblog_username: *YOURUSERNAME*
@@ -44,7 +44,7 @@ MetaWeblog_blogid: *BlogID*  //can be any number
 
 下面是配置[cnblogs]的一个示例。
 
-```xml
+```yaml
 
 # MetaWeblog
 MetaWeblog_username: huang0925
