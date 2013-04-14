@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: sync | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/sync/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-04-14T22:20:23+08:00</updated>
+  <updated>2013-04-14T22:29:43+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -20,59 +20,73 @@
     <id>http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post</id>
     <content type="html"><![CDATA[<p>即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易......）</p>
 
-<p>这款插件源码被host在github上，地址是https://github.com/huangbowen521/octopress-syncPost。</p>
+<p>这款插件源码被host在github上，地址是<a href="https://github.com/huangbowen521/octopress-syncPost">https://github.com/huangbowen521/octopress-syncPost</a>。</p>
+
+<!-- more -->
+
 
 <p>下面介绍下如何配置和使用。</p>
 
 <h2>配置</h2>
 
-<ol>
+<ul>
 <li><p>迁出源码，将源码里的_custom文件夹及其里面的文件拷贝到你的octopress根目录中。</p></li>
-<li><p>在Gemfile中加入这两个依赖.</p>
+<li><p>在Gemfile中加入这两个依赖.</p></li>
+</ul>
 
-<p> <code>ruby
-   gem 'metaweblog', '~&gt; 0.1.0'
-   gem 'nokogiri', '~&gt; 1.5.9'
+
+<p><code>ruby
+  gem 'metaweblog', '~&gt; 0.1.0'
+  gem 'nokogiri', '~&gt; 1.5.9'
 </code>
- (The first gem is used to send post with MetaWeblog API.
- The second gem is used to parse html.)</p>
+(The first gem is used to send post with MetaWeblog API.
+The second gem is used to parse html.)</p>
 
-<p> 然后在终端下运行<code>bundle install</code> 安装这两个Gem.</p></li>
-<li><p>在_config.yml文件中加入MetaWeblog的配置。</p>
+<p>然后在终端下运行<code>bundle install</code> 安装这两个Gem.</p>
 
-<p> ```xml</p>
+<ul>
+<li>在_config.yml文件中加入MetaWeblog的配置。</li>
+</ul>
 
-<p> # MetaWeblog
- MetaWeblog_username: <em>YOURUSERNAME</em>
- MetaWeblog_password: <em>YOURPASSWORD</em>
- MetaWeblog_url: <em>YOURBLOGMETAWEBLOGURL</em>
- MetaWeblog_blogid: <em>BlogID</em>  //can be any number</p>
 
-<p> ```
-下面是配置<a href="http://www.cnblogs.com/">cnblogs</a>的一个示例。</p>
+<p>```xml</p>
 
-<p>  ```xml</p>
+<h1>MetaWeblog</h1>
 
-<p>  # MetaWeblog
-  MetaWeblog_username: huang0925
-  MetaWeblog_password: XXXXXXXXXX
-  MetaWeblog_url: http://www.cnblogs.com/huang0925/services/metaweblog.aspx
-  MetaWeblog_blogid: 145005</p>
+<p>MetaWeblog_username: <em>YOURUSERNAME</em>
+MetaWeblog_password: <em>YOURPASSWORD</em>
+MetaWeblog_url: <em>YOURBLOGMETAWEBLOGURL</em>
+MetaWeblog_blogid: <em>BlogID</em>  //can be any number</p>
 
-<p>  ```</p></li>
-<li><p>在Rakefile加入这个task。</p>
+<p>```</p>
 
-<p> ```ruby</p>
+<p>下面是配置<a href="http://www.cnblogs.com/">cnblogs</a>的一个示例。</p>
 
-<p> desc "sync post to MetaWeblog site"
- task :sync_post do
-   puts "Sync the latest post to MetaWeblog site"
-   system "ruby _custom/sync_post.rb"
- end</p>
+<p>```xml</p>
 
-<p> ```</p></li>
-</ol>
+<h1>MetaWeblog</h1>
 
+<p>MetaWeblog_username: huang0925
+MetaWeblog_password: XXXXXXXXXX
+MetaWeblog_url: http://www.cnblogs.com/huang0925/services/metaweblog.aspx
+MetaWeblog_blogid: 145005</p>
+
+<p>```</p>
+
+<ul>
+<li>在Rakefile加入这个task。</li>
+</ul>
+
+
+<p>```ruby</p>
+
+<p>desc "sync post to MetaWeblog site"
+task :sync_post do
+  puts "Sync the latest post to MetaWeblog site"
+  system "ruby _custom/sync_post.rb"
+end</p>
+
+<p>```</p>
 
 <h2>如何使用</h2>
 
@@ -85,22 +99,22 @@
 <p><strong>请注意:</strong></p>
 
 <ol>
-<li><p>Check the image url in your post, to fix the image url issue.</p></li>
-<li><p>Some website require you enable MetaWeblog features in the dashboard. (ect. <a href="http://www.cnblogs.com/">cnblogs</a>)</p></li>
+<li><p>发布完后请检查image的链接是否正确（如果原博客使用的image链接是相对路径则需要进行修正）。</p></li>
+<li><p>一些站点需要你启用MetaWeblog功能。（如<a href="http://www.cnblogs.com/">cnblogs</a>的管理页面有这个设置选项。）</p></li>
 </ol>
 
 
-<h2>How to keep same styling</h2>
+<h2>如何保持相应的样式。</h2>
 
-<p>Use <a href="http://www.cnblogs.com/">cnblogs</a> as a example.</p>
+<p>使用<a href="http://www.cnblogs.com/">cnblogs</a>作为一个例子.</p>
 
 <ol>
-<li><p>use file uploader in cnblogs dashboard to upload screen.css file in your octopress project.</p></li>
-<li><p>config the '页首html代码' in cnblogs dashboard to use the screen.css file.</p></li>
+<li><p>将你的octopress中的screen.css通过博客园提供的文件管理上传到博客园中.</p></li>
+<li><p>在博客设置中的'页首html代码'中加入对screen.css文件的使用.</p></li>
 </ol>
 
 
-<h2>Some websites which support MetaWeblog API.</h2>
+<h2>一些支持MetaWeblog API的站点.</h2>
 
 <ul>
 <li><p>Wordpress</p>

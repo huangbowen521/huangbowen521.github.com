@@ -110,114 +110,14 @@
 
   <div class="entry-content"><p>即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易&#8230;&#8230;）</p>
 
-<p>这款插件源码被host在github上，地址是https://github.com/huangbowen521/octopress-syncPost。</p>
-
-<p>下面介绍下如何配置和使用。</p>
-
-<h2>配置</h2>
-
-<ol>
-<li><p>迁出源码，将源码里的_custom文件夹及其里面的文件拷贝到你的octopress根目录中。</p></li>
-<li><p>在Gemfile中加入这两个依赖.</p>
-
-<p> <code>ruby
-   gem 'metaweblog', '~&gt; 0.1.0'
-   gem 'nokogiri', '~&gt; 1.5.9'
-</code>
- (The first gem is used to send post with MetaWeblog API.
- The second gem is used to parse html.)</p>
-
-<p> 然后在终端下运行<code>bundle install</code> 安装这两个Gem.</p></li>
-<li><p>在_config.yml文件中加入MetaWeblog的配置。</p>
-
-<p> &#8220;`xml</p>
-
-<p> # MetaWeblog
- MetaWeblog_username: <em>YOURUSERNAME</em>
- MetaWeblog_password: <em>YOURPASSWORD</em>
- MetaWeblog_url: <em>YOURBLOGMETAWEBLOGURL</em>
- MetaWeblog_blogid: <em>BlogID</em>  //can be any number</p>
-
-<p> &#8220;`
-下面是配置<a href="http://www.cnblogs.com/">cnblogs</a>的一个示例。</p>
-
-<p>  &#8220;`xml</p>
-
-<p>  # MetaWeblog
-  MetaWeblog_username: huang0925
-  MetaWeblog_password: XXXXXXXXXX
-  MetaWeblog_url: http://www.cnblogs.com/huang0925/services/metaweblog.aspx
-  MetaWeblog_blogid: 145005</p>
-
-<p>  &#8220;`</p></li>
-<li><p>在Rakefile加入这个task。</p>
-
-<p> &#8220;`ruby</p>
-
-<p> desc &#8220;sync post to MetaWeblog site&#8221;
- task :sync_post do
-   puts &#8220;Sync the latest post to MetaWeblog site&#8221;
-   system &#8220;ruby _custom/sync_post.rb&#8221;
- end</p>
-
-<p> &#8220;`</p></li>
-</ol>
-
-
-<h2>如何使用</h2>
-
-<ol>
-<li><p>运行 <code>rake generate</code> 生成最新的站点文件。</p></li>
-<li><p>运行 <code>rake sync_post</code> 将最新的一篇博客同步到你的站点。</p></li>
-</ol>
-
-
-<p><strong>请注意:</strong></p>
-
-<ol>
-<li><p>Check the image url in your post, to fix the image url issue.</p></li>
-<li><p>Some website require you enable MetaWeblog features in the dashboard. (ect. <a href="http://www.cnblogs.com/">cnblogs</a>)</p></li>
-</ol>
-
-
-<h2>How to keep same styling</h2>
-
-<p>Use <a href="http://www.cnblogs.com/">cnblogs</a> as a example.</p>
-
-<ol>
-<li><p>use file uploader in cnblogs dashboard to upload screen.css file in your octopress project.</p></li>
-<li><p>config the &#8216;页首html代码&#8217; in cnblogs dashboard to use the screen.css file.</p></li>
-</ol>
-
-
-<h2>Some websites which support MetaWeblog API.</h2>
-
-<ul>
-<li><p>Wordpress</p>
-
-<p>  If your WordPress root is http://example.com/wordpress/, then you have:
-  Server: http://example.com/ (some tools need just the &#8216;example.com&#8217; hostname part)
-  Path: /wordpress/xmlrpc.php
-  complete URL (just in case): http://example.com/wordpress/xmlrpc.php</p></li>
-<li><p>51CTO.com</p>
-
-<p>  URL：http://<yourBlogUrl>/xmlrpc.php（example: http://magong.blog.51cto.com/xmlrpc.php）</p></li>
-<li><p>博客大巴</p>
-
-<p>  URL：http://www.blogbus.com/<accountName>/app.php（example: http://www.blogbus.com/holly0801/app.php</p></li>
-<li><p>CSDN</p>
-
-<p>  URL：http://hi.csdn.net/<accountName>/services/metablogapi.aspx（example: http://hi.csdn.net/bvbook/services/metablogapi.aspx）</p></li>
-<li><p>博客园</p>
-
-<p>  URL：http://www.cnblogs.com/<accountName>/services/metaweblog.aspx（example: http://www.cnblogs.com/bvbook/services/metaweblog.aspx）</p></li>
-<li><p>网易</p>
-
-<p>  URL: http://<accountName>.blog.163.com/ (example: http://huang0925.blog.163.com/).</p></li>
-</ul>
+<p>这款插件源码被host在github上，地址是<a href="https://github.com/huangbowen521/octopress-syncPost">https://github.com/huangbowen521/octopress-syncPost</a>。</p>
 
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/04/14/octopress-plugin-to-sync-post/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
