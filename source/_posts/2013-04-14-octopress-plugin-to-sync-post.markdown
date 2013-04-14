@@ -11,6 +11,8 @@ tags: [plugin, octopress, sync]
 
 这款插件源码被host在github上，地址是https://github.com/huangbowen521/octopress-syncPost。
 
+<!-- more -->
+
 下面介绍下如何配置和使用。
 
 ## 配置
@@ -71,20 +73,20 @@ tags: [plugin, octopress, sync]
 
 **请注意:** 
 
-1. Check the image url in your post, to fix the image url issue.
+1. 发布完后请检查image的链接是否正确（如果原博客使用的image链接是相对路径则需要进行修正）。
 
-2. Some website require you enable MetaWeblog features in the dashboard. (ect. [cnblogs])
+2. 一些站点需要你启用MetaWeblog功能。（如[cnblogs]的管理页面有这个设置选项。）
 
-## How to keep same styling
+## 如何保持相应的样式。
 
-Use [cnblogs] as a example.
+使用[cnblogs]作为一个例子.
 
-1. use file uploader in cnblogs dashboard to upload screen.css file in your octopress project.
+1. 将你的octopress中的screen.css通过博客园提供的文件管理上传到博客园中.
 
-2. config the '页首html代码' in cnblogs dashboard to use the screen.css file.
+2. 在博客设置中的'页首html代码'中加入对screen.css文件的使用.
 
 
-## Some websites which support MetaWeblog API.
+## 一些支持MetaWeblog API的站点.
 
 * Wordpress
 
