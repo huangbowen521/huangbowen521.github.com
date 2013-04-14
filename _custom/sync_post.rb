@@ -19,6 +19,8 @@ module MetaWeblogSync
       blogHtml = getBlogHtml blogPath
       post = getPost blogHtml
 
+
+      puts 'posting new blog:' + post[:title]
       response = @blogClient.post(post)
       puts 'post fuccessfully. new blog id:' + response
 
@@ -45,7 +47,7 @@ module MetaWeblogSync
     def getPost html
 
       # get post title
-      title = html.css('//title')[0].content
+      title = html.css('//h1[@class="entry-title"]')[0].content
 
       # get post content
       entryContent = html.css('//div[@class="entry-content"]')[0].to_html

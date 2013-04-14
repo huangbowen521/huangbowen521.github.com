@@ -383,7 +383,7 @@ task :weibo do
 end
 
 desc "sync post to MetaWeblog site"
-task :sync do
+task :sync_post do
   puts "Sync the latest post to MetaWeblog site"
   system "ruby _custom/sync_post.rb"
 end
