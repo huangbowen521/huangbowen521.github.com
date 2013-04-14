@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-04-14T22:29:43+08:00</updated>
+  <updated>2013-04-14T22:38:41+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -57,11 +57,11 @@ The second gem is used to parse html.)</p>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'># MetaWeblog
-</span><span class='line'>MetaWeblog_username: *YOURUSERNAME*
-</span><span class='line'>MetaWeblog_password: *YOURPASSWORD*
-</span><span class='line'>MetaWeblog_url: *YOURBLOGMETAWEBLOGURL*
-</span><span class='line'>MetaWeblog_blogid: *BlogID*  //can be any number
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="c1"># MetaWeblog</span>
+</span><span class='line'><span class="l-Scalar-Plain">MetaWeblog_username</span><span class="p-Indicator">:</span> <span class="nv">*YOURUSERNAME</span><span class="err">*</span>
+</span><span class='line'><span class="l-Scalar-Plain">MetaWeblog_password</span><span class="p-Indicator">:</span> <span class="nv">*YOURPASSWORD</span><span class="err">*</span>
+</span><span class='line'><span class="l-Scalar-Plain">MetaWeblog_url</span><span class="p-Indicator">:</span> <span class="nv">*YOURBLOGMETAWEBLOGURL</span><span class="err">*</span>
+</span><span class='line'><span class="l-Scalar-Plain">MetaWeblog_blogid</span><span class="p-Indicator">:</span> <span class="nv">*BlogID</span><span class="err">*</span>  <span class="l-Scalar-Plain">//can be any number</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -72,11 +72,11 @@ The second gem is used to parse html.)</p>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'># MetaWeblog
-</span><span class='line'>MetaWeblog_username: huang0925
-</span><span class='line'>MetaWeblog_password: XXXXXXXXXX
-</span><span class='line'>MetaWeblog_url: http://www.cnblogs.com/huang0925/services/metaweblog.aspx
-</span><span class='line'>MetaWeblog_blogid: 145005
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="c1"># MetaWeblog</span>
+</span><span class='line'><span class="l-Scalar-Plain">MetaWeblog_username</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">huang0925</span>
+</span><span class='line'><span class="l-Scalar-Plain">MetaWeblog_password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">XXXXXXXXXX</span>
+</span><span class='line'><span class="l-Scalar-Plain">MetaWeblog_url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://www.cnblogs.com/huang0925/services/metaweblog.aspx</span>
+</span><span class='line'><span class="l-Scalar-Plain">MetaWeblog_blogid</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">145005</span>
 </span></code></pre></td></tr></table></div></figure>
 
 

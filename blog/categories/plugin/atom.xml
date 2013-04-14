@@ -4,7 +4,7 @@
   <title><![CDATA[Category: plugin | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/plugin/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-04-14T22:29:43+08:00</updated>
+  <updated>2013-04-14T22:38:41+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -49,7 +49,7 @@ The second gem is used to parse html.)</p>
 </ul>
 
 
-<p>```xml</p>
+<p>```yaml</p>
 
 <h1>MetaWeblog</h1>
 
@@ -62,7 +62,7 @@ MetaWeblog_blogid: <em>BlogID</em>  //can be any number</p>
 
 <p>下面是配置<a href="http://www.cnblogs.com/">cnblogs</a>的一个示例。</p>
 
-<p>```xml</p>
+<p>```yaml</p>
 
 <h1>MetaWeblog</h1>
 
