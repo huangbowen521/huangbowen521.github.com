@@ -9,7 +9,7 @@ tags: [plugin, octopress, sync]
 
 即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易......）
 
-这款插件源码被host在github上，地址是https://github.com/huangbowen521/octopress-syncPost。
+这款插件源码被host在github上，地址是<https://github.com/huangbowen521/octopress-syncPost>。
 
 <!-- more -->
 
@@ -17,53 +17,54 @@ tags: [plugin, octopress, sync]
 
 ## 配置
 
-1. 迁出源码，将源码里的_custom文件夹及其里面的文件拷贝到你的octopress根目录中。
+* 迁出源码，将源码里的_custom文件夹及其里面的文件拷贝到你的octopress根目录中。
 
-2. 在Gemfile中加入这两个依赖.
+* 在Gemfile中加入这两个依赖.
 
-	```ruby
-	  gem 'metaweblog', '~> 0.1.0'
-	  gem 'nokogiri', '~> 1.5.9'
-	```
-	(The first gem is used to send post with MetaWeblog API.
-	The second gem is used to parse html.)
+```ruby
+  gem 'metaweblog', '~> 0.1.0'
+  gem 'nokogiri', '~> 1.5.9'
+```
+(The first gem is used to send post with MetaWeblog API.
+The second gem is used to parse html.)
 
-	然后在终端下运行`bundle install` 安装这两个Gem.
+然后在终端下运行`bundle install` 安装这两个Gem.
 
-3. 在_config.yml文件中加入MetaWeblog的配置。
+* 在_config.yml文件中加入MetaWeblog的配置。
 
-	```xml
+```xml
 
-	# MetaWeblog
-	MetaWeblog_username: *YOURUSERNAME*
-	MetaWeblog_password: *YOURPASSWORD*
-	MetaWeblog_url: *YOURBLOGMETAWEBLOGURL*
-	MetaWeblog_blogid: *BlogID*  //can be any number
+# MetaWeblog
+MetaWeblog_username: *YOURUSERNAME*
+MetaWeblog_password: *YOURPASSWORD*
+MetaWeblog_url: *YOURBLOGMETAWEBLOGURL*
+MetaWeblog_blogid: *BlogID*  //can be any number
 
-	``` 
+```
+
 下面是配置[cnblogs]的一个示例。
 
-	```xml
+```xml
 
-	# MetaWeblog
-	MetaWeblog_username: huang0925
-	MetaWeblog_password: XXXXXXXXXX
-	MetaWeblog_url: http://www.cnblogs.com/huang0925/services/metaweblog.aspx
-	MetaWeblog_blogid: 145005
+# MetaWeblog
+MetaWeblog_username: huang0925
+MetaWeblog_password: XXXXXXXXXX
+MetaWeblog_url: http://www.cnblogs.com/huang0925/services/metaweblog.aspx
+MetaWeblog_blogid: 145005
 
-	```
+```
 
-4. 在Rakefile加入这个task。
+* 在Rakefile加入这个task。
 
-	```ruby
+```ruby
 
-	desc "sync post to MetaWeblog site"
-	task :sync_post do
-	  puts "Sync the latest post to MetaWeblog site"
-	  system "ruby _custom/sync_post.rb"
-	end
+desc "sync post to MetaWeblog site"
+task :sync_post do
+  puts "Sync the latest post to MetaWeblog site"
+  system "ruby _custom/sync_post.rb"
+end
 
-	```
+```
 
 ## 如何使用
 
