@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-04-09T02:25:08+08:00</updated>
+  <updated>2013-04-14T22:20:23+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,122 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[一款Octopress插件用于同步博客到其他站点]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post/"/>
+    <updated>2013-04-14T22:05:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post</id>
+    <content type="html"><![CDATA[<p>即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易&#8230;&#8230;）</p>
+
+<p>这款插件源码被host在github上，地址是https://github.com/huangbowen521/octopress-syncPost。</p>
+
+<p>下面介绍下如何配置和使用。</p>
+
+<h2>配置</h2>
+
+<ol>
+<li><p>迁出源码，将源码里的_custom文件夹及其里面的文件拷贝到你的octopress根目录中。</p></li>
+<li><p>在Gemfile中加入这两个依赖.</p>
+
+<p> <code>ruby
+   gem 'metaweblog', '~&gt; 0.1.0'
+   gem 'nokogiri', '~&gt; 1.5.9'
+</code>
+ (The first gem is used to send post with MetaWeblog API.
+ The second gem is used to parse html.)</p>
+
+<p> 然后在终端下运行<code>bundle install</code> 安装这两个Gem.</p></li>
+<li><p>在_config.yml文件中加入MetaWeblog的配置。</p>
+
+<p> &#8220;`xml</p>
+
+<p> # MetaWeblog
+ MetaWeblog_username: <em>YOURUSERNAME</em>
+ MetaWeblog_password: <em>YOURPASSWORD</em>
+ MetaWeblog_url: <em>YOURBLOGMETAWEBLOGURL</em>
+ MetaWeblog_blogid: <em>BlogID</em>  //can be any number</p>
+
+<p> &#8220;`
+下面是配置<a href="http://www.cnblogs.com/">cnblogs</a>的一个示例。</p>
+
+<p>  &#8220;`xml</p>
+
+<p>  # MetaWeblog
+  MetaWeblog_username: huang0925
+  MetaWeblog_password: XXXXXXXXXX
+  MetaWeblog_url: http://www.cnblogs.com/huang0925/services/metaweblog.aspx
+  MetaWeblog_blogid: 145005</p>
+
+<p>  &#8220;`</p></li>
+<li><p>在Rakefile加入这个task。</p>
+
+<p> &#8220;`ruby</p>
+
+<p> desc &#8220;sync post to MetaWeblog site&#8221;
+ task :sync_post do
+   puts &#8220;Sync the latest post to MetaWeblog site&#8221;
+   system &#8220;ruby _custom/sync_post.rb&#8221;
+ end</p>
+
+<p> &#8220;`</p></li>
+</ol>
+
+
+<h2>如何使用</h2>
+
+<ol>
+<li><p>运行 <code>rake generate</code> 生成最新的站点文件。</p></li>
+<li><p>运行 <code>rake sync_post</code> 将最新的一篇博客同步到你的站点。</p></li>
+</ol>
+
+
+<p><strong>请注意:</strong></p>
+
+<ol>
+<li><p>Check the image url in your post, to fix the image url issue.</p></li>
+<li><p>Some website require you enable MetaWeblog features in the dashboard. (ect. <a href="http://www.cnblogs.com/">cnblogs</a>)</p></li>
+</ol>
+
+
+<h2>How to keep same styling</h2>
+
+<p>Use <a href="http://www.cnblogs.com/">cnblogs</a> as a example.</p>
+
+<ol>
+<li><p>use file uploader in cnblogs dashboard to upload screen.css file in your octopress project.</p></li>
+<li><p>config the &#8216;页首html代码&#8217; in cnblogs dashboard to use the screen.css file.</p></li>
+</ol>
+
+
+<h2>Some websites which support MetaWeblog API.</h2>
+
+<ul>
+<li><p>Wordpress</p>
+
+<p>  If your WordPress root is http://example.com/wordpress/, then you have:
+  Server: http://example.com/ (some tools need just the &#8216;example.com&#8217; hostname part)
+  Path: /wordpress/xmlrpc.php
+  complete URL (just in case): http://example.com/wordpress/xmlrpc.php</p></li>
+<li><p>51CTO.com</p>
+
+<p>  URL：http://<yourBlogUrl>/xmlrpc.php（example: http://magong.blog.51cto.com/xmlrpc.php）</p></li>
+<li><p>博客大巴</p>
+
+<p>  URL：http://www.blogbus.com/<accountName>/app.php（example: http://www.blogbus.com/holly0801/app.php</p></li>
+<li><p>CSDN</p>
+
+<p>  URL：http://hi.csdn.net/<accountName>/services/metablogapi.aspx（example: http://hi.csdn.net/bvbook/services/metablogapi.aspx）</p></li>
+<li><p>博客园</p>
+
+<p>  URL：http://www.cnblogs.com/<accountName>/services/metaweblog.aspx（example: http://www.cnblogs.com/bvbook/services/metaweblog.aspx）</p></li>
+<li><p>网易</p>
+
+<p>  URL: http://<accountName>.blog.163.com/ (example: http://huang0925.blog.163.com/).</p></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Karma(原名Testacular)与WebStorm进行集成]]></title>
@@ -3581,56 +3697,6 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 <p>最后重新打开terminal就可以直接执行ruby命令，不需要加上<code>bundler exec</code>前缀。</p>
 
 <p>如果想禁用次bundler的话，只需要在命令前面加上<code>NOEXEC_DISABLE=1</code>前缀。更详细的信息可以看[rubygems-bundler]的<a href="https://github.com/mpapis/rubygems-bundler">文档</a>。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ThoughtWorks Immersion 小计]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/01/19/thoughtworks-immersion-xiao-ji/"/>
-    <updated>2013-01-19T23:08:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/01/19/thoughtworks-immersion-xiao-ji</id>
-    <content type="html"><![CDATA[<p>2012年12月18日，第11期TWI在中国西安举行了。这次参加培训的角色有admin，有hr，有Ux,当然更多的是QA和Dev，估计是最齐全的一届。</p>
-
-<p>虽然TWI已经过去好几天了，但是我还在回味那培训中的一幕幕。</p>
-
-<p>关于这几天的经历，我可以用几个关键字来形容。</p>
-
-<p><strong>吃：</strong></p>
-
-<p>虽然我们来到西安是学习滴，但是也不能委屈了自己的胃。刚到西安就先吃了羊肉泡馍，外加一个肉夹馍才感觉有些饱。第一天中午办公室定的凉皮和肉夹馍，典型的北方特色，符合我的胃口。第二天晚上我们team building，去的小杨烤肉，刚开始打不到车，气氛有些低落，但是到了饭馆气氛慢慢火热起来，最后吃完了大家大摆龙门阵，海量重量级八卦被爆出，气氛异常火热。</p>
-
-<hr />
-
-<!-- more -->
-
-
-<p><strong>玩：</strong></p>
-
-<p>TWI第一天就玩了一个破冰游戏，大家将办公室地板想象成为一个中国地图，按照每个人的省份站位，并且用家乡话介绍自己，使大家尽快的熟悉起来。</p>
-
-<p>在TWI，早上有游戏，中午也有pacha chucha，下午还有大型游戏。不少的session也穿插了不少游戏。通过这些游戏，大家都很放松，也更容易从游戏中接收到知识。这种寓教于乐的方式很合我们的胃口。尤其是乐高游戏和拍卖游戏。</p>
-
-<p>乐高游戏生动的显示了一个敏捷团队是如何work的，通过游戏我们体现了：需求分析，story划分与估点，itration plan，迭代开发，用户验收测试与retro。我想通过这样的游戏大家能够快速的理解的这些名词的含义与好处。</p>
-
-<p>拍卖游戏则是最后的压轴游戏。大家分成3组，以抢答的方式来回答这几天中学到的东西。最后的梭哈把气氛带到了最高潮。</p>
-
-<hr />
-
-<p><strong>学：</strong></p>
-
-<p>前面说了那么多，大家还因为我们是去玩的。错了，最大的目的就是：好好学习，天天向上。3天N个session，真是狂轰乱炸，讲师阵容也超级豪华。</p>
-
-<p>酱油男胡凯给我们讲了两个session，就消失了。TW历史就讲了将近两个小时，让我们对TW有了一个立体全面的认识。对于Agile我也有了新认识，以前还没注意到两点：1，并不是4个准则中后半部分没有价值，而是前面的价值更大。2，agile有一个重要的前提，就是只能应用与知识工作者的生产工作。</p>
-
-<p>庆敏的soft skill training穿插各种情景剧，游戏，和同学们互动中体验到了软技能的重要性。并且经过实战演练大家迅速掌握到了技巧。</p>
-
-<p>棹显静作为我们公司知名的女developer兼这次TWI的主要组织者,也给我们带来了一系列的session，充分展现了我司女员工的强势一面。她的迭代开发session激发了我们的热烈讨论，结对编程的情景剧也给我们留下了深刻的印象。</p>
-
-<p>最后一位大师是徐昊。透露一下他是第一天晚上凌晨到的西安，由于酒店已经没有房间，他愣是写了一个通宵的代码。他的session就不用说了。我们学员轮番上阵都没challenge住他。</p>
-
-<hr />
-
-<p>据说以前TWI是在印度举行了，后来被cut了，只有中国保留了它。这次TWI还引入了pacha kucha，锻炼了大家的演讲能力。希望以后的TWI越办越红火。</p>
 ]]></content>
   </entry>
   
