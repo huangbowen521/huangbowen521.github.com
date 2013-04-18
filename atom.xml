@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-04-14T22:38:41+08:00</updated>
+  <updated>2013-04-18T13:13:18+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,182 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[使用MANIFEST.MF文件来track war包做持续部署]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/04/18/use-manifest-dot-mf-to-track-war-file/"/>
+    <updated>2013-04-18T12:40:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/04/18/use-manifest-dot-mf-to-track-war-file</id>
+    <content type="html"><![CDATA[<p>在我工作的项目中有这样一个需求。当通过自动部署脚本将当前一个CI构建的WAR包部署到指定服务器后，需要验证该WAR包是否被部署成功。</p>
+
+<p>在这个项目中，持续集成服务器使用的是<a href="http://jenkins-ci.org/">Jenkins</a>，构建脚本使用的是<a href="http://maven.apache.org/">maven</a>，向服务器的部署使用的是Groovy写的部署脚本，调用了<a href="http://www.incanica.com/tour/whytableaux">Tableuax</a> API。</p>
+
+<p>在<a href="http://jenkins-ci.org/">Jenkins</a>上有两个job，一个CI job，一个dev job。
+每次提交代码都会在<a href="http://jenkins-ci.org/">Jenkins</a>上trigger CI ob，这个job会执行配置的<a href="http://maven.apache.org/">maven</a>命令<code>mvn clean install</code>，如果构建成功，会自动trigger dev job。这个job会执行部署脚本，部署脚本负责调用<a href="http://www.incanica.com/tour/whytableaux">Tableuax</a> API将前一个job构建的war包部署到服务器上。</p>
+
+<!-- more -->
+
+
+<p>由于部署是调用<a href="http://www.incanica.com/tour/whytableaux">Tableuax</a> API来实现的，我们需要在部署完成以后验证此次部署是否成功。如何进行那？可以分为如下几个步骤。</p>
+
+<p><strong>首先, 当<a href="http://jenkins-ci.org/">Jenkins</a>的第一个job构建war包时，将这次构建的一些信息写入到MANIFEST.MF文件中。</strong></p>
+
+<p>MANIFEST.MF文件是Java平台下的Jar包或者war包中都普遍存在的一个文件。这个文件通常被放置在META-INF文件夹下，名称通常为MANIFEST.MF。它其实相当于一个properties文件，里面都是一些键值对，特殊之处是每个jar包或者war包至多只能有一个MANIFEST.MF文件。</p>
+
+<p>那么如何在<a href="http://jenkins-ci.org/">Jenkins</a>运行build时将本次构建的相关信息写入到MANIFEST.MF文件那？那要借助于maven.war.plugin插件。</p>
+
+<p>当一个<a href="http://jenkins-ci.org/">Jenkins</a> job被执行时，会自动设置一些环境变量，这些环境变量可以在shell script, batch command或者Maven POM中被访问。（查看所有的环境变量请看<a href="https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-JenkinsSetEnvironmentVariables">这里</a>）。
+所以我们可以在项目的pom.xml加入以下的plugin来设置一些build信息到MANIFEST.MF文件中。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;artifactId&gt;</span>maven-war-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;version&gt;</span>2.2<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;archive&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;manifest&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;addDefaultImplementationEntries&gt;</span>true<span class="nt">&lt;/addDefaultImplementationEntries&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;/manifest&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;manifestEntries&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;Build-Number&gt;</span>${BUILD_NUMBER}<span class="nt">&lt;/Build-Number&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;Job-Name&gt;</span>${JOB_NAME}<span class="nt">&lt;/Job-Name&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;Build-Url&gt;</span>${BUILD_URL}<span class="nt">&lt;/Build-Url&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;Svn-Revision&gt;</span>${SVN_REVISION}<span class="nt">&lt;/Svn-Revision&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;Timestamp&gt;</span>${maven.build.timestamp}<span class="nt">&lt;/Timestamp&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;/manifestEntries&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/archive&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://jenkins-ci.org/">Jenkins</a> job执行完毕后，在打包好的WAR包中就含有一个MANIFEST.MF文件了。以下是一个示例。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>Manifest-Version: 1.0
+</span><span class='line'>Implementation-Title: myWebApp
+</span><span class='line'>Implementation-Version: 1.1-SNAPSHOT
+</span><span class='line'>Job-Name: myWebApp-CI
+</span><span class='line'>Built-By: bowen
+</span><span class='line'>Created-By: Apache Maven
+</span><span class='line'>Timestamp: 20130417-1654
+</span><span class='line'>Build-Number: 118
+</span><span class='line'>Svn-Revision: 5606
+</span><span class='line'>Implementation-Vendor-Id: myWebApp
+</span><span class='line'>Build-Url: http://10.70.21.74:80/job/myWebApp/118/
+</span><span class='line'>Build-Jdk: 1.6.0_18
+</span><span class='line'>Implementation-Build: 2013-04-17 16:54:54
+</span><span class='line'>Archiver-Version: Plexus Archiver
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>然后，创建一个页面来显示这些build信息，以便能随时查看当前部署在服务器上的war包的build number是多少，是由谁构建的，构建时间等信息。第二个job的部署脚本也可以通过这个页面得到build number，以此来判别部署的是否是想要的版本。</strong></p>
+
+<p>这就牵扯到对MANIFEST.MF文件的读取了。有一个现成的库用于读取jar包或者war包中的MANIFEST.MF文件信息。</p>
+
+<p>在项目的pom.xml文件中加入对这个库的依赖。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;groupId&gt;</span>com.jcabi<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;artifactId&gt;</span>jcabi-manifests<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;version&gt;</span>0.7.17<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'><span class="nt">&lt;/dependency&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对于war包而言，需要通过SevletContext来获取当前的MANIFEST.MF文件。首先需要创建一个继承自<code>ServletContextListener</code>接口的类来将ServletContext设置给Manifests对象。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">thoughtworks</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ContextListener</span> <span class="kd">implements</span> <span class="n">ServletContextListener</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nd">@Override</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">contextInitialized</span><span class="o">(</span><span class="n">ServletContextEvent</span> <span class="n">event</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">Manifests</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getServletContext</span><span class="o">());</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后需要在web.xml配置文件中将这个Listener加入到Listener列表中。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;listener&gt;</span>
+</span><span class='line'><span class="nt">&lt;listener-class&gt;</span>com.thoughtworks.ContextListener<span class="nt">&lt;/listener-class&gt;</span>
+</span><span class='line'><span class="nt">&lt;/listener&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就可以在Controller里直接使用Manifests对象来获取MANIFEST.MF文件记录的各种值了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">String</span> <span class="n">buildNumber</span> <span class="o">=</span> <span class="n">Manifests</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="s">&quot;Build-Number&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="n">String</span> <span class="n">buildJdk</span> <span class="o">=</span> <span class="n">Manifests</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="s">&quot;Build-Jdk&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="n">String</span> <span class="n">BuiltBy</span> <span class="o">=</span> <span class="n">Manifests</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="s">&quot;Built-By&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="n">String</span> <span class="n">timestamp</span> <span class="o">=</span> <span class="n">Manifests</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="s">&quot;Timestamp&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="o">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再建立一个jsp页面用于显示这些值即可。</p>
+
+<p><strong>最后，部署脚本获取该页面的内容，判断页面内容中的build number是否为期望部署的build number。</strong></p>
+
+<p>这只是判断部署的war包是不是期望的war包。如果想要验证其是完全可以工作的，就需要部署脚本调用smoke test来进行功能性测试了。这个留到下次再讲。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[一款Octopress插件用于同步博客到其他站点]]></title>
@@ -3636,91 +3812,6 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 <p><img src="http://www.huangbowen.net/images/RegularExpression.png" width="700" height="700" title="《正则表达式必知必会》Mind Map" alt="《正则表达式必知必会》Mind Map"></p>
 
 <p>点击<a href="http://www.huangbowen.net/images/RegularExpression.png">这里</a>查看大图。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[避免每次输入bundler exec命令]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/"/>
-    <updated>2013-02-04T00:24:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling</id>
-    <content type="html"><![CDATA[<p>bundle在ruby的世界里是个好东西，它可以用来管理应用程序的依赖库。它能自动的下载和安装指定的gem，也可以随时更新指定的gem。</p>
-
-<p><a href="https://rvm.io/">rvm</a>则是一个命令行工具，能帮助你轻松的安装，管理多个ruby环境。每个环境可以指定一系列的gem。它允许你为每一个项目指定其ruby的版本，需要的gem的版本。这能最大限度的避免由于ruby环境的差异，或者不同版本的gem造成的各种问题。</p>
-
-<p>当我在项目中引入了rvm后，使用rake命令时，每次都会出现这样的异常。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake aborted!
-</span><span class='line'>You have already activated rake 10.0.0, but your Gemfile requires rake 0.9.2.2. Using bundle <span class="nb">exec </span>may solve this.
-</span><span class='line'>/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/runtime.rb:31:in <span class="sb">`</span>block in setup<span class="s1">&#39;</span>
-</span><span class='line'><span class="s1">/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/runtime.rb:17:in `setup&#39;</span>
-</span><span class='line'>/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler.rb:116:in <span class="sb">`</span>setup<span class="s1">&#39;</span>
-</span><span class='line'><span class="s1">/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/setup.rb:7:in `&lt;top (required)&gt;&#39;</span>
-</span><span class='line'>/Users/twer/sourcecode/octopress/Rakefile:2:in <span class="sb">`</span>&lt;top <span class="o">(</span>required<span class="o">)</span>&gt;<span class="err">&#39;</span>
-</span><span class='line'><span class="o">(</span>See full trace by running task with --trace<span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<!-- more -->
-
-
-<p>从这个异常中我们可以看到，由于我在自己机器上已经安装了rake的<code>10.0.0</code>版本，但是这个项目中配置的rake版本却是<code>0.9.2.2</code>，所以在执行rake命令时应该使用Gemfile的。</p>
-
-<p>而<code>bundle exec</code>可以在当前bundle的上下文中执行一段脚本。通过它可以调用本项目中指定的rake版本来执行命令。</p>
-
-<p>下面是官方文档的说明。</p>
-
-<blockquote><p>In some cases, running executables without bundle exec may work, if the executable happens to be installed in your system and does not pull in any gems that conflict with your bundle. However, this is unreliable and is the source of considerable pain. Even if it looks like it works, it may not work in the future or on another machine.</p></blockquote>
-
-<p>所以我们只要每次执行命令的时候加上<code>bundle exec</code>的前缀就可以额。但是这样搞的很烦人，试想每天都要敲上百次这样的字符，而且还常常忘记。</p>
-
-<p>有一个方法可以避免每次都要键入<code>bundle exec</code>作为前缀。</p>
-
-<p>安装<a href="https://github.com/mpapis/rubygems-bundler">rubygems-bundler</a>。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem install rubygems-bundler
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后运行：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem regenerate_binstubs
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>启用RVM hook:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rvm get head <span class="o">&amp;&amp;</span> rvm reload
-</span><span class='line'><span class="nv">$ </span>chmod +x <span class="nv">$rvm_path</span>/hooks/after_cd_bundler
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>为自己的项目创建bundler stubs.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd </span>your_project_path
-</span><span class='line'><span class="nv">$ </span>bundle install --binstubs<span class="o">=</span>./bundler_stubs
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>最后重新打开terminal就可以直接执行ruby命令，不需要加上<code>bundler exec</code>前缀。</p>
-
-<p>如果想禁用次bundler的话，只需要在命令前面加上<code>NOEXEC_DISABLE=1</code>前缀。更详细的信息可以看[rubygems-bundler]的<a href="https://github.com/mpapis/rubygems-bundler">文档</a>。</p>
 ]]></content>
   </entry>
   
