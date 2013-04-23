@@ -8,7 +8,7 @@ module MetaWeblogSync
   class SyncPost
 
     def initialize
-      @config = YAML.load_file(File.expand_path(File.dirname(__FILE__) + '/../_config.yml'))
+      @config = YAML.load_file(File.expand_path(File.dirname(__FILE__) + '/../metaweblog.yml'))
 
       @blogClient = MetaWeblog::Client.new @config['MetaWeblog_url'], @config['MetaWeblog_blogid'].to_s, @config['MetaWeblog_username'], @config['MetaWeblog_password'].to_s, nil
     end
