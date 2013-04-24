@@ -1,5 +1,29 @@
 # MetaWeblog
-MetaWeblog_username: huang0925
-MetaWeblog_password: huang5242521
-MetaWeblog_url: http://www.cnblogs.com/huang0925/services/metaweblog.aspx
-MetaWeblog_blogid: 145005
+#Cnblogs:
+#  MetaWeblog_username: huang0925
+#  MetaWeblog_password: huang0925
+#  MetaWeblog_url: http://www.cnblogs.com/huang0925/services/metaweblog.aspx
+#  MetaWeblog_blogid: 145005
+#blogbus:
+#  MetaWeblog_username: huang0925
+#  MetaWeblog_password: huang5242521
+#  MetaWeblog_url: http://www.blogbus.com/huang0925/app.php
+#  MetaWeblog_blogid: 200000
+
+
+#CSDN:
+#  MetaWeblog_username: huangbowen521
+#  MetaWeblog_password: huang5242521
+#  MetaWeblog_url: http://www.blogbus.com/huang0925/app.php
+#  MetaWeblog_blogid: 200000
+
+#51CTO:
+#  MetaWeblog_username: huang0925
+#  MetaWeblog_password: huang5242521
+#  MetaWeblog_url: http://huang0925.blog.51cto.com/xmlrpc.php
+#  MetaWeblog_blogid: 200000
+SINA:
+  MetaWeblog_username: huangbowen521@126.com
+  MetaWeblog_password: huang0122
+  MetaWeblog_url: http://upload.move.blog.sina.com.cn/blog_rebuild/blog/xmlrpc.php
+  MetaWeblog_blogid: 200000

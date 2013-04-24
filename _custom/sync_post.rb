@@ -10,7 +10,6 @@ module MetaWeblogSync
     def initialize
       @config = YAML.load_file(File.expand_path(File.dirname(__FILE__) + '/../metaweblog.yml'))
 
-      @blogClient = MetaWeblog::Client.new @config['MetaWeblog_url'], @config['MetaWeblog_blogid'].to_s, @config['MetaWeblog_username'], @config['MetaWeblog_password'].to_s, nil
     end
 
     def postBlog
@@ -19,10 +18,14 @@ module MetaWeblogSync
       blogHtml = getBlogHtml blogPath
       post = getPost blogHtml
 
+      @config.each do |site, paras|
+        puts 'posting new blog:' + post[:title] + 'to ' + site
 
-      puts 'posting new blog:' + post[:title]
-      response = @blogClient.post(post)
-      puts 'post fuccessfully. new blog id:' + response
+        blogClient = MetaWeblog::Client.new paras['MetaWeblog_url'], paras['MetaWeblog_blogid'].to_s, paras['MetaWeblog_username'], paras['MetaWeblog_password'].to_s, nil
+        response = blogClient.post(post)
+        puts 'post successfully. new blog id: ' + response
+
+      end
 
     end
 
