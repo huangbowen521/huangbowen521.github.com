@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tag: gradle | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/gradle/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2013-05-07T16:21:34+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[将AngularJS的单元测试和端到端测试集成到gradle构建脚本中]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/05/07/integrate-javascript-tests-to-gradle/"/>
+    <updated>2013-05-07T15:55:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/05/07/integrate-javascript-tests-to-gradle</id>
+    <content type="html"><![CDATA[<p>我目前工作的一个项目后端使用java和spring建立了一个restful service,前端使用<a href="http://angularjs.org/">AngularJS</a>来渲染页面，提供用户接口。在前端的<a href="http://angularjs.org/">AngularJS</a>项目中，我们使用<a href="http://pivotal.github.io/jasmine/">Jasmine</a>来写单元测试，使用<a href="http://angularjs.org/">AngularJS</a>自带的Angular_scenario来写端到端测试。运行这些测试则使用的是<a href="http://karma-runner.github.io/">Karma</a>。</p>
+
+<p>虽然使用<a href="http://karma-runner.github.io/">Karma</a>在命令行下可以很方便的运行所有的测试，但是我们想将这些集成到<a href="http://www.gradle.org/">gradle</a>的构建脚本中，从而将<a href="http://angularjs.org/">AngularJS</a>的所有测试加入到CI的构建中。同时为了保证运行测试的效率，我们决定使用<a href="http://phantomjs.org/">PhantomJS</a>作为运行测试的浏览器环境。</p>
+
+<!-- more -->
+
+
+<h2>环境搭建</h2>
+
+<ul>
+<li><p><strong>安装<a href="http://nodejs.org/">nodeJS</a>。</strong> 直接去官网&lt;http://nodejs.org/ >下载最新的安装包进行安装。</p></li>
+<li><p><strong>安装<a href="http://karma-runner.github.io/">Karma</a>。</strong> 可以使用nodeJS提供的npm(node package manager)来安装。</p></li>
+</ul>
+
+
+<p>```bash
+$ npm install -g karma</p>
+
+<p>```</p>
+
+<p>如果想安装最新的开发者版本，则运行：</p>
+
+<p><code>bash
+$ npm install -g karma@canary
+</code></p>
+
+<ul>
+<li><strong>安装<a href="http://phantomjs.org/">PhantomJS</a>。</strong></li>
+</ul>
+
+
+<p>方式一：使用npm来安装:</p>
+
+<p>```bash</p>
+
+<p>$ npm install -g phantomjs</p>
+
+<p>```</p>
+
+<p>方式二：从官网上下载最新的安装包自行安装。地址是<a href="http://phantomjs.org/">http://phantomjs.org/</a> 。</p>
+
+<p>不过为了方便其它人的使用，我将<a href="http://phantomjs.org/">PhantomJS</a>的文件直接放置到了项目的codebase中，并加入了svn管理。这样当setup一个新的工作电脑时就不需要安装它了，直接checkout项目代码就行。最大的原因是当<a href="http://karma-runner.github.io/">Karma</a>运行测试时会根据环境变量寻找<a href="http://phantomjs.org/">PhantomJS</a>的执行文件，将<a href="http://phantomjs.org/">PhantomJS</a>的执行文件放置在统一的地方方便管理，减少环境变量依赖。</p>
+
+<h2>配置<a href="http://karma-runner.github.io/">Karma</a>运行测试的配置文件</h2>
+
+<p>方式一：在项目根目录下运行<code>Karma init</code>,根据提示一步步创建配置文件。</p>
+
+<p>方式二：如果对<a href="http://karma-runner.github.io/">Karma</a>的配置文件较为熟悉的话，可以自行创建一个。</p>
+
+<p>以下是我为unit test创建的配置文件。</p>
+
+<p>```JavaScript</p>
+
+<p>// Sample Karma configuration file, that contain pretty much all the available options
+// It's used for running client tests on Travis (http://travis-ci.org/#!/karma-runner/karma)
+// Most of the options can be overriden by cli arguments (see karma --help)
+//
+// For all available config options and default values, see:
+// https://github.com/karma-runner/karma/blob/stable/lib/config.js#L54</p>
+
+<p>// base path, that will be used to resolve files and exclude
+basePath = '';</p>
+
+<p>frameworks = ['jasmine'];</p>
+
+<p>// list of files / patterns to load in the browser
+files = [</p>
+
+<pre><code>'spec/*.spec.js'
+</code></pre>
+
+<p>];</p>
+
+<p>// list of files to exclude
+exclude = [];</p>
+
+<p>// web server port
+// CLI --port 9876
+port = 9876;</p>
+
+<p>// cli runner port
+// CLI --runner-port 9100
+runnerPort = 9100;</p>
+
+<p>// enable / disable colors in the output (reporters and logs)
+// CLI --colors --no-colors
+colors = true;</p>
+
+<p>// level of logging
+// possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
+// CLI --log-level debug
+logLevel = LOG_INFO;</p>
+
+<p>// enable / disable watching file and executing tests whenever any file changes
+// CLI --auto-watch --no-auto-watch
+autoWatch = false;</p>
+
+<p>// Start these browsers, currently available:
+// - Chrome
+// - ChromeCanary
+// - Firefox
+// - Opera
+// - Safari (only Mac)
+// - PhantomJS
+// - IE (only Windows)
+// CLI --browsers Chrome,Firefox,Safari
+browsers = ['PhantomJS'];</p>
+
+<p>// If browser does not capture in given timeout [ms], kill it
+// CLI --capture-timeout 5000
+captureTimeout = 10000;</p>
+
+<p>// Auto run tests on start (when browsers are captured) and exit
+// CLI --single-run --no-single-run
+singleRun = true;</p>
+
+<p>// report which specs are slower than 500ms
+// CLI --report-slower-than 500
+reportSlowerThan = 500;</p>
+
+<p>// compile coffee scripts
+preprocessors = {</p>
+
+<pre><code>'**/*.coffee': 'coffee'
+</code></pre>
+
+<p>};</p>
+
+<p>plugins = [</p>
+
+<pre><code>'karma-jasmine',
+'karma-chrome-launcher',
+'karma-firefox-launcher',
+'karma-phantomjs-launcher',
+'karma-junit-reporter'
+</code></pre>
+
+<p>]</p>
+
+<p>```</p>
+
+<p>由于需要在CI中运行测试，所以应当将autoWatch设置为false,将singleRun设置为true。这样<a href="http://karma-runner.github.io/">Karma</a>只会运行一遍测试。</p>
+
+<p>由于我们将<a href="http://phantomjs.org/">PhantomJS</a>放置在工程目录下，为了让<a href="http://karma-runner.github.io/">Karma</a>能找到<a href="http://phantomjs.org/">PhantomJS</a>的执行文件，需要设置环境变量PHANTOMJS_BIN。在Karma.conf.js中加入如下代码:</p>
+
+<p>```javaScript</p>
+
+<p>process.env.PHANTOMJS = require('path').resolve(__dirname, 'tools/PhantomJS/phantomjs.exe';</p>
+
+<p>```</p>
+
+<p>如果Karma运行测试时找不到浏览器的执行文件，会报一个错误。</p>
+
+<p>```bash</p>
+
+<p>INFO <a href="http://karma-runner.github.io/">karma</a>: Karma v0.9.2 server started at http://localhost:9876/
+INFO [launcher]: Starting browser PhantomJS
+ERROR <a href="http://karma-runner.github.io/">karma</a>: { [Error: spawn ENOENT] code: 'ENOENT', errno: 'ENOENT', syscall: 'spawn' }
+Error: spawn ENOENT</p>
+
+<pre><code>at errnoException (child_process.js:977:11)
+at Process.ChildProcess._handle.onexit (child_process.js:768:34)
+</code></pre>
+
+<p>```</p>
+
+<p>当时我花了好长时间来寻找原因，最后使用<code>karma start karma.conf.js --log-level=debug</code>来查看运行日志。</p>
+
+<p>```bash</p>
+
+<p>INFO [launcher]: Starting browser PhantomJS
+DEBUG [launcher]: Creating temp dir at C:\Users\bowen\AppData\Local\2\karma-28747846
+DEBUG [launcher]: C:\Program Files\PhantomJS\phamtomjs.exe  C:\Users\bowen\AppData\Local\2\karma-28747846capture.js
+INFO <a href="http://karma-runner.github.io/">karma</a>: To run via this server, use "karma run --runner-port 9101"
+ERROR <a href="http://karma-runner.github.io/">karma</a>: { [Error: spawn ENOENT] code: 'ENOENT', errno: 'ENOENT', syscall: 'spawn' }
+Error: spawn ENOENT</p>
+
+<p>```</p>
+
+<p>通过DEBUG的log我发现<code>C:\Program Files\PhantomJS\phamtomjs.exe</code>下并未有该文件，最后使用上述的方法来设置<a href="http://phantomjs.org/">PhantomJS</a>的环境变量。（奇怪的是我已经在PowerShell里设置了该环境变量，并且Karma命令行也是在PowerShell运行的，但是<a href="http://nodejs.org/">nodeJS</a>并未获取正确的环境变量值）。</p>
+
+<h2>在build.gradle中加入运行Karma的task</h2>
+
+<p>由于我们的开发机以及CI服务器都是Windows环境，所以需要调用CMD来执行<a href="http://karma-runner.github.io/">Karma</a>命令。</p>
+
+<p>配置如下：</p>
+
+<p>```java</p>
+
+<p>task jsUnit(type: Exec, description: 'JS unit tests') {</p>
+
+<pre><code> workingDir './src/test/scripts'
+ commandLine 'cmd', '/c', 'karma start karma.conf.js'
+</code></pre>
+
+<p>}</p>
+
+<p>task e2eTest(type: Exec, description: ' e2e tests') {</p>
+
+<pre><code> workingDir './src/test/scripts'
+ commandLine 'cmd', '/c', 'karma start karma-e2e.conf.js'
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>注意运行端到端测试前要将restful服务器setup起来。</p>
+
+<p>当时在Windows上配置<a href="http://karma-runner.github.io/">Karma</a>花了很多功夫，使用Firefox浏览器发现会同时打开3个tab页，并且将singRun改为true不能运行成功，使用Chrome浏览器则测试运行完毕后浏览器无法关闭，使用<a href="http://phantomjs.org/">PhantomJS</a>又由于环境变量的问题花了一些时间来找原因。但是在我自己的苹果笔记本上各个浏览器都工作良好，真想说Windows是个奇葩。</p>
+
+<p>对于普通用户来说可能Windows系统更适合他们，但是对于程序员来说MAC系统真的非常棒，反应迅速，配置简单，能让你的开发效率提升一个档次。</p>
+]]></content>
+  </entry>
+  
+</feed>

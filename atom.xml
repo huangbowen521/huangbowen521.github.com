@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-05-07T15:07:45+08:00</updated>
+  <updated>2013-05-07T16:21:34+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,301 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[将AngularJS的单元测试和端到端测试集成到gradle构建脚本中]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/05/07/integrate-javascript-tests-to-gradle/"/>
+    <updated>2013-05-07T15:55:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/05/07/integrate-javascript-tests-to-gradle</id>
+    <content type="html"><![CDATA[<p>我目前工作的一个项目后端使用java和spring建立了一个restful service,前端使用<a href="http://angularjs.org/">AngularJS</a>来渲染页面，提供用户接口。在前端的<a href="http://angularjs.org/">AngularJS</a>项目中，我们使用<a href="http://pivotal.github.io/jasmine/">Jasmine</a>来写单元测试，使用<a href="http://angularjs.org/">AngularJS</a>自带的Angular_scenario来写端到端测试。运行这些测试则使用的是<a href="http://karma-runner.github.io/">Karma</a>。</p>
+
+<p>虽然使用<a href="http://karma-runner.github.io/">Karma</a>在命令行下可以很方便的运行所有的测试，但是我们想将这些集成到<a href="http://www.gradle.org/">gradle</a>的构建脚本中，从而将<a href="http://angularjs.org/">AngularJS</a>的所有测试加入到CI的构建中。同时为了保证运行测试的效率，我们决定使用<a href="http://phantomjs.org/">PhantomJS</a>作为运行测试的浏览器环境。</p>
+
+<!-- more -->
+
+
+<h2>环境搭建</h2>
+
+<ul>
+<li><p><strong>安装<a href="http://nodejs.org/">nodeJS</a>。</strong> 直接去官网&lt;http://nodejs.org/ >下载最新的安装包进行安装。</p></li>
+<li><p><strong>安装<a href="http://karma-runner.github.io/">Karma</a>。</strong> 可以使用nodeJS提供的npm(node package manager)来安装。</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>npm install -g karma
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果想安装最新的开发者版本，则运行：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>npm install -g karma@canary
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>安装<a href="http://phantomjs.org/">PhantomJS</a>。</strong></li>
+</ul>
+
+
+<p>方式一：使用npm来安装:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>npm install -g phantomjs
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>方式二：从官网上下载最新的安装包自行安装。地址是<a href="http://phantomjs.org/">http://phantomjs.org/</a> 。</p>
+
+<p>不过为了方便其它人的使用，我将<a href="http://phantomjs.org/">PhantomJS</a>的文件直接放置到了项目的codebase中，并加入了svn管理。这样当setup一个新的工作电脑时就不需要安装它了，直接checkout项目代码就行。最大的原因是当<a href="http://karma-runner.github.io/">Karma</a>运行测试时会根据环境变量寻找<a href="http://phantomjs.org/">PhantomJS</a>的执行文件，将<a href="http://phantomjs.org/">PhantomJS</a>的执行文件放置在统一的地方方便管理，减少环境变量依赖。</p>
+
+<h2>配置<a href="http://karma-runner.github.io/">Karma</a>运行测试的配置文件</h2>
+
+<p>方式一：在项目根目录下运行<code>Karma init</code>,根据提示一步步创建配置文件。</p>
+
+<p>方式二：如果对<a href="http://karma-runner.github.io/">Karma</a>的配置文件较为熟悉的话，可以自行创建一个。</p>
+
+<p>以下是我为unit test创建的配置文件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="c1">// Sample Karma configuration file, that contain pretty much all the available options</span>
+</span><span class='line'><span class="c1">// It&#39;s used for running client tests on Travis (http://travis-ci.org/#!/karma-runner/karma)</span>
+</span><span class='line'><span class="c1">// Most of the options can be overriden by cli arguments (see karma --help)</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">// For all available config options and default values, see:</span>
+</span><span class='line'><span class="c1">// https://github.com/karma-runner/karma/blob/stable/lib/config.js#L54</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// base path, that will be used to resolve files and exclude</span>
+</span><span class='line'><span class="nx">basePath</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">frameworks</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;jasmine&#39;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// list of files / patterns to load in the browser</span>
+</span><span class='line'><span class="nx">files</span> <span class="o">=</span> <span class="p">[</span>
+</span><span class='line'>    <span class="s1">&#39;spec/*.spec.js&#39;</span>
+</span><span class='line'><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// list of files to exclude</span>
+</span><span class='line'><span class="nx">exclude</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// web server port</span>
+</span><span class='line'><span class="c1">// CLI --port 9876</span>
+</span><span class='line'><span class="nx">port</span> <span class="o">=</span> <span class="mi">9876</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// cli runner port</span>
+</span><span class='line'><span class="c1">// CLI --runner-port 9100</span>
+</span><span class='line'><span class="nx">runnerPort</span> <span class="o">=</span> <span class="mi">9100</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// enable / disable colors in the output (reporters and logs)</span>
+</span><span class='line'><span class="c1">// CLI --colors --no-colors</span>
+</span><span class='line'><span class="nx">colors</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// level of logging</span>
+</span><span class='line'><span class="c1">// possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG</span>
+</span><span class='line'><span class="c1">// CLI --log-level debug</span>
+</span><span class='line'><span class="nx">logLevel</span> <span class="o">=</span> <span class="nx">LOG_INFO</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// enable / disable watching file and executing tests whenever any file changes</span>
+</span><span class='line'><span class="c1">// CLI --auto-watch --no-auto-watch</span>
+</span><span class='line'><span class="nx">autoWatch</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Start these browsers, currently available:</span>
+</span><span class='line'><span class="c1">// - Chrome</span>
+</span><span class='line'><span class="c1">// - ChromeCanary</span>
+</span><span class='line'><span class="c1">// - Firefox</span>
+</span><span class='line'><span class="c1">// - Opera</span>
+</span><span class='line'><span class="c1">// - Safari (only Mac)</span>
+</span><span class='line'><span class="c1">// - PhantomJS</span>
+</span><span class='line'><span class="c1">// - IE (only Windows)</span>
+</span><span class='line'><span class="c1">// CLI --browsers Chrome,Firefox,Safari</span>
+</span><span class='line'><span class="nx">browsers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PhantomJS&#39;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// If browser does not capture in given timeout [ms], kill it</span>
+</span><span class='line'><span class="c1">// CLI --capture-timeout 5000</span>
+</span><span class='line'><span class="nx">captureTimeout</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Auto run tests on start (when browsers are captured) and exit</span>
+</span><span class='line'><span class="c1">// CLI --single-run --no-single-run</span>
+</span><span class='line'><span class="nx">singleRun</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// report which specs are slower than 500ms</span>
+</span><span class='line'><span class="c1">// CLI --report-slower-than 500</span>
+</span><span class='line'><span class="nx">reportSlowerThan</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// compile coffee scripts</span>
+</span><span class='line'><span class="nx">preprocessors</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="s1">&#39;**/*.coffee&#39;</span><span class="o">:</span> <span class="s1">&#39;coffee&#39;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">plugins</span> <span class="o">=</span> <span class="p">[</span>
+</span><span class='line'>    <span class="s1">&#39;karma-jasmine&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s1">&#39;karma-chrome-launcher&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s1">&#39;karma-firefox-launcher&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s1">&#39;karma-phantomjs-launcher&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s1">&#39;karma-junit-reporter&#39;</span>
+</span><span class='line'><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由于需要在CI中运行测试，所以应当将autoWatch设置为false,将singleRun设置为true。这样<a href="http://karma-runner.github.io/">Karma</a>只会运行一遍测试。</p>
+
+<p>由于我们将<a href="http://phantomjs.org/">PhantomJS</a>放置在工程目录下，为了让<a href="http://karma-runner.github.io/">Karma</a>能找到<a href="http://phantomjs.org/">PhantomJS</a>的执行文件，需要设置环境变量PHANTOMJS_BIN。在Karma.conf.js中加入如下代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javaScript'><span class='line'><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PHANTOMJS</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">).</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;tools/PhantomJS/phantomjs.exe&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果Karma运行测试时找不到浏览器的执行文件，会报一个错误。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>INFO <span class="o">[</span>karma<span class="o">]</span>: Karma v0.9.2 server started at http://localhost:9876/
+</span><span class='line'>INFO <span class="o">[</span>launcher<span class="o">]</span>: Starting browser PhantomJS
+</span><span class='line'>ERROR <span class="o">[</span>karma<span class="o">]</span>: <span class="o">{</span> <span class="o">[</span>Error: spawn ENOENT<span class="o">]</span> code: <span class="s1">&#39;ENOENT&#39;</span>, errno: <span class="s1">&#39;ENOENT&#39;</span>, syscall: <span class="s1">&#39;spawn&#39;</span> <span class="o">}</span>
+</span><span class='line'>Error: spawn ENOENT
+</span><span class='line'>    at errnoException <span class="o">(</span>child_process.js:977:11<span class="o">)</span>
+</span><span class='line'>    at Process.ChildProcess._handle.onexit <span class="o">(</span>child_process.js:768:34<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当时我花了好长时间来寻找原因，最后使用<code>karma start karma.conf.js --log-level=debug</code>来查看运行日志。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>INFO <span class="o">[</span>launcher<span class="o">]</span>: Starting browser PhantomJS
+</span><span class='line'>DEBUG <span class="o">[</span>launcher<span class="o">]</span>: Creating temp dir at C:<span class="se">\U</span>sers<span class="se">\b</span>owen<span class="se">\A</span>ppData<span class="se">\L</span>ocal<span class="se">\2\k</span>arma-28747846
+</span><span class='line'>DEBUG <span class="o">[</span>launcher<span class="o">]</span>: C:<span class="se">\P</span>rogram Files<span class="se">\P</span>hantomJS<span class="se">\p</span>hamtomjs.exe  C:<span class="se">\U</span>sers<span class="se">\b</span>owen<span class="se">\A</span>ppData<span class="se">\L</span>ocal<span class="se">\2\k</span>arma-28747846capture.js
+</span><span class='line'>INFO <span class="o">[</span>karma<span class="o">]</span>: To run via this server, use <span class="s2">&quot;karma run --runner-port 9101&quot;</span>
+</span><span class='line'>ERROR <span class="o">[</span>karma<span class="o">]</span>: <span class="o">{</span> <span class="o">[</span>Error: spawn ENOENT<span class="o">]</span> code: <span class="s1">&#39;ENOENT&#39;</span>, errno: <span class="s1">&#39;ENOENT&#39;</span>, syscall: <span class="s1">&#39;spawn&#39;</span> <span class="o">}</span>
+</span><span class='line'>Error: spawn ENOENT
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通过DEBUG的log我发现<code>C:\Program Files\PhantomJS\phamtomjs.exe</code>下并未有该文件，最后使用上述的方法来设置<a href="http://phantomjs.org/">PhantomJS</a>的环境变量。（奇怪的是我已经在PowerShell里设置了该环境变量，并且Karma命令行也是在PowerShell运行的，但是<a href="http://nodejs.org/">nodeJS</a>并未获取正确的环境变量值）。</p>
+
+<h2>在build.gradle中加入运行Karma的task</h2>
+
+<p>由于我们的开发机以及CI服务器都是Windows环境，所以需要调用CMD来执行<a href="http://karma-runner.github.io/">Karma</a>命令。</p>
+
+<p>配置如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">task</span> <span class="nf">jsUnit</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Exec</span><span class="o">,</span> <span class="nl">description:</span> <span class="err">&#39;</span><span class="n">JS</span> <span class="n">unit</span> <span class="n">tests</span><span class="err">&#39;</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>     <span class="n">workingDir</span> <span class="err">&#39;</span><span class="o">./</span><span class="n">src</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">scripts</span><span class="err">&#39;</span>
+</span><span class='line'>     <span class="n">commandLine</span> <span class="err">&#39;</span><span class="n">cmd</span><span class="err">&#39;</span><span class="o">,</span> <span class="err">&#39;</span><span class="o">/</span><span class="n">c</span><span class="err">&#39;</span><span class="o">,</span> <span class="err">&#39;</span><span class="n">karma</span> <span class="n">start</span> <span class="n">karma</span><span class="o">.</span><span class="na">conf</span><span class="o">.</span><span class="na">js</span><span class="err">&#39;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="n">task</span> <span class="nf">e2eTest</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Exec</span><span class="o">,</span> <span class="nl">description:</span> <span class="err">&#39;</span> <span class="n">e2e</span> <span class="n">tests</span><span class="err">&#39;</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>     <span class="n">workingDir</span> <span class="err">&#39;</span><span class="o">./</span><span class="n">src</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">scripts</span><span class="err">&#39;</span>
+</span><span class='line'>     <span class="n">commandLine</span> <span class="err">&#39;</span><span class="n">cmd</span><span class="err">&#39;</span><span class="o">,</span> <span class="err">&#39;</span><span class="o">/</span><span class="n">c</span><span class="err">&#39;</span><span class="o">,</span> <span class="err">&#39;</span><span class="n">karma</span> <span class="n">start</span> <span class="n">karma</span><span class="o">-</span><span class="n">e2e</span><span class="o">.</span><span class="na">conf</span><span class="o">.</span><span class="na">js</span><span class="err">&#39;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意运行端到端测试前要将restful服务器setup起来。</p>
+
+<p>当时在Windows上配置<a href="http://karma-runner.github.io/">Karma</a>花了很多功夫，使用Firefox浏览器发现会同时打开3个tab页，并且将singRun改为true不能运行成功，使用Chrome浏览器则测试运行完毕后浏览器无法关闭，使用<a href="http://phantomjs.org/">PhantomJS</a>又由于环境变量的问题花了一些时间来找原因。但是在我自己的苹果笔记本上各个浏览器都工作良好，真想说Windows是个奇葩。</p>
+
+<p>对于普通用户来说可能Windows系统更适合他们，但是对于程序员来说MAC系统真的非常棒，反应迅速，配置简单，能让你的开发效率提升一个档次。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用MANIFEST.MF文件来track war包做持续部署]]></title>
@@ -3797,21 +4092,6 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 
 
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[正则表达式必知必会]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/02/14/zheng-ze-biao-da-shi-bi-zhi-bi-hui/"/>
-    <updated>2013-02-14T23:22:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/02/14/zheng-ze-biao-da-shi-bi-zhi-bi-hui</id>
-    <content type="html"><![CDATA[<p>读了《正则表达式必知必会》（Regular Expressions - in 10 minutes）一书，很有收获。这本书不厚，只有120多页。但是其由浅入深的系统的介绍了正则表达式。全书内容详实，配了很多实例，是学习正则表达式的一本很好的入门书籍。</p>
-
-<p>我根据这本书画了个Mind Map，来记录自己学到的东西。</p>
-
-<p><img src="http://www.huangbowen.net/images/RegularExpression.png" width="700" height="700" title="《正则表达式必知必会》Mind Map" alt="《正则表达式必知必会》Mind Map"></p>
-
-<p>点击<a href="http://www.huangbowen.net/images/RegularExpression.png">这里</a>查看大图。</p>
 ]]></content>
   </entry>
   
