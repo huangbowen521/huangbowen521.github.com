@@ -57,7 +57,6 @@ npm全称为Node Packaged Modules。它是一个用于管理基于node.js编写�
 
 $ npm config set proxy http://server:port  
 $ npm config set https-proxy http://server:port
-$ npm config set registry "http://registry.npmjs.org/"
 
 ```
 
@@ -68,6 +67,12 @@ $ npm config set registry "http://registry.npmjs.org/"
 $ npm config set proxy http://username:password@server:port
 $ npm config set https-proxy http://username:pawword@server:port
 
+```
+
+如果代理不支持https的话需要修改npm存放package的网站地址。
+
+```bash
+$ npm config set registry "http://registry.npmjs.org/"
 ```
 
 
