@@ -56,7 +56,7 @@ module MetaWeblogSync
       entryContent = html.css('//div[@class="entry-content"]')[0].to_html
 
       # keep same structure with a article
-      article = '<div id="main"><div id="content"><div><article class="hentry" role="article">' + entryContent + '</article></div></div></div>'
+      article = '<div id="main"><article class="hentry" role="article">' + entryContent + '</article></div>'
 
       MetaWeblog::Post.new(title, '', article)
     end
