@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>持续改进-《高效程序员的45个习惯》读后感 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="原书标题为《Practices of An Agile Developer》。中文名为《高效程序员的45个习惯-敏捷开发修炼之道》。敏捷这个词已经烂大街了，关于敏捷的书籍俯拾皆是。很多人是敏捷的狂热粉丝，而另一些人却讨厌敏捷，认为只是个噱头。我觉得很可能的原因之一是敏捷这个名字没起好。它的原名为“ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/05/24/the-practices-of-an-agile-developer/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">持续改进-《高效程序员的45个习惯》读后感</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-24T11:23:00+08:00" pubdate data-updated="true">May 24<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>原书标题为<a href="http://www.amazon.cn/mn/detailApp/ref=asc_df_B0033WSFAO622894/?asin=B0033WSFAO&amp;tag=douban-23&amp;creative=2384&amp;creativeASIN=B0033WSFAO&amp;linkCode=asn">《Practices of An Agile Developer》</a>。中文名为<a href="http://book.douban.com/subject/4164024/">《高效程序员的45个习惯-敏捷开发修炼之道》</a>。敏捷这个词已经烂大街了，关于敏捷的书籍俯拾皆是。很多人是敏捷的狂热粉丝，而另一些人却讨厌敏捷，认为只是个噱头。我觉得很可能的原因之一是敏捷这个名字没起好。它的原名为“轻量型软件开发过程”（&#8221;lightweight process&#8221;），但后来阴差阳错成了agile(敏捷)。</p>
+
+<!-- more -->
+
+
+<p>既然书名是敏捷开发者的实践，那么就必须认识敏捷。只有深入的理解了这些实践的来源和目的，才能更好的践行甚至改进实践。</p>
+
+<p><strong>敏捷可以用一句话来概括：敏捷开发就是在一个高度协作的环境中，不断的使用反馈进行自我调整和完善，最终交付用户想要的软件。</strong></p>
+
+<p>从这句话中可以得出很多东西。</p>
+
+<h2>首先，项目适不适合敏捷有两个先决条件：</h2>
+
+<ol>
+<li><p><strong>项目是以价值为导向的。</strong>也就是整个团队有一个总体一致的目标，那就是产出高质量、高价值、符合用户需求的软件。以价值为导向，看似简单，实则很难，甚至某些时候要要求公司的组织架构做出一定的调整。试想在一个等级森严、官僚化严重、各种无谓的考评泛滥的公司，有多少人能静下心来好好的搞开发，搞产品？只有打造一个相对扁平的组织，给予充分的信任和自由度，才有利于敏捷的实施。这反过来又要求团队中的每个人有高度的自律性。</p></li>
+<li><p><strong>团队能够达到高度协作。</strong>必须能够保证团队中的成员能够流畅的交流。如果在团队中大搞一言堂，信息不透明，很容易打击团队人员工作的积极性，致使团队分崩离析。另外，客户也属于团队中的一员。我们做出的产品最终是给客户看的，如果客户不能保证与团队紧密的合作，那么很容易使产品偏离客户的期望，最终交付失败。</p></li>
+</ol>
+
+
+<h2>再次，可以看到敏捷的基础：反馈。</h2>
+
+<p>一旦你意识到走错了路方向，就要立即做出决策。举个例子，办公室另个团队给我们分享了这样一个故事。在项目刚开始时他们设计了叫做CoreService的类来封装所有的服务。随着项目的进行，CoreService类由于需要处理的服务越来越多，导致类越来越庞大。每个人在修改这个类时，写单元测试要建立对N个服务的mock，苦不堪言。问题在于，没人及时的提出这个bad smell，导致了人们花费了大量的时间来维护它。</p>
+
+<p>这说明了及时反馈的重要性。<strong>反馈包含提出反馈和接受反馈。</strong></p>
+
+<p><strong>提出反馈需要勇气和时机。</strong>要勇敢的提出自己的想法，这既需要自身具有对项目负责的精神，还要团队提供安全的环境。要及时的指出项目中不好的地方，千里之堤，毁于蚁穴。大灾难是逐步演化而来的，项目中切忌温水煮青蛙。</p>
+
+<p><strong>接受反馈需要气度和行动。</strong>这就要求团队成员做事要有专业的态度，对事不对人，重结果轻过程。同时要拿出具体的行动，否则很容易打击积极性。</p>
+
+<h2>其次，可以看到敏捷的精髓：拥抱变化。</h2>
+
+<p>软件开发行业是一个不停发展和永远变化的领域。现在没有将来也不会有一个人能够了解你的项目的方方面面。</p>
+
+<p>变化无处不在，这就要求我们不断的学习。而迭代和增量式的学习则不失为一个好办法。一个学习型的团队才是较好的团队。当然，在学习的同时，你也要懂得丢弃。打破旧习惯很难，更难的是自己还没意识到这个问题。丢弃的第一步，首先是意识到你还在使用过时的方法，这也是最难的部分。</p>
+
+<p>同时，变化意味着我们要主动应对。德国陆军元帅Helmuth von Moltke说过一句话“没有任何计划在遇敌后还能继续执行。”在软件开发中，我们可以这样理解，任何设计在开发中只是一个起点，它如何你的代码一样，会不停地进一步发展和提炼。</p>
+
+<h2>最后，敏捷的目的：交付用户想要的软件。</h2>
+
+<p>试想客户将需求交付给你，要你几年后交付系统。然后，你基于这些需求构建了系统并按时交付。客户看了软件以后连声称赞。从此你多了一个忠实客户，接着开心的投入到下个项目中。请问这样的事情在你的项目中发生过吗？</p>
+
+<p>通常情况是客户看到后暴跳如雷，这根本不是我想要的。这是因为用户的需要、技术和我们对需求的理解，都会随着时间的推移而变化。</p>
+
+<p>那么，如何解决这个问题那？方法之一就是采用敏捷的迭代式开发。每个迭代至少有两个活动不可或缺。一个是展示会议（show case），向客户展示目前的项目进展，已完成的功能，从而收集客户的反馈，即时对产品的方向做出调整。另一个是回顾会议（retro)。回顾会议则是提出反馈的一个好时机。通过回顾会议分析出这个迭代中的做的好的地方和不好的地方，并提出具体的改进行动。</p>
+
+<p>要将团队带入新的领域，必须首先要以身作则。我们需要的是领导者，而不是管理者。无论你目前的项目是否是敏捷项目，这本书中你都可以找到能够借鉴和提高的地方。敏捷中的持续改进不仅局限于项目开发，其实更适合于个人。通过持续改进自己的习惯、处事方法，保持一颗好奇心，勇敢的尝试未知领域，只要自己能力提高了，何惧其他？</p>
+
+<p>改变从自身做起，不能自暴自弃，而要奋起直追。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-24T11:23:00+08:00" pubdate data-updated="true">May 24<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/agile/'>agile</a>
+  
+</span>
+
+
+      
+
+<span class="tags">
+  
+    <a class='tag' href='/blog/tags/agile/'>agile</a>, <a class='tag' href='/blog/tags/practice/'>practice</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.huangbowen.net/blog/2013/05/24/the-practices-of-an-agile-developer/" data-via="huangbowen521@gmail.com" data-counturl="http://www.huangbowen.net/blog/2013/05/24/the-practices-of-an-agile-developer/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/05/17/setting-npm-configuration/" title="Previous Post: npm的配置管理及设置代理">&laquo; npm的配置管理及设置代理</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>程序员一枚。</p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/24/the-practices-of-an-agile-developer/">持续改进-《高效程序员的45个习惯》读后感</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/17/setting-npm-configuration/">npm的配置管理及设置代理</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/07/integrate-javascript-tests-to-gradle/">将AngularJS的单元测试和端到端测试集成到gradle构建脚本中</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/18/use-manifest-dot-mf-to-track-war-file/">使用MANIFEST.MF文件来track war包做持续部署</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/14/octopress-plugin-to-sync-post/">一款Octopress插件用于同步博客到其他站点</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/05/24/the-practices-of-an-agile-developer/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/05/24/the-practices-of-an-agile-developer/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
