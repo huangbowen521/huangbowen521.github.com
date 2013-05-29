@@ -10,6 +10,8 @@ tags: [agile, practice]
 
 原书标题为[《Practices of An Agile Developer》](http://www.amazon.cn/mn/detailApp/ref=asc_df_B0033WSFAO622894/?asin=B0033WSFAO&tag=douban-23&creative=2384&creativeASIN=B0033WSFAO&linkCode=asn)。中文名为[《高效程序员的45个习惯-敏捷开发修炼之道》](http://book.douban.com/subject/4164024/)。敏捷这个词已经烂大街了，关于敏捷的书籍俯拾皆是。很多人是敏捷的狂热粉丝，而另一些人却讨厌敏捷，认为只是个噱头。我觉得很可能的原因之一是敏捷这个名字没起好。它的原名为“轻量型软件开发过程”（"lightweight process"），但后来阴差阳错成了agile(敏捷)。
 
+<!-- more -->
+
 既然书名是敏捷开发者的实践，那么就必须认识敏捷。只有深入的理解了这些实践的来源和目的，才能更好的践行甚至改进实践。
 
 **敏捷可以用一句话来概括：敏捷开发就是在一个高度协作的环境中，不断的使用反馈进行自我调整和完善，最终交付用户想要的软件。**
