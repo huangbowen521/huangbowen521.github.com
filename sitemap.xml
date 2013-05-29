@@ -130,7 +130,11 @@
     </url>
     <url>
         <loc>http://www.huangbowen.net/blog/2013/05/24/the-practices-of-an-agile-developer/</loc>
-        <lastmod>2013-05-24T12:19:41+08:00</lastmod>
+        <lastmod>2013-05-29T11:25:34+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.huangbowen.net/blog/2013/05/29/using-spring-message-source/</loc>
+        <lastmod>2013-05-29T15:01:36+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/about/</loc>
@@ -138,11 +142,11 @@
     </url>
     <url>
         <loc>http://www.huangbowen.net/blog/archives/</loc>
-        <lastmod>2013-05-24T12:19:41+08:00</lastmod>
+        <lastmod>2013-05-29T15:01:36+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/</loc>
-        <lastmod>2013-05-24T12:19:41+08:00</lastmod>
+        <lastmod>2013-05-29T15:01:36+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/robots.txt</loc>
