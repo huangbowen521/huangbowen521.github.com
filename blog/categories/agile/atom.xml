@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: agile | 黄博文的地盘]]></title>
+  <title><![CDATA[Category: Agile | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/agile/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-05-29T15:04:09+08:00</updated>
+  <updated>2013-05-30T15:39:15+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,58 +14,88 @@
 
   
   <entry>
-    <title type="html"><![CDATA[持续改进-《高效程序员的45个习惯》读后感]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/05/24/the-practices-of-an-agile-developer/"/>
-    <updated>2013-05-24T11:23:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/05/24/the-practices-of-an-agile-developer</id>
-    <content type="html"><![CDATA[<p>原书标题为<a href="http://www.amazon.cn/mn/detailApp/ref=asc_df_B0033WSFAO622894/?asin=B0033WSFAO&amp;tag=douban-23&amp;creative=2384&amp;creativeASIN=B0033WSFAO&amp;linkCode=asn">《Practices of An Agile Developer》</a>。中文名为<a href="http://book.douban.com/subject/4164024/">《高效程序员的45个习惯-敏捷开发修炼之道》</a>。敏捷这个词已经烂大街了，关于敏捷的书籍俯拾皆是。很多人是敏捷的狂热粉丝，而另一些人却讨厌敏捷，认为只是个噱头。我觉得很可能的原因之一是敏捷这个名字没起好。它的原名为“轻量型软件开发过程”（"lightweight process"），但后来阴差阳错成了agile(敏捷)。</p>
+    <title type="html"><![CDATA[持续集成之道：在你的开源项目中使用Travis CI]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/05/30/use-travis-ci-to-your-open-source-project/"/>
+    <updated>2013-05-30T14:58:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/05/30/use-travis-ci-to-your-open-source-project</id>
+    <content type="html"><![CDATA[<p>自从接触并践行了敏捷的一些实践之后，便深深的喜欢上了敏捷。尤其是测试自动化和持续集成这两个实践，可以显著的提高软件的质量和集成效率，实时检测项目健康度，使团队成员对项目保持充足的信心。</p>
+
+<p>但是对于个人项目而言，虽然测试自动化好实现，但是要实现持续集成还是稍有难度。因为持续集成需要搭建一个集成服务器，并建立某种反馈机制。而大多数人来说并没有自己的独立服务器，并且配置也极为繁琐。</p>
 
 <!-- more -->
 
 
-<p>既然书名是敏捷开发者的实践，那么就必须认识敏捷。只有深入的理解了这些实践的来源和目的，才能更好的践行甚至改进实践。</p>
+<p>不过不用怕，现在已经进入了云时代。 <a href="(https://travis-ci.org/)">Travis CI</a>为我们提供了免费的集成服务器，让我们省却了自己搭建集成服务器的烦恼。</p>
 
-<p><strong>敏捷可以用一句话来概括：敏捷开发就是在一个高度协作的环境中，不断的使用反馈进行自我调整和完善，最终交付用户想要的软件。</strong></p>
+<p><a href="(https://travis-ci.org/)">Travis CI</a>的官网介绍是: <strong>A hosted continuous integration service for the open source community.</strong> 表明它主要是给开源社区提供持续集成服务。其与github这个全球最火爆的代码托管网站高度集成，可以很方便的为github中的项目建立持续集成服务。</p>
 
-<p>从这句话中可以得出很多东西。</p>
+<p>它不仅支持多种语言，而且支持同时在多个运行环境中运行build，能全方位的测试你的程序。</p>
 
-<h2>首先，项目适不适合敏捷有两个先决条件：</h2>
+<p>下面就介绍下如何将<a href="(https://travis-ci.org/)">Travis CI</a>与自己在github上的某个repository集成。（这里以我自己的repository <a href="https://github.com/huangbowen521/SpringMessageSpike">https://github.com/huangbowen521/SpringMessageSpike</a> 为例。 ）</p>
 
 <ol>
-<li><p><strong>项目是以价值为导向的。</strong>也就是整个团队有一个总体一致的目标，那就是产出高质量、高价值、符合用户需求的软件。以价值为导向，看似简单，实则很难，甚至某些时候要要求公司的组织架构做出一定的调整。试想在一个等级森严、官僚化严重、各种无谓的考评泛滥的公司，有多少人能静下心来好好的搞开发，搞产品？只有打造一个相对扁平的组织，给予充分的信任和自由度，才有利于敏捷的实施。这反过来又要求团队中的每个人有高度的自律性。</p></li>
-<li><p><strong>团队能够达到高度协作。</strong>必须能够保证团队中的成员能够流畅的交流。如果在团队中大搞一言堂，信息不透明，很容易打击团队人员工作的积极性，致使团队分崩离析。另外，客户也属于团队中的一员。我们做出的产品最终是给客户看的，如果客户不能保证与团队紧密的合作，那么很容易使产品偏离客户的期望，最终交付失败。</p></li>
+<li>使Travis CI通过github OAuth认证。</li>
 </ol>
 
 
-<h2>再次，可以看到敏捷的基础：反馈。</h2>
+<p>点击<a href="https://travis-ci.org/">https://travis-ci.org/</a>右上角的<code>Sign in with GitHub</code>按钮，输入自己的github账号和密码，并允许Travis CI的认证。</p>
 
-<p>一旦你意识到走错了路方向，就要立即做出决策。举个例子，办公室另个团队给我们分享了这样一个故事。在项目刚开始时他们设计了叫做CoreService的类来封装所有的服务。随着项目的进行，CoreService类由于需要处理的服务越来越多，导致类越来越庞大。每个人在修改这个类时，写单元测试要建立对N个服务的mock，苦不堪言。问题在于，没人及时的提出这个bad smell，导致了人们花费了大量的时间来维护它。</p>
+<ol>
+<li>激活GitHub Service Hook。</li>
+</ol>
 
-<p>这说明了及时反馈的重要性。<strong>反馈包含提出反馈和接受反馈。</strong></p>
 
-<p><strong>提出反馈需要勇气和时机。</strong>要勇敢的提出自己的想法，这既需要自身具有对项目负责的精神，还要团队提供安全的环境。要及时的指出项目中不好的地方，千里之堤，毁于蚁穴。大灾难是逐步演化而来的，项目中切忌温水煮青蛙。</p>
+<p>GitHub给用户提供了一个Service Hook接口,只要用户对host在github上的repository作用了一些action(比如push，pull)，就会触发相应的Service Hook。而<a href="(https://travis-ci.org/)">Travis CI</a>正是基于这个原理来trigger你的build。当你发起一个push操作时，就会trigger <a href="(https://travis-ci.org/)">Travis CI</a>的服务。</p>
 
-<p><strong>接受反馈需要气度和行动。</strong>这就要求团队成员做事要有专业的态度，对事不对人，重结果轻过程。同时要拿出具体的行动，否则很容易打击积极性。</p>
+<p>设置方法是访问<a href="(https://travis-ci.org/)">Travis CI</a>的<a href="https://travis-ci.org/profile">profile</a>，选择相应的repository打开Service Hook开关。</p>
 
-<h2>其次，可以看到敏捷的精髓：拥抱变化。</h2>
+<p><img src="/images/TravisProfile.png"></p>
 
-<p>软件开发行业是一个不停发展和永远变化的领域。现在没有将来也不会有一个人能够了解你的项目的方方面面。</p>
+<p>然后登陆你的github，访问具体的repository的Service Hook页面，确保设置了Travis CI Hook的github name和travis token。</p>
 
-<p>变化无处不在，这就要求我们不断的学习。而迭代和增量式的学习则不失为一个好办法。一个学习型的团队才是较好的团队。当然，在学习的同时，你也要懂得丢弃。打破旧习惯很难，更难的是自己还没意识到这个问题。丢弃的第一步，首先是意识到你还在使用过时的方法，这也是最难的部分。</p>
+<p><img src="/images/ServiceHook.png"></p>
 
-<p>同时，变化意味着我们要主动应对。德国陆军元帅Helmuth von Moltke说过一句话“没有任何计划在遇敌后还能继续执行。”在软件开发中，我们可以这样理解，任何设计在开发中只是一个起点，它如何你的代码一样，会不停地进一步发展和提炼。</p>
+<ol>
+<li>给repository配置.travis.yml文件。该文件需要放置在repository的跟目录下。</li>
+</ol>
 
-<h2>最后，敏捷的目的：交付用户想要的软件。</h2>
 
-<p>试想客户将需求交付给你，要你几年后交付系统。然后，你基于这些需求构建了系统并按时交付。客户看了软件以后连声称赞。从此你多了一个忠实客户，接着开心的投入到下个项目中。请问这样的事情在你的项目中发生过吗？</p>
+<p>.travis.yml文件是一个相当重要的文件，里面需要配置你所使用的语言、运行环境、构建工具、构建脚本、通知方式等。最重要的是设置语言，其它的都有相应的默认值。</p>
 
-<p>通常情况是客户看到后暴跳如雷，这根本不是我想要的。这是因为用户的需要、技术和我们对需求的理解，都会随着时间的推移而变化。</p>
+<p>这是为我的<a href="(https://github.com/huangbowen521/SpringMessageSpike)">SpringMessageSpike</a>设置的.travis.yml文件。由于我的项目中使用了maven作为构建工具，而<a href="(https://travis-ci.org/)">Travis CI</a>对java语言设置的默认构建工具就是maven，所以无需在文件中显式指定。</p>
 
-<p>那么，如何解决这个问题那？方法之一就是采用敏捷的迭代式开发。每个迭代至少有两个活动不可或缺。一个是展示会议（show case），向客户展示目前的项目进展，已完成的功能，从而收集客户的反馈，即时对产品的方向做出调整。另一个是回顾会议（retro)。回顾会议则是提出反馈的一个好时机。通过回顾会议分析出这个迭代中的做的好的地方和不好的地方，并提出具体的改进行动。</p>
+<p>```yaml .travis.yml</p>
 
-<p>要将团队带入新的领域，必须首先要以身作则。我们需要的是领导者，而不是管理者。无论你目前的项目是否是敏捷项目，这本书中你都可以找到能够借鉴和提高的地方。敏捷中的持续改进不仅局限于项目开发，其实更适合于个人。通过持续改进自己的习惯、处事方法，保持一颗好奇心，勇敢的尝试未知领域，只要自己能力提高了，何惧其他？</p>
+<p>language: java
+jdk:
+  - oraclejdk7
+  - openjdk7
+  - openjdk6</p>
 
-<p>改变从自身做起，不能自暴自弃，而要奋起直追。</p>
+<p>```</p>
+
+<p>你可以使用一个travis-lint来检查你的yml文件是否是有效的。他是ruby写的一个gem，需要ruby的运行环境。安装方式是在terminal下<code>gem install travis-lint</code>。你只需要在你的repository根目录下运行<code>travis-lint</code>即可进行检查。</p>
+
+<p>想要更进一步的关于.travis.yml的配置请参见：<a href="http://about.travis-ci.org/docs/user/build-configuration/">http://about.travis-ci.org/docs/user/build-configuration/</a></p>
+
+<p>只要这三步就完成了配置。现在发起一个push就可以trigger你在<a href="(https://travis-ci.org/)">Travis CI</a>的build。
+这时候登陆<a href="(https://travis-ci.org/)">Travis CI</a>可以看到你的Build的状态和日志。</p>
+
+<p><img src="/images/BuildInfo.png"></p>
+
+<p>你可以在respository的README.md文件中加入build状态图标。方法是在在该文件中加入
+<code>[![Build Status](https://travis-ci.org/[YOUR_GITHUB_USERNAME]/[YOUR_PROJECT_NAME].png)](https://travis-ci.org/[YOUR_GITHUB_USERNAME]/[YOUR_PROJECT_NAME])</code>即可。</p>
+
+<p><img src="/images/BuildImage.png"></p>
+
+<p>总体来说<a href="(https://travis-ci.org/)">Travis CI</a>是一个轻量级、可高度定制化的免费的持续集成服务。但我觉得还是有几个缺点:</p>
+
+<ol>
+<li><p>运行build需要大量的准备，耗时较长。</p></li>
+<li><p>作为免费的服务，不支持build时间超过20分钟的项目。</p></li>
+<li><p>主站访问速度略慢。</p></li>
+</ol>
+
 ]]></content>
   </entry>
   

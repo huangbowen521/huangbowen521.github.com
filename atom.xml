@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-05-29T15:04:09+08:00</updated>
+  <updated>2013-05-30T15:39:15+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,95 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[持续集成之道：在你的开源项目中使用Travis CI]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/05/30/use-travis-ci-to-your-open-source-project/"/>
+    <updated>2013-05-30T14:58:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/05/30/use-travis-ci-to-your-open-source-project</id>
+    <content type="html"><![CDATA[<p>自从接触并践行了敏捷的一些实践之后，便深深的喜欢上了敏捷。尤其是测试自动化和持续集成这两个实践，可以显著的提高软件的质量和集成效率，实时检测项目健康度，使团队成员对项目保持充足的信心。</p>
+
+<p>但是对于个人项目而言，虽然测试自动化好实现，但是要实现持续集成还是稍有难度。因为持续集成需要搭建一个集成服务器，并建立某种反馈机制。而大多数人来说并没有自己的独立服务器，并且配置也极为繁琐。</p>
+
+<!-- more -->
+
+
+<p>不过不用怕，现在已经进入了云时代。 <a href="(https://travis-ci.org/)">Travis CI</a>为我们提供了免费的集成服务器，让我们省却了自己搭建集成服务器的烦恼。</p>
+
+<p><a href="(https://travis-ci.org/)">Travis CI</a>的官网介绍是: <strong>A hosted continuous integration service for the open source community.</strong> 表明它主要是给开源社区提供持续集成服务。其与github这个全球最火爆的代码托管网站高度集成，可以很方便的为github中的项目建立持续集成服务。</p>
+
+<p>它不仅支持多种语言，而且支持同时在多个运行环境中运行build，能全方位的测试你的程序。</p>
+
+<p>下面就介绍下如何将<a href="(https://travis-ci.org/)">Travis CI</a>与自己在github上的某个repository集成。（这里以我自己的repository <a href="https://github.com/huangbowen521/SpringMessageSpike">https://github.com/huangbowen521/SpringMessageSpike</a> 为例。 ）</p>
+
+<ol>
+<li>使Travis CI通过github OAuth认证。</li>
+</ol>
+
+
+<p>点击<a href="https://travis-ci.org/">https://travis-ci.org/</a>右上角的<code>Sign in with GitHub</code>按钮，输入自己的github账号和密码，并允许Travis CI的认证。</p>
+
+<ol>
+<li>激活GitHub Service Hook。</li>
+</ol>
+
+
+<p>GitHub给用户提供了一个Service Hook接口,只要用户对host在github上的repository作用了一些action(比如push，pull)，就会触发相应的Service Hook。而<a href="(https://travis-ci.org/)">Travis CI</a>正是基于这个原理来trigger你的build。当你发起一个push操作时，就会trigger <a href="(https://travis-ci.org/)">Travis CI</a>的服务。</p>
+
+<p>设置方法是访问<a href="(https://travis-ci.org/)">Travis CI</a>的<a href="https://travis-ci.org/profile">profile</a>，选择相应的repository打开Service Hook开关。</p>
+
+<p><img src="http://www.huangbowen.net/images/TravisProfile.png"></p>
+
+<p>然后登陆你的github，访问具体的repository的Service Hook页面，确保设置了Travis CI Hook的github name和travis token。</p>
+
+<p><img src="http://www.huangbowen.net/images/ServiceHook.png"></p>
+
+<ol>
+<li>给repository配置.travis.yml文件。该文件需要放置在repository的跟目录下。</li>
+</ol>
+
+
+<p>.travis.yml文件是一个相当重要的文件，里面需要配置你所使用的语言、运行环境、构建工具、构建脚本、通知方式等。最重要的是设置语言，其它的都有相应的默认值。</p>
+
+<p>这是为我的<a href="(https://github.com/huangbowen521/SpringMessageSpike)">SpringMessageSpike</a>设置的.travis.yml文件。由于我的项目中使用了maven作为构建工具，而<a href="(https://travis-ci.org/)">Travis CI</a>对java语言设置的默认构建工具就是maven，所以无需在文件中显式指定。</p>
+
+<figure class='code'><figcaption><span>.travis.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">java</span>
+</span><span class='line'><span class="l-Scalar-Plain">jdk</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">oraclejdk7</span>
+</span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">openjdk7</span>
+</span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">openjdk6</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你可以使用一个travis-lint来检查你的yml文件是否是有效的。他是ruby写的一个gem，需要ruby的运行环境。安装方式是在terminal下<code>gem install travis-lint</code>。你只需要在你的repository根目录下运行<code>travis-lint</code>即可进行检查。</p>
+
+<p>想要更进一步的关于.travis.yml的配置请参见：<a href="http://about.travis-ci.org/docs/user/build-configuration/">http://about.travis-ci.org/docs/user/build-configuration/</a></p>
+
+<p>只要这三步就完成了配置。现在发起一个push就可以trigger你在<a href="(https://travis-ci.org/)">Travis CI</a>的build。
+这时候登陆<a href="(https://travis-ci.org/)">Travis CI</a>可以看到你的Build的状态和日志。</p>
+
+<p><img src="http://www.huangbowen.net/images/BuildInfo.png"></p>
+
+<p>你可以在respository的README.md文件中加入build状态图标。方法是在在该文件中加入
+<code>[![Build Status](https://travis-ci.org/[YOUR_GITHUB_USERNAME]/[YOUR_PROJECT_NAME].png)](https://travis-ci.org/[YOUR_GITHUB_USERNAME]/[YOUR_PROJECT_NAME])</code>即可。</p>
+
+<p><img src="http://www.huangbowen.net/images/BuildImage.png"></p>
+
+<p>总体来说<a href="(https://travis-ci.org/)">Travis CI</a>是一个轻量级、可高度定制化的免费的持续集成服务。但我觉得还是有几个缺点:</p>
+
+<ol>
+<li><p>运行build需要大量的准备，耗时较长。</p></li>
+<li><p>作为免费的服务，不支持build时间超过20分钟的项目。</p></li>
+<li><p>主站访问速度略慢。</p></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用自定义的MessageSource实现对properties的复用]]></title>
@@ -3905,218 +3994,6 @@ map:: (a -> b) -> [a] -> [b]
 <p>一个图灵机无法通过程序判断另一个图灵机在限定的时间内停机。停机问题说明了图灵机的局限性，这也被很多人作为程序无法没有bug的借口。你无法写一个程序，来判断一段程序中是否没有任何bug。</p>
 
 <p>我们可以预知未来吗？根据图灵机理论，如果我们可以用确定的不含糊的步骤来描述出宇宙的发展，那么我们就可以将其作为输入到图灵机，得到未来。问题是我们如果要构造这个输入，差不多等于构造了一个新宇宙。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Haskell-函数式编程语言之初体验]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch/"/>
-    <updated>2013-03-02T14:55:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch</id>
-    <content type="html"><![CDATA[<p>如果你是使用面向对像语言进行编程的程序员，那么你应该去了解掌握一门动态语言。而动态语言的魔力之一就是函数式编程。而要学习了解函数式编程，那么haskell是一个不错的选择。</p>
-
-<p>Haskell是是一门纯函数式编程语言(purely functional programming language)。在其世界中函数是第一等对象。并且在haskell中没有赋值，例如你指派a的值为5，然后你无法再给a分配其它的值。所以你不能像命令式语言那样命令电脑“要做什么”，而是通过函数来描述出问题“是什么”。</p>
-
-<p>作为一个纯的函数式编程语言，它支持惰性求值、模式匹配、列表解析、类型类、类型多态……</p>
-
-<p>别着急，让我们慢慢来解开函数式编程的面纱。</p>
-
-<!-- more -->
-
-
-<h2>安装Haskell</h2>
-
-<ol>
-<li><p>可以去<a href="http://www.Haskell.org/Haskellwiki/Haskell">官网</a>下载安装包进行安装。</p></li>
-<li><p>mac平台的用户可以通过<a href="http://mxcl.github.com/homebrew/">homebrew</a>进行安装。</p></li>
-</ol>
-
-
-<p>在terminal下输入<code>brew install haskell-platform</code>即可。</p>
-
-<h2>使用Haskell</h2>
-
-<p>安装完毕后haskell platform的解释器GHC就已经在你的电脑上了。GHC可以解释执行Haskell脚本，即后缀名为.hs的文件。你可可以通过在terminal输入<code>ghci</code>进入交互模式。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>twer@bowen-huang:~<span class="nv">$ </span>ghci
-</span><span class='line'>GHCi, version 7.4.2: http://www.haskell.org/ghc/ :? <span class="k">for </span><span class="nb">help</span>
-</span><span class='line'>Loading package ghc-prim ... linking … <span class="k">done</span>.
-</span><span class='line'>Loading package integer-gmp ... linking … <span class="k">done</span>.
-</span><span class='line'>Loading package base ... linking … <span class="k">done</span>.
-</span><span class='line'>Prelude&gt; 1+2
-</span><span class='line'>3
-</span><span class='line'>Prelude&gt; 3*4
-</span><span class='line'>12
-</span><span class='line'>Prelude&gt; 5/1
-</span><span class='line'>5.0
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>关于Haskell的编辑器你可以使用任何喜欢的编辑器:Vim、Emacs、Sublime、TextMate…..我比较喜欢Sublime。因为在Sublime自带Haskell的快捷编译执行。只需要按Ctrl+B来直接运行Scripts脚本。</p>
-
-<p>在ghci交互模式下可以使用<code>:l</code>命令来load一个Haskell脚本，然后就可以调用此脚本中的函数。我们先写一个&#8217;Hello world!’程序，然后通过ghci来load和调用.</p>
-
-<figure class='code'><figcaption><span>HelloWorld.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">main</span> <span class="ow">=</span> <span class="n">print</span> <span class="o">$</span> <span class="s">&quot;Hello world!&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; :l HelloWorld.hs
-</span><span class='line'><span class="o">[</span>1 of 1<span class="o">]</span> Compiling Main <span class="o">(</span> HelloWorld.hs, interpreted <span class="o">)</span>
-</span><span class='line'>Ok, modules loaded: Main.
-</span><span class='line'>*Main&gt; main
-</span><span class='line'><span class="s2">&quot;Hello world!&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果对文件进行了修改，也可以直接通过<code>:r</code>来重新加载文件。</p>
-
-<h2>Haskell的基本语法</h2>
-
-<h3>加减乘除操作</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; 1 + 2
-</span><span class='line'>3
-</span><span class='line'>Prelude&gt; 3 - 1
-</span><span class='line'>2
-</span><span class='line'>Prelude&gt; 3 * 4
-</span><span class='line'>12
-</span><span class='line'>Prelude&gt; 5 / 1
-</span><span class='line'>5.0
-</span><span class='line'>Prelude&gt; 10 / <span class="o">(</span>-5<span class="o">)</span>
-</span><span class='line'>-2.0
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>注意对负数进行操作时要将其用()括起来，否则系统会报错。</p>
-
-<h3>判等与比较操作</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nv">5</span> <span class="o">==</span> 5
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; <span class="nv">10</span> <span class="o">==</span> 8
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; 5 /<span class="o">=</span> 5
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; 10 /<span class="o">=</span> 8
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; 5 &gt;<span class="o">=</span> 3
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; 5 &lt;<span class="o">=</span> 3
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> True
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> False
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; False <span class="o">||</span> False
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; True <span class="o">||</span> False
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; not True
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; not False
-</span><span class='line'>True
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>控制流转</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nb">let </span>isHello <span class="nv">x</span> <span class="o">=</span> <span class="k">if </span><span class="nv">x</span> <span class="o">==</span> <span class="s2">&quot;Hello&quot;</span> <span class="k">then </span>True <span class="k">else </span>False
-</span><span class='line'>Prelude&gt; isHello <span class="s2">&quot;Hello&quot;</span>
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; isHello <span class="s2">&quot;World&quot;</span>
-</span><span class='line'>False
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>注意这里的条件判断中的else是不可以省略的，这样保证条件语句总会返回一个值。所以我们可以将整个<code>if..then..else</code> pattern看做一个表达式。</p>
-
-<p>如果在脚本文件中写的话不需要使用<code>let</code>关键字。并且也可以采用另一个写法。</p>
-
-<figure class='code'><figcaption><span>isHello.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isHello</span> <span class="n">x</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">x</span> <span class="o">==</span> <span class="s">&quot;Hello&quot;</span> <span class="ow">=</span> <span class="kt">True</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">otherwise</span>     <span class="ow">=</span> <span class="kt">False</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>|表示或，otherwise关键字表示其它的情况。当然你也可以将这三行代码写成一行，这样也是能够正常运行的。分成三行只是为了更加可读。</p>
-
-<p>还有第三种写法，实际上与面对对象语言中的<code>switch…case</code>语句有些类似。</p>
-
-<figure class='code'><figcaption><span>isHello.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isHello</span> <span class="n">x</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">x</span> <span class="kr">of</span>
-</span><span class='line'> <span class="s">&quot;Hello&quot;</span> <span class="ow">-&gt;</span> <span class="kt">True</span>
-</span><span class='line'> <span class="n">otherwise</span> <span class="ow">-&gt;</span> <span class="kt">False</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这和第二种写法很类似。其实第二种写法本质上就是<code>case</code>语句，它只是<code>case</code>语句的一个语法糖而已。</p>
-
-<p>另外，在Haskell中是没有各种循环语句的，如果要实现相似的特性当然要使用递归了。</p>
-
-<p>第二节中，我们会讨论这个问题。</p>
 ]]></content>
   </entry>
   
