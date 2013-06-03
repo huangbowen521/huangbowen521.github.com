@@ -24,26 +24,26 @@ tags: [CI, Travis]
 
 1. 使Travis CI通过github OAuth认证。
 
-点击<https://travis-ci.org/>右上角的`Sign in with GitHub`按钮，输入自己的github账号和密码，并允许Travis CI的认证。
+	点击<https://travis-ci.org/>右上角的`Sign in with GitHub`按钮，输入自己的github账号和密码，并允许Travis CI的认证。
 
 2. 激活GitHub Service Hook。 
 
-GitHub给用户提供了一个Service Hook接口,只要用户对host在github上的repository作用了一些action(比如push，pull)，就会触发相应的Service Hook。而[Travis CI]正是基于这个原理来trigger你的build。当你发起一个push操作时，就会trigger [Travis CI]的服务。
+	GitHub给用户提供了一个Service Hook接口,只要用户对host在github上的repository作用了一些action(比如push，pull)，就会触发相应的Service Hook。而[Travis CI]正是基于这个原理来trigger你的build。当你发起一个push操作时，就会trigger [Travis CI]的服务。
 
-设置方法是访问[Travis CI]的[profile](https://travis-ci.org/profile)，选择相应的repository打开Service Hook开关。
+	设置方法是访问[Travis CI]的[profile](https://travis-ci.org/profile)，选择相应的repository打开Service Hook开关。
 
-{% img /images/TravisProfile.png %}
+	{% img /images/TravisProfile.png %}
 
 
-然后登陆你的github，访问具体的repository的Service Hook页面，确保设置了Travis CI Hook的github name和travis token。
+	然后登陆你的github，访问具体的repository的Service Hook页面，确保设置了Travis CI Hook的github name和travis token。
 
-{% img /images/ServiceHook.png %}
+	{% img /images/ServiceHook.png %}
 
-3. 给repository配置.travis.yml文件。该文件需要放置在repository的跟目录下。
+3. 给repository配置.travis.yml文件。该文件需要放置在repository的根目录下。
 
-.travis.yml文件是一个相当重要的文件，里面需要配置你所使用的语言、运行环境、构建工具、构建脚本、通知方式等。最重要的是设置语言，其它的都有相应的默认值。
+	.travis.yml文件是一个相当重要的文件，里面需要配置你所使用的语言、运行环境、构建工具、构建脚本、通知方式等。最重要的是设置语言，其它的都有相应的默认值。
 
-这是为我的[SpringMessageSpike]设置的.travis.yml文件。由于我的项目中使用了maven作为构建工具，而[Travis CI]对java语言设置的默认构建工具就是maven，所以无需在文件中显式指定。
+	这是为我的[SpringMessageSpike]设置的.travis.yml文件。由于我的项目中使用了maven作为构建工具，而[Travis CI]对java语言设置的默认构建工具就是maven，所以无需在文件中显式指定。
 
 ```yaml .travis.yml
 
