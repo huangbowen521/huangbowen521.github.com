@@ -121,35 +121,27 @@
 <p>下面就介绍下如何将<a href="(https://travis-ci.org/)">Travis CI</a>与自己在github上的某个repository集成。（这里以我自己的repository <a href="https://github.com/huangbowen521/SpringMessageSpike">https://github.com/huangbowen521/SpringMessageSpike</a> 为例。 ）</p>
 
 <ol>
-<li>使Travis CI通过github OAuth认证。</li>
+<li><p>使Travis CI通过github OAuth认证。</p>
+
+<p> 点击<a href="https://travis-ci.org/">https://travis-ci.org/</a>右上角的<code>Sign in with GitHub</code>按钮，输入自己的github账号和密码，并允许Travis CI的认证。</p></li>
+<li><p>激活GitHub Service Hook。</p>
+
+<p> GitHub给用户提供了一个Service Hook接口,只要用户对host在github上的repository作用了一些action(比如push，pull)，就会触发相应的Service Hook。而<a href="(https://travis-ci.org/)">Travis CI</a>正是基于这个原理来trigger你的build。当你发起一个push操作时，就会trigger <a href="(https://travis-ci.org/)">Travis CI</a>的服务。</p>
+
+<p> 设置方法是访问<a href="(https://travis-ci.org/)">Travis CI</a>的<a href="https://travis-ci.org/profile">profile</a>，选择相应的repository打开Service Hook开关。</p>
+
+<p> <img src="/images/TravisProfile.png"></p>
+
+<p> 然后登陆你的github，访问具体的repository的Service Hook页面，确保设置了Travis CI Hook的github name和travis token。</p>
+
+<p> <img src="/images/ServiceHook.png"></p></li>
+<li><p>给repository配置.travis.yml文件。该文件需要放置在repository的根目录下。</p>
+
+<p> .travis.yml文件是一个相当重要的文件，里面需要配置你所使用的语言、运行环境、构建工具、构建脚本、通知方式等。最重要的是设置语言，其它的都有相应的默认值。</p>
+
+<p> 这是为我的<a href="(https://github.com/huangbowen521/SpringMessageSpike)">SpringMessageSpike</a>设置的.travis.yml文件。由于我的项目中使用了maven作为构建工具，而<a href="(https://travis-ci.org/)">Travis CI</a>对java语言设置的默认构建工具就是maven，所以无需在文件中显式指定。</p></li>
 </ol>
 
-
-<p>点击<a href="https://travis-ci.org/">https://travis-ci.org/</a>右上角的<code>Sign in with GitHub</code>按钮，输入自己的github账号和密码，并允许Travis CI的认证。</p>
-
-<ol>
-<li>激活GitHub Service Hook。</li>
-</ol>
-
-
-<p>GitHub给用户提供了一个Service Hook接口,只要用户对host在github上的repository作用了一些action(比如push，pull)，就会触发相应的Service Hook。而<a href="(https://travis-ci.org/)">Travis CI</a>正是基于这个原理来trigger你的build。当你发起一个push操作时，就会trigger <a href="(https://travis-ci.org/)">Travis CI</a>的服务。</p>
-
-<p>设置方法是访问<a href="(https://travis-ci.org/)">Travis CI</a>的<a href="https://travis-ci.org/profile">profile</a>，选择相应的repository打开Service Hook开关。</p>
-
-<p><img src="/images/TravisProfile.png"></p>
-
-<p>然后登陆你的github，访问具体的repository的Service Hook页面，确保设置了Travis CI Hook的github name和travis token。</p>
-
-<p><img src="/images/ServiceHook.png"></p>
-
-<ol>
-<li>给repository配置.travis.yml文件。该文件需要放置在repository的跟目录下。</li>
-</ol>
-
-
-<p>.travis.yml文件是一个相当重要的文件，里面需要配置你所使用的语言、运行环境、构建工具、构建脚本、通知方式等。最重要的是设置语言，其它的都有相应的默认值。</p>
-
-<p>这是为我的<a href="(https://github.com/huangbowen521/SpringMessageSpike)">SpringMessageSpike</a>设置的.travis.yml文件。由于我的项目中使用了maven作为构建工具，而<a href="(https://travis-ci.org/)">Travis CI</a>对java语言设置的默认构建工具就是maven，所以无需在文件中显式指定。</p>
 
 <figure class='code'><figcaption><span>.travis.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -245,6 +237,8 @@
         <a class="basic-alignment left" href="/blog/2013/05/29/using-spring-message-source/" title="Previous Post: 使用自定义的MessageSource实现对properties的复用">&laquo; 使用自定义的MessageSource实现对properties的复用</a>
       
       
+        <a class="basic-alignment right" href="/blog/2013/06/05/programmatically-set-android-phone-ap/" title="Next Post: 调用API设置安卓手机的Access Point">调用API设置安卓手机的Access Point &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -268,6 +262,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/06/05/programmatically-set-android-phone-ap/">调用API设置安卓手机的Access Point</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/05/30/use-travis-ci-to-your-open-source-project/">持续集成之道：在你的开源项目中使用Travis CI</a>
       </li>
     
@@ -281,10 +279,6 @@
     
       <li class="post">
         <a href="/blog/2013/05/17/setting-npm-configuration/">npm的配置管理及设置代理</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/05/07/integrate-javascript-tests-to-gradle/">将AngularJS的单元测试和端到端测试集成到gradle构建脚本中</a>
       </li>
     
   </ul>

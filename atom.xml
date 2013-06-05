@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-05-30T15:39:15+08:00</updated>
+  <updated>2013-06-05T12:21:24+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,111 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[调用API设置安卓手机的Access Point]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/06/05/programmatically-set-android-phone-ap/"/>
+    <updated>2013-06-05T12:04:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/06/05/programmatically-set-android-phone-ap</id>
+    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/android.jpeg"></p>
+
+<p>最近在做一个小的应用，需要通过程序设置安卓手机的AP（Access point, 即将手机变为一个移动热点，其他机器能够通过wifi连接到此手机）。原以为很简单的一个东西，还是花费了一番周折，最终还是搞定了。</p>
+
+<!-- more -->
+
+
+<p>配置AP的选项是属于配置wifi的一部分，所以他们都在WifiManager这个类中。
+获取当前系统的WifiManager实例的方法是:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">WifiManager</span> <span class="n">wifi</span> <span class="o">=</span> <span class="o">(</span><span class="n">WifiManager</span><span class="o">)</span> <span class="n">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">WIFI_SERVICE</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>此类中有几个关键方法用来设置AP，但是它们都是被隐藏的，我们无法直接调用，所以只有通过反射的方式来调用。</p>
+
+<p>获取AP当前状态的方法是:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="n">Boolean</span> <span class="nf">getApState</span><span class="o">(</span><span class="n">WifiManager</span> <span class="n">wifi</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">NoSuchMethodException</span><span class="o">,</span> <span class="n">IllegalAccessException</span><span class="o">,</span> <span class="n">InvocationTargetException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="n">wifi</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&quot;isWifiApEnabled&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="o">(</span><span class="n">Boolean</span><span class="o">)</span> <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">wifi</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>配置AP要使用到WifiConfiguration这个类，以下是设置的一个AP。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="n">WifiConfiguration</span> <span class="nf">getApConfiguration</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">WifiConfiguration</span> <span class="n">apConfig</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WifiConfiguration</span><span class="o">();</span>
+</span><span class='line'>        <span class="c1">//配置热点的名称</span>
+</span><span class='line'>        <span class="n">apConfig</span><span class="o">.</span><span class="na">SSID</span> <span class="o">=</span> <span class="s">&quot;yourId&quot;</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">apConfig</span><span class="o">.</span><span class="na">allowedAuthAlgorithms</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">WifiConfiguration</span><span class="o">.</span><span class="na">AuthAlgorithm</span><span class="o">.</span><span class="na">OPEN</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">apConfig</span><span class="o">.</span><span class="na">allowedKeyManagement</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">WifiConfiguration</span><span class="o">.</span><span class="na">KeyMgmt</span><span class="o">.</span><span class="na">WPA_PSK</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">apConfig</span><span class="o">.</span><span class="na">allowedProtocols</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">WifiConfiguration</span><span class="o">.</span><span class="na">Protocol</span><span class="o">.</span><span class="na">RSN</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">apConfig</span><span class="o">.</span><span class="na">allowedProtocols</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">WifiConfiguration</span><span class="o">.</span><span class="na">Protocol</span><span class="o">.</span><span class="na">WPA</span><span class="o">);</span>
+</span><span class='line'>        <span class="c1">//配置热点的密码</span>
+</span><span class='line'>        <span class="n">apConfig</span><span class="o">.</span><span class="na">preSharedKey</span> <span class="o">=</span> <span class="s">&quot;yourPassword&quot;</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">apConfig</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>应用AP配置并启用AP要使用另一个被隐藏的方法<code>setWifiApEnabled</code>。<strong>需要注意的是启用AP前要将当前手机的wifi关闭，否则会启动失败。</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">setWifiAp</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="n">wifi</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getMethod</span><span class="o">(</span>
+</span><span class='line'>                <span class="s">&quot;setWifiApEnabled&quot;</span><span class="o">,</span> <span class="n">WifiConfiguration</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Boolean</span><span class="o">.</span><span class="na">TYPE</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">wifi</span><span class="o">.</span><span class="na">setWifiEnabled</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">wifi</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后，一定要注意要在AndroidManifest.xml文件中设置几个权限。否则在调用API时会产生<code>java.lang.SecurityException: Permission Denied</code>的异常。
+需要加入的权限如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.ACCESS_NETWORK_STATE&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.ACCESS_WIFI_STATE&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.CHANGE_WIFI_STATE&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.CHANGE_NETWORK_STATE&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>源码我已经放置到github上了，需要的请自行checkout。地址是：<a href="https://github.com/huangbowen521/APSwitch">https://github.com/huangbowen521/APSwitch</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[持续集成之道：在你的开源项目中使用Travis CI]]></title>
@@ -34,35 +139,27 @@
 <p>下面就介绍下如何将<a href="(https://travis-ci.org/)">Travis CI</a>与自己在github上的某个repository集成。（这里以我自己的repository <a href="https://github.com/huangbowen521/SpringMessageSpike">https://github.com/huangbowen521/SpringMessageSpike</a> 为例。 ）</p>
 
 <ol>
-<li>使Travis CI通过github OAuth认证。</li>
+<li><p>使Travis CI通过github OAuth认证。</p>
+
+<p> 点击<a href="https://travis-ci.org/">https://travis-ci.org/</a>右上角的<code>Sign in with GitHub</code>按钮，输入自己的github账号和密码，并允许Travis CI的认证。</p></li>
+<li><p>激活GitHub Service Hook。</p>
+
+<p> GitHub给用户提供了一个Service Hook接口,只要用户对host在github上的repository作用了一些action(比如push，pull)，就会触发相应的Service Hook。而<a href="(https://travis-ci.org/)">Travis CI</a>正是基于这个原理来trigger你的build。当你发起一个push操作时，就会trigger <a href="(https://travis-ci.org/)">Travis CI</a>的服务。</p>
+
+<p> 设置方法是访问<a href="(https://travis-ci.org/)">Travis CI</a>的<a href="https://travis-ci.org/profile">profile</a>，选择相应的repository打开Service Hook开关。</p>
+
+<p> <img src="http://www.huangbowen.net/images/TravisProfile.png"></p>
+
+<p> 然后登陆你的github，访问具体的repository的Service Hook页面，确保设置了Travis CI Hook的github name和travis token。</p>
+
+<p> <img src="http://www.huangbowen.net/images/ServiceHook.png"></p></li>
+<li><p>给repository配置.travis.yml文件。该文件需要放置在repository的根目录下。</p>
+
+<p> .travis.yml文件是一个相当重要的文件，里面需要配置你所使用的语言、运行环境、构建工具、构建脚本、通知方式等。最重要的是设置语言，其它的都有相应的默认值。</p>
+
+<p> 这是为我的<a href="(https://github.com/huangbowen521/SpringMessageSpike)">SpringMessageSpike</a>设置的.travis.yml文件。由于我的项目中使用了maven作为构建工具，而<a href="(https://travis-ci.org/)">Travis CI</a>对java语言设置的默认构建工具就是maven，所以无需在文件中显式指定。</p></li>
 </ol>
 
-
-<p>点击<a href="https://travis-ci.org/">https://travis-ci.org/</a>右上角的<code>Sign in with GitHub</code>按钮，输入自己的github账号和密码，并允许Travis CI的认证。</p>
-
-<ol>
-<li>激活GitHub Service Hook。</li>
-</ol>
-
-
-<p>GitHub给用户提供了一个Service Hook接口,只要用户对host在github上的repository作用了一些action(比如push，pull)，就会触发相应的Service Hook。而<a href="(https://travis-ci.org/)">Travis CI</a>正是基于这个原理来trigger你的build。当你发起一个push操作时，就会trigger <a href="(https://travis-ci.org/)">Travis CI</a>的服务。</p>
-
-<p>设置方法是访问<a href="(https://travis-ci.org/)">Travis CI</a>的<a href="https://travis-ci.org/profile">profile</a>，选择相应的repository打开Service Hook开关。</p>
-
-<p><img src="http://www.huangbowen.net/images/TravisProfile.png"></p>
-
-<p>然后登陆你的github，访问具体的repository的Service Hook页面，确保设置了Travis CI Hook的github name和travis token。</p>
-
-<p><img src="http://www.huangbowen.net/images/ServiceHook.png"></p>
-
-<ol>
-<li>给repository配置.travis.yml文件。该文件需要放置在repository的跟目录下。</li>
-</ol>
-
-
-<p>.travis.yml文件是一个相当重要的文件，里面需要配置你所使用的语言、运行环境、构建工具、构建脚本、通知方式等。最重要的是设置语言，其它的都有相应的默认值。</p>
-
-<p>这是为我的<a href="(https://github.com/huangbowen521/SpringMessageSpike)">SpringMessageSpike</a>设置的.travis.yml文件。由于我的项目中使用了maven作为构建工具，而<a href="(https://travis-ci.org/)">Travis CI</a>对java语言设置的默认构建工具就是maven，所以无需在文件中显式指定。</p>
 
 <figure class='code'><figcaption><span>.travis.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -3959,41 +4056,6 @@ map:: (a -> b) -> [a] -> [b]
 <p><code>name,sessionId，status</code>跟上面的例子是差不多的，区别是该请求的返回值是ELEMENT:{2192893e-f260-44c4-bdf6-7aad3c919739}，表示定位到元素的id，通过该id，client可以发送如click之类的请求与 server端进行交互。</p>
 
 <p>这个今天就讲到这里。以后有新东西再补充。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[《图灵的秘密》读后感]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/03/03/the-annotated-turing/"/>
-    <updated>2013-03-03T00:05:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/03/03/the-annotated-turing</id>
-    <content type="html"><![CDATA[<p>坦白的说这本书不太适合我。当我看到大段大段的数学符号时，就两眼发蒙。刚开始还感觉跟得上，到后来完全lost了。</p>
-
-<p>但是这并不妨碍我从另一个角度来重新了解了图灵、数学、计算机….去年的时候曾听过Jeff讲过的一个session:《世界及宇宙的终极答案》。我敢确定至少一半的内容都是来自这本书。
-图灵在论文中描述了一个想象出来的机器，用来论证数理逻辑中的一个问题，论文题目叫:&lt;论可计算数及其在判定性问题中的应用>（On Computable Numbers, with an Application to the Entscheidungsproblem）。这个想象出来的机器被后人成为图灵机。</p>
-
-<!-- more -->
-
-
-<p>图灵在论文中让图灵机使用二进制，仅是觉得方便论证。后来研制的计算机有的使用十进制，有的使用二进制，直到冯诺依曼发表了一片论文论述了计算机使用二进制的可行性与优势后，二进制逐渐成为标准。</p>
-
-<p>如果一个集合可以与自然数意义对应起来，那么我们可以说这个集合是可数的。</p>
-
-<p>正整数和偶数个数那个多些？答案是一样多。因为他们都是可数的。</p>
-
-<p>那么有理数和无理数那个多？答案是无理数。因为无理数是不可数的。</p>
-
-<p>无理数属于实数的一部分。所以实数也是不可数的。这可以用对角线法来证明。</p>
-
-<p>这是一个反证法。</p>
-
-<p>我们假设实数是可数的。那么将0和1之间所有的实数都按照从小到大的顺序列出来。然后我们取第一个数的第一位、第二个数的第二位、第三个数的第三位…..即取对角线的数组成一个新的数。然后对这个数的每一位都加1,如果该位的值是9再加1后变成0。我们看看这个数是不是在已经枚举出来的列表中。列表中的第一个不是它，因为它比第一个数的第一位大1，第二个数也不是它，因为它比第二个数的第二位大…….这样遍历了整个列表发现这个新的数并不在列表中，也就是说我们根本无法将0和1之间的所有实数列举出来，因为我们总可以通过这个方法来找到一个新的实数。</p>
-
-<p>实数是无穷的。我们可以这样理解，世界上有数不清的数字，我们恰好找到了一些，并给它们起了一些名字，如整数，实数，有理数，但还有更多的数我们并不知道它们的存在，就算发现一个也算是意外。</p>
-
-<p>一个图灵机无法通过程序判断另一个图灵机在限定的时间内停机。停机问题说明了图灵机的局限性，这也被很多人作为程序无法没有bug的借口。你无法写一个程序，来判断一段程序中是否没有任何bug。</p>
-
-<p>我们可以预知未来吗？根据图灵机理论，如果我们可以用确定的不含糊的步骤来描述出宇宙的发展，那么我们就可以将其作为输入到图灵机，得到未来。问题是我们如果要构造这个输入，差不多等于构造了一个新宇宙。</p>
 ]]></content>
   </entry>
   

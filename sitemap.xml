@@ -140,7 +140,13 @@
         <loc>
             http://www.huangbowen.net/blog/2013/05/30/use-travis-ci-to-your-open-source-project/
         </loc>
-        <lastmod>2013-05-30T15:35:49+08:00</lastmod>
+        <lastmod>2013-06-03T12:16:23+08:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://www.huangbowen.net/blog/2013/06/05/programmatically-set-android-phone-ap/
+        </loc>
+        <lastmod>2013-06-05T12:18:11+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/about/</loc>
@@ -148,11 +154,11 @@
     </url>
     <url>
         <loc>http://www.huangbowen.net/blog/archives/</loc>
-        <lastmod>2013-05-30T15:35:49+08:00</lastmod>
+        <lastmod>2013-06-05T12:18:11+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/</loc>
-        <lastmod>2013-05-30T15:35:49+08:00</lastmod>
+        <lastmod>2013-06-05T12:18:11+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/robots.txt</loc>
