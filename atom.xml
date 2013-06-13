@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-06-05T12:21:24+08:00</updated>
+  <updated>2013-06-13T14:39:30+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,104 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ThoughtWorks知识分享体系]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/06/13/thoughtworks-knowledge-sharing-system/"/>
+    <updated>2013-06-13T13:44:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/06/13/thoughtworks-knowledge-sharing-system</id>
+    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/KS.jpg"></p>
+
+<p>本来这篇文章的名称为&#8221;ThoughtWorks的培训体系&#8221;。但是培训这个词总给人一种正襟危坐的感觉，而在ThoughtWorks中的培训则是非常轻松自在的。而且培训有种老手教新手的味道，而在ThoughtWorks不管资历高低，只要你敢秀，都随时欢迎。所以我将培训改为了知识分享。&#8221;Knowledge sharing&#8221;可以说是ThoughtWorks的标志性文化之一。在ThoughtWorks大家庭，大家都很乐于把自己的所学、所想通过各种方式分享出来。正因为ThoughtWorks建立了立体化、全方位的知识分享体系，每一个新加入ThoughtWorks大家提的人都能得到快速的成长，而经验丰富的老员工也能不断的突破自身。这个体系有力的保证了公司员工的技术水平。下面我简略的讲解下这个体系。希望大家都能有所借鉴。</p>
+
+<!-- more -->
+
+
+<h2>公司层面</h2>
+
+<p><strong>TWU</strong></p>
+
+<p>TWU是由ThoughtWorks为全球应届毕业生量身打造的培训营，全称为ThoughtWorks University。每个刚加入的毕业生都会被送到印度的办公室接受为期六周的培训。在这六周的培训中大家可以感受到公司的文化，了解整个agile开发流程。每个讲师都是由ThoughtWorks global抽取的技术高手。在这六周里，不仅有课上，还有游戏玩，又可以欣赏异国风光，真正做到了寓教于乐。</p>
+
+<p><strong>TWI</strong></p>
+
+<p>TWI是ThoughtWorks为中国区的社招员工打造的培训营，全称为ThoughtWorks Immersion。每个新入职的社招员工将在中国的三个office（北京、西安、成都轮流举行）之一参加为期3天的培训。在这三天的培训中，有中国区CTO徐昊亲自给你讲敏捷，有各种好玩的游戏带你深入了解敏捷，还有各种软技能的培训。即使是senior的人也能有从中有所收获。</p>
+
+<p><strong>Conference</strong></p>
+
+<p>中国区不但自己举行一些会议，如Agile China,QConf等，尽力推行敏捷在中国的实施，还积极的参加国内外的各种大会。这些大会上你能听到各个公司的顶尖技术人才带来的各种演讲，开拓视野。</p>
+
+<h2>Office层面</h2>
+
+<p><strong>Open Party</strong></p>
+
+<p>Open Party是一个非会议形式的聚会，每个月一次，地点不定。OpenParty是由多个技术社区（ThoughtWorks只是其中之一）共同举办的社交活动。本着自由、开放、分享、互动的宗旨，采用“非会议（Unconference）”的形式， 为参与人员创建一个表达和交流的平台。活动话题不仅仅局限于技术，还包括生活、旅游、艺术、创业、商务、投资、营销等各方面的话题。在这上面你很容易交到志同道合的朋友。</p>
+
+<p><strong>Session</strong></p>
+
+<p>形形色色的Session可是ThoughtWorks中很重要的一个活动。无论是中国区甚至是global的技术专家，还是刚参加工作不久的毕业生，都可以随意book一个会议室，给大家带来一场精彩的演讲。Session的时间一般是每天中午的12点半到1点半，以及下午的5点到6点，所以经常看到大家捧着盒饭来参加session。Session的内容也五花八门，有老成都讲成都历史的，也有军迷讲中国航母发展史的，也有Geek达人教你如何写博客。当然更多的还是技术session。从JavaScript到敏捷实践、从正则表达式到大数据应用&#8230;&#8230;总有一款适合你的。</p>
+
+<p><strong>Code Kata</strong></p>
+
+<p>Session注重于听，而Code Kata则注重培养大家的动手能力。时间一般是晚上6点以后，主持人扮演business owner，抛出一个问题由参与者结对编程实现。既有创建一个出租车计价器的常规问题，也有给大杀器超市建立结账系统的刁钻问题。参与者先针对问题建立task列表，然后每对pair简单讲述建立这样的task列表的原因。大家选择其中较好的一个task列表，每5分钟为限，采用tdd的方式依次实现每个task。五分钟后每组pair都需要show一下自己的代码，并讲解设计思路。这种在极短的时间内练习编程的方式很能锻炼人。如果你快捷键不行、你的task思路不清晰，OO设计不到位，就很容易很不上节奏。而每个task间的show case（展示）又能让你观察到与对手的差距，领悟揣摩别人解决问题的思路。</p>
+
+<p><strong>郑大夜校</strong></p>
+
+<p>郑大夜校是ThoughtWorks知识分享体系中的一个重要标志。在ThoughtWorks中有悠久的历史和广泛的知名度。</p>
+
+<p>郑大夜校有两个版本。一个是专门针对还未入职的毕业生的。每两周举行一次。</p>
+
+<p>另一个版本是针对所有在职员工的，为每周四晚的6点到7点。郑大夜校上的课程更有针对性和连续性，通过一些列的课程能够强化你对某一方面知识的深入了解。比如LiYan同学以haskell语言为依托，给大家讲了函数式编程，9堂课涵盖了函数式编程大部分要点。还有XiaoPeng同学的重构手法课程，实战演练如何结合IDE快捷键对代码展开重构…&#8230;这样的系列课程数不胜数，已经成为培训新人技术能力的不可或缺的手段之一。</p>
+
+<p><strong>Reading Club</strong></p>
+
+<p>读书会是成都office一个独特的活动。每两周举办一次。每次会推荐大家读一本书，两周以后大家针对这本书进行热烈的讨论。会议形式也多张多样，有每人5分钟的即兴演讲，有角色扮演，也有辩论会。刚开始主要是些技术书籍，基本围绕着ThoughtWorks的DEV读书路线图。后来也扩展到了其他方面，比如文艺、科幻及一些你懂的类型。</p>
+
+<h2>团队层面</h2>
+
+<p><strong>内部session</strong></p>
+
+<p>内部session和office的session有两个区别：</p>
+
+<ol>
+<li><p>内部session比较随意，做不做ppt无所谓，直接找块白板边讲边画也行，或者直接show代码。</p></li>
+<li><p>演讲者一般是新手，讲给团队中其他新手或老手。目的是考察新手是否真的掌握了知识点，老手顺便给些意见建议。</p></li>
+</ol>
+
+
+<p>Session主题可以结合项目的技术栈，给新人一个施展的空间。由于内部session比较轻松，比较容易培养新人的自信心，使其能够勇敢的表达自己，在团队中发出自己的声音。</p>
+
+<p><strong>内部Code Jam</strong></p>
+
+<p>Code Jam针对项目中的一些新技术或大家都懂得不多的领域，大家在一定时间内进行专门的强化，一般每周举行一次。其实与上面讲的Code Kata类似。比如在我们项目刚启动时大家对于JavaScript都不太熟悉，针对这一弱项就可以采用Code Kata的方式来强化。所有的developer找一个不忙的下午，由主持人抛出一个与JavaScript有关的挑战，大家一起实现。比如对Jquery不熟，就练习做一个使用JQuery的动态页面；对JavaScript的TDD不熟，就着重练习下Jasmine（JavaScript的单元测试库）的使用。</p>
+
+<p><strong>Tech hudle</strong></p>
+
+<p>时间：每天固定的某个工作时间。
+参加人员：全体开发者。
+这相当于一个小型的站会。在会上大家分别讲述自己目前在做什么、遇到了什么问题、需要哪方面的帮助，或者识别了项目的什么风险，是否需要规避等。通过tech hundle将所有开发者每天的工作情况串联起来，实现知识的最大共享，避免出现某人闷在一个task很长时间的情况。同时也能拉近与客户方的合作，建立良好的合作关系。</p>
+
+<p><strong>Code review</strong></p>
+
+<p>每天的某个固定时间所有的developer一起利用工具查看当天的所有提交的代码。自己的代码能够得到他人的直接点评，这样的机会恐怕不多。而在ThoughtWorks这样的事情天天在上演。通过Code review能够直观的感受到代码的坏味道，从而避免以后重蹈覆辙。</p>
+
+<p><strong>pair programming</strong></p>
+
+<p>结对编程的确是一个非常棒的知识分享的方式。即便是新手和老手pair，大家都能学到东西。无论是解决问题的思路、方式，甚至是对快捷键、IDE的使用，双方都能有所借鉴。我个人非常喜欢这种工作方式，这种知识传递可以贯穿整个工作时间，很是高效。</p>
+
+<h2>个人层面</h2>
+
+<p><strong>buddy &amp; sponsor</strong></p>
+
+<p>每一个新入职的员工都会被分配一个buddy，一直帮助他通过六个月的试用期。试用期满后也可以选择一个senior的人作为sponsor，继续对自己进行指导。Buddy和Sponsor是你工作和学习中的好伙伴。他像导师，其实更愿意和你做朋友。由于buddy和Sponsor的人生阅历相对比较丰富，在工作上及学习上的问题和困惑都能与其探讨。</p>
+
+<p><strong>写博客、翻译书、写书</strong></p>
+
+<p>这也是总结知识、传递知识、自我提高的有效手段。我们在享受前人的经验成果之余，也应该肩负起将知识往后传递的责任。而文字则是知识传递的有力途径。</p>
+
+<p>在ThoughtWorks不进步就意味着退步。保持持续的学习是不断前进的动力。而这一切的前提又是你要有足够的热情。ThoughtWorks欢迎对技术有追求的程序员加入我们的舞台。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[调用API设置安卓手机的Access Point]]></title>
@@ -3782,280 +3880,6 @@ map:: (a -> b) -> [a] -> [b]
 
 
 <p>甚至我们还可以对枚举类型进行与或运算。这些就不细说了，有兴趣的可以查阅相关资料。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[webDriver入门及提高]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/03/11/webdriver/"/>
-    <updated>2013-03-11T09:39:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/03/11/webdriver</id>
-    <content type="html"><![CDATA[<p>第一次接触Selenium 的WebDriver，是在一个Web项目中。该项目使用它来进行功能性测试。当我看到Firefox中的页面内容被一个个自动填充并且自动跳转的时候，感觉真的很神奇。通过这段时间的学习觉得可以将我学的关于WebDriver的知识进行一个总结。</p>
-
-<!-- more -->
-
-
-<h2>什么是Selenium 和WebDriver？</h2>
-
-<p>Selenium是一个浏览器自动化操作框架。Selenium主要由三种工具组成。第一个工具SeleniumIDE，是Firefox的扩展插件，支持用户录制和回访测试。录制/回访模式存在局限性，对许多用户来说并不适合，因此第二个工具——Selenium WebDriver提供了各种语言环境的API来支持更多控制权和编写符合标准软件开发实践的应用程序。最后一个工具——SeleniumGrid帮助工程师使用Selenium API控制分布在一系列机器上的浏览器实例，支持并发运行更多测试。在项目内部，它们分别被称为“IDE”、“WebDriver”和“Grid”。</p>
-
-<p>这里主要介绍它的第二个工具：WebDriver。</p>
-
-<p>官网上是这么介绍它的：WebDriver is a clean, fast framework for automated testing of webapps. 但是我觉得它并不局限与进行自动化测试，完全可以用作其它用途。</p>
-
-<p>WebDriver针对各个浏览器而开发，取代了嵌入到被测Web应用中的JavaScript。与浏览器的紧密集成支持创建更高级的测试，避免了JavaScript安全模型导致的限制。除了来自浏览器厂商的支持，WebDriver还利用操作系统级的调用模拟用户输入。WebDriver支持Firefox(FirefoxDriver)、IE (InternetExplorerDriver)、Opera (OperaDriver)和Chrome (ChromeDriver)。 它还支持Android (AndroidDriver)和iPhone (IPhoneDriver)的移动应用测试。它还包括一个基于HtmlUnit的无界面实现，称为HtmlUnitDriver。WebDriver API可以通过Python、Ruby、Java和C#访问，支持开发人员使用他们偏爱的编程语言来创建测试。</p>
-
-<h2>如何使用？</h2>
-
-<p>首先，你需要将WebDriver的JAR包加入到你项目中CLASSPATH中。你可以Download它通过<a href="http://code.google.com/p/selenium/downloads/list">http://code.google.com/p/selenium/downloads/list</a>。</p>
-
-<p>如果你使用的是maven构建你的项目，只需要在pom.xml文件中加入下面的依赖项即可。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
-</span><span class='line'>
-</span><span class='line'>           <span class="nt">&lt;groupId&gt;</span>org.seleniumhq.selenium<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>
-</span><span class='line'>           <span class="nt">&lt;artifactId&gt;</span>selenium-java<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="nt">&lt;version&gt;</span>2.25.0<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
-</span><span class='line'>
-</span><span class='line'>           <span class="nt">&lt;groupId&gt;</span>org.seleniumhq.selenium<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>
-</span><span class='line'>           <span class="nt">&lt;artifactId&gt;</span>selenium-server<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>
-</span><span class='line'>           <span class="nt">&lt;version&gt;</span>2.25.0<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>然后，你就可以使用它了。WebDriver的API遵从”Best Fit”原则，在保持良好的用户体验性和灵活性之间找到一个最佳的平衡点。</p>
-
-<p>下面的例子是使用HtmlUnitDriver。HtmlUnitDriver只会在内存中执行这段代码，不会弹出一个真实的页面。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">packageorg</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">example</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.openqa.selenium.By</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.openqa.selenium.WebDriver</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.openqa.selenium.WebElement</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.openqa.selenium.htmlunit.HtmlUnitDriver</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span>  <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="c1">// Create a new instance of the html unit driver</span>
-</span><span class='line'>        <span class="c1">// Notice that the remainder of the code relies onthe interface, </span>
-</span><span class='line'>        <span class="c1">// not the implementation.</span>
-</span><span class='line'>        <span class="n">WebDriver</span> <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HtmlUnitDriver</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// And now use this to visit Google</span>
-</span><span class='line'>        <span class="n">driver</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;http://www.google.com&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// Find the text input element by its name</span>
-</span><span class='line'>        <span class="n">WebElement</span> <span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;q&quot;</span><span class="o">));</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// Enter something to search for</span>
-</span><span class='line'>        <span class="n">element</span><span class="o">.</span><span class="na">sendKeys</span><span class="o">(</span><span class="s">&quot;Cheese!&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// Now submit the form. WebDriver will find theform for us from the element</span>
-</span><span class='line'>        <span class="n">element</span><span class="o">.</span><span class="na">submit</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// Check the title of the page</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Page title is: &quot;</span> <span class="o">+</span><span class="n">driver</span><span class="o">.</span><span class="na">getTitle</span><span class="o">());</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果你想使用Firefox浏览器。你只需要将WebDriver driver = new FirefoxDriver()。前提是你的Firefox被安装在默认的位置。</p>
-
-<table>
-<tr>
-  <th>操作系统</th>
-  <th>Firefox默认安装位置</th>
-</tr>                           
-<tr>
-  <td>Linux</td>
-  <td>firefox (found using &#8220;which&#8221;)</td>
-</tr>
-<tr>
-  <td>Mac</td>
-  <td>/Applications/Firefox.app/Contents/MacOS/firefox</td>
-</tr>
-<tr>
-  <td>Windows</td>
-  <td>%PROGRAMFILES%\Mozilla Firefox\firefox.exe</td>
-</tr>
-</table>
-
-
-<p>如果你的FireFox没有被安装在指定的位置，你可以设置“webdriver.firefox.bin”</p>
-
-<p>环境变量的值来指定它的位置。在Java中可以使用如下代码：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="s">&quot;webdriver.firefox.bin&quot;</span><span class="o">,</span><span class="s">&quot;thelocation of Firefox&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果要使用Chrome浏览器的话相对麻烦些。你需要首先下载一个ChromeDriver（下载地址：http://code.google.com/p/chromedriver/downloads/list）。这个程序是由Chrome团队提供的，你可以看做它是链接WebDriver和Chrome浏览器的桥梁。然后启动ChromeDriver，你会得到一个Url及监听端口。然后使用webDriver = newRemoteWebDriver(url, DesiredCapabilities.chrome())创建一个ChromeWebDriver进行操作。当然你可以在一个子线程中启动ChromeDriver，并设置给WebDriver。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">your</span> <span class="n">chromedriverfile</span> <span class="n">path</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">ChromeDriverService</span> <span class="n">service</span> <span class="o">=</span> <span class="n">newChromeDriverService</span><span class="o">.</span><span class="na">Builder</span><span class="o">().</span><span class="na">usingChromeDriverExecutable</span><span class="o">(</span><span class="n">file</span><span class="o">).</span><span class="na">usingAnyFreePort</span><span class="o">().</span><span class="na">build</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">service</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">WebDriver</span>  <span class="n">webDriver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ChromeDriver</span><span class="o">(</span><span class="n">service</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">……</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">……</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">……</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">service</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>WebDriver如何工作</h2>
-
-<p>WebDriver是W3C的一个标准，由Selenium主持。</p>
-
-<p>具体的协议标准可以从<a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol#Command_Reference">http://code.google.com/p/selenium/wiki/JsonWireProtocol#Command_Reference</a>查看。</p>
-
-<p>从这个协议中我们可以看到，WebDriver之所以能够实现与浏览器进行交互，是因为浏览器实现了这些协议。这个协议是使用JOSN通过HTTP进行传输。</p>
-
-<p>它的实现使用了经典的Client-Server模式。客户端发送一个requset，服务器端返回一个response。</p>
-
-<p>我们明确几个概念。</p>
-
-<p><strong>Client</strong></p>
-
-<p>调用 WebDriverAPI的机器。</p>
-
-<p><strong>Server</strong></p>
-
-<p>运行浏览器的机器。Firefox浏览器直接实现了WebDriver的通讯协议，而Chrome和IE则是通过ChromeDriver和InternetExplorerDriver实现的。</p>
-
-<p><strong>Session</strong></p>
-
-<p>服务器端需要维护浏览器的Session，从客户端发过来的请求头中包含了Session信息，服务器端将会执行对应的浏览器页面。</p>
-
-<p><strong>WebElement</strong></p>
-
-<p>这是WebDriverAPI中的对象，代表页面上的一个DOM元素。</p>
-
-<p>举个实际的例子，下面代码的作用是”命令”firefox转跳到google主页：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>   <span class="n">WebDriver</span> <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FirefoxDriver</span><span class="o">();</span>
-</span><span class='line'>    <span class="c1">//实例化一个Driver</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">driver</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;http://www.google.com&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>在执行<code>driver.get("http://www.google.com")</code>这句代码时，client，也就是我们的测试代码向<code>remote server</code>发送了如下的请求：</p>
-
-<p><code>POSTsession/285b12e4-2b8a-4fe6-90e1-c35cba245956/url  post_data{"url":"http://google.com"}</code></p>
-
-<p>通过post的方式请求localhost:port/hub/session/session_id/url地址，请求浏览器完成跳转url的操作。</p>
-
-<p>如果上述请求是可接受的，或者说remote server是实现了这个接口，那么remote server会跳转到该post data包含的url,并返回如下的response</p>
-
-<p><code>{"name":"get","sessionId":"285b12e4-2b8a-4fe6-90e1-c35cba245956","status":0,"value":""}</code></p>
-
-<p>该response中包含如下信息:</p>
-
-<ul>
-<li><p>name：remote server端的实现的方法的名称，这里是get，表示跳转到指定url；</p></li>
-<li><p>sessionId：当前session的id；</p></li>
-<li><p>status：请求执行的状态码，非0表示未正确执行，这里是0，表示一切ok不许担心；</p></li>
-<li><p>value：请求的返回值，这里返回值为空，如果client调用title接口，则该值应该是当前页面的title；</p></li>
-<li><p>如果client发送的请求是定位某个特定的页面元素，则response的返回值可能是这样的：</p></li>
-</ul>
-
-
-<p><code>{"name":"findElement","sessionId":"285b12e4-2b8a-4fe6-90e1-c35cba245956","status":0,"value":{"ELEMENT":"{2192893e-f260-44c4-bdf6-7aad3c919739}"}}</code></p>
-
-<p><code>name,sessionId，status</code>跟上面的例子是差不多的，区别是该请求的返回值是ELEMENT:{2192893e-f260-44c4-bdf6-7aad3c919739}，表示定位到元素的id，通过该id，client可以发送如click之类的请求与 server端进行交互。</p>
-
-<p>这个今天就讲到这里。以后有新东西再补充。</p>
 ]]></content>
   </entry>
   
