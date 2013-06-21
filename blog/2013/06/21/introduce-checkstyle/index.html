@@ -1,0 +1,1276 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>CheckStyle, 强制你遵循编码规范 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="如今代码静态检查越来越重要，已经成为构建高质量软件的不可或缺的一个验证步骤。如果你使用的是java语言，那么CheckStyle则是一个利器。
+CheckStyle能够帮助程序员检查代码是否符合制定的规范。通过将CheckStyle的检查引入到项目构建中， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/06/21/introduce-checkstyle/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">CheckStyle, 强制你遵循编码规范</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-21T13:53:00+08:00" pubdate data-updated="true">Jun 21<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/CheckStyle.png"></p>
+
+<p>如今代码静态检查越来越重要，已经成为构建高质量软件的不可或缺的一个验证步骤。如果你使用的是java语言，那么<a href="http://checkstyle.sourceforge.net/">CheckStyle</a>则是一个利器。
+<a href="http://checkstyle.sourceforge.net/">CheckStyle</a>能够帮助程序员检查代码是否符合制定的规范。通过将<a href="http://checkstyle.sourceforge.net/">CheckStyle</a>的检查引入到项目构建中，可以强制让项目中的所有的开发者遵循制定规范，而不是仅仅停留在纸面上。如果发现代码违反了标准，比如类名未以大写开头、单个方法超过了指定行数、甚至单个方法抛出了3个以上的异常等。这些检查由于是基于源码的，所以不需要编译，执行速度快。</p>
+
+<!-- more -->
+
+
+<p><a href="http://checkstyle.sourceforge.net/">CheckStyle</a>有针对不同IDE和构建工具的各种插件，方便开发者随时随地对代码进行静态检查。下面就讲解下如何将<a href="http://checkstyle.sourceforge.net/">CheckStyle</a>引入到maven构建中。</p>
+
+<h2>配置CheckStyle插件</h2>
+
+<p>在maven中一个名为<code>maven-checkstyle-plugin</code>的插件，用于执行<a href="http://checkstyle.sourceforge.net/">CheckStyle</a> task。下面是一个简单的配置。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>maven-checkstyle-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>2.10<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;id&gt;</span>checkstyle<span class="nt">&lt;/id&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;phase&gt;</span>validate<span class="nt">&lt;/phase&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;goal&gt;</span>check<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;failOnViolation&gt;</span>true<span class="nt">&lt;/failOnViolation&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们定义了在maven lifecycle的validate阶段执行check task，并且如果发现有违反标准的情况就会fail当前的build。</p>
+
+<p>maven-checkstyle-plugin内置了4种规范.</p>
+
+<ul>
+<li>config/sun_checks.xml</li>
+<li>config/maven_checks.xml</li>
+<li>config/turbine_checks.xml</li>
+<li>config/avalon_checks.xml</li>
+</ul>
+
+
+<p>其中sun_checks.xml为默认值。如果想要使用其他三种规范，则只需配置configuration。下面是使用maven_checks.xml的示例。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>maven-checkstyle-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>2.10<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;configLocation&gt;</span>config/maven_checks.xml<span class="nt">&lt;/configLocation&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;id&gt;</span>checkstyle<span class="nt">&lt;/id&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;phase&gt;</span>validate<span class="nt">&lt;/phase&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;goal&gt;</span>check<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;failOnViolation&gt;</span>true<span class="nt">&lt;/failOnViolation&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>自定义规范文件</h2>
+
+<p>我们可以使用默认的规范未见，当然也支持自定义。下面是google的一个checkstyle规范文件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+<span class='line-number'>215</span>
+<span class='line-number'>216</span>
+<span class='line-number'>217</span>
+<span class='line-number'>218</span>
+<span class='line-number'>219</span>
+<span class='line-number'>220</span>
+<span class='line-number'>221</span>
+<span class='line-number'>222</span>
+<span class='line-number'>223</span>
+<span class='line-number'>224</span>
+<span class='line-number'>225</span>
+<span class='line-number'>226</span>
+<span class='line-number'>227</span>
+<span class='line-number'>228</span>
+<span class='line-number'>229</span>
+<span class='line-number'>230</span>
+<span class='line-number'>231</span>
+<span class='line-number'>232</span>
+<span class='line-number'>233</span>
+<span class='line-number'>234</span>
+<span class='line-number'>235</span>
+<span class='line-number'>236</span>
+<span class='line-number'>237</span>
+<span class='line-number'>238</span>
+<span class='line-number'>239</span>
+<span class='line-number'>240</span>
+<span class='line-number'>241</span>
+<span class='line-number'>242</span>
+<span class='line-number'>243</span>
+<span class='line-number'>244</span>
+<span class='line-number'>245</span>
+<span class='line-number'>246</span>
+<span class='line-number'>247</span>
+<span class='line-number'>248</span>
+<span class='line-number'>249</span>
+<span class='line-number'>250</span>
+<span class='line-number'>251</span>
+<span class='line-number'>252</span>
+<span class='line-number'>253</span>
+<span class='line-number'>254</span>
+<span class='line-number'>255</span>
+<span class='line-number'>256</span>
+<span class='line-number'>257</span>
+<span class='line-number'>258</span>
+<span class='line-number'>259</span>
+<span class='line-number'>260</span>
+<span class='line-number'>261</span>
+<span class='line-number'>262</span>
+<span class='line-number'>263</span>
+<span class='line-number'>264</span>
+<span class='line-number'>265</span>
+<span class='line-number'>266</span>
+<span class='line-number'>267</span>
+<span class='line-number'>268</span>
+<span class='line-number'>269</span>
+<span class='line-number'>270</span>
+<span class='line-number'>271</span>
+<span class='line-number'>272</span>
+<span class='line-number'>273</span>
+<span class='line-number'>274</span>
+<span class='line-number'>275</span>
+<span class='line-number'>276</span>
+<span class='line-number'>277</span>
+<span class='line-number'>278</span>
+<span class='line-number'>279</span>
+<span class='line-number'>280</span>
+<span class='line-number'>281</span>
+<span class='line-number'>282</span>
+<span class='line-number'>283</span>
+<span class='line-number'>284</span>
+<span class='line-number'>285</span>
+<span class='line-number'>286</span>
+<span class='line-number'>287</span>
+<span class='line-number'>288</span>
+<span class='line-number'>289</span>
+<span class='line-number'>290</span>
+<span class='line-number'>291</span>
+<span class='line-number'>292</span>
+<span class='line-number'>293</span>
+<span class='line-number'>294</span>
+<span class='line-number'>295</span>
+<span class='line-number'>296</span>
+<span class='line-number'>297</span>
+<span class='line-number'>298</span>
+<span class='line-number'>299</span>
+<span class='line-number'>300</span>
+<span class='line-number'>301</span>
+<span class='line-number'>302</span>
+<span class='line-number'>303</span>
+<span class='line-number'>304</span>
+<span class='line-number'>305</span>
+<span class='line-number'>306</span>
+<span class='line-number'>307</span>
+<span class='line-number'>308</span>
+<span class='line-number'>309</span>
+<span class='line-number'>310</span>
+<span class='line-number'>311</span>
+<span class='line-number'>312</span>
+<span class='line-number'>313</span>
+<span class='line-number'>314</span>
+<span class='line-number'>315</span>
+<span class='line-number'>316</span>
+<span class='line-number'>317</span>
+<span class='line-number'>318</span>
+<span class='line-number'>319</span>
+<span class='line-number'>320</span>
+<span class='line-number'>321</span>
+<span class='line-number'>322</span>
+<span class='line-number'>323</span>
+<span class='line-number'>324</span>
+<span class='line-number'>325</span>
+<span class='line-number'>326</span>
+<span class='line-number'>327</span>
+<span class='line-number'>328</span>
+<span class='line-number'>329</span>
+<span class='line-number'>330</span>
+<span class='line-number'>331</span>
+<span class='line-number'>332</span>
+<span class='line-number'>333</span>
+<span class='line-number'>334</span>
+<span class='line-number'>335</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+</span><span class='line'><span class="cp">&lt;!DOCTYPE module PUBLIC</span>
+</span><span class='line'><span class="cp">        &quot;-//Puppy Crawl//DTD Check Configuration 1.3//EN&quot;</span>
+</span><span class='line'><span class="cp">        &quot;http://www.puppycrawl.com/dtds/configuration_1_3.dtd&quot;&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&lt;!-- This is a checkstyle configuration file. For descriptions of</span>
+</span><span class='line'><span class="c">what the following rules do, please see the checkstyle configuration</span>
+</span><span class='line'><span class="c">page at http://checkstyle.sourceforge.net/config.html --&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;Checker&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;RegexpSingleline&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="c">&lt;!-- Requires a Google copyright notice in each file.</span>
+</span><span class='line'><span class="c">          Code intended to be open-sourced may have a multi-line copyright</span>
+</span><span class='line'><span class="c">          notice, so that this required text appears on the second line:</span>
+</span><span class='line'><span class="c">          &lt;pre&gt;</span>
+</span><span class='line'><span class="c">            /*</span>
+</span><span class='line'><span class="c">             * Copyright 2008 Google Inc.</span>
+</span><span class='line'><span class="c">             *</span>
+</span><span class='line'><span class="c">             * (details of open-source license...)</span>
+</span><span class='line'><span class="c">          &lt;/pre&gt;</span>
+</span><span class='line'><span class="c">        --&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span>
+</span><span class='line'>                  <span class="na">value=</span><span class="s">&quot;^(//| \*) Copyright (\([cC]\) )?[\d]{4}(\-[\d]{4})? (Google Inc\.).*$&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;minimum&quot;</span> <span class="na">value=</span><span class="s">&quot;1&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;maximum&quot;</span> <span class="na">value=</span><span class="s">&quot;10&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;message&quot;</span> <span class="na">value=</span><span class="s">&quot;Google copyright is missing or malformed.&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;FileTabCharacter&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="c">&lt;!-- Checks that there are no tab characters in the file.</span>
+</span><span class='line'><span class="c">        --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;NewlineAtEndOfFile&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;RegexpSingleline&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="c">&lt;!-- Checks that FIXME is not used in comments.  TODO is preferred.</span>
+</span><span class='line'><span class="c">        --&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;((//.*)|(\*.*))FIXME&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;message&quot;</span> <span class="na">value=</span><span class="s">&#39;TODO is preferred to FIXME.  e.g. &quot;TODO(johndoe): Refactor when v2 is released.&quot;&#39;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;RegexpSingleline&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="c">&lt;!-- Checks that TODOs are named.  (Actually, just that they are followed</span>
+</span><span class='line'><span class="c">             by an open paren.)</span>
+</span><span class='line'><span class="c">        --&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;((//.*)|(\*.*))TODO[^(]&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;message&quot;</span> <span class="na">value=</span><span class="s">&#39;All TODOs should be named.  e.g. &quot;TODO(johndoe): Refactor when v2 is released.&quot;&#39;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&lt;!-- All Java AST specific tests live under TreeWalker module. --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;TreeWalker&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c">&lt;!--</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">        IMPORT CHECKS</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">        --&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;RedundantImport&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Checks for redundant import statements. --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;ImportOrder&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Checks for out of order import statements. --&gt;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;groups&quot;</span> <span class="na">value=</span><span class="s">&quot;com.google,android,junit,net,org,java,javax&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- This ensures that static imports go first. --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;option&quot;</span> <span class="na">value=</span><span class="s">&quot;top&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;tokens&quot;</span> <span class="na">value=</span><span class="s">&quot;STATIC_IMPORT, IMPORT&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c">&lt;!--</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">        JAVADOC CHECKS</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">        --&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c">&lt;!-- Checks for Javadoc comments.                     --&gt;</span>
+</span><span class='line'>        <span class="c">&lt;!-- See http://checkstyle.sf.net/config_javadoc.html --&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;JavadocMethod&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;scope&quot;</span> <span class="na">value=</span><span class="s">&quot;protected&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowMissingJavadoc&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowMissingParamTags&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowMissingReturnTag&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowMissingThrowsTags&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowThrowsTagsForSubclasses&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowUndeclaredRTE&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;JavadocType&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;scope&quot;</span> <span class="na">value=</span><span class="s">&quot;protected&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;JavadocStyle&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c">&lt;!--</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">        NAMING CHECKS</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">        --&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c">&lt;!-- Item 38 - Adhere to generally accepted naming conventions --&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;PackageName&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Validates identifiers for package names against the</span>
+</span><span class='line'><span class="c">              supplied expression. --&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Here the default checkstyle rule restricts package name parts to</span>
+</span><span class='line'><span class="c">              seven characters, this is not in line with common practice at Google.</span>
+</span><span class='line'><span class="c">            --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;^[a-z]+(\.[a-z][a-z0-9]{1,})*$&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;TypeNameCheck&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Validates static, final fields against the</span>
+</span><span class='line'><span class="c">            expression &quot;^[A-Z][a-zA-Z0-9]*$&quot;. --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;metadata</span> <span class="na">name=</span><span class="s">&quot;altname&quot;</span> <span class="na">value=</span><span class="s">&quot;TypeName&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;ConstantNameCheck&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Validates non-private, static, final fields against the supplied</span>
+</span><span class='line'><span class="c">            public/package final fields &quot;^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$&quot;. --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;metadata</span> <span class="na">name=</span><span class="s">&quot;altname&quot;</span> <span class="na">value=</span><span class="s">&quot;ConstantName&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPublic&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToProtected&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPackage&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPrivate&quot;</span> <span class="na">value=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;^([A-Z][A-Z0-9]*(_[A-Z0-9]+)*|FLAG_.*)$&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;message</span> <span class="na">key=</span><span class="s">&quot;name.invalidPattern&quot;</span>
+</span><span class='line'>                     <span class="na">value=</span><span class="s">&quot;Variable &#39;&#39;{0}&#39;&#39; should be in ALL_CAPS (if it is a constant) or be private (otherwise).&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;StaticVariableNameCheck&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Validates static, non-final fields against the supplied</span>
+</span><span class='line'><span class="c">            expression &quot;^[a-z][a-zA-Z0-9]*_?$&quot;. --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;metadata</span> <span class="na">name=</span><span class="s">&quot;altname&quot;</span> <span class="na">value=</span><span class="s">&quot;StaticVariableName&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPublic&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToProtected&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPackage&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPrivate&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;^[a-z][a-zA-Z0-9]*_?$&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;MemberNameCheck&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Validates non-static members against the supplied expression. --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;metadata</span> <span class="na">name=</span><span class="s">&quot;altname&quot;</span> <span class="na">value=</span><span class="s">&quot;MemberName&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPublic&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToProtected&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPackage&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPrivate&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;^[a-z][a-zA-Z0-9]*$&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;MethodNameCheck&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Validates identifiers for method names. --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;metadata</span> <span class="na">name=</span><span class="s">&quot;altname&quot;</span> <span class="na">value=</span><span class="s">&quot;MethodName&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;^[a-z][a-zA-Z0-9]*(_[a-zA-Z0-9]+)*$&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;ParameterName&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Validates identifiers for method parameters against the</span>
+</span><span class='line'><span class="c">              expression &quot;^[a-z][a-zA-Z0-9]*$&quot;. --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;LocalFinalVariableName&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Validates identifiers for local final variables against the</span>
+</span><span class='line'><span class="c">              expression &quot;^[a-z][a-zA-Z0-9]*$&quot;. --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;LocalVariableName&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Validates identifiers for local variables against the</span>
+</span><span class='line'><span class="c">              expression &quot;^[a-z][a-zA-Z0-9]*$&quot;. --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        <span class="c">&lt;!--</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">        LENGTH and CODING CHECKS</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">        --&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;LineLength&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Checks if a line is too long. --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;max&quot;</span> <span class="na">value=</span><span class="s">&quot;${com.puppycrawl.tools.checkstyle.checks.sizes.LineLength.max}&quot;</span> <span class="na">default=</span><span class="s">&quot;100&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c">&lt;!--</span>
+</span><span class='line'><span class="c">              The default ignore pattern exempts the following elements:</span>
+</span><span class='line'><span class="c">                - import statements</span>
+</span><span class='line'><span class="c">                - long URLs inside comments</span>
+</span><span class='line'><span class="c">            --&gt;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;ignorePattern&quot;</span>
+</span><span class='line'>                      <span class="na">value=</span><span class="s">&quot;${com.puppycrawl.tools.checkstyle.checks.sizes.LineLength.ignorePattern}&quot;</span>
+</span><span class='line'>                      <span class="na">default=</span><span class="s">&quot;^(package .*;\s*)|(import .*;\s*)|( *\* *https?://.*)$&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;LeftCurly&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Checks for placement of the left curly brace (&#39;{&#39;). --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;RightCurly&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Checks right curlies on CATCH, ELSE, and TRY blocks are on</span>
+</span><span class='line'><span class="c">            the same line. e.g., the following example is fine:</span>
+</span><span class='line'><span class="c">            &lt;pre&gt;</span>
+</span><span class='line'><span class="c">              if {</span>
+</span><span class='line'><span class="c">                ...</span>
+</span><span class='line'><span class="c">              } else</span>
+</span><span class='line'><span class="c">            &lt;/pre&gt;</span>
+</span><span class='line'><span class="c">            --&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- This next example is not fine:</span>
+</span><span class='line'><span class="c">            &lt;pre&gt;</span>
+</span><span class='line'><span class="c">              if {</span>
+</span><span class='line'><span class="c">                ...</span>
+</span><span class='line'><span class="c">              }</span>
+</span><span class='line'><span class="c">              else</span>
+</span><span class='line'><span class="c">            &lt;/pre&gt;</span>
+</span><span class='line'><span class="c">            --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;option&quot;</span> <span class="na">value=</span><span class="s">&quot;same&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c">&lt;!-- Checks for braces around if and else blocks --&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;NeedBraces&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;tokens&quot;</span> <span class="na">value=</span><span class="s">&quot;LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;UpperEll&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Checks that long constants are defined with an upper ell.--&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;FallThrough&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Warn about falling through to the next case statement.  Similar to</span>
+</span><span class='line'><span class="c">            javac -Xlint:fallthrough, but the check is suppressed if a single-line comment</span>
+</span><span class='line'><span class="c">            on the last non-blank line preceding the fallen-into case contains &#39;fall through&#39; (or</span>
+</span><span class='line'><span class="c">            some other variants which we don&#39;t publicized to promote consistency).</span>
+</span><span class='line'><span class="c">            --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;reliefPattern&quot;</span>
+</span><span class='line'>                      <span class="na">value=</span><span class="s">&quot;fall through|Fall through|fallthru|Fallthru|falls through|Falls through|fallthrough|Fallthrough|No break|NO break|no break|continue on&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        <span class="c">&lt;!--</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">        MODIFIERS CHECKS</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">        --&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;ModifierOrder&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Warn if modifier order is inconsistent with JLS3 8.1.1, 8.3.1, and</span>
+</span><span class='line'><span class="c">                 8.4.3.  The prescribed order is:</span>
+</span><span class='line'><span class="c">                 public, protected, private, abstract, static, final, transient, volatile,</span>
+</span><span class='line'><span class="c">                 synchronized, native, strictfp</span>
+</span><span class='line'><span class="c">              --&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        <span class="c">&lt;!--</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">        WHITESPACE CHECKS</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">        --&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;WhitespaceAround&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Checks that various tokens are surrounded by whitespace.</span>
+</span><span class='line'><span class="c">                 This includes most binary operators and keywords followed</span>
+</span><span class='line'><span class="c">                 by regular or curly braces.</span>
+</span><span class='line'><span class="c">            --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;tokens&quot;</span> <span class="na">value=</span><span class="s">&quot;ASSIGN, BAND, BAND_ASSIGN, BOR,</span>
+</span><span class='line'><span class="s">        BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN,</span>
+</span><span class='line'><span class="s">        EQUAL, GE, GT, LAND, LE, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE,</span>
+</span><span class='line'><span class="s">        LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN,</span>
+</span><span class='line'><span class="s">        LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS,</span>
+</span><span class='line'><span class="s">        MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION,</span>
+</span><span class='line'><span class="s">        SL, SL_ASSIGN, SR_ASSIGN, STAR, STAR_ASSIGN&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;WhitespaceAfter&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Checks that commas, semicolons and typecasts are followed by</span>
+</span><span class='line'><span class="c">                 whitespace.</span>
+</span><span class='line'><span class="c">            --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;tokens&quot;</span> <span class="na">value=</span><span class="s">&quot;COMMA, SEMI, TYPECAST&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;NoWhitespaceAfter&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Checks that there is no whitespace after various unary operators.</span>
+</span><span class='line'><span class="c">                 Linebreaks are allowed.</span>
+</span><span class='line'><span class="c">            --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;tokens&quot;</span> <span class="na">value=</span><span class="s">&quot;BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS,</span>
+</span><span class='line'><span class="s">        UNARY_PLUS&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowLineBreaks&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;NoWhitespaceBefore&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Checks that there is no whitespace before various unary operators.</span>
+</span><span class='line'><span class="c">                 Linebreaks are allowed.</span>
+</span><span class='line'><span class="c">            --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;tokens&quot;</span> <span class="na">value=</span><span class="s">&quot;SEMI, DOT, POST_DEC, POST_INC&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowLineBreaks&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;ParenPad&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="c">&lt;!-- Checks that there is no whitespace before close parens or after</span>
+</span><span class='line'><span class="c">                 open parens.</span>
+</span><span class='line'><span class="c">            --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;/module&gt;</span>
+</span><span class='line'><span class="nt">&lt;/module&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果想启用自定义的规范文件，则依旧是修改configuration，指向你的文件地址。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>        <span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>maven-checkstyle-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>2.10<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;configLocation&gt;</span>${basedir}/src/config/custom_checkstyle.xml<span class="nt">&lt;/configLocation&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;id&gt;</span>checkstyle<span class="nt">&lt;/id&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;phase&gt;</span>validate<span class="nt">&lt;/phase&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>                        <span class="nt">&lt;goal&gt;</span>check<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>                        <span class="nt">&lt;failOnViolation&gt;</span>true<span class="nt">&lt;/failOnViolation&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>运行checkstyle检查</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mvn checkstyle:checkstyle
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>查看checkstyle结果</h2>
+
+<p>运行maven命令后可以在console里查看checkstyle运行结果。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">[</span>INFO<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> There are 11 checkstyle errors.
+</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> BUILD FAILURE
+</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> Total <span class="nb">time</span>: 2.135s
+</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> Finished at: Fri Jun 21 13:39:24 CST 2013
+</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> Final Memory: 6M/81M
+</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+</span><span class='line'><span class="o">[</span>ERROR<span class="o">]</span> Failed to execute goal org.apache.maven.plugins:maven-checkstyle-plugin:2.10:check <span class="o">(</span>checkstyle<span class="o">)</span> on project SpringMessageSpike: You have 11 Checkstyle violations. -&gt; <span class="o">[</span>Help 1<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>checkstye的详细结果信息被存放在target/checkstyle-result.xml中。下面是一个示例。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;checkstyle</span> <span class="na">version=</span><span class="s">&quot;5.6&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;file</span> <span class="na">name=</span><span class="s">&quot;/Users/twer/sourcecode/SpringMessageSpike/src/main/java/com/thoughtworks/config/SessionMessageSource.java&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;error</span> <span class="na">line=</span><span class="s">&quot;0&quot;</span> <span class="na">severity=</span><span class="s">&quot;error&quot;</span> <span class="na">message=</span><span class="s">&quot;Google copyright is missing or malformed.&quot;</span> <span class="na">source=</span><span class="s">&quot;com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;error</span> <span class="na">line=</span><span class="s">&quot;21&quot;</span> <span class="na">severity=</span><span class="s">&quot;warning&quot;</span> <span class="na">message=</span><span class="s">&quot;Wrong order for &amp;apos;org.slf4j.LoggerFactory.getLogger&amp;apos; import.&quot;</span> <span class="na">source=</span><span class="s">&quot;com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;error</span> <span class="na">line=</span><span class="s">&quot;27&quot;</span> <span class="na">severity=</span><span class="s">&quot;error&quot;</span> <span class="na">message=</span><span class="s">&quot;Missing a Javadoc comment.&quot;</span> <span class="na">source=</span><span class="s">&quot;com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTypeCheck&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;error</span> <span class="na">line=</span><span class="s">&quot;35&quot;</span> <span class="na">severity=</span><span class="s">&quot;error&quot;</span> <span class="na">message=</span><span class="s">&quot;Line is longer than 100 characters (found 115).&quot;</span> <span class="na">source=</span><span class="s">&quot;com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/file&gt;</span>
+</span><span class='line'><span class="nt">&lt;/checkstyle&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>跳过对指定文件的某些检查</h2>
+
+<p>如果对于指定文件检查出了一些问题，但是你想忽略它，则可以使用suppression。</p>
+
+<p>例如在上述例子中有一个checkstyle error是说某行超过了100字符。如果我们不想修复这个错误怎么办那？可以将其suppress掉。</p>
+
+<p>方法是建立一个checkstyle-suppressions.xml文件。其中加入下述内容</p>
+
+<figure class='code'><figcaption><span>checkstyle-suppressions.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">&lt;!DOCTYPE suppressions PUBLIC</span>
+</span><span class='line'><span class="cp">        &quot;-//Puppy Crawl//DTD Suppressions 1.0//EN&quot;</span>
+</span><span class='line'><span class="cp">        &quot;http://www.puppycrawl.com/dtds/suppressions_1_0.dtd&quot;&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;suppressions&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;suppress</span> <span class="na">checks=</span><span class="s">&quot;LineLengthCheck&quot;</span>
+</span><span class='line'>              <span class="na">files=</span><span class="s">&quot;SessionMessageSource.java&quot;</span>
+</span><span class='line'>              <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/suppressions&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后配置<code>maven-checkstyel-plugin</code>设置<code>suppressionsLocation</code>。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>maven-checkstyle-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>2.10<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;configLocation&gt;</span>${basedir}/src/config/custom_checkstyle.xml<span class="nt">&lt;/configLocation&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;suppressionsLocation&gt;</span>${basedir}/src/config/checkstyle-suppressions.xml<span class="nt">&lt;/suppressionsLocation&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;id&gt;</span>checkstyle<span class="nt">&lt;/id&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;phase&gt;</span>validate<span class="nt">&lt;/phase&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;goal&gt;</span>check<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;failOnViolation&gt;</span>true<span class="nt">&lt;/failOnViolation&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-21T13:53:00+08:00" pubdate data-updated="true">Jun 21<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/java/'>java</a>
+  
+</span>
+
+
+      
+
+<span class="tags">
+  
+    <a class='tag' href='/blog/tags/checkstyle/'>CheckStyle</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.huangbowen.net/blog/2013/06/21/introduce-checkstyle/" data-via="huangbowen521@gmail.com" data-counturl="http://www.huangbowen.net/blog/2013/06/21/introduce-checkstyle/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/13/thoughtworks-knowledge-sharing-system/" title="Previous Post: ThoughtWorks知识分享体系">&laquo; ThoughtWorks知识分享体系</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>程序员一枚。</p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/06/21/introduce-checkstyle/">CheckStyle, 强制你遵循编码规范</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/13/thoughtworks-knowledge-sharing-system/">ThoughtWorks知识分享体系</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/05/programmatically-set-android-phone-ap/">调用API设置安卓手机的Access Point</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/30/use-travis-ci-to-your-open-source-project/">持续集成之道：在你的开源项目中使用Travis CI</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/29/using-spring-message-source/">使用自定义的MessageSource实现对properties的复用</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/06/21/introduce-checkstyle/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/06/21/introduce-checkstyle/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
