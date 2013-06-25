@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>使用WebDriver遇到的那些坑 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="在做web项目的自动化端到端测试时主要使用的是Selenium WebDriver来驱动浏览器。Selenium WebDriver的优点是支持的语言多，支持的浏览器多。主流的浏览器Chrome、Firefox、IE等都支持，手机上的浏览器Android、IPhone等也支持， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/06/25/practice-of-webdriver/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">使用WebDriver遇到的那些坑</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-25T22:00:00+08:00" pubdate data-updated="true">Jun 25<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/automatedRobot.png"></p>
+
+<p>在做web项目的自动化端到端测试时主要使用的是<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>来驱动浏览器。<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>的优点是支持的语言多，支持的浏览器多。主流的浏览器Chrome、Firefox、IE等都支持，手机上的浏览器Android、IPhone等也支持，甚至还支持<a href="http://phantomjs.org/">PhantomJS</a>（由于PhantomJS跑测试时并不需要渲染元素，所以执行速度快）。</p>
+
+<!-- more -->
+
+
+<p>但是我在使用<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>时，遇到了很多坑。这些问题，有的是因为<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>与浏览器不同版本之间兼容性的问题，有的是<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>本身的bug，当然也不乏自己对<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>某些功能理解不透彻。我花时间总结了一下，分享给大家，希望大家以后遇到问题可以避过这些坑，少走弯路。另外也总结了一些使用WebDriver的比较好的实践，也一并分享给大家。</p>
+
+<ul>
+<li><strong>WebDriver每次启动一个Firefox的实例时，会生成一个匿名的profile，并不会使用当前Firefox的profile。这点一定要注意。比如如果访问被测试的web服务需要通过代理，你想直接设置Firefox的代理是行不通的，因为WebDriver启动的Firefox实例并不会使用你这个profile，正确的做法是通过FirefoxProfile来设置。</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">WebDriver</span> <span class="nf">create</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">FirefoxProfile</span> <span class="n">firefoxProfile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FirefoxProfile</span><span class="o">();</span>
+</span><span class='line'>  <span class="n">firefoxProfile</span><span class="o">.</span><span class="na">setPreference</span><span class="o">(</span><span class="s">&quot;network.proxy.type&quot;</span><span class="o">,</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">firefoxProfile</span><span class="o">.</span><span class="na">setPreference</span><span class="o">(</span><span class="s">&quot;network.proxy.http&quot;</span><span class="o">,</span><span class="n">yourProxy</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">firefoxProfile</span><span class="o">.</span><span class="na">setPreference</span><span class="o">(</span><span class="s">&quot;network.proxy.http_port&quot;</span><span class="o">,</span><span class="n">yourPort</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">firefoxProfile</span><span class="o">.</span><span class="na">setPreference</span><span class="o">(</span><span class="s">&quot;network.proxy.no_proxies_on&quot;</span><span class="o">,</span><span class="s">&quot;&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="k">new</span> <span class="nf">FirefoxDriver</span><span class="o">(</span><span class="n">firefoxProfile</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通过FirefoProfile也可以设置Firefox其它各种配置。如果要默认给Firefox安装插件的话，可以将插件放置到Firefox安装目录下的默认的plugin文件夹中，这样即使是使用一个全新的profile也可以应用此plugin。</p>
+
+<ul>
+<li><strong>使用WebDriver点击界面上Button元素时，如果当前Button元素被界面上其他元素遮住了，或没出现在界面中（比如Button在页面底部，但是屏幕只能显示页面上半部分），使用默认的WebElement.Click()可能会触发不了Click事件。</strong></li>
+</ul>
+
+
+<p>修正方案是找到该页面元素后直接发送一条Click的JavaScript指令。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">((</span><span class="n">JavascriptExecutor</span><span class="o">)</span><span class="n">webDriver</span><span class="o">).</span><span class="na">executeScript</span><span class="o">(</span><span class="s">&quot;arguments[0].click();&quot;</span><span class="o">,</span> <span class="n">webElement</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>当进行了一些操作发生页面跳转时，最好加一个Wait方法等待page load完成再进行后续操作。方法是在某个时间段内判断document.readyState是不是complete。</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">protected</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">WebDriver</span><span class="o">,</span> <span class="n">Boolean</span><span class="o">&gt;</span> <span class="n">isPageLoaded</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">WebDriver</span><span class="o">,</span> <span class="n">Boolean</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>            <span class="nd">@Override</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="n">Boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">WebDriver</span> <span class="n">driver</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="o">((</span><span class="n">JavascriptExecutor</span><span class="o">)</span> <span class="n">driver</span><span class="o">).</span><span class="na">executeScript</span><span class="o">(</span><span class="s">&quot;return document.readyState&quot;</span><span class="o">).</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;complete&quot;</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">};</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">waitForPageLoad</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">WebDriverWait</span> <span class="n">wait</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WebDriverWait</span><span class="o">(</span><span class="n">webDriver</span><span class="o">,</span> <span class="mi">30</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">wait</span><span class="o">.</span><span class="na">until</span><span class="o">(</span><span class="n">isPageLoaded</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>如果页面有Ajax操作，需要写一个Wait方法等待Ajax操作完成。方式与上一条中的基本相同。比如一个Ajax操作是用于向DropDownList中填充数据，则写一个方法判断该DropDownList中元素是否多余0个。</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">WebDriver</span><span class="o">,</span> <span class="n">Boolean</span><span class="o">&gt;</span> <span class="n">haveMoreThanOneOption</span><span class="o">(</span><span class="kd">final</span> <span class="n">By</span> <span class="n">element</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">WebDriver</span><span class="o">,</span> <span class="n">Boolean</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>            <span class="nd">@Override</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="n">Boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">WebDriver</span> <span class="n">driver</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">WebElement</span> <span class="n">webElement</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">element</span><span class="o">);</span>
+</span><span class='line'>                <span class="k">if</span> <span class="o">(</span><span class="n">webElement</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                    <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>                    <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">webElement</span><span class="o">.</span><span class="na">findElements</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">tagName</span><span class="o">(</span><span class="s">&quot;option&quot;</span><span class="o">)).</span><span class="na">size</span><span class="o">();</span>
+</span><span class='line'>                    <span class="k">return</span> <span class="n">size</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>                <span class="o">}</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">};</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">waitForDropDownListLoaded</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">WebDriverWait</span> <span class="n">wait</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WebDriverWait</span><span class="o">(</span><span class="n">webDriver</span><span class="o">,</span> <span class="mi">30</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">wait</span><span class="o">.</span><span class="na">until</span><span class="o">(</span><span class="n">isPageLoaded</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以此类推，我们可以判断某个元素是否呈现、某个class是否append成功等一系列方法来判断ajax是否执行完成。</p>
+
+<ul>
+<li><strong>如果网站使用了JQuery的动画效果，我们在运行测试的时候其实可以disable JQuery的animation，一方面可以加快测试的速度，另一方面可以加强测试的稳定性（如果启用了Animation，使用WebDriver驱动浏览器时可能会出现一些无法预料的异常）。</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">((</span><span class="n">JavascriptExecutor</span><span class="o">)</span><span class="n">driver</span><span class="o">).</span><span class="na">executeScript</span><span class="o">(</span><span class="s">&quot;jQuery.fx.off=true&quot;</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>由于WebDriver要驱动浏览器，所以测试运行的时间比较长，我们可以并行跑测试以节省时间。如果你使用的是maven构建工具，可以配置surefire plugin时，在configruation节点加入以下配置。</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;parallel&gt;</span>classes<span class="nt">&lt;/parallel&gt;</span>
+</span><span class='line'><span class="nt">&lt;threadCount&gt;</span>3<span class="nt">&lt;/threadCount&gt;</span>
+</span><span class='line'><span class="nt">&lt;perCoreThreadCount&gt;</span>false<span class="nt">&lt;/perCoreThreadCount&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>当测试fail的时候，如果当前使用的WebDriver实现了TakesScreenshot接口，我们就可以调用相应的方法截下当前浏览器呈现的web页面，这样有利于快速定位出错的原因。</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getScreenShot</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">webDriver</span> <span class="k">instanceof</span> <span class="n">TakesScreenshot</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">TakesScreenshot</span> <span class="n">screenshotTaker</span> <span class="o">=</span> <span class="o">(</span><span class="n">TakesScreenshot</span><span class="o">)</span> <span class="n">webDriver</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="n">screenshotTaker</span><span class="o">.</span><span class="na">getScreenshotAs</span><span class="o">(</span><span class="n">savePath</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p><strong>如果页面弹出了浏览器自带的警告框（使用JavaScript的Alert方法），<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>在点选次警告框时会偶发性失败。具体原因还未查明。解决方案是尽量不使用Alert方法的警告框，而是自己实现模式窗口（比如Jquery UI的模式窗口）来实现警告框效果。这样即保证了测试的稳定性，另外我们自己可以控制警告框的样式，给用户带来更好的体验。</strong></p></li>
+<li><p><strong>经常更新Selenium的版本。注意经常上Selenium的<a href="http://docs.seleniumhq.org/">官网</a>看是否发布了新的版本，新的版本都修复了那些bug，如果包含你遇到的bug，就可以升级到目前的版本。</strong></p></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-25T22:00:00+08:00" pubdate data-updated="true">Jun 25<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/testing/'>Testing</a>
+  
+</span>
+
+
+      
+
+<span class="tags">
+  
+    <a class='tag' href='/blog/tags/selenium/'>Selenium</a>, <a class='tag' href='/blog/tags/webdriver/'>WebDriver</a>, <a class='tag' href='/blog/tags/practice/'>practice</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.huangbowen.net/blog/2013/06/25/practice-of-webdriver/" data-via="huangbowen521@gmail.com" data-counturl="http://www.huangbowen.net/blog/2013/06/25/practice-of-webdriver/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/21/introduce-checkstyle/" title="Previous Post: CheckStyle, 强制你遵循编码规范">&laquo; CheckStyle, 强制你遵循编码规范</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>程序员一枚。</p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/06/25/practice-of-webdriver/">使用WebDriver遇到的那些坑</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/21/introduce-checkstyle/">CheckStyle, 强制你遵循编码规范</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/13/thoughtworks-knowledge-sharing-system/">ThoughtWorks知识分享体系</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/05/programmatically-set-android-phone-ap/">调用API设置安卓手机的Access Point</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/30/use-travis-ci-to-your-open-source-project/">持续集成之道：在你的开源项目中使用Travis CI</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/06/25/practice-of-webdriver/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/06/25/practice-of-webdriver/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
