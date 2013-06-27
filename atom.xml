@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-06-25T22:41:08+08:00</updated>
+  <updated>2013-06-28T01:45:25+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,517 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Java经典类库-Guava中的函数式编程讲解]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/06/28/functional-programming-in-guava/"/>
+    <updated>2013-06-28T01:31:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/06/28/functional-programming-in-guava</id>
+    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/FP.jpg"></p>
+
+<p>如果我要新建一个java的项目，那么有两个类库是必备的，一个是junit，另一个是<a href="https://code.google.com/p/guava-libraries/">Guava</a>。选择junit，因为我喜欢TDD，喜欢自动化测试。而是用<a href="https://code.google.com/p/guava-libraries/">Guava</a>，是因为我喜欢简洁的API。<a href="https://code.google.com/p/guava-libraries/">Guava</a>提供了很多的实用工具函数来弥补java标准库的不足，另外<a href="https://code.google.com/p/guava-libraries/">Guava</a>还引入了函数式编程的概念，在一定程度上缓解了java在JDK1.8之前没有lambda的缺陷，使使用java书写简洁易读的函数式风格的代码成为可能。</p>
+
+<!-- more -->
+
+
+<p>下面就简单的介绍下<a href="https://code.google.com/p/guava-libraries/">Guava</a>中的一些体现了函数式编程的API。</p>
+
+<h2>Filter</h2>
+
+<p>我们先创建一个简单的Person类。</p>
+
+<figure class='code'><figcaption><span>Person.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">Person</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果要产生一个Person类的List，通常的写法可能是这样子。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">people</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;();</span>
+</span><span class='line'>        <span class="n">people</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Person</span><span class="o">(</span><span class="s">&quot;bowen&quot;</span><span class="o">,</span><span class="mi">27</span><span class="o">));</span>
+</span><span class='line'>        <span class="n">people</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Person</span><span class="o">(</span><span class="s">&quot;bob&quot;</span><span class="o">,</span> <span class="mi">20</span><span class="o">));</span>
+</span><span class='line'>        <span class="n">people</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Person</span><span class="o">(</span><span class="s">&quot;Katy&quot;</span><span class="o">,</span> <span class="mi">18</span><span class="o">));</span>
+</span><span class='line'>        <span class="n">people</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Person</span><span class="o">(</span><span class="s">&quot;Logon&quot;</span><span class="o">,</span> <span class="mi">24</span><span class="o">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>而<a href="https://code.google.com/p/guava-libraries/">Guava</a>提供了一个newArrayList的方法，其自带类型推演，并可以方便的生成一个List,并且通过参数传递初始化值。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">people</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="k">new</span> <span class="n">Person</span><span class="o">(</span><span class="s">&quot;bowen&quot;</span><span class="o">,</span> <span class="mi">27</span><span class="o">),</span>
+</span><span class='line'>                <span class="k">new</span> <span class="nf">Person</span><span class="o">(</span><span class="s">&quot;bob&quot;</span><span class="o">,</span> <span class="mi">20</span><span class="o">),</span>
+</span><span class='line'>                <span class="k">new</span> <span class="nf">Person</span><span class="o">(</span><span class="s">&quot;Katy&quot;</span><span class="o">,</span> <span class="mi">18</span><span class="o">),</span>
+</span><span class='line'>                <span class="k">new</span> <span class="nf">Person</span><span class="o">(</span><span class="s">&quot;Logon&quot;</span><span class="o">,</span> <span class="mi">24</span><span class="o">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然，这不算函数式编程的范畴，这是<a href="https://code.google.com/p/guava-libraries/">Guava</a>给我们提供的一个实用的函数。</p>
+
+<p>如果我们选取其中年龄大于20的人，通常的写法可能是这样子。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">oldPeople</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;();</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="n">Person</span> <span class="n">person</span> <span class="o">:</span> <span class="n">people</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="mi">20</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">oldPeople</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">person</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这就是典型的filter模式。filter即从一个集合中根据一个条件筛选元素。其中person.getAge() >=20就是这个条件。<a href="https://code.google.com/p/guava-libraries/">Guava</a>为这种模式提供了一个filter的方法。所以我们可以这样写。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">oldPeople</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="n">filter</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="mi">20</span><span class="o">;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里的Predicate是<a href="https://code.google.com/p/guava-libraries/">Guava</a>中的一个接口，我们来看看它的定义。</p>
+
+<figure class='code'><figcaption><span>Predicate.java </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@GwtCompatible</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Predicate</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * Returns the result of applying this predicate to {@code input}. This method is &lt;i&gt;generally</span>
+</span><span class='line'><span class="cm">   * expected&lt;/i&gt;, but not absolutely required, to have the following properties:</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * &lt;ul&gt;</span>
+</span><span class='line'><span class="cm">   * &lt;li&gt;Its execution does not cause any observable side effects.</span>
+</span><span class='line'><span class="cm">   * &lt;li&gt;The computation is &lt;i&gt;consistent with equals&lt;/i&gt;; that is, {@link Objects#equal</span>
+</span><span class='line'><span class="cm">   *     Objects.equal}{@code (a, b)} implies that {@code predicate.apply(a) ==</span>
+</span><span class='line'><span class="cm">   *     predicate.apply(b))}.</span>
+</span><span class='line'><span class="cm">   * &lt;/ul&gt;</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * @throws NullPointerException if {@code input} is null and this predicate does not accept null</span>
+</span><span class='line'><span class="cm">   *     arguments</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="nd">@Nullable</span> <span class="n">T</span> <span class="n">input</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * Indicates whether another object is equal to this predicate.</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * &lt;p&gt;Most implementations will have no reason to override the behavior of {@link Object#equals}.</span>
+</span><span class='line'><span class="cm">   * However, an implementation may also choose to return {@code true} whenever {@code object} is a</span>
+</span><span class='line'><span class="cm">   * {@link Predicate} that it considers &lt;i&gt;interchangeable&lt;/i&gt; with this one. &quot;Interchangeable&quot;</span>
+</span><span class='line'><span class="cm">   * &lt;i&gt;typically&lt;/i&gt; means that {@code this.apply(t) == that.apply(t)} for all {@code t} of type</span>
+</span><span class='line'><span class="cm">   * {@code T}). Note that a {@code false} result from this method does not imply that the</span>
+</span><span class='line'><span class="cm">   * predicates are known &lt;i&gt;not&lt;/i&gt; to be interchangeable.</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="nd">@Override</span>
+</span><span class='line'>  <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="nd">@Nullable</span> <span class="n">Object</span> <span class="n">object</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>里面只有一个apply方法，接收一个泛型的实参，返回一个boolean值。由于java世界中函数并不是一等公民，所以我们无法直接传递一个条件函数，只能通过Predicate这个类包装一下。</p>
+
+<h2>And Predicate</h2>
+
+<p>如果要再实现一个方法来查找People列表中所有名字中包含b字母的列表，我们可以用<a href="https://code.google.com/p/guava-libraries/">Guava</a>简单的实现。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">namedPeople</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="n">filter</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一切是这么的简单。
+那么新需求来了，如果现在需要找年龄>=20并且名称包含b的人，该如何实现那？
+可能你会这样写。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">filteredPeople</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="n">filter</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="mi">20</span><span class="o">;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样写的话就有一定的代码重复，因为之前我们已经写了两个Predicate来分别实现这两个条件判断，能不能重用之前的Predicate那？答案是能。
+我们首先将之前生成年龄判断和名称判断的两个Predicate抽成方法。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="nf">ageBiggerThan</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">};</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">private</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="nf">nameContains</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">};</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>而我们的结果其实就是这两个Predicate相与。<a href="https://code.google.com/p/guava-libraries/">Guava</a>给我们提供了and方法，用于对一组Predicate求与。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>      <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">filteredPeople</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="n">filter</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="n">and</span><span class="o">(</span><span class="n">ageBiggerThan</span><span class="o">(</span><span class="mi">20</span><span class="o">),</span> <span class="n">nameContains</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">))));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由于and接收一组Predicate，返回也是一个Predicate，所以可以直接作为filter的第二个参数。如果不熟悉函数式编程的人可能感觉有点怪异，但是习惯了就会觉得它的强大与简洁。
+当然除了and，<a href="https://code.google.com/p/guava-libraries/">Guava</a>还为我们提供了or，用于对一组Predicate求或。这里就不多讲了，大家可以自己练习下。</p>
+
+<h2>Map(transform)</h2>
+
+<p>列表操作还有另一个常见的模式，就是将数组中的所有元素映射为另一种元素的列表，这就是map pattern。举个例子，求People列表中的所有人名。程序员十有八九都会这样写。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">names</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="n">Person</span> <span class="n">person</span> <span class="o">:</span> <span class="n">people</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">names</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+</span><span class='line'>        <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="https://code.google.com/p/guava-libraries/">Guava</a>已经给我们提供了这种Pattern的结果办法，那就是使用transform方法。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">names</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="n">transform</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="n">String</span> <span class="nf">apply</span><span class="o">(</span> <span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Function是另外一种用于封装函数的接口对象。它的定义如下:</p>
+
+<figure class='code'><figcaption><span>Function.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@GwtCompatible</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Function</span><span class="o">&lt;</span><span class="n">F</span><span class="o">,</span> <span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * Returns the result of applying this function to {@code input}. This method is &lt;i&gt;generally</span>
+</span><span class='line'><span class="cm">   * expected&lt;/i&gt;, but not absolutely required, to have the following properties:</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * &lt;ul&gt;</span>
+</span><span class='line'><span class="cm">   * &lt;li&gt;Its execution does not cause any observable side effects.</span>
+</span><span class='line'><span class="cm">   * &lt;li&gt;The computation is &lt;i&gt;consistent with equals&lt;/i&gt;; that is, {@link Objects#equal</span>
+</span><span class='line'><span class="cm">   *     Objects.equal}{@code (a, b)} implies that {@code Objects.equal(function.apply(a),</span>
+</span><span class='line'><span class="cm">   *     function.apply(b))}.</span>
+</span><span class='line'><span class="cm">   * &lt;/ul&gt;</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * @throws NullPointerException if {@code input} is null and this function does not accept null</span>
+</span><span class='line'><span class="cm">   *     arguments</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="nd">@Nullable</span> <span class="n">T</span> <span class="n">apply</span><span class="o">(</span><span class="nd">@Nullable</span> <span class="n">F</span> <span class="n">input</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * Indicates whether another object is equal to this function.</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * &lt;p&gt;Most implementations will have no reason to override the behavior of {@link Object#equals}.</span>
+</span><span class='line'><span class="cm">   * However, an implementation may also choose to return {@code true} whenever {@code object} is a</span>
+</span><span class='line'><span class="cm">   * {@link Function} that it considers &lt;i&gt;interchangeable&lt;/i&gt; with this one. &quot;Interchangeable&quot;</span>
+</span><span class='line'><span class="cm">   * &lt;i&gt;typically&lt;/i&gt; means that {@code Objects.equal(this.apply(f), that.apply(f))} is true for all</span>
+</span><span class='line'><span class="cm">   * {@code f} of type {@code F}. Note that a {@code false} result from this method does not imply</span>
+</span><span class='line'><span class="cm">   * that the functions are known &lt;i&gt;not&lt;/i&gt; to be interchangeable.</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="nd">@Override</span>
+</span><span class='line'>  <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="nd">@Nullable</span> <span class="n">Object</span> <span class="n">object</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>它与Predicate非常相似，但不同的是它接收两个泛型，apply方法接收一种泛型实参，返回值是另一种泛型值。正是这个apply方法定义了数组间元素一对一的map规则。</p>
+
+<h2>reduce</h2>
+
+<p>除了filter与map模式外，列表操作还有一种reduce操作。比如求people列表中所有人年龄的和。<a href="https://code.google.com/p/guava-libraries/">Guava</a>并未提供reduce方法。具体原因我们并不清楚。但是我们可以自己简单的实现一个reduce pattern。
+先定义一个Func的接口。</p>
+
+<figure class='code'><figcaption><span>Func.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>     <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Func</span><span class="o">&lt;</span><span class="n">F</span><span class="o">,</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>         <span class="n">T</span> <span class="nf">apply</span><span class="o">(</span><span class="n">F</span> <span class="n">currentElement</span><span class="o">,</span> <span class="n">T</span> <span class="n">origin</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>     <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>apply方法的第一个参数为列表中的当前元素，第二个参数为默认值，返回值类型为默认值类型。
+然后我们定义个reduce的静态方法。</p>
+
+<figure class='code'><figcaption><span>Reduce.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Reduce</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="nf">Reduce</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">F</span><span class="o">,</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="n">reduce</span><span class="o">(</span><span class="kd">final</span> <span class="n">Iterable</span><span class="o">&lt;</span><span class="n">F</span><span class="o">&gt;</span> <span class="n">iterable</span><span class="o">,</span> <span class="kd">final</span> <span class="n">Func</span><span class="o">&lt;</span><span class="n">F</span><span class="o">,</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">func</span><span class="o">,</span> <span class="n">T</span> <span class="n">origin</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">iterable</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span> <span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">();</span> <span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">origin</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="na">apply</span><span class="o">((</span><span class="n">F</span><span class="o">)(</span><span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">()),</span> <span class="n">origin</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">origin</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>reduce方法接收三个参数，第一个是需要进行reduce操作的列表，第二个是封装reduce操作的Func，第三个参数是初始值。</p>
+
+<p>我们可以使用这个reduce来实现求people列表中所有人的年龄之和。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">Integer</span> <span class="n">ages</span> <span class="o">=</span> <span class="n">Reduce</span><span class="o">.</span><span class="na">reduce</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="k">new</span> <span class="n">Func</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">,</span> <span class="n">Integer</span> <span class="n">origin</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">+</span> <span class="n">origin</span><span class="o">;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">},</span> <span class="mi">0</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们也可以轻松的写一个方法来得到年龄的最大值。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">Integer</span> <span class="n">maxAge</span> <span class="o">=</span> <span class="n">Reduce</span><span class="o">.</span><span class="na">reduce</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="k">new</span> <span class="n">Func</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">,</span> <span class="n">Integer</span> <span class="n">origin</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">&gt;</span> <span class="n">origin</span> <span class="o">?</span> <span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">:</span> <span class="n">origin</span><span class="o">;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">},</span> <span class="mi">0</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Fluent pattern</h2>
+
+<p>现在新需求来了，需要找出年龄>=20岁的人的所有名称。该如何操作那？我们可以使用filter过滤出年龄>=20的人，然后使用transform得到剩下的所有人的人名。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">getName</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="n">String</span> <span class="nf">apply</span><span class="o">(</span> <span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">};</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getPeopleNamesByAge</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">names</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="n">transform</span><span class="o">(</span><span class="n">filter</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="n">ageBiggerThan</span><span class="o">(</span><span class="mi">20</span><span class="o">)),</span> <span class="n">getName</span><span class="o">()));</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样括号套括号的着实不好看。能不能改进一下那？<a href="https://code.google.com/p/guava-libraries/">Guava</a>为我们提供了fluent模式的API,我们可以这样来写。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>      <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">names</span> <span class="o">=</span> <span class="n">from</span><span class="o">(</span><span class="n">people</span><span class="o">).</span><span class="na">filter</span><span class="o">(</span><span class="n">ageBiggerThan</span><span class="o">(</span><span class="mi">20</span><span class="o">)).</span><span class="na">transform</span><span class="o">(</span><span class="n">getName</span><span class="o">()).</span><span class="na">toList</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="https://code.google.com/p/guava-libraries/">Guava</a>中还有很多好玩的东西，大家时间可以多发掘发掘。这篇文章的源码已经被我放置到<a href="https://github.com/huangbowen521/SpringMessageSpike">github</a>中，感兴趣的可以自行查看。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用WebDriver遇到的那些坑]]></title>
@@ -4145,194 +4656,6 @@ The second gem is used to parse html.)</p>
 
 
 <p>参考文档：<a href="http://docs.oracle.com/javase/tutorial/java/generics/index.html">http://docs.oracle.com/javase/tutorial/java/generics/index.html</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Haskell函数式编程之特性篇]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature/"/>
-    <updated>2013-03-17T12:46:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature</id>
-    <content type="html"><![CDATA[<p>函数式编程的定义是：</p>
-
-<p>In computer science, functional programming is a programming paradigm that treats computation as the evaluation of mathematical functions and avoids stateand mutable data.
-即：函数式编程是一种编程模型，他将计算机运算看做是数学中函数的计算，并且避免了引入状态及可变数据。</p>
-
-<p>它更强调函数的应用，而不像命令式编程更强调状态的改变。</p>
-
-<h2>无副作用（side effect）</h2>
-
-<p>命令式函数可能会改变程序的状态，这就会对其产生<strong>副作用</strong>。在命令式编程中，在执行程序不同的状态下同一个函数的返回结果会发生改变。例如，下面是一个使用JavaScript写的函数。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">getVal</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">[</span>
-</span><span class='line'>     <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">getVal</span><span class="p">());</span> <span class="c1">//true</span>
-</span><span class='line'><span class="nx">state</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">getVal</span><span class="p">());</span> <span class="c1">// false</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<!-- more -->
-
-
-<p>注意我们调用了两次getVal(),但是其输出了不同的结果。而在Haskell中，对变量只有声明，没有赋值。即如果声明了一个值为true的state变量，就无法再将其修改为false。这叫做<strong>变量的不变性</strong>。</p>
-
-<p>而函数式编程中如果描述状态的变化那，就是将状态变化作为函数的参数进行传递。</p>
-
-<h2>延迟计算（lazy evaluation）</h2>
-
-<p>正因为函数式编程无副作用，所以<strong>延迟计算</strong>（又称为惰性求值）就成为可能。
-<strong>延迟计算</strong>指将一个表达式的值推迟到直到被需要时才进行计算。（delays the evaluation of an expression until its value is needed ）</p>
-
-<p>它的优点是：</p>
-
-<ul>
-<li>避免了不需要的运算，从而提高的性能。</li>
-<li>使创建无限的数据结构成为可能。</li>
-</ul>
-
-
-<p>例如，我们写一个将指定参数放置到一个无限长的数组中的函数。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">repeat&#39;</span> <span class="ow">::</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
-</span><span class='line'><span class="nf">repeat&#39;</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">repeat&#39;</span> <span class="n">x</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>第一行是对repeat&#8217;参数及返回值的定义，它接收一个类型a,返回a的数组。
-第二行是repeat&#8217;函数的实现，它将x放置到一个无穷大的数组中。</p>
-
-<p>在没有延迟计算特性的编程语言中，这种函数是根本无法使用的。因为一旦调用就会陷入死循环。
-即使在支持延迟计算的编程语言中，我们直接输出这个数组:<code>print $ repeat' 10</code>,也会进入死循环。那么如何使用它那？我们可以写一个take函数，其可以返回数组中前几位元素。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">take&#39;</span> <span class="ow">::</span> <span class="kt">Int</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
-</span><span class='line'><span class="nf">take&#39;</span> <span class="mi">1</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
-</span><span class='line'><span class="nf">take&#39;</span> <span class="n">index</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">x</span> <span class="kt">:</span> <span class="p">(</span><span class="n">take&#39;</span> <span class="p">(</span><span class="n">index</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="n">xs</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们这样调用它，</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; take<span class="s1">&#39; 3 (repeat&#39;</span> 5<span class="o">)</span>
-</span><span class='line'><span class="o">[</span>5,5,5<span class="o">]</span>
-</span><span class='line'>Prelude&gt; take<span class="s1">&#39; 3 (repeat&#39;</span> <span class="s1">&#39;a&#39;</span><span class="o">)</span>
-</span><span class='line'><span class="s2">&quot;aaa&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Haskell对函数参数默认采取延迟计算的求值策略。所以这样在调用repeat&#8217;函数时并不是先将repeat&#8217;函数的结果数组计算出来，再进行take操作，而是take操作需要前几位元素，repeat&#8217;函数才会生成前几位元素。</p>
-
-<h2>高阶函数(Higher-order function)</h2>
-
-<p>一个函数成为<strong>高阶函数</strong>需要满足下面两条中的至少一条:</p>
-
-<ol>
-<li>将一个或多个函数作为输入。</li>
-<li>输出是一个函数。</li>
-</ol>
-
-
-<p>换句话说，<strong>高阶函数就是将函数作为参数或者作为返回值的函数</strong>。其他函数都成<strong>为一阶函数</strong>(first order function)。其实这个概念最早来源于数学领域。</p>
-
-<p>函数是Haskell世界中的一等公民，所以肯定支持高阶函数。举个例子，Haskell中有个map函数，它的定义是这样的:
-map:: (a -> b) -> [a] -> [b]
-它的作用是传入一个函数及一个数组，对该数组中的每一个元素应用此函数，从而转换为另一个数组。
-我们可以自己实现一个map函数。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">map&#39;</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span>
-</span><span class='line'><span class="nf">map&#39;</span> <span class="n">f</span> <span class="kt">[]</span> <span class="ow">=</span> <span class="kt">[]</span>
-</span><span class='line'><span class="nf">map&#39;</span> <span class="n">f</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span><span class="n">f</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">map&#39;</span> <span class="n">f</span> <span class="n">xs</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>map&#8217;函数接收两个参数，第一个参数是一个函数，该函数输入值为a类型的值，输出值为b类型的值，第二个参数为源数组。
-我们调用ma p&#8217;函数时，可以直接写一个lambda表达式，对源数组进行各种操作。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; map<span class="s1">&#39; (\x -&gt; x + 5)  [1,2,3]</span>
-</span><span class='line'><span class="s1">[6,7,8]</span>
-</span><span class='line'><span class="s1">Prelude&gt; map&#39;</span> <span class="o">(</span><span class="se">\x</span> -&gt; x * x<span class="o">)</span>  <span class="o">[</span>1,2,3<span class="o">]</span>
-</span><span class='line'><span class="o">[</span>1,4,9<span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>如果我们有这样一个需求，我们想通过map&#8217;函数对数组的每个对象都加上一个值n，这个n我不想直接定义在此lambda表达式中，能实现吗？答案是可以。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">outer</span> <span class="ow">=</span> <span class="kr">let</span> <span class="n">n</span> <span class="ow">=</span> <span class="mi">5</span> <span class="kr">in</span> <span class="n">map&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
-</span><span class='line'><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>对于匿名函数(\x -> x + n)来说，n就是<strong>non-local variable</strong>。什么是<strong>non-local variable</strong>那？如果一个函数使用了一个变量，这个变量既不属于全局变量，也不属于在此函数中定义的变量，那这个变量对于此函数来说就是<strong>non-local variable</strong>。
-所谓的闭包就是使用了non-local variable的函数。</p>
-
-<h2>curry function</h2>
-
-<p>curry function还真比较难翻译，先看看<a href="http://en.wikipedia.org/wiki/Currying">wiki</a>百科的翻译：</p>
-
-<p>In mathematics and computer science, currying is the technique of transforming a function that takes multiple arguments (or a tuple of arguments) in such a way that it can be called as a chain of functions, each with a single argument (partial application).</p>
-
-<p><strong>在数学领域和计算机科学领域，currying是一项将接收多个参数（或参数元组）函数转换为函数的链式调用的技术，链条中的每个函数接收单个参数。</strong></p>
-
-<p>这句话看起来真费解。那么我用一个例子说明一个。</p>
-
-<p>假设现在有一个函数为<code>f(x,y) = x/y</code>。那么<code>f(2,3)</code>的执行过程是什么样的那？ 首先，我们将x替换为2.那么得到了<code>f(2,y) = 2/y</code>。我们定义一个新的函数<code>g(y)= f(2,y) = 2/y</code>。再将y替换成3，那么得到了<code>g(3) = f(2,3) = 2/3</code>。这个<code>g(y)</code>函数就是<code>f(x,y)</code>的一个curried function.</p>
-
-<p>举个例子。上文中我们构造了一个map&#8217;函数，它接收一个函数及一个数组。如果我们想实现一个名为doubleMe的函数，它接收一个数组，将数组中每个元素都翻一倍。这个可以这样写:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">doubleMe</span> <span class="ow">=</span> <span class="n">map&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>注意看，定义doubleMe时我们使用了map&#8217;函数，但是给map&#8217;函数只传递了一个参数，并没有提供第二个参数。所以在调用doubleMe时，要给其传递一个数组。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; doubleMe <span class="o">[</span>1,2,3<span class="o">]</span>
-</span><span class='line'><span class="o">[</span>1,4,9<span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>doubleMe的函数完全等价于:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">doubleMe</span> <span class="n">ary</span> <span class="ow">=</span> <span class="n">map&#39;</span> <span class="p">(</span><span class="nf">\</span><span class="n">x</span><span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="n">ary</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>换句话说，如果一个函数接收多个参数，那么接收部分参数的该函数也是一个函数。</p>
 ]]></content>
   </entry>
   
