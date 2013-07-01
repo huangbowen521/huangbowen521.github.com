@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-06-28T01:45:25+08:00</updated>
+  <updated>2013-07-01T16:17:10+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,126 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Homebrew- MAC上的包管理利器]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/07/01/homebrew-in-mac/"/>
+    <updated>2013-07-01T14:33:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/07/01/homebrew-in-mac</id>
+    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/lotsOfDogs.jpg"></p>
+
+<p>包管理器是神马东西?让我们看看<a href="http://en.wikipedia.org/wiki/Package_management_system">wikipedia</a>上的介绍。</p>
+
+<blockquote><p>In software, a package management system, also called package manager, is a collection of software tools to automate the process of installing, upgrading, configuring, and removing software packages for a computer&#8217;s operating system in a consistent manner.</p></blockquote>
+
+<p>简单的来说，包管理器就是一个提供对一系列软件包的安装、卸载、升级的自动化工具。
+包管理器大体分为两种，一种是管理预编译好的软件（Binary installation/Precomplied packages)，如MAC上的App Store，Windows下的Windows installer。另一种是基于源码的安装包，通过编译脚本来安装软件（Sourcecode-based installation/installing using compile scripts），如MAC上的<a href="http://mxcl.github.io/homebrew/">Homebrew</a>，Linux上的apt-build。</p>
+
+<!-- more -->
+
+
+<p>今天就给大家讲解下<a href="http://mxcl.github.io/homebrew/">Homebrew</a>。</p>
+
+<p><a href="http://mxcl.github.io/homebrew/">Homebrew</a>官网上称自己为:</p>
+
+<blockquote><p>The missing package manager for OS X</p></blockquote>
+
+<p>即自己弥补了在OS X上无包管理器的缺陷。</p>
+
+<h2>需求环境</h2>
+
+<ol>
+<li><p>OS X 10.5及其以上版本。</p></li>
+<li><p>安装XCode里的<a href="https://developer.apple.com/downloads">开发者工具</a>。主要是因为开发者工具中有mac下的gcc编译器，很多软件需要它。</p></li>
+<li><p>ruby。<a href="http://mxcl.github.io/homebrew/">Homebrew</a>使用ruby写的，所以ruby不可或缺。</p></li>
+</ol>
+
+
+<h2>安装<a href="http://mxcl.github.io/homebrew/">Homebrew</a></h2>
+
+<p>只需要在terminal下敲这样一行代码就行。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ruby -e <span class="s2">&quot;$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>brew会被默认安装到/usr/local文件夹中。从上述命令可以看出homebrew是基于ruby的一款包管理器，并且host在github上。</p>
+
+<h2>使用</h2>
+
+<p>在<a href="http://mxcl.github.io/homebrew/">Homebrew</a>中支持安装的软件被称为Formula。</p>
+
+<ul>
+<li><p>查看所有支持的Formual。可以在<a href="https://github.com/mxcl/homebrew/tree/master/Library/Formula/">这里</a>查看。如果不能上网的话可以通过<code>brew server</code>来在本地开启一个server来查看。</p></li>
+<li><p><code>brew search [Formula]</code>, 搜索某个Formula是否被支持。</p></li>
+<li><p><code>brew install [Formula]</code>, 安装某个Formula。</p></li>
+<li><p><code>brew upgrade [Formula]</code>, 升级某个Formula。</p></li>
+<li><p><code>brew uninstall [Formula]</code>, 删除某个Formula。</p></li>
+<li><p><code>brew update</code>, 更新brew支持的Formula列表。</p></li>
+</ul>
+
+
+<p>所有的软件都会默认被安装到<code>/usr/local/Cellar</code>目录下，然后将部分可执行脚本文件通过软链接链接到<code>/usr/local\bin</code>目录下，这样我们就可以在Terminal下使用这些软件。</p>
+
+<p><a href="http://mxcl.github.io/homebrew/">Homebrew</a>对于Formula的管理是基于git的。你可以在<code>/usr/local/</code>下发现有一个<code>.git</code>的文件夹。通过查看<code>.git</code>目录下的<code>config</code>文件，可以知道其实目录是被链接到github上的一个repository。</p>
+
+<figure class='code'><figcaption><span>config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>[core]
+</span><span class='line'>        repositoryformatversion = 0
+</span><span class='line'>        filemode = true
+</span><span class='line'>        bare = false
+</span><span class='line'>        logallrefupdates = true
+</span><span class='line'>        ignorecase = true
+</span><span class='line'>        autocrlf = false
+</span><span class='line'>[remote &quot;origin&quot;]
+</span><span class='line'>        url = https://github.com/mxcl/homebrew.git
+</span><span class='line'>        fetch = +refs/heads/*:refs/remotes/origin/*
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你也可以为自己的软件加入到<a href="http://mxcl.github.io/homebrew/">Homebrew</a>的支持列表中。只需要写一个ruby脚本check in到其<a href="https://github.com/mxcl/homebrew">github</a>中。
+下面是一个脚本示例。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;formula&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Wget</span> <span class="o">&lt;</span> <span class="no">Formula</span>
+</span><span class='line'>  <span class="n">homepage</span> <span class="s1">&#39;http://www.gnu.org/wget/&#39;</span>
+</span><span class='line'>  <span class="n">url</span> <span class="s1">&#39;http://ftp.gnu.org/wget-1.12.tar.gz&#39;</span>
+</span><span class='line'>  <span class="n">md5</span> <span class="s1">&#39;308a5476fc096a8a525d07279a6f6aa3&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">install</span>
+</span><span class='line'>    <span class="nb">system</span> <span class="s2">&quot;./configure --prefix=</span><span class="si">#{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="nb">system</span> <span class="s1">&#39;make install&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然<a href="http://mxcl.github.io/homebrew/">Homebrew</a>接收这些软件也是有一定条件的，可以看<a href="https://github.com/mxcl/homebrew/wiki/Acceptable-Formulae">这个文档</a>。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Java经典类库-Guava中的函数式编程讲解]]></title>
@@ -4236,426 +4356,6 @@ The second gem is used to parse html.)</p>
 
 
 <p>不积跬步，无以至千里。要想成为优秀程序员，光有一腔热血是不够的，一定要持之以恒，坚持不懈的持续学习。以此来与大家共勉。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Java基础知识之泛型]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/03/23/java-generic-type/"/>
-    <updated>2013-03-23T00:26:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/03/23/java-generic-type</id>
-    <content type="html"><![CDATA[<p><strong>当我们在定义类，接口和方法时，可以接收一个类型作为参数，这就叫做泛型</strong>。</p>
-
-<p>函数可以传入普通的参数，也可以传入一个类型参数。不同之处是普通的参数就是值而已，但是类型参数却是个类型。</p>
-
-<p>使用泛型的好处:</p>
-
-<ul>
-<li>强类型检查。在编译时就可以得到类型错误信息。</li>
-<li>避免显式强制转换。</li>
-<li>方便实现通用算法。</li>
-</ul>
-
-
-<!-- more -->
-
-
-<h2>对类使用泛型</h2>
-
-<p>我们可以创建一个简单的Class Box。它提供存取一个类型为Object的对象。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Box</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getObject</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">object</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setObject</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">object</span> <span class="o">=</span> <span class="n">object</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">Object</span> <span class="n">object</span><span class="o">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>你可以传给它任何你想要的对象，比如对象String,Integer等，也可以传入自定义的一些对象。但是调用getObject方法返回的对象需要显式的强转为传入的类型，才能使用原来类型的一些方法。</p>
-
-<p>我们可以使用泛型来构造这个对象。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Box</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">T</span> <span class="nf">getObject</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">object</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">T</span> <span class="n">object</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setObject</span><span class="o">(</span><span class="n">T</span> <span class="n">object</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">object</span> <span class="o">=</span> <span class="n">object</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们可以看到，所有的Object被替换成了T。T代表了某种类型，你在实例化Box对象时，必须要给其指定一种类型，String,Integer或者自定义的类，并且调用getObject方法并不需要进行强转就可以使用该类型的方法。</p>
-
-<p>一般来说，类型参数名称越简单越好，并且需要是大写的。为了方便，我们约定了一些命名使用。</p>
-
-<ul>
-<li>E Element</li>
-<li>K key</li>
-<li>N Number</li>
-<li>T type</li>
-<li>V value</li>
-<li>S,U,V 第2，3，4个类型</li>
-</ul>
-
-
-<p>我们可以这样实例化一个Box类。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Box</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">integerBox</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Box</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>同样，我们也支持在一个类中传入多个类型参数。例如下面的Pair对象</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Pair</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">T</span> <span class="n">key</span><span class="o">;</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">V</span> <span class="n">value</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">Pair</span><span class="o">(</span><span class="n">T</span> <span class="n">key</span><span class="o">,</span> <span class="n">V</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">;</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">T</span> <span class="nf">getKey</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">key</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">V</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>使用方法如下。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Pair</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">one</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Pair</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;(</span><span class="mi">1</span><span class="o">,</span> <span class="s">&quot;one&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">Pair</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">hello</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Pair</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;(</span><span class="s">&quot;hello&quot;</span><span class="o">,</span> <span class="s">&quot;world&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>对方法使用泛型</h2>
-
-<p>泛型可以作用与方法上，此时泛型参数只能在方法体中使用。而泛型作用于类时，则在整个类中可以使用。</p>
-
-<p>在静态方法、非静态方法及构造函数都可以使用泛型。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Util</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">,</span> <span class="n">U</span><span class="o">&gt;</span> <span class="kt">boolean</span> <span class="n">compare</span><span class="o">(</span><span class="n">Pair</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span><span class="n">U</span><span class="o">&gt;</span> <span class="n">pair1</span><span class="o">,</span> <span class="n">Pair</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span><span class="n">U</span><span class="o">&gt;</span> <span class="n">pair2</span><span class="o">)</span>
-</span><span class='line'>    <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">pair1</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">pair2</span><span class="o">.</span><span class="na">getKey</span><span class="o">())</span> <span class="o">&amp;&amp;</span> <span class="n">pair1</span><span class="o">.</span><span class="na">getValue</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">pair2</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>下面是对该静态方法的使用。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>       <span class="n">Pair</span> <span class="n">one</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Pair</span><span class="o">(</span><span class="s">&quot;one&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">Pair</span> <span class="n">two</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Pair</span><span class="o">(</span><span class="s">&quot;two&quot;</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">Util</span><span class="o">.</span><span class="na">compare</span><span class="o">(</span><span class="n">one</span><span class="o">,</span> <span class="n">two</span><span class="o">),</span> <span class="n">is</span><span class="o">(</span><span class="kc">false</span><span class="o">));</span>
-</span><span class='line'><span class="c1">// pass</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>对泛型进行限定</h2>
-
-<p>默认情况下如果直接使用<T>的话，我们可以给其传任何值。有时候我们想值允许传入某个类及它的子类。这时候在声明泛型时可以使用<strong>extends</strong>关键字。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Box</span><span class="o">&lt;</span><span class="n">T</span> <span class="kd">extends</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">T</span> <span class="nf">getObject</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">object</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">T</span> <span class="n">object</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setObject</span><span class="o">(</span><span class="n">T</span> <span class="n">object</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">object</span> <span class="o">=</span> <span class="n">object</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>      <span class="n">Box</span> <span class="n">box</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Box</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">box</span><span class="o">.</span><span class="na">setObject</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>    <span class="c1">//ok</span>
-</span><span class='line'>        <span class="n">box</span><span class="o">.</span><span class="na">setObject</span><span class="o">(</span><span class="s">&quot;hello&quot;</span><span class="o">);</span>  <span class="c1">//compile-time error</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们也可以给类型参数加多个限定。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">&lt;</span><span class="n">T</span> <span class="kd">extends</span> <span class="n">B1</span> <span class="o">&amp;</span> <span class="n">B2</span> <span class="o">&amp;</span> <span class="n">B3</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>加上限定类或接口以后，我们可以使用泛型参数变量调用该类或接口的方法。</p>
-
-<h2>通配符的使用</h2>
-
-<p>Java中的List<T>就是一个实现了泛型的类，假如我们写了一个方法，获取List<T>中元素的个数。只不过这个方法限定T类型为Number。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getCount</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Number</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">{</span>
-</span><span class='line'>      <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-</span><span class='line'>      <span class="k">for</span><span class="o">(</span><span class="n">Number</span> <span class="n">n</span> <span class="o">:</span> <span class="n">list</span><span class="o">)</span>
-</span><span class='line'>      <span class="o">{</span>
-</span><span class='line'>          <span class="n">i</span><span class="o">++;</span>
-</span><span class='line'>      <span class="o">}</span>
-</span><span class='line'>      <span class="k">return</span> <span class="n">i</span><span class="o">;</span>
-</span><span class='line'>  <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后我们这样试图调用它。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;(){</span>
-</span><span class='line'>        <span class="o">{</span>
-</span><span class='line'>            <span class="n">add</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
-</span><span class='line'>            <span class="n">add</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
-</span><span class='line'>            <span class="n">add</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">};</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">Util</span><span class="o">.</span><span class="na">getCount</span><span class="o">(</span><span class="n">list</span><span class="o">);</span> <span class="c1">//compile-time error</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>为什么会产生错误那？因为我们要求方法的参数是List<Number>,而我们实际传入的是List<Integer>。虽然Integer是Number的子类，但是List<Integer>却不是List<Number>的子类，他们其实是平等的关系。这点一定要注意。我们在方法定义时已经明确表示T的类型是Number了，所以只能接收List<Number>，而不能接收其它类型的参数。
-这时候<code>?</code>通配符就起作用了。我们可以使用<code>？</code>通配符重新定义这个方法。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Util</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getCount</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">{</span>
-</span><span class='line'>      <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-</span><span class='line'>      <span class="k">for</span><span class="o">(</span><span class="n">Number</span> <span class="n">n</span> <span class="o">:</span> <span class="n">list</span><span class="o">)</span>
-</span><span class='line'>      <span class="o">{</span>
-</span><span class='line'>          <span class="n">i</span><span class="o">++;</span>
-</span><span class='line'>      <span class="o">}</span>
-</span><span class='line'>      <span class="k">return</span> <span class="n">i</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;(){</span>
-</span><span class='line'>        <span class="o">{</span>
-</span><span class='line'>            <span class="n">add</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
-</span><span class='line'>            <span class="n">add</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
-</span><span class='line'>            <span class="n">add</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">};</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">assertThat</span><span class="o">(</span><span class="n">Util</span><span class="o">.</span><span class="na">getCount</span><span class="o">(</span><span class="n">list</span><span class="o">),</span> <span class="n">is</span><span class="o">(</span><span class="mi">3</span><span class="o">));</span>  <span class="c1">// pass</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>既然能限定到一个类及其子类上，当然也能限定到一个类及其父类上。语法如下:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">&lt;?</span> <span class="n">supper</span> <span class="n">A</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>对泛型使用的总结</h2>
-
-<ul>
-<li><p><strong>类型参数不能是原始类型</strong>（int, char，double）,只能传入这些类型的封转类(Integer,Char,Double)。</p></li>
-<li><p><strong>不能直接创建类型参数的实例。</strong></p></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="kt">void</span> <span class="n">append</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">)</span> <span class="o">{</span>    <span class="n">E</span> <span class="n">elem</span> <span class="o">=</span> <span class="k">new</span> <span class="n">E</span><span class="o">();</span>  <span class="c1">// compile-time error    list.add(elem); </span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>但有通过反射可以实现。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="kt">void</span> <span class="n">append</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">,</span> <span class="n">Class</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">cls</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>    <span class="n">E</span> <span class="n">elem</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>   <span class="c1">// OK    list.add(elem);}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>你可以这样调用它:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">ls</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
-</span><span class='line'><span class="n">append</span><span class="o">(</span><span class="n">ls</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>静态字段的类型不能为类型参数。</strong></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Box</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>    <span class="kd">private</span> <span class="kd">static</span> <span class="n">T</span> <span class="n">object</span><span class="o">;</span> <span class="c1">// compile-time error</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>不能创建类型参数变量的数组。</strong></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;[]</span> <span class="n">arrayOfLists</span> <span class="o">=</span> <span class="k">new</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;[</span><span class="mi">2</span><span class="o">];</span>  <span class="c1">// compile-time error</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>不能重载一个方法，该方法的形参都来自于同一个类型参数对象。</strong></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">integers</span><span class="o">)</span> <span class="o">{}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="n">doubles</span><span class="o">)</span> <span class="o">{}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>参考文档：<a href="http://docs.oracle.com/javase/tutorial/java/generics/index.html">http://docs.oracle.com/javase/tutorial/java/generics/index.html</a></p>
 ]]></content>
   </entry>
   
