@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-07-01T16:17:10+08:00</updated>
+  <updated>2013-07-21T00:05:46+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,9 +14,35 @@
 
   
   <entry>
+    <title type="html"><![CDATA[走出你的舒适区]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/07/21/get-out-of-your-comfort-zone/"/>
+    <updated>2013-07-21T00:02:00+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/07/21/get-out-of-your-comfort-zone</id>
+    <content type="html"><![CDATA[<p>今天全球CEO来成都office做每月一次的“老郭说事”。在会议的末尾一个应届毕业生问了他一个问题“你是否有每天都需要进步的压力那？”。该毕业生提出这个问题我想很可能是由于她现在处于试用期，感受到了比较大的压力。为了能让毕业生尽快的适应工作节奏，能够独立胜任工作，试用期的员工压力都是很大的。他们要在一定时间内表现出自己，让团队中其他人能够明确看到自己在某段时间内的进步。我们不担心你目前的技术水平，我们关心的是在有限的时间内你能否进步。</p>
+
+<p>当时我在试用期的时候，压力也是很大的。虽然我有将近4年的工作经验，但是初来公司，英语不会说两句，Java程序可是从来没摸过，什么TDD、Agile、CI更是了解甚少。在ThoughtWorks的前6个月我承受了巨大的压力，有一段时间每天只睡5，6个小时;每天晚上12点还在读英语;一段英文文章被我读了不下千遍。</p>
+
+<p>而郭晓现在作为全球CEO，那么他有没有这种压力那？郭晓的回答是这样的。他说可以把一个人的知识分为三个区域，舒适区，学习区，恐慌区。舒适区的外围是学习区，学习区的外围是恐慌区。大部分的人都喜欢呆在舒适区里，上班的时候都使用的是自己熟悉的技术，交流的都是些熟悉的人，日子就这样一天天的过。但当你有不满足现状的想法时，你可能就需要走出你的舒适区，踏入学习区。比如你烦透了与java这些繁琐的语言打交道，那么你就要进入你的学习区，去学习ruby、JavaScript等动态语言；比如你在工作中一直做的是Dev，想尝试一下QA，那么你也要去学习自动化测试、安全性测试等。”舒适区和学习区是有交集的，你在学习区扩张的时候，舒适区内掌握的技能能提供相当一部分帮助。而恐慌区则包裹着学习区。当你听到恐慌区中的一些名词时，并不会感到那么舒服，甚至有一丝不安。那表明这样那样的原因，你并未开始涉足这个领域。从舒适区直接跳跃到恐慌区比进入到学习区要困难的多。</p>
+
+<p>郭晓举了这样一个例子。当十几年前他还是developer的时候，有一次公司派他到英国的一个项目上去，让他做一个.net项目的tech leader。而在此之前他只是听说过.net这个词语而已。在登机之前他买了一本关于.net的书，利用有限的时间抓紧翻阅。可以想象当时郭晓承受的压力有多大，但是最后他肯定挺了下来，要不然也不会成为现在的全球CEO。</p>
+
+<p>虽然从舒适区直接跨入恐慌区大部分时候有被逼无奈之嫌。但从舒适区到学习区则更多的靠自身的主动。郭晓说他特别喜欢尝试新东西，虽然大部分的东西都是uesless。在尝试新东西的同时能给他带来一种成就感，同时也逐步扩大的自己的舒适区，将学习区吞并。</p>
+
+<p>回想在ThoughtWorks的一年多中，从别人加压到自我施压，是一个不小的转变。从小到大我们习惯了被父母push，被老师push，到了大学就撒了欢，而加入社会却傻眼了。在公司里有人push那是好事，说明还有人关心你。而没人push则分两种情况。一种是你已经可以self managment,另一种则是对你彻底失望。</p>
+
+<p>每天都要有进步的压力！如果自己能够保持一颗好奇心，勇于向未知领域前进，这种压力其实并不存在。在学习的过程中，随着你的知识领域的扩大，机会对你来说只能越来越多。这是一个很好的良性循环。</p>
+
+<p>记得去年做的一次素质拓展运动，当我从10米断桥上的距离只有1米多宽，如果从平地上跨越这个距离是小菜一碟，但为什么放到10米高空还有保险绳的保护，许多人却犹犹豫豫，畏畏缩缩那？这就是走出了自己的舒适区，心态起了变化而已。当你跨过去以后，才觉得不过如此。
+而且当我跳过去以后，往回跳时，教练将宽度又增加了很多。我给教练说太宽了，跳不过去。教练鼓励我说你一定行得。我一咬牙跳了过来。教练给我说：“有些时候不是自己不行，而是自己给自己的要求太低了。”</p>
+
+<p>勇于走出自己的舒适区，直面压力。让人生大道越走越宽。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Homebrew- MAC上的包管理利器]]></title>
     <link href="http://www.huangbowen.net/blog/2013/07/01/homebrew-in-mac/"/>
-    <updated>2013-07-01T14:33:00+08:00</updated>
+    <updated>2013-07-01T14:33:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/07/01/homebrew-in-mac</id>
     <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/lotsOfDogs.jpg"></p>
 
@@ -136,7 +162,7 @@
   <entry>
     <title type="html"><![CDATA[Java经典类库-Guava中的函数式编程讲解]]></title>
     <link href="http://www.huangbowen.net/blog/2013/06/28/functional-programming-in-guava/"/>
-    <updated>2013-06-28T01:31:00+08:00</updated>
+    <updated>2013-06-28T01:31:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/06/28/functional-programming-in-guava</id>
     <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/FP.jpg"></p>
 
@@ -647,7 +673,7 @@
   <entry>
     <title type="html"><![CDATA[使用WebDriver遇到的那些坑]]></title>
     <link href="http://www.huangbowen.net/blog/2013/06/25/practice-of-webdriver/"/>
-    <updated>2013-06-25T22:00:00+08:00</updated>
+    <updated>2013-06-25T22:00:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/06/25/practice-of-webdriver</id>
     <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/automatedRobot.png"></p>
 
@@ -839,7 +865,7 @@
   <entry>
     <title type="html"><![CDATA[CheckStyle, 强制你遵循编码规范]]></title>
     <link href="http://www.huangbowen.net/blog/2013/06/21/introduce-checkstyle/"/>
-    <updated>2013-06-21T13:53:00+08:00</updated>
+    <updated>2013-06-21T13:53:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/06/21/introduce-checkstyle</id>
     <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/CheckStyle.png"></p>
 
@@ -1815,7 +1841,7 @@
   <entry>
     <title type="html"><![CDATA[ThoughtWorks知识分享体系]]></title>
     <link href="http://www.huangbowen.net/blog/2013/06/13/thoughtworks-knowledge-sharing-system/"/>
-    <updated>2013-06-13T13:44:00+08:00</updated>
+    <updated>2013-06-13T13:44:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/06/13/thoughtworks-knowledge-sharing-system</id>
     <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/KS.jpg"></p>
 
@@ -1913,7 +1939,7 @@
   <entry>
     <title type="html"><![CDATA[调用API设置安卓手机的Access Point]]></title>
     <link href="http://www.huangbowen.net/blog/2013/06/05/programmatically-set-android-phone-ap/"/>
-    <updated>2013-06-05T12:04:00+08:00</updated>
+    <updated>2013-06-05T12:04:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/06/05/programmatically-set-android-phone-ap</id>
     <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/android.jpeg"></p>
 
@@ -2018,7 +2044,7 @@
   <entry>
     <title type="html"><![CDATA[持续集成之道：在你的开源项目中使用Travis CI]]></title>
     <link href="http://www.huangbowen.net/blog/2013/05/30/use-travis-ci-to-your-open-source-project/"/>
-    <updated>2013-05-30T14:58:00+08:00</updated>
+    <updated>2013-05-30T14:58:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/05/30/use-travis-ci-to-your-open-source-project</id>
     <content type="html"><![CDATA[<p>自从接触并践行了敏捷的一些实践之后，便深深的喜欢上了敏捷。尤其是测试自动化和持续集成这两个实践，可以显著的提高软件的质量和集成效率，实时检测项目健康度，使团队成员对项目保持充足的信心。</p>
 
@@ -2099,7 +2125,7 @@
   <entry>
     <title type="html"><![CDATA[使用自定义的MessageSource实现对properties的复用]]></title>
     <link href="http://www.huangbowen.net/blog/2013/05/29/using-spring-message-source/"/>
-    <updated>2013-05-29T14:48:00+08:00</updated>
+    <updated>2013-05-29T14:48:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/05/29/using-spring-message-source</id>
     <content type="html"><![CDATA[<p>Spring框架的Web项目中可以使用properties文件来存储需要显示在jsp页面的一些值，比如label值或者error messages。然后通过Spring提供的ResourceBundleMessageSource将这些properties文件注入进来使用。一个简单的配置如下。</p>
 
@@ -2373,7 +2399,7 @@
   <entry>
     <title type="html"><![CDATA[持续改进-《高效程序员的45个习惯》读后感]]></title>
     <link href="http://www.huangbowen.net/blog/2013/05/24/the-practices-of-an-agile-developer/"/>
-    <updated>2013-05-24T11:23:00+08:00</updated>
+    <updated>2013-05-24T11:23:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/05/24/the-practices-of-an-agile-developer</id>
     <content type="html"><![CDATA[<p>原书标题为<a href="http://www.amazon.cn/mn/detailApp/ref=asc_df_B0033WSFAO622894/?asin=B0033WSFAO&amp;tag=douban-23&amp;creative=2384&amp;creativeASIN=B0033WSFAO&amp;linkCode=asn">《Practices of An Agile Developer》</a>。中文名为<a href="http://book.douban.com/subject/4164024/">《高效程序员的45个习惯-敏捷开发修炼之道》</a>。敏捷这个词已经烂大街了，关于敏捷的书籍俯拾皆是。很多人是敏捷的狂热粉丝，而另一些人却讨厌敏捷，认为只是个噱头。我觉得很可能的原因之一是敏捷这个名字没起好。它的原名为“轻量型软件开发过程”（&#8221;lightweight process&#8221;），但后来阴差阳错成了agile(敏捷)。</p>
 
@@ -2429,7 +2455,7 @@
   <entry>
     <title type="html"><![CDATA[npm的配置管理及设置代理]]></title>
     <link href="http://www.huangbowen.net/blog/2013/05/17/setting-npm-configuration/"/>
-    <updated>2013-05-17T00:17:00+08:00</updated>
+    <updated>2013-05-17T00:17:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/05/17/setting-npm-configuration</id>
     <content type="html"><![CDATA[<p>npm全称为Node Packaged Modules。它是一个用于管理基于node.js编写的package的命令行工具。其本身就是基于node.js写的,这有点像gem与ruby的关系。</p>
 
@@ -2509,7 +2535,7 @@
   <entry>
     <title type="html"><![CDATA[将AngularJS的单元测试和端到端测试集成到gradle构建脚本中]]></title>
     <link href="http://www.huangbowen.net/blog/2013/05/07/integrate-javascript-tests-to-gradle/"/>
-    <updated>2013-05-07T15:55:00+08:00</updated>
+    <updated>2013-05-07T15:55:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/05/07/integrate-javascript-tests-to-gradle</id>
     <content type="html"><![CDATA[<p>我目前工作的一个项目后端使用java和spring建立了一个restful service,前端使用<a href="http://angularjs.org/">AngularJS</a>来渲染页面，提供用户接口。在前端的<a href="http://angularjs.org/">AngularJS</a>项目中，我们使用<a href="http://pivotal.github.io/jasmine/">Jasmine</a>来写单元测试，使用<a href="http://angularjs.org/">AngularJS</a>自带的Angular_scenario来写端到端测试。运行这些测试则使用的是<a href="http://karma-runner.github.io/">Karma</a>。</p>
 
@@ -2804,7 +2830,7 @@
   <entry>
     <title type="html"><![CDATA[使用MANIFEST.MF文件来track war包做持续部署]]></title>
     <link href="http://www.huangbowen.net/blog/2013/04/18/use-manifest-dot-mf-to-track-war-file/"/>
-    <updated>2013-04-18T12:40:00+08:00</updated>
+    <updated>2013-04-18T12:40:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/04/18/use-manifest-dot-mf-to-track-war-file</id>
     <content type="html"><![CDATA[<p>在我工作的项目中有这样一个需求。当通过自动部署脚本将当前一个CI构建的WAR包部署到指定服务器后，需要验证该WAR包是否被部署成功。</p>
 
@@ -2980,7 +3006,7 @@
   <entry>
     <title type="html"><![CDATA[一款Octopress插件用于同步博客到其他站点]]></title>
     <link href="http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post/"/>
-    <updated>2013-04-14T22:05:00+08:00</updated>
+    <updated>2013-04-14T22:05:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post</id>
     <content type="html"><![CDATA[<p>即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易&#8230;&#8230;）</p>
 
@@ -3120,7 +3146,7 @@ The second gem is used to parse html.)</p>
   <entry>
     <title type="html"><![CDATA[Karma(原名Testacular)与WebStorm进行集成]]></title>
     <link href="http://www.huangbowen.net/blog/2013/04/09/integrate-karma-to-webstorm/"/>
-    <updated>2013-04-09T01:59:00+08:00</updated>
+    <updated>2013-04-09T01:59:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/04/09/integrate-karma-to-webstorm</id>
     <content type="html"><![CDATA[<p><a href="http://karma-runner.github.io/0.8/index.html">Karma</a>是一款运行JavaScript测试的工具。它支持大部分的JavaScript测试框架，并支持多浏览器跑测试、自动监听文件运行测试等功能，实在是JavaScript开发的必备测试利器。有了它，基本不用再一遍遍手动刷新页面来trigger测试了。它的原名是testacular，也不知道作者咋想的，突然之间把项目名称改了。</p>
 
@@ -3198,7 +3224,7 @@ The second gem is used to parse html.)</p>
   <entry>
     <title type="html"><![CDATA[使用快捷键，快到极致]]></title>
     <link href="http://www.huangbowen.net/blog/2013/04/06/use-shortcuts-extremely/"/>
-    <updated>2013-04-06T15:21:00+08:00</updated>
+    <updated>2013-04-06T15:21:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/04/06/use-shortcuts-extremely</id>
     <content type="html"><![CDATA[<p>前段时间曾经写过一篇文章，<a href="http://www.cnblogs.com/huang0925/archive/2013/03/24/2978181.html">《优秀程序员无他-善假于物也》</a>。其中谈到一点是优秀的程序员必须要能灵活的掌握常用软件的快捷键。对于程序员来说，每天使用时间最长的软件恐怕就是IDE（Integrated Development Environment）了。如果你是C#的程序员，那么就基本非Visual Studio莫属了。而如果你是Java的程序员，那么eclipse，myeclipse或者Intellij都有人用之。如果你是Ruby等动态语言的程序员，那么Vim、Emacs、RubyMIne…有太多的选择可以成为你的IDE。</p>
 
@@ -3468,7 +3494,7 @@ The second gem is used to parse html.)</p>
   <entry>
     <title type="html"><![CDATA[Haskell函数式编程之List操作]]></title>
     <link href="http://www.huangbowen.net/blog/2013/04/05/haskell-list-processing/"/>
-    <updated>2013-04-05T01:20:00+08:00</updated>
+    <updated>2013-04-05T01:20:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/04/05/haskell-list-processing</id>
     <content type="html"><![CDATA[<p>List在函数式语言中是一个重要的抽象，很多事情离了它就很难做到。函数式语言的鼻祖Lisp名称就来自List processing。</p>
 
@@ -3784,7 +3810,7 @@ The second gem is used to parse html.)</p>
   <entry>
     <title type="html"><![CDATA[修改方法签名的重构手法]]></title>
     <link href="http://www.huangbowen.net/blog/2013/04/03/change-method-signature/"/>
-    <updated>2013-04-03T00:19:00+08:00</updated>
+    <updated>2013-04-03T00:19:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/04/03/change-method-signature</id>
     <content type="html"><![CDATA[<p>今天看到同事写的一篇博客<a href="http://xiaodao.github.com/2011/03/15/correct-refactoring/">《依赖快捷键做重构是不行的》</a>。里面讲了一个这样的案例：本来有一方法，假设叫methodA。</p>
 
@@ -3848,7 +3874,7 @@ The second gem is used to parse html.)</p>
   <entry>
     <title type="html"><![CDATA[敏捷的写博客]]></title>
     <link href="http://www.huangbowen.net/blog/2013/04/01/min-jie-de-xie-bo-ke/"/>
-    <updated>2013-04-01T12:49:00+08:00</updated>
+    <updated>2013-04-01T12:49:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/04/01/min-jie-de-xie-bo-ke</id>
     <content type="html"><![CDATA[<h2>为什么写博客</h2>
 
@@ -3960,7 +3986,7 @@ The second gem is used to parse html.)</p>
   <entry>
     <title type="html"><![CDATA[Java基础知识之Annotation]]></title>
     <link href="http://www.huangbowen.net/blog/2013/03/28/java-annotation/"/>
-    <updated>2013-03-28T01:01:00+08:00</updated>
+    <updated>2013-03-28T01:01:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/03/28/java-annotation</id>
     <content type="html"><![CDATA[<h2>什么是Annotation?</h2>
 
@@ -4316,46 +4342,6 @@ The second gem is used to parse html.)</p>
 
 
 <p>其实还有很多使用了annotaion的framework或library,这里就不一一列举了，希望大家能举一反三，深入了解Java中的annotation。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[优秀程序员无他-善假于物也]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/03/24/senior-programer-good-habits/"/>
-    <updated>2013-03-24T02:31:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/03/24/senior-programer-good-habits</id>
-    <content type="html"><![CDATA[<p>运用一门程序设计语言对大多数程序员来说是小菜一碟,但是更上一层楼成为一名专家级的软件开发者，恐怕目前还是大多数人的梦想。《程序员的思维修炼》一书中将程序员分为5个层级：新手，高级新手，胜任者，精通者，专家。根据作者的调查研究结果，在这5个层级中，大多数的程序员属于高级新手。而且居于这个层级的程序员从入行1、2年的到工作10来年都大有人在。</p>
-
-<p>身为一个程序员，如何才能尽快的突破自身的瓶颈，得到快速的提升那？这可真不是三言两语可以说清楚。本人09年毕业投身软件行业，2012年初离开工作了三年的公司A，加入了现在的公司B。算到现在呆在B公司也即将满一年了。但是我敢说在B公司1年学到的东西，比在A公司3年加起来的总和还要多。
-这么大的进步是源于我养成了较好的学习习惯，每天都保持汲取知识。这些习惯大都是同我身边的同事身上偷来的。现在，我就把这些东西分享给大家，一起共勉。</p>
-
-<!-- more -->
-
-
-<p>我们无需摸着石头过河，因为前人已经给我们总结了很多宝贵的经验。</p>
-
-<ol>
-<li><p><strong>请将google作为你的搜索引擎。</strong> 这点放在第一条表明了它绝对是重中之重。当你尝试使用google做一段时间的技术搜索后，你会发现百度是多么的低效和不靠谱。同样一个技术关键字，google结果的匹配程度会远高于百度。如果你说你英文能力差的话,那么请赶快补习英语。在我身边我还没发现一个很牛逼的程序员他的英文很差劲。外国人的技术文章大都很细腻，很有条理，并且注重由浅入深，覆盖面广。比如我前段时间想写一篇关于Java泛型的文章，就搜到了oracle有一篇对java 泛型的完整讲述,地址在<a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;ved=0CDYQFjAA&amp;url=http%3A%2F%2Fdocs.oracle.com%2Fjavase%2Ftutorial%2Fjava%2Fgenerics%2F&amp;ei=1eVNUamWA6n5iwL2k4GwDA&amp;usg=AFQjCNE_MIRvBiqQZ_SkkhWZE1zbmugQ-g&amp;sig2=-xoQZ568IgYPIftOXFy_MA">这里</a>。可以说看完这篇文章后，你再也不担心你会遗漏泛型中的知识点了。</p></li>
-<li><p><strong>学会对自己制定目标并执行。</strong> 有人说，我有目标，那就是1年精通xx语言。我说，这样的目标等于没有目标。制定目标必须要遵循SMART原则，那就是：</p>
-
-<ul>
-<li>目标必须是具体的（Specific）</li>
-<li>目标必须是可以衡量的（Measurable）</li>
-<li>目标必须是可以达到的（Attainable）</li>
-<li>目标必须和其他目标具有相关性（Relevant）</li>
-<li>目标必须具有明确的截止期限（Time-based）</li>
-</ul>
-
-
-<p> 不可被验证的目标只能说是口号，而喊口号又恰恰是中国人最擅长的。要建立起可验证的目标，还需要对目标进行追踪。在对目标进行追踪验证的过程中可以使用一些工具辅助，比如我使用的就是<a href="https://www.wunderlist.com/">wunderList</a>。</p></li>
-<li><p><strong>使用代码托管网站管理你的代码。</strong> 作为程序员，学习新东西时少不了写一些代码，demo。而后随后就丢掉。这是一种不好的习惯。你应该学会管理你的代码，让它们成为你的宝贵财富。目前有很多免费的代码托管网站，首推<a href="https://github.com/">github</a>。<a href="https://github.com/">github</a>是全球最大的源代码托管网站，很多著名的开源框架都将其源代码托管在上面,如Jquery，Junit,Ruby,Clojure等。在这里，你可以上传你的源代码分享给他人。也可以方便的查看他人的优秀源码。如果你愿意，也可以成为一名志愿者，一起与他人开发一个开源项目。一切只需要一个git客户端和一个github账号就可以搞定。</p></li>
-<li><p><strong>使用日志对知识进行总结。</strong>一个不善于总结的程序员绝不是一个优秀程序员。<a href="http://wiki.mbalib.com/wiki/SMART%E5%8E%9F%E5%88%99">SMART</a>管理中有很重要的一条，那就是目标必须是可衡量的。而我们在学习技术的过程中，除了产出的code本身，日志也是一个重要的可衡量的产出物。你可以记下所犯的错误，以避免重犯，也可以记下自己的所得，梳理思路。推荐一款日志工具<a href="http://evernote.com/">evernote</a>。它支持几乎所有的操作系统和mobile平台，并可以方便的将日志同步到云端。对于一些日志你可以再加工一下发表到博客上，接受大家的检阅，并扩大自己的影响力。另外，<a href="http://en.wikipedia.org/wiki/Mind_map">mind map</a>也是不错的梳理思路、回顾总结的好方式。比如我学习了正则表达式，就画了一张mind map来记录正则表达式的全部语法，以后如有遗忘只需看一下<a href="http://huangbowen.net/images/RegularExpression.png">该图表</a>即可。</p></li>
-<li><p><strong>阅读成为你的日常习惯。</strong>软件工程是一种知识生产活动，前人的经验的载体就是文字。作为IT人士，知识更迭是很频繁的，不了解外面的世界很容易被遗弃。我们不仅要热爱阅读，还要读好书，读好文章。养成良好的阅读习惯是每个程序员应当具备的素质之一。这里推荐一个网站，<a href="http://www.douban.com/">豆瓣读书</a>。上面有很多技术书籍的信息，书评等，可以成为你阅读的一个参考。另外，鄙人也强烈推荐了一些好书，想看的可以访问<a href="http://huangbowen.net/blog/2013/02/18/thoughtworks-reading-book/">这里</a>。</p></li>
-<li><p><strong>熟练使用各种快捷键。</strong>对于程序员来说，提高速度就意味着了生产率。提高了生产率，你就有了更多的时间去展开新的学习。熟练使用快捷键的好处不只是节省时间，而是将你的大脑从重复机械的劳动中解放出来，能够关注到更重要的部分。大到操作系统，小到浏览器，都有自己各种各样的快捷键。尤其对于程序员天天使用的IDE来说，掌握快捷键尤其重要。从现在开始，打印一份IDE的快捷键大全放在桌面上，每天都要熟悉其中的几个，用不了一星期你就会发现你的编程效率至少会提升30%以上。别质疑，因为我就是这样做的。</p></li>
-</ol>
-
-
-<p>不积跬步，无以至千里。要想成为优秀程序员，光有一腔热血是不够的，一定要持之以恒，坚持不懈的持续学习。以此来与大家共勉。</p>
 ]]></content>
   </entry>
   
