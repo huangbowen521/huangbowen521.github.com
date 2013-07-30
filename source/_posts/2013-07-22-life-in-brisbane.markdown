@@ -6,7 +6,7 @@ comments: true
 categories: Life 
 ---
 
-
+{% img /images/brisbane.jpg %}
 
 周一接到通知需要到布里斯班出差一个月，周五就踏上飞机。第一次出国，终于有机会近距离接触“万恶的资本主义”了。虽然在ThoughtWorks出差、出国是家常便饭，但是这是自己第一次出国，还跑这么远，难免有些兴奋。
 
