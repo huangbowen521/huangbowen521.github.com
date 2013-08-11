@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-08-06T06:54:22+10:00</updated>
+  <updated>2013-08-11T12:22:47+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,44 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[只有好的棋手才会走运-《打造Facebook》读后感]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/08/11/only-good-player-has-good-luck/"/>
+    <updated>2013-08-11T12:01:00+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/08/11/only-good-player-has-good-luck</id>
+    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/facebook.jpg" width="600"></p>
+
+<p>王淮的《打造Facebook》一书不厚，花半天时间轻松读完。书中没有大段的说教，只有近乎流水的陈述。正如作者所说，打造Facebook这本书由巴克伯格来写再合适不过。可惜他至少在近几年内没有这个打算。而王淮作为加入Facebook最早的员工之一，以工程师角度描述的视角恐怕更适合我们。</p>
+
+<!-- more -->
+
+
+<ul>
+<li><p><strong>战略眼光很重要。</strong>在Facebook聚合了大量的用户以后，马克伯格在最早的时间决定将Facebook打造成为一个对外开放的开发平台，可以由第三方开发者基于Facebook的API来开发应用。这样极大的激发了开发者的热情，平台上的优秀应用层出不穷，又反过来吸引了更多的用户。环顾今日，淘宝、腾讯等国内大公司基本都是这样的套路。硅谷不愧是科技公司的标杆。</p></li>
+<li><p><strong>学习能力体现在你的坚持上，而不是你的聪明上。</strong>马克伯格每年都会给自己制定挑战目标。这些挑战目标有的是加强自己某一方面技能，有的则是纯粹的磨练自己。比如09年坚持每天打领带，10年坚持学英文，11年坚持支持自己宰杀的动物，12年坚持每天写代码&#8230;&#8230;马克伯格的学习能力强，不是由于他聪明，而是由于他能够坚持。</p></li>
+<li><p><strong>招人只招优秀的，宁缺毋滥。</strong>这句话每个公司的HR都懂，但是能得到彻底贯彻的公司少之又少。优秀的人才本来就少，每个公司都抢着要，总有一些公司是抢不到的。Facebook作为创业公司一开始就坚持这样的策略，无疑是它能够持续壮大的重要原因之一。因为巴克伯格深切的知道优秀的工程师意味着什么。优秀的工程师更容易被委以重任;完成任务后可以相互标榜；一流人才喜欢互相挑战，并且互相学习。古往今来，几乎每个杰出的人才身边都有优秀的人相伴，爱迪生身边有特斯拉，图灵有秋奇作为对手&#8230;&#8230;</p></li>
+<li><p><strong>留人靠的不是忠诚度忽悠，而是公司能够给予员工切实的利益。</strong>硅谷公司通常不会单方面的强调员工对公司的忠诚度，而是更多的考虑公司有什么东西值得员工留下来。国内很多公司特别喜欢强调爱国主义式的忠诚，公司给了你这碗饭，你就要时时刻刻想着报答公司。这种忠诚如果不是发自内心对公司文化的认同，那么根本起不了什么作用。公司如果能够在产品、理念、思想、薪酬、福利等方面着想，无疑才是标本兼治的好方法。</p></li>
+<li><p><strong>跳出你的舒适区。</strong>Get out of your comfort zone已经成了IT界的一句行话。IT界不仅发展迅猛，而且涉及技术众多。靠一门语言打天下的时代已经一去不复返。勇敢的跳出自己的舒适区，主动学习新知识，才能增强核心竞争力。以前做c++，现在想搞web开发，那就要学习。以前做开发，现在想搞管理，那也要学。学习->工作出色->得到成就感->获取更多机会->激发学习,很容易形成一个良性循环。</p></li>
+<li><p><strong>良好的沟通能力是优秀程序员的必备素质。</strong>在一个团队中工作，如果不注重沟通，会导致很多问题。不和BA沟通，无法保证功能契合客户要求;不和其他程序员沟通，技术无法得到共享;不主动和别人沟通，只能被动接受结果。</p></li>
+</ul>
+
+
+<p>虽然是金子总会发光的，但现在绝大多数人的首要目标是如何让自己成为金子。从《打造Facebook》这本书中了解了这家公司的工程师文化，学习到了那些“金子”为什么能成为“金子”，并借鉴到自己身上。</p>
+
+<p>最后，给大家一些建议，如果在简历中能有这些东西，那么肯定会从HR眼中脱颖而出。注意这些事情需要平时的积累，不是临时抱佛脚可以搞定的。</p>
+
+<ol>
+<li><p>维护自己的一个原创技术博客。</p></li>
+<li><p>豆瓣读书上的读书记录及读书笔记。</p></li>
+<li><p>成为github重度患者。在github上分享自己的代码，甚至参与开源项目的开发。</p></li>
+<li><p>良好的英语技能。尽量阅读英文资料，访问英文网站，如stackoverflow等。自己可以尝试翻译一些技术文章或书籍。</p></li>
+</ol>
+
+
+<p>Only the good players are luckly. 这是国际象棋界的一句名言，即只有好的棋手才会走运。在羡慕别人有好运的同时，把自己变为一个good player吧。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[如何让站会变得高效]]></title>
@@ -3368,84 +3406,6 @@ The second gem is used to parse html.)</p>
 <p>  URL: http://<accountName>.blog.163.com/ (example: http://huang0925.blog.163.com/).</p></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Karma(原名Testacular)与WebStorm进行集成]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/04/09/integrate-karma-to-webstorm/"/>
-    <updated>2013-04-09T01:59:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/04/09/integrate-karma-to-webstorm</id>
-    <content type="html"><![CDATA[<p><a href="http://karma-runner.github.io/0.8/index.html">Karma</a>是一款运行JavaScript测试的工具。它支持大部分的JavaScript测试框架，并支持多浏览器跑测试、自动监听文件运行测试等功能，实在是JavaScript开发的必备测试利器。有了它，基本不用再一遍遍手动刷新页面来trigger测试了。它的原名是testacular，也不知道作者咋想的，突然之间把项目名称改了。</p>
-
-<p>而<a href="http://www.jetbrains.com/webstorm/">WebStorm</a>则号称是世界上最聪明的JavaScript的IDE。（事实证明，确实如此）。JavaScript code自动提示、浏览器实时同步更新、支持HTML5, <a href="http://nodejs.org/">node.js</a>, TypeScript, CoffeeScript, ECMAScript Harmony, LESS…秉承了JetBrains这个牛逼公司的一贯传统。</p>
-
-<!-- more -->
-
-
-<p>那么，如何将<a href="http://karma-runner.github.io/0.8/index.html">Karma</a>集成到<a href="http://www.jetbrains.com/webstorm/">WebStorm</a>中来那？ 很简单。</p>
-
-<h2>配置Karma Runner.</h2>
-
-<ol>
-<li><p>菜单栏Run里面选<code>Edit Configurations…</code>项，在弹出的对话框中点击左上角的<code>+</code>按钮,选择<code>Node.js</code>。</p></li>
-<li><p>然后进行如下配置。</p>
-
-<p> <img src="http://www.huangbowen.net/images/run.png"></p>
-
-<p> 主要配置参数：</p>
-
-<ul>
-<li>Name : 名称标示，自己随便起一个就成。</li>
-<li>Path to Node: node.js的运行路径。在Terminal下运行<code>which node</code>可以看到。</li>
-<li>Working Directory: 项目的目录。</li>
-<li>Path to Node App JS File: Karma的安装目录，同样在Terminal下运行<code>which karma</code>可以得到。</li>
-<li>Application Parameters： start karma.conf.js。第一个参数start是运行karma server。第二个参数是karma的配置文件。</li>
-</ul>
-</li>
-<li><p>点击ok按钮。大功告成。</p></li>
-</ol>
-
-
-<p>在<a href="http://www.jetbrains.com/webstorm/">WebStorm</a>中运行我们定义的Karma Runner，就能实时的看到测试结果。它能自动监听文件修改。一有风吹草动就会重新运行测试，而且速度奇快。</p>
-
-<p><img src="http://www.huangbowen.net/images/running.png"></p>
-
-<h2>配置Karma Debugger.</h2>
-
-<p>如果想使用<a href="http://karma-runner.github.io/0.8/index.html">Karma</a>在IDE里面进行Debug，该怎么办？也简单，配置一个Remote Debugger就行。</p>
-
-<ol>
-<li><p>菜单栏Run里面选<code>Edit Configurations…</code>项，在弹出的对话框中点击左上角的<code>+</code>按钮,选择<code>JavaScript Debug</code>-><code>Remote</code>。</p></li>
-<li><p>在配置框中输入以下参数。</p>
-
-<p> <img src="http://www.huangbowen.net/images/debug.png"></p>
-
-<p> 主要参数设置：</p>
-
-<ul>
-<li><p>Name: 名称标示符。</p></li>
-<li><p>URL to open:  http://localhost:9876/debug.html。默认是这个，要根据你Karma server配置的真实地址而定。</p></li>
-<li><p>Browser: 要运行的浏览器。</p></li>
-<li><p>Remote URL； http://localhost:9876/base。</p></li>
-</ul>
-</li>
-<li><p>点击确定，又搞定了。</p></li>
-</ol>
-
-
-<h2>如何进行Debug？</h2>
-
-<ol>
-<li><p>在源代码中设置断点。</p></li>
-<li><p>在WebStorm中启动Karma server，就是运行我们定义的Karma Runner。</p></li>
-<li><p>在WebStorm中运行我们定义的Karma Debug。</p></li>
-</ol>
-
-
-<p>注意第一次运行时WebStorm会提醒你在浏览器上安装相应的插件。</p>
-
-<p><img src="http://www.huangbowen.net/images/debugging.png"></p>
 ]]></content>
   </entry>
   
