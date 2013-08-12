@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>SVN中Branch的创建于合并 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="在使用源代码版本控制工具时，最佳实践是一直保持一个主干版本。但是为了应付实际开发中的各种情况，适时的开辟一些分支也是很有必要的。比如在持续开发新功能的同时，需要发布一个新版本，那么就需要从开发主干中建立一个用于发布的分支，在分支上进行bug fix，维护版本的稳定，并适时的将一些改动合并回主干。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/08/13/branchs-in-svn/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">SVN中Branch的创建于合并</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-13T00:59:00+10:00" pubdate data-updated="true">Aug 13<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/branch_trunk.jpg"></p>
+
+<p>在使用源代码版本控制工具时，最佳实践是一直保持一个主干版本。但是为了应付实际开发中的各种情况，适时的开辟一些分支也是很有必要的。比如在持续开发新功能的同时，需要发布一个新版本，那么就需要从开发主干中建立一个用于发布的分支，在分支上进行bug fix，维护版本的稳定，并适时的将一些改动合并回主干。目前大红大紫的源代码版本控制工具git很受大家推崇，原因之一就是其在这方面的功能相当强大。其实老牌的SVN也是有这样的功能的，接下来就给大家讲解下。</p>
+
+<!-- more -->
+
+
+<h1>Branch的创建</h1>
+
+<p>在SVN中主干代码一般是放置在Trunk目录下的，如果要新建Branch的话则放置在Branchs目录下。(注意这是一种约定，SVN并不强制你这样做)注意Branhs和Trunk目录要平级，不能有嵌套，要不会引起混乱。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  myproject/
+</span><span class='line'>      trunk/
+</span><span class='line'>      branches/
+</span><span class='line'>      tags/
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>创建一个Branch也相当简单，只需要一条命令即可。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>svn copy http://example.com/repos/myproject/trunk http://example.com/repos/myproject/branches/releaseForAug -m <span class="s1">&#39;create branch for release on August&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这条命令是指给myproject这个repo创建一个名为releaseForAug的branch，使用-m来加入描述。</p>
+
+<p>之后你就可以通过 <code>svn checkout http://example.com/repos/myproject/branches/releaseForAug</code>来迁出你的Branch源文件，在上面进行修改和提交了。</p>
+
+<p>其实SVN并没有Branch的内部概念。我们只是创建了一个repo的副本，并自己赋予这个副本作为Branch的意义，所以这与git中的Branch有很大不同。</p>
+
+<p>需要注意的是Branch和Trunk使用同一套版本号，也就是说无论在Branch还是Trunk的提交都会引起主版本号的增加。这是因为<code>svn copy</code>只支持同一个repository内的文件copy，并不支持跨repository的copy，所以新创建的Branch和Trunk都属于同一个repository。</p>
+
+<h1>合并</h1>
+
+<p>既然要创建分支也需要合并分支。基本的合并也是蛮简单的。</p>
+
+<p>假设现在Branch上fix了一系列的bug，现在我们想把针对Branch的改变同步到Trunk上，那么应该怎么做那？</p>
+
+<ol>
+<li><p>保证当前Branch分支是clean的，也就是说使用svn status看不到任何的本地修改。</p></li>
+<li><p>命令行下切换到Trunk目录中，使用 <code>svn merge  http://example.com/repos/myproject/branches/releaseForAug</code> 来将Branch分支上的改动merge回Trunk下。</p></li>
+<li><p>如果出现merge冲突则进行解决，然后执行<code>svn ci -m 'description'</code>来提交变动。</p></li>
+</ol>
+
+
+<p>当然在merge你也可以指定Branch上那些版本变更可以合并到Trunk中。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>svn merge  http://example.com/repos/myproject/branches/releaseForAug -r150:HEAD
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>示例中是将Branch的从版本150到当前版本的所有改动都合并到Trunk中。</p>
+
+<p>你也可以将Trunk中的某些更新合并到Branch中，还是同样的方法。</p>
+
+<h1>查看当前Branch和Trunk的合并情况</h1>
+
+<p>可以使用<code>svn mergeinfo</code>来查看merge情况。</p>
+
+<p>查看当前Branch中已经有那些改动已经被合并到Trunk中:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># cd to trunk directory</span>
+</span><span class='line'>svn mergeinfo http://example.com/repos/myproject/branches/releaseForAug
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>查看Branch中那些改动还未合并。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#cd to trunk directory</span>
+</span><span class='line'>
+</span><span class='line'>svn merginfo http://example.com/repos/myproject/branches/releaseForAug --show-revs eligible
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-13T00:59:00+10:00" pubdate data-updated="true">Aug 13<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/svn/'>SVN</a>
+  
+</span>
+
+
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.huangbowen.net/blog/2013/08/13/branchs-in-svn/" data-via="huangbowen521@gmail.com" data-counturl="http://www.huangbowen.net/blog/2013/08/13/branchs-in-svn/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/08/11/only-good-player-has-good-luck/" title="Previous Post: 只有好的棋手才会走运-《打造Facebook》读后感">&laquo; 只有好的棋手才会走运-《打造Facebook》读后感</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>程序员一枚。</p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/08/13/branchs-in-svn/">SVN中Branch的创建于合并</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/11/only-good-player-has-good-luck/">只有好的棋手才会走运-《打造Facebook》读后感</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/06/effective-standup-meetings/">如何让站会变得高效</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/03/impression-of-brisbane-in-two-weeks/">布里斯班两周感受</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/30/concepts-of-sql-statement/">SQL语法的重要知识点总结</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/08/13/branchs-in-svn/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/08/13/branchs-in-svn/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
