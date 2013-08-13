@@ -1,6 +1,6 @@
 ---
 layout: post
-title: SVN中Branch的创建于合并
+title: SVN中Branch的创建与合并
 date: 2013-08-13 00:59
 comments: true
 categories: SVN
