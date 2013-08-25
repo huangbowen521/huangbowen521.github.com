@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 翻译 | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/categories/翻译/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2013-08-25T12:28:28+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Effective JavaScript译者序]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/08/25/preface-of-effective-javascript/"/>
+    <updated>2013-08-25T12:17:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/08/25/preface-of-effective-javascript</id>
+    <content type="html"><![CDATA[<p><img src="http://img3.douban.com/lpic/s24868715.jpg"></p>
+
+<p>虽然JavaScript在诞生之初由于商业原因及规范的缺少，一直饱受人们的诟病。但是随着时间的推移，
+人们已经逐渐走出了对这门语言的偏见和误解，开始领略它那强大的语言特性。当下JavaScript语言大红大紫，研究讨论JavaScript的相关书籍也早已汗牛充屋，但是这本书作为Effective软件开发系列中的一员，却是不可或缺。</p>
+
+<!-- more -->
+
+
+<p>学会写JavaScript容易，但要成为专家则要难上许多。这一方面是由于JavaScript语言的设计思想与Java、c#等大众语言相差甚大，另一方面是由于其设计时的仓促性导致JavaScript语言本身精华与糟粕并存。本书的作者David Herman作为JavaScript标准化的参与者，在书中自然对JavaScript的精华和糟粕都进行了深入的阐述，并且给出了很多实用的建议。这些建议都来自于第一线的实践经验，无论是初学者还是高级程序员，都可以从中吸收到养分，得到快速成长。</p>
+
+<p>本书深入阐述了JavaScript语言，通过它可以了解到如何有效的写出高移植性、健壮的程序和库。本书传承了Effective软件开发系列的简明的场景驱动风格，通过提示、技术及实用的示例代码解释了JavaScript中的重要概念。</p>
+
+<p>全书共涉及了68条关于JavaScript程序设计的建议。第一章可以让初学者快速熟悉JavaScript,了解JavaScript中的原始类型、隐式强制转换、编码类型等基本概念;第二章着重讲解了有关JavaScript的变量作用域的建议，不仅介绍了怎么做，还着重介绍了为什么，加深理解；第三章和第四章的主题涵盖了函数、对象及原型三大方面，这可是JavaScript区别于其他语言的核心，读者也不必紧张，在David Herman大叔的指引下，你可以轻松掌握这些核心，了解到最佳实践；第五章则阐述了数组和字典这两种常用类型具体使用时的建议，避免陷入一些陷阱；第六章讲述了库和API设计，第七章讲述了并行编程，这是晋升为JavaScript专家的必由之路。</p>
+
+<p>想要深入了解JavaScript并获取一线专家的宝贵经验吗？那么，这本书正好适合你。</p>
+
+<p>我和同事喻杨在翻译这本书的过程中投入了不少精力，生怕给这本经典留下一些遗憾。感谢编辑高婧雅对我们的支持，谅解我们截稿时间的多次拖延。</p>
+
+<p>最后，感谢这本书的购买者，希望能给你们带来一次超凡的阅读体验。</p>
+
+<p>黄博文 2013年8月11日于布里斯班</p>
+]]></content>
+  </entry>
+  
+</feed>
