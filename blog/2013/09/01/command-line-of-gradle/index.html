@@ -155,7 +155,7 @@
 
 <ul>
 <li><p><strong>堆栈跟踪。</strong>如果执行gradle task失败时，如果想得到更详细的错误信息，那么就可以使用<code>-s</code>(或<code>--stacktrace</code>)来输出详细的错误堆栈。你还可以使用<code>-S</code>(或<code>--full-stacktrace</code>)来输出全部堆栈信息，不过一般不推荐这样做，因为gradle是基于groovy语言，而groovy作为一门动态语言可能会输出与你的错误代码毫不相关的信息。</p></li>
-<li><p>跳过指定的测试。如果你在执行build的时候想跳过test task，那么可以使用<code>-x</code>命令。</p></li>
+<li><p><strong>跳过指定的测试。</strong>如果你在执行build的时候想跳过test task，那么可以使用<code>-x</code>命令。</p></li>
 </ul>
 
 
@@ -188,7 +188,7 @@
 
 <ul>
 <li><p><strong>继续执行task而忽略前面失败的task。</strong>默认情况下，如果有某个task失败，后续的task就不会继续执行。但是有时候我们想运行所有的task来一次性得到所有的构建错误，那么我们可以使用<code>--continue</code>命令。使用<code>--continue</code>命令后即使遇到某些task失败也不会停止后续task的执行。但是需要注意的是如果某个task失败了，那么依赖于这个task的其他task依旧不会执行，因为这会带来不安全的因素。</p></li>
-<li><p>调用task时使用短名或缩写。如果一个task的名称过程，那么调用时可以只输入部分名称即可调用，无需输入全名。</p></li>
+<li><p><strong>调用task时使用短名或缩写。</strong>如果一个task的名称过程，那么调用时可以只输入部分名称即可调用，无需输入全名。</p></li>
 </ul>
 
 
