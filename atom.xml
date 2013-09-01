@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-08-31T23:58:51+08:00</updated>
+  <updated>2013-09-01T23:09:25+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,419 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Gradle命令行黑魔法]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/09/01/command-line-of-gradle/"/>
+    <updated>2013-09-01T22:25:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/09/01/command-line-of-gradle</id>
+    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/building.jpg"></p>
+
+<p>毫无疑问，现在Gradle已经成为java世界最火的构建工具，风头已经盖过了冗余的ant，落后的maven。Gradle是以Groovy语言编写的一套构建脚本的DSL，由于Groovy语法的优雅，所以导致Gradle天生就有简洁、可读性强、灵活等特性。</p>
+
+<p>Gradle的命令行功能也非常强大。本人从maven转到Gradle，深深被gradle强大的命令行功能折服。通过命令行来实现Gradle的各种特性，就像魔法师在表演魔法一样。</p>
+
+<!-- more -->
+
+
+<ul>
+<li><p><strong>日志输出。</strong> Gradle中的日期有6个层级。从高到低分别是 ERROR（错误信息）、QUIET（重要信息）、WARNGING（警告信息）、LIFECYCLE（进程信息）、INFO（一般信息）、DEBUG（调试信息）。在执行gradle task时可以适时的调整信息输出等级，以便更方便的观看执行结果。</p>
+
+<p>  比如一个build.gradle有这样一个task</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">hello</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
+</span><span class='line'>     <span class="n">println</span> <span class="s1">&#39;hello world!&#39;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>加入<code>-q</code>与不加<code>-q</code>的输出结果不同。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle hello
+</span><span class='line'>:hello
+</span><span class='line'>hello world!
+</span><span class='line'>
+</span><span class='line'>BUILD SUCCESSFUL
+</span><span class='line'>
+</span><span class='line'>Total <span class="nb">time</span>: 3.546 secs
+</span><span class='line'><span class="nv">$ </span>gradle -q hello
+</span><span class='line'>hello world!
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p><strong>堆栈跟踪。</strong>如果执行gradle task失败时，如果想得到更详细的错误信息，那么就可以使用<code>-s</code>(或<code>--stacktrace</code>)来输出详细的错误堆栈。你还可以使用<code>-S</code>(或<code>--full-stacktrace</code>)来输出全部堆栈信息，不过一般不推荐这样做，因为gradle是基于groovy语言，而groovy作为一门动态语言可能会输出与你的错误代码毫不相关的信息。</p></li>
+<li><p>跳过指定的测试。如果你在执行build的时候想跳过test task，那么可以使用<code>-x</code>命令。</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle build -x <span class="nb">test</span>
+</span><span class='line'>:compileJava UP-TO-DATE
+</span><span class='line'>:processResources UP-TO-DATE
+</span><span class='line'>:classes UP-TO-DATE
+</span><span class='line'>:jar UP-TO-DATE
+</span><span class='line'>:assemble UP-TO-DATE
+</span><span class='line'>:check
+</span><span class='line'>:build
+</span><span class='line'>
+</span><span class='line'>BUILD SUCCESSFUL
+</span><span class='line'>
+</span><span class='line'>Total <span class="nb">time</span>: 3.529 secs
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p><strong>继续执行task而忽略前面失败的task。</strong>默认情况下，如果有某个task失败，后续的task就不会继续执行。但是有时候我们想运行所有的task来一次性得到所有的构建错误，那么我们可以使用<code>--continue</code>命令。使用<code>--continue</code>命令后即使遇到某些task失败也不会停止后续task的执行。但是需要注意的是如果某个task失败了，那么依赖于这个task的其他task依旧不会执行，因为这会带来不安全的因素。</p></li>
+<li><p>调用task时使用短名或缩写。如果一个task的名称过程，那么调用时可以只输入部分名称即可调用，无需输入全名。</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">helloWorld</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
+</span><span class='line'>     <span class="n">println</span> <span class="s1">&#39;hello world!&#39;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>比如调用helloWorld可以通过全名调用、前缀调用或首字母调用。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle -q helloWorld
+</span><span class='line'>hello world!
+</span><span class='line'><span class="nv">$ </span>gradle -q hell
+</span><span class='line'>hello world!
+</span><span class='line'><span class="nv">$ </span>gradle -q hW
+</span><span class='line'>hello world!
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>使用指定的gradle文件调用task。</strong>默认情况下，如果你调用gradle task，那么首先会寻找当前目录下的build.gradle文件,以及根据settings.gradle中的配置寻找子项目的build.gradle。但是有时候我们想指定使用某个gradle文件，那么可以使用<code>-b</code>命令。
+比如当前目录有个子目录subproject1,里面有个叫hello.gradle。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span>subproject1/hello.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">helloWorld</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
+</span><span class='line'>     <span class="n">println</span> <span class="s1">&#39;hello world!&#39;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么在当前目录可以使用以下命令调用这个task。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle -b subproject1/hello.gradle  helloWorld
+</span><span class='line'>:helloWorld
+</span><span class='line'>hello world!
+</span><span class='line'>
+</span><span class='line'>BUILD SUCCESSFUL
+</span><span class='line'>
+</span><span class='line'>Total <span class="nb">time</span>: 3.752 secs
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>使用指定的项目目录调用task。</strong>前面已经说过，执行gradle的task默认会在当前目录寻找build.gradle及settings.gradle文件。如果我们想在任何地方执行某个项目的task，那么可以使用<code>-p</code>来指定使用的项目。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">gradle</span> <span class="o">-</span><span class="n">q</span> <span class="o">-</span><span class="n">b</span> <span class="n">learnGradle</span> <span class="n">helloWorld</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这条命令是调用learnGradle这个项目下的helloWorld task。</p>
+
+<ul>
+<li><strong>显示task之间的依赖关系。</strong>众所周知，使用<code>gradle tasks</code>可以列出当前所有可被使用的task，但是并没有显示task之间的依赖关系。我们可以加上<code>--all</code>来显示
+task的依赖关系。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle tasks --all
+</span><span class='line'>………………
+</span><span class='line'>
+</span><span class='line'>Other tasks
+</span><span class='line'>-----------
+</span><span class='line'>task0
+</span><span class='line'>    task1
+</span><span class='line'>    task2
+</span><span class='line'>    task3
+</span><span class='line'>
+</span><span class='line'>…………
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>从上面可以看出task0依赖task1、task2及task3。
+</code></pre>
+
+<ul>
+<li><strong>查看指定阶段的依赖关系。</strong>使用<code>gradle dependencies</code> 可以查看项目中包的依赖关系。不过是列出了所有阶段的依赖，如果项目中依赖复杂的话看起来有点头痛。那么可以使用<code>--configuration</code>来查看指定阶段的依赖情况。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">$</span> <span class="n">gradle</span> <span class="o">-</span><span class="n">q</span> <span class="n">dependencies</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">------------------------------------------------------------</span>
+</span><span class='line'><span class="n">Root</span> <span class="n">project</span>
+</span><span class='line'><span class="o">------------------------------------------------------------</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">archives</span> <span class="o">-</span> <span class="n">Configuration</span> <span class="k">for</span> <span class="n">archive</span> <span class="n">artifacts</span><span class="o">.</span>
+</span><span class='line'><span class="n">No</span> <span class="n">dependencies</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">compile</span> <span class="o">-</span> <span class="n">Compile</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;main&#39;</span><span class="o">.</span>
+</span><span class='line'><span class="n">No</span> <span class="n">dependencies</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">default</span> <span class="o">-</span> <span class="n">Configuration</span> <span class="k">for</span> <span class="k">default</span> <span class="n">artifacts</span><span class="o">.</span>
+</span><span class='line'><span class="n">No</span> <span class="n">dependencies</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">runtime</span> <span class="o">-</span> <span class="n">Runtime</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;main&#39;</span><span class="o">.</span>
+</span><span class='line'><span class="n">No</span> <span class="n">dependencies</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">testCompile</span> <span class="o">-</span> <span class="n">Compile</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;test&#39;</span><span class="o">.</span>
+</span><span class='line'><span class="err">\</span><span class="o">---</span> <span class="nl">junit:junit:</span><span class="mf">4.11</span>
+</span><span class='line'>     <span class="err">\</span><span class="o">---</span> <span class="n">org</span><span class="o">.</span><span class="na">hamcrest</span><span class="o">:</span><span class="n">hamcrest</span><span class="o">-</span><span class="nl">core:</span><span class="mf">1.3</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">testRuntime</span> <span class="o">-</span> <span class="n">Runtime</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;test&#39;</span><span class="o">.</span>
+</span><span class='line'><span class="err">\</span><span class="o">---</span> <span class="nl">junit:junit:</span><span class="mf">4.11</span>
+</span><span class='line'>     <span class="err">\</span><span class="o">---</span> <span class="n">org</span><span class="o">.</span><span class="na">hamcrest</span><span class="o">:</span><span class="n">hamcrest</span><span class="o">-</span><span class="nl">core:</span><span class="mf">1.3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用<code>gradle -q dependencies --configuration testCompile</code>可以只查看testComiple的依赖。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">$</span> <span class="n">gradle</span> <span class="o">-</span><span class="n">q</span> <span class="n">dependencies</span> <span class="o">--</span><span class="n">configuration</span> <span class="n">testCompile</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">------------------------------------------------------------</span>
+</span><span class='line'><span class="n">Root</span> <span class="n">project</span>
+</span><span class='line'><span class="o">------------------------------------------------------------</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">testCompile</span> <span class="o">-</span> <span class="n">Compile</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;test&#39;</span><span class="o">.</span>
+</span><span class='line'><span class="err">\</span><span class="o">---</span> <span class="nl">junit:junit:</span><span class="mf">4.11</span>
+</span><span class='line'>     <span class="err">\</span><span class="o">---</span> <span class="n">org</span><span class="o">.</span><span class="na">hamcrest</span><span class="o">:</span><span class="n">hamcrest</span><span class="o">-</span><span class="nl">core:</span><span class="mf">1.3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>查看指定dependency的依赖情况。</strong>
+假如我想查看项目中有没有引入junit，那些阶段引入了junit，那么可以使用<code>dependecyInsight</code>来查看。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle dependencyInsight --dependency junit --configuration testCompile
+</span><span class='line'>:dependencyInsight
+</span><span class='line'>junit:junit:4.11
+</span><span class='line'><span class="se">\-</span>-- testCompile
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意<code>dependencyInsight</code>默认只会查看compile阶段的依赖，如果要查看其他阶段可以使用<code>--configuration</code>来指定。</p>
+
+<ul>
+<li><strong>使用<code>--profile</code>命令行可以产生build运行时间的报告。</strong>该报告存储在build/report/profile目录，名称为build运行的时间。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle build --profile
+</span><span class='line'>:compileJava UP-TO-DATE
+</span><span class='line'>:processResources UP-TO-DATE
+</span><span class='line'>:classes UP-TO-DATE
+</span><span class='line'>:jar UP-TO-DATE
+</span><span class='line'>:assemble UP-TO-DATE
+</span><span class='line'>:compileTestJava UP-TO-DATE
+</span><span class='line'>:processTestResources UP-TO-DATE
+</span><span class='line'>:testClasses UP-TO-DATE
+</span><span class='line'>:test UP-TO-DATE
+</span><span class='line'>:check UP-TO-DATE
+</span><span class='line'>:build UP-TO-DATE
+</span><span class='line'>
+</span><span class='line'>BUILD SUCCESSFUL
+</span><span class='line'>
+</span><span class='line'>Total <span class="nb">time</span>: 3.726 secs
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后在build/report/profile目录下可以看到build的report。</p>
+
+<p><img src="http://www.huangbowen.net/images/gradle_profile.png" width="600"></p>
+
+<p>这个报表非常有用，尤其是在在缩短build时间时可以快速定位那些耗时长的task。</p>
+
+<ul>
+<li><strong>试运行build。</strong>如果你想知道某个task执行时那些task会被一起执行，但是你又不想真正的执行这些task，可以使用<code>-m</code>来试运行。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle -m build
+</span><span class='line'>:compileJava SKIPPED
+</span><span class='line'>:processResources SKIPPED
+</span><span class='line'>:classes SKIPPED
+</span><span class='line'>:jar SKIPPED
+</span><span class='line'>:assemble SKIPPED
+</span><span class='line'>:compileTestJava SKIPPED
+</span><span class='line'>:processTestResources SKIPPED
+</span><span class='line'>:testClasses SKIPPED
+</span><span class='line'>:test SKIPPED
+</span><span class='line'>:check SKIPPED
+</span><span class='line'>:build SKIPPED
+</span><span class='line'>
+</span><span class='line'>BUILD SUCCESSFUL
+</span><span class='line'>
+</span><span class='line'>Total <span class="nb">time</span>: 3.53 secs
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样我们可以一目了然的看到那些task被执行了，又不需要花太多的时间。</p>
+
+<ul>
+<li><strong>Gradle的图形界面。</strong></li>
+</ul>
+
+
+<p>其实Gradle自带一个图形界面来让习惯gui操作的人来操作Gradle。打开方式很简单。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle --gui
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就会弹出一个gui界面。</p>
+
+<p><img src="http://www.huangbowen.net/images/gradle_gui.png" width="600"></p>
+
+<p>通过这个gui界面可以很方面的执行gradle的各种命令，还可以将常用的命令保存为favorites。该gui的配置信息默认被存储在当前项目的gradle-app.setting文件中。</p>
+
+<p>注意使用<code>gradle --gui</code>会阻塞当前终端，可以使用<code>gradle --gui&amp;</code>来实现后台运行。</p>
+
+<ul>
+<li><strong>重新编译Gradle脚本。</strong>第一次运行Gradle命令，会在项目更目录下生成一个.gradle目录来存放编译后的脚本。只有当构建脚本发生修改时采用重新编译。我们可以使用<code>--recompile-scripts</code>来强行重新编译。</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[2013年上半年我读过的那些书]]></title>
@@ -2927,86 +3340,6 @@ WHERE 1=0;</code></p></li>
 <p>要将团队带入新的领域，必须首先要以身作则。我们需要的是领导者，而不是管理者。无论你目前的项目是否是敏捷项目，这本书中你都可以找到能够借鉴和提高的地方。敏捷中的持续改进不仅局限于项目开发，其实更适合于个人。通过持续改进自己的习惯、处事方法，保持一颗好奇心，勇敢的尝试未知领域，只要自己能力提高了，何惧其他？</p>
 
 <p>改变从自身做起，不能自暴自弃，而要奋起直追。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[npm的配置管理及设置代理]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/05/17/setting-npm-configuration/"/>
-    <updated>2013-05-17T00:17:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/05/17/setting-npm-configuration</id>
-    <content type="html"><![CDATA[<p>npm全称为Node Packaged Modules。它是一个用于管理基于node.js编写的package的命令行工具。其本身就是基于node.js写的,这有点像gem与ruby的关系。</p>
-
-<!-- more -->
-
-
-<p>在我们的项目中，需要使用一些基于node.js的javascript库文件，就需要npm对这些依赖库进行方便的管理。由于我们的开发环境由于安全因素在访问一些网站时需要使用代理，其中就包括npm的repositories网站，所以就需要修改npm的配置来加入代理。</p>
-
-<p>下面简要介绍下npm的配置以及如何设置代理。</p>
-
-<h2>npm获取配置有6种方式，优先级由高到底。</h2>
-
-<ol>
-<li><p>命令行参数。 <code>--proxy http://server:port</code>即将proxy的值设为<code>http://server:port</code>。</p></li>
-<li><p>环境变量。 以<code>npm_config_</code>为前缀的环境变量将会被认为是npm的配置属性。如设置proxy可以加入这样的环境变量<code>npm_config_proxy=http://server:port</code>。</p></li>
-<li><p>用户配置文件。可以通过<code>npm config get userconfig</code>查看文件路径。如果是mac系统的话默认路径就是<code>$HOME/.npmrc</code>。</p></li>
-<li><p>全局配置文件。可以通过<code>npm config get globalconfig</code>查看文件路径。mac系统的默认路径是<code>/usr/local/etc/npmrc</code>。</p></li>
-<li><p>内置配置文件。安装npm的目录下的npmrc文件。</p></li>
-<li><p>默认配置。 npm本身有默认配置参数，如果以上5条都没设置，则npm会使用默认配置参数。</p></li>
-</ol>
-
-
-<h2>针对npm配置的命令行操作</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>   npm config <span class="nb">set</span> &lt;key&gt; &lt;value&gt; <span class="o">[</span>--global<span class="o">]</span>
-</span><span class='line'>   npm config get &lt;key&gt;
-</span><span class='line'>   npm config delete &lt;key&gt;
-</span><span class='line'>   npm config list
-</span><span class='line'>   npm config edit
-</span><span class='line'>   npm get &lt;key&gt;
-</span><span class='line'>   npm <span class="nb">set</span> &lt;key&gt; &lt;value&gt; <span class="o">[</span>--global<span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在设置配置属性时属性值默认是被存储于用户配置文件中，如果加上<code>--global</code>，则被存储在全局配置文件中。</p>
-
-<p>如果要查看npm的所有配置属性（包括默认配置），可以使用<code>npm config ls -l</code>。</p>
-
-<p>如果要查看npm的各种配置的含义，可以使用<code>npm help config</code>。</p>
-
-<h2>为npm设置代理</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>npm config <span class="nb">set </span>proxy http://server:port
-</span><span class='line'><span class="nv">$ </span>npm config <span class="nb">set </span>https-proxy http://server:port
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果代理需要认证的话可以这样来设置。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>npm config <span class="nb">set </span>proxy http://username:password@server:port
-</span><span class='line'><span class="nv">$ </span>npm config <span class="nb">set </span>https-proxy http://username:pawword@server:port
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果代理不支持https的话需要修改npm存放package的网站地址。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>npm config <span class="nb">set </span>registry <span class="s2">&quot;http://registry.npmjs.org/&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   
