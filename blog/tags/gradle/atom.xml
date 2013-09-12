@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: Gradle | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/gradle/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-09-04T22:42:44+08:00</updated>
+  <updated>2013-09-12T22:54:31+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,185 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Gradle的属性设置大全]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/09/12/setup-properties-in-gradle/"/>
+    <updated>2013-09-12T22:41:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/09/12/setup-properties-in-gradle</id>
+    <content type="html"><![CDATA[<p>Gradle作为一款项目构建工具，由于其强大、灵活、快速、完全兼容Ant等特性，越来越受到人们欢迎。Gradle的灵活有时候也会引起人们的困惑。比如在Gradle中设置变量和属性就有N种办法。由于Gradle的理念是Convention over configruation(约定优于配置),所以如果了解了这些约定，那么在使用Gradle的属性配置时一定会如鱼得水。</p>
+
+<!-- more -->
+
+
+<hr />
+
+<p><strong>在项目根目录下建立名为gradle.properties文件，在该文件中定义需要的属性。这些属性在Gradle构建Gradle领域对象（即project对象实例）时会被自动加到project对象实例中作为其属性被直接调用。</strong></p>
+
+<p>```xml gradle.properties</p>
+
+<p>guestName= Bowen</p>
+
+<p>```</p>
+
+<p>```groovy build.gradle</p>
+
+<p>task hello &lt;&lt; {</p>
+
+<pre><code> println $guestName
+ println "hello, $guestName"
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>```bash</p>
+
+<p>$ gradle hello -q
+Bowen
+hello, Bowen</p>
+
+<p>$ gradle properties | grep guestName
+guestName: Bowen</p>
+
+<p>```</p>
+
+<hr />
+
+<p><strong>定义在build.gradle中的ext块中。ext准确的说是Gradle领域对象的一个属性，我们可以将自定义的属性添加到ext对象上，Build.gradle中的其它代码片段可以使用。</strong></p>
+
+<p>```groovy build.gradle</p>
+
+<p>ext {</p>
+
+<pre><code> guestName='Bowen'
+</code></pre>
+
+<p>}</p>
+
+<p>task hello &lt;&lt; {</p>
+
+<pre><code> println guestName
+ println "hello, $guestName"
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>```bash</p>
+
+<p>$ gradle hello -q
+Bowen
+hello, Bowen</p>
+
+<p>$ gradle properties | grep guestName
+guestName: Bowen
+$ gradle properties | grep ext
+ext: org.gradle.api.internal.plugins.DefaultExtraPropertiesExtension@10ef5fa0</p>
+
+<p>```</p>
+
+<p>从上述可以看到ext对象其实是DefaultExtraPropertiesExtension对象的一个实例。</p>
+
+<hr />
+
+<p><strong>在命令行中通过<code>-D</code>或者<code>-P</code>给Gradle实时创建属性。</strong>
+<code>-D</code>属性会被传送给启动Gradle的jvm，作为一个系统属性被jvm使用。</p>
+
+<p>```groovy build.gradle</p>
+
+<p>task hello &lt;&lt; {</p>
+
+<pre><code> println System.properties['guestName']
+</code></pre>
+
+<p>}</p>
+
+<p><code>
+</code>bash</p>
+
+<p>$ gradle hello -DguestName='Bowen' -q
+Bowen</p>
+
+<p>```</p>
+
+<p><code>-P</code>属性则会被直接加载到Gradle领域对象上。</p>
+
+<p>```groovy build.gradle</p>
+
+<p>task hello &lt;&lt; {</p>
+
+<pre><code>  println "hello, $guestName"
+</code></pre>
+
+<p>}</p>
+
+<p><code>
+</code>bash</p>
+
+<p>$ gradle hello -PguestName='Bowen' -q
+hello, Bowen</p>
+
+<p>```</p>
+
+<hr />
+
+<p><strong>在Gradle配置文件中创建系统属性。刚讲过在gradle.properties文件可以创建属性，同时我们也可以创建系统属性。如果有<code>systemProp.</code>前缀的属性会被识别为系统属性。</strong></p>
+
+<p>```xml gradle.properties</p>
+
+<p>systemProp.guestName = 'Bowen'</p>
+
+<p><code>
+</code>groovy build.gradle</p>
+
+<p>task hello &lt;&lt; {</p>
+
+<pre><code>  println "hello, " + System.properties['guestName']
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>```bash</p>
+
+<p>$ gradle hello -q
+hello, Bowen</p>
+
+<p>```</p>
+
+<hr />
+
+<p><strong>将特殊前缀的系统属性或环境变量自动加入到Gradle领域对象中。</strong></p>
+
+<p>如果有环境变量以<code>ORG_GRADLE_PROJECT.</code>为前缀，那么该变量会被自动添加到Gradle领域对象中。同样，如果有系统属性以<code>org.gradle.project.</code>为前缀，那么也会被自动加入到Gradl领域对象中。这一特性的目的之一是为了隐藏一些敏感的信息。比如在执行Gradle脚本时需要传入密码信息，如果以<code>-P</code>的方式传送会被别人看到。而把该属性保存为环境变量，只有系统管理员才有权访问和修改。在运行Gralde的时候该环境变量会被自动加入到Gradle对象中被使用，隔离了明暗数据，又不行影响其他用户使用。（其他用户可以通过<code>-P</code>方式是设置该属性）。</p>
+
+<p>```groovy build.gradle</p>
+
+<p>task hello &lt;&lt; {</p>
+
+<pre><code>  println "hello, " + guestName 
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>```bash</p>
+
+<p>$ gradle hello -Dorg.gradle.project.guestName=Bowen -q
+hello, Bowen</p>
+
+<p>$ export ORG_GRADLE_PROJECT_guestName=Bob
+$ gradle hello -q
+hello, Bob</p>
+
+<p>```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Gradle里配置jetty实现静态资源的热部署]]></title>
