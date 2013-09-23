@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-09-22T17:10:46+08:00</updated>
+  <updated>2013-09-23T09:07:22+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -695,11 +695,17 @@ scanIntervalSeconds，这是指定jetty扫描文件改变的时间间隔，默�
 
 
 <ul>
-<li><p><strong>日志输出。</strong> Gradle中的日期有6个层级。从高到低分别是 ERROR（错误信息）、QUIET（重要信息）、WARNGING（警告信息）、LIFECYCLE（进程信息）、INFO（一般信息）、DEBUG（调试信息）。在执行gradle task时可以适时的调整信息输出等级，以便更方便的观看执行结果。</p>
-
-<p>  比如一个build.gradle有这样一个task</p></li>
+<li><strong>日志输出。</strong> Gradle中的日志有6个层级。从高到低分别是 ERROR（错误信息）、QUIET（重要信息）、WARNGING（警告信息）、LIFECYCLE（进程信息）、INFO（一般信息）、DEBUG（调试信息）。在执行gradle task时可以适时的调整信息输出等级，以便更方便的观看执行结果。</li>
 </ul>
 
+
+<p><code>-q</code>(或<code>--quiet</code>)是启用重要信息级别，该级别下只会输出自己在命令行下打印的信息及错误信息。</p>
+
+<p><code>-i</code>(或<code>--info</code>)则会输出除debug以外的所有信息。</p>
+
+<p><code>-d</code>（或<code>--debug</code>)会输出所有日志信息。</p>
+
+<p>比如一个build.gradle有这样一个task。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
