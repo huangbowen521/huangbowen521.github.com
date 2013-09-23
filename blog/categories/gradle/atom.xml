@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gradle | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/gradle/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-09-23T16:58:01+08:00</updated>
+  <updated>2013-09-23T18:02:45+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -363,7 +363,7 @@ hello world!</p>
 
 <ul>
 <li><p><strong>继续执行task而忽略前面失败的task。</strong>默认情况下，如果有某个task失败，后续的task就不会继续执行。但是有时候我们想运行所有的task来一次性得到所有的构建错误，那么我们可以使用<code>--continue</code>命令。使用<code>--continue</code>命令后即使遇到某些task失败也不会停止后续task的执行。但是需要注意的是如果某个task失败了，那么依赖于这个task的其他task依旧不会执行，因为这会带来不安全的因素。</p></li>
-<li><p><strong>调用task时使用短名或缩写。</strong>如果一个task的名称过程，那么调用时可以只输入部分名称即可调用，无需输入全名。</p></li>
+<li><p><strong>调用task时使用短名或缩写。</strong>如果一个task的名称过长，那么调用时可以只输入部分名称即可调用，无需输入全名。</p></li>
 </ul>
 
 
@@ -426,7 +426,7 @@ hello world!</p>
 
 <p>```groovy</p>
 
-<p>gradle -q -b learnGradle helloWorld</p>
+<p>gradle -q -p learnGradle helloWorld</p>
 
 <p>```</p>
 
