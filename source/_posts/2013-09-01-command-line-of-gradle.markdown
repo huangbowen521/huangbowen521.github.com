@@ -15,9 +15,15 @@ Gradle的命令行功能也非常强大。本人从maven转到Gradle，深深被
 
 <!-- more -->
 
-* **日志输出。** Gradle中的日期有6个层级。从高到低分别是 ERROR（错误信息）、QUIET（重要信息）、WARNGING（警告信息）、LIFECYCLE（进程信息）、INFO（一般信息）、DEBUG（调试信息）。在执行gradle task时可以适时的调整信息输出等级，以便更方便的观看执行结果。 
+* **日志输出。** Gradle中的日志有6个层级。从高到低分别是 ERROR（错误信息）、QUIET（重要信息）、WARNGING（警告信息）、LIFECYCLE（进程信息）、INFO（一般信息）、DEBUG（调试信息）。在执行gradle task时可以适时的调整信息输出等级，以便更方便的观看执行结果。
 
-	比如一个build.gradle有这样一个task
+`-q`(或`--quiet`)是启用重要信息级别，该级别下只会输出自己在命令行下打印的信息及错误信息。
+
+`-i`(或`--info`)则会输出除debug以外的所有信息。
+
+`-d`（或`--debug`)会输出所有日志信息。  
+
+比如一个build.gradle有这样一个task。
 
 ```groovy
 
