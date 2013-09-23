@@ -4,7 +4,7 @@
   <title><![CDATA[Category: CI | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/ci/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-09-23T09:07:22+08:00</updated>
+  <updated>2013-09-23T16:50:41+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -33,7 +33,7 @@
 
 <p>持续集成虽然解决不了第一个问题，但是关于第二个问题，持续集成向我们介绍了一种增加项目可见性，提高开发效率，降低项目失败风险的有效实践经验。</p>
 
-<p>其实持续集成蕴含有哲学思想：分而治之。即我们通常说的 “滴水穿石，鬼步千里”。</p>
+<p>其实持续集成蕴含有哲学思想：分而治之。即我们通常说的 “滴水穿石，跬步千里”。</p>
 
 <p>传统瀑布方法一般将系统集成放置到开发完成后，这样会导致一系列的问题。</p>
 

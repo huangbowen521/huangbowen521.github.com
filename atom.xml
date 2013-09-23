@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-09-23T09:07:22+08:00</updated>
+  <updated>2013-09-23T16:50:41+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,617 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[升级ruby版本那"不堪回首的经历"]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/09/23/not-easy-to-install-ruby/"/>
+    <updated>2013-09-23T13:53:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/09/23/not-easy-to-install-ruby</id>
+    <content type="html"><![CDATA[<p>前段时间在玩Chef-一个IT基础设施自动化工具。由于Chef是由Ruby写的一个gem，那么就需要安装Ruby。当然Ruby我早就安装了，并且使用rvm来管理Ruby及Gem。本来一切看似正常，但是不会预料后面会遇到那么多的坑。</p>
+
+<p>Chef本地的repo包中有一个vagrant虚拟机的模板文件，通过它可以setup一个虚拟机，然后使用Chef来操作这个节点。那么就使用vagrant命令来setup这个虚拟机把。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vagrant up --no-color
+</span><span class='line'>Vagrant failed to initialize at a very early stage:
+</span><span class='line'>
+</span><span class='line'>It appears that you<span class="s1">&#39;ve ran a newer version of Vagrant on this</span>
+</span><span class='line'><span class="s1">computer. Unfortunately, newer versions of Vagrant change internal</span>
+</span><span class='line'><span class="s1">directory layouts that cause older versions to break. This version</span>
+</span><span class='line'><span class="s1">of Vagrant cannot properly run.</span>
+</span><span class='line'>
+</span><span class='line'><span class="s1">If you&#39;</span>d like to start from a clean state, please remove the
+</span><span class='line'>Vagrant state directory: /Users/twer/.vagrant.d
+</span><span class='line'>
+</span><span class='line'>Warning that this will remove all your boxes and potentially corrupt
+</span><span class='line'>existing Vagrant environments that were running based on the future
+</span><span class='line'>version.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>console中说Vagrant版本有问题，那么就按说明删除.vagrant.d文件夹把。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rm -rf ~/.vagrant.d/
+</span><span class='line'><span class="nv">$ </span>vagrant up --no-color
+</span><span class='line'>/Users/twer/sourcecode/chef-repo/Vagrantfile:8:in <span class="sb">`</span>&lt;top <span class="o">(</span>required<span class="o">)</span>&gt;<span class="s1">&#39;: undefined method `configure&#39;</span> <span class="k">for </span>Vagrant:Module <span class="o">(</span>NoMethodError<span class="o">)</span>
+</span><span class='line'>     from /usr/local/rvm/gems/ruby-1.9.3-p194/gems/vagrant-1.0.7/lib/vagrant/config/loader.rb:115:in <span class="sb">`</span>load<span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">     from /usr/local/rvm/gems/ruby-1.9.3-p194/gems/vagrant-1.0.7/lib/vagrant/config/loader.rb:115:in `block in procs_for_source&#39;</span>
+</span><span class='line'>     from /usr/local/rvm/gems/ruby-1.9.3-p194/gems/vagrant-1.0.7/lib/vagrant/config.rb:41:in <span class="sb">`</span>block in capture_configures<span class="err">&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>窝里个去，又出新问题了。那好吧，看看当前ruby的版本。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rvm list
+</span><span class='line'>
+</span><span class='line'>rvm rubies
+</span><span class='line'>
+</span><span class='line'>   ruby-1.9.2-p320 <span class="o">[</span> x86_64 <span class="o">]</span>
+</span><span class='line'><span class="o">=</span>* ruby-1.9.3-p194 <span class="o">[</span> x86_64 <span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># =&gt; - current</span>
+</span><span class='line'><span class="c"># =* - current &amp;&amp; default</span>
+</span><span class='line'><span class="c">#  * - default</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>试着将Ruby的版本切换到1.9.2-p320再试试。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rvm use ruby-1.9.2-p320
+</span><span class='line'>Using /usr/local/rvm/gems/ruby-1.9.2-p320
+</span><span class='line'><span class="nv">$ </span>vagrant up
+</span><span class='line'>Bringing machine <span class="s1">&#39;default&#39;</span> up with <span class="s1">&#39;virtualbox&#39;</span> provider...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Setting the name of the VM...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Clearing any previously <span class="nb">set </span>forwarded ports...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Creating shared folders metadata...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Clearing any previously <span class="nb">set </span>network interfaces...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Preparing network interfaces based on configuration...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Forwarding ports...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> -- <span class="nv">22</span> <span class="o">=</span>&gt; 2222 <span class="o">(</span>adapter 1<span class="o">)</span>
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Booting VM...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Waiting <span class="k">for </span>VM to boot. This can take a few minutes.
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> VM booted and ready <span class="k">for </span>use!
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Setting hostname...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Mounting shared folders...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> -- /vagrant
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>搞定。看来问题是当前使用的ruby的版本有问题。</p>
+
+<p>老是使用旧版本也不是个事，把Ruby升级到最新版本看还有这个问题不。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rvm list known
+</span><span class='line'><span class="c"># MRI Rubies</span>
+</span><span class='line'><span class="o">[</span>ruby-<span class="o">]</span>1.8.6<span class="o">[</span>-p420<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>ruby-<span class="o">]</span>1.8.7<span class="o">[</span>-p374<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>ruby-<span class="o">]</span>1.9.1<span class="o">[</span>-p431<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>ruby-<span class="o">]</span>1.9.2<span class="o">[</span>-p320<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>ruby-<span class="o">]</span>1.9.3<span class="o">[</span>-p448<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>ruby-<span class="o">]</span>2.0.0-p195
+</span><span class='line'><span class="o">[</span>ruby-<span class="o">]</span>2.0.0<span class="o">[</span>-p247<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>ruby-<span class="o">]</span>2.0.0-head
+</span><span class='line'>ruby-head
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看来ruby的1.9.3已经有p448了，那么就升级到p448。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rvm install 1.9.3
+</span><span class='line'>Checking requirements <span class="k">for </span>osx.
+</span><span class='line'>Installing requirements <span class="k">for </span>osx.
+</span><span class='line'>Updating system.
+</span><span class='line'>Installing required packages: libksba, openssl..........
+</span><span class='line'>Error running <span class="s1">&#39;requirements_osx_brew_libs_install gcc libksba openssl&#39;</span>,
+</span><span class='line'>please <span class="nb">read</span> /usr/local/rvm/log/1379843991_ruby-1.9.3-p448/package_install_gcc_libksba_openssl.log
+</span><span class='line'>Requirements installation failed with status: 1.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>升级失败，那么看看log。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">==</span>&gt; make bootstrap
+</span><span class='line'>configure: error: cannot compute suffix of object files: cannot compile
+</span><span class='line'>See <span class="sb">`</span>config.log<span class="err">&#39;</span> <span class="k">for </span>more details.
+</span><span class='line'>make<span class="o">[</span>2<span class="o">]</span>: *** <span class="o">[</span>configure-stage1-target-libgcc<span class="o">]</span> Error 1
+</span><span class='line'>make<span class="o">[</span>1<span class="o">]</span>: *** <span class="o">[</span>stage1-bubble<span class="o">]</span> Error 2
+</span><span class='line'>make: *** <span class="o">[</span>bootstrap<span class="o">]</span> Error 2
+</span><span class='line'>
+</span><span class='line'>READ THIS: https://github.com/mxcl/homebrew/wiki/troubleshooting
+</span><span class='line'>
+</span><span class='line'>There were package installation errors, make sure to <span class="nb">read </span>the log.
+</span><span class='line'>
+</span><span class='line'>Try <span class="sb">`</span>brew tap --repair<span class="sb">`</span> and make sure <span class="sb">`</span>brew doctor<span class="sb">`</span> looks reasonable.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通过看log是gcc编译失败，并且通过log可以看出rvm是通过homebrew来安装必备文件的。</p>
+
+<p>通过一番查资料后，找到了解决办法。那就是将Xcode升级到最新版本，然后在Preference里选择Downloads标签，然后安装Command Line Tools。</p>
+
+<p><img src="http://www.huangbowen.net/images/developerTools.png" width="600"></p>
+
+<p>安装完毕后再用Homebrew安装gcc49。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>brew install <span class="nv">gcc49</span>
+</span><span class='line'><span class="o">==</span>&gt; Downloading ftp://gcc.gnu.org/pub/gcc/snapshots/4.9-20130915/gcc-4.9-20130915.tar.bz2
+</span><span class='line'>Already downloaded: /Library/Caches/Homebrew/gcc49-4.9-20130915.tar.bz2
+</span><span class='line'><span class="o">==</span>&gt; ../configure --build<span class="o">=</span>x86_64-apple-darwin12.5.0 --prefix<span class="o">=</span>/usr/local/Cellar/gcc49/4.9-20130915/gcc
+</span><span class='line'><span class="o">==</span>&gt; make <span class="nv">bootstrap</span>
+</span><span class='line'><span class="o">==</span>&gt; make <span class="nv">install</span>
+</span><span class='line'><span class="o">==</span>&gt; Caveats
+</span><span class='line'>This is a snapshot of GCC trunk, which is in active development and
+</span><span class='line'>supposed to have bugs and should not be used in production
+</span><span class='line'>environment.
+</span><span class='line'><span class="o">==</span>&gt; Summary
+</span><span class='line'>🍺  /usr/local/Cellar/gcc49/4.9-20130915: 977 files, 93M, built in 21.6 minutes
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>成功安装GCC。</p>
+
+<p>继续回到安装Ruby的任务上来。由于在安装Ruby前会先安装必备文件，那么干脆直接先安装必备文件的了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rvm requirements
+</span><span class='line'>Checking requirements <span class="k">for </span>osx.
+</span><span class='line'>Installing requirements <span class="k">for </span>osx.
+</span><span class='line'>mkdir: /usr/local/rvm/log/1379829979_ruby-1.9.3-p448: Permission denied
+</span><span class='line'>tee: /usr/local/rvm/log/1379829979_ruby-1.9.3-p448/update_system.log: No such file or directory
+</span><span class='line'>tee: /usr/local/rvm/log/1379829979_ruby-1.9.3-p448/update_system.log: No such file or directory
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我勒个去，貌似是权限问题，那么用sudo解决。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo rvm requirements
+</span><span class='line'>
+</span><span class='line'>Checking requirements <span class="k">for </span>osx.
+</span><span class='line'>Installing requirements <span class="k">for </span>osx.
+</span><span class='line'>Updating system.
+</span><span class='line'>Installing required packages: libksba, openssl..........
+</span><span class='line'>Error running <span class="s1">&#39;requirements_osx_brew_libs_install libksba openssl&#39;</span>,
+</span><span class='line'>please <span class="nb">read</span> /usr/local/rvm/log/1379843991_ruby-1.9.3-p448/package_install_libksba_openssl.log
+</span><span class='line'>Requirements installation failed with status: 1.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>又失败，看看错误日志吧。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>current path: /Users/twer
+</span><span class='line'><span class="nb">command</span><span class="o">(</span>3<span class="o">)</span>: requirements_osx_brew_libs_install libksba openssl
+</span><span class='line'>Error: No such keg: /usr/local/Cellar/libksba
+</span><span class='line'>Error: Cowardly refusing to <span class="sb">`</span>sudo brew install<span class="sb">`</span>
+</span><span class='line'>You can use brew with sudo, but only <span class="k">if </span>the brew executable is owned by root.
+</span><span class='line'>However, this is both not recommended and completely unsupported so <span class="k">do </span>so at
+</span><span class='line'>your own risk.
+</span><span class='line'>There were package installation errors, make sure to <span class="nb">read </span>the log.
+</span><span class='line'>
+</span><span class='line'>Try <span class="sb">`</span>brew tap --repair<span class="sb">`</span> and make sure <span class="sb">`</span>brew doctor<span class="sb">`</span> looks reasonable.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看了日志貌似明白了，使用brew安装libksba由于加了sudo所以出问题了。那么直接在命令行使用sudo试试。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo brew install libksba
+</span><span class='line'>Error: Cowardly refusing to <span class="sb">`</span>sudo brew install<span class="sb">`</span>
+</span><span class='line'>You can use brew with sudo, but only <span class="k">if </span>the brew executable is owned by root.
+</span><span class='line'>However, this is both not recommended and completely unsupported so <span class="k">do </span>so at
+</span><span class='line'>your own risk.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>窝里个去，不使用sudo吧rvm requirements执行不成功。加上sudo吧rvm requirements调用的brew install又不行。好吧，就按上面说的将brew转换到root模式。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls -al /usr/local/bin/brew
+</span><span class='line'>-rwxr-xr-x  1 twer  admin  703 Mar 14  2013 /usr/local/bin/brew
+</span><span class='line'><span class="nv">$ </span>sudo chown root:admin /usr/local/bin/brew
+</span><span class='line'>Password:
+</span><span class='line'><span class="nv">$ </span>ls -al /usr/local/bin/brew
+</span><span class='line'>-rwxr-xr-x  1 root  admin  703 Mar 14  2013 /usr/local/bin/brew
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>OK。再执行吧。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo rvm requirements
+</span><span class='line'>Password:
+</span><span class='line'>Checking requirements <span class="k">for </span>osx.
+</span><span class='line'>Certificates in <span class="s1">&#39;/usr/local/etc/openssl/cert.pem&#39;</span> already are up to date.
+</span><span class='line'>Requirements installation successful.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>搞定。把brew再切换到原来的用户和组。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo chown twer:admin /usr/local/bin/brew
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>绕了一大圈了终于可以安装Ruby了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rvm install 1.9.3
+</span><span class='line'>Searching <span class="k">for </span>binary rubies, this might take some time.
+</span><span class='line'>No binary rubies available <span class="k">for</span>: osx/10.8/x86_64/ruby-1.9.3-p448.
+</span><span class='line'>Continuing with compilation. Please <span class="nb">read</span> <span class="s1">&#39;rvm help mount&#39;</span> to get more information on binary rubies.
+</span><span class='line'>Checking requirements <span class="k">for </span>osx.
+</span><span class='line'>Certificates in <span class="s1">&#39;/usr/local/etc/openssl/cert.pem&#39;</span> already are up to date.
+</span><span class='line'>Requirements installation successful.
+</span><span class='line'>Installing Ruby from <span class="nb">source </span>to: /usr/local/rvm/rubies/ruby-1.9.3-p448, this may take a <span class="k">while </span>depending on your cpu<span class="o">(</span>s<span class="o">)</span>...
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#downloading ruby-1.9.3-p448, this may take a while depending on your connection...</span>
+</span><span class='line'>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+</span><span class='line'>                                 Dload  Upload   Total   Spent    Left  Speed
+</span><span class='line'>  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0Warning: Failed to create the file ruby-1.9.3-p448.tar.bz2: Permission denied
+</span><span class='line'>  0 9816k    0   745    0     0    320      0  8:43:34  0:00:02  8:43:32  2623
+</span><span class='line'>curl: <span class="o">(</span>23<span class="o">)</span> Failed writing body <span class="o">(</span>0 !<span class="o">=</span> 745<span class="o">)</span>
+</span><span class='line'>There was an error<span class="o">(</span>23<span class="o">)</span>.
+</span><span class='line'>Checking fallback: http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p448.tar.bz2
+</span><span class='line'>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+</span><span class='line'>                                 Dload  Upload   Total   Spent    Left  Speed
+</span><span class='line'>  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0Warning: Failed to create the file ruby-1.9.3-p448.tar.bz2: Permission denied
+</span><span class='line'>  0 9816k    0  3329    0     0   4578      0  0:36:35 --:--:--  0:36:35  8853
+</span><span class='line'>curl: <span class="o">(</span>23<span class="o">)</span> Failed writing body <span class="o">(</span>0 !<span class="o">=</span> 3329<span class="o">)</span>
+</span><span class='line'>There was an error<span class="o">(</span>23<span class="o">)</span>.
+</span><span class='line'>Failed download
+</span><span class='line'>There has been an error fetching the ruby interpreter. Halting the installation.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>又有错。走到这步上了，继续解决吧。经过分析貌似是下载文件有问题，可能又是权限问题。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo rvm install 1.9.3
+</span><span class='line'>Password:
+</span><span class='line'>Searching <span class="k">for </span>binary rubies, this might take some time.
+</span><span class='line'>No binary rubies available <span class="k">for</span>: osx/10.8/x86_64/ruby-1.9.3-p448.
+</span><span class='line'>Continuing with compilation. Please <span class="nb">read</span> <span class="s1">&#39;rvm help mount&#39;</span> to get more information on binary rubies.
+</span><span class='line'>Checking requirements <span class="k">for </span>osx.
+</span><span class='line'>Certificates in <span class="s1">&#39;/usr/local/etc/openssl/cert.pem&#39;</span> already are up to date.
+</span><span class='line'>Requirements installation successful.
+</span><span class='line'>Installing Ruby from <span class="nb">source </span>to: /usr/local/rvm/rubies/ruby-1.9.3-p448, this may take a <span class="k">while </span>depending on your cpu<span class="o">(</span>s<span class="o">)</span>...
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#downloading ruby-1.9.3-p448, this may take a while depending on your connection...</span>
+</span><span class='line'>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+</span><span class='line'>                                 Dload  Upload   Total   Spent    Left  Speed
+</span><span class='line'>100 9816k  100 9816k    0     0   422k      0  0:00:23  0:00:23 --:--:--  154k
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#extracting ruby-1.9.3-p448 to /usr/local/rvm/src/ruby-1.9.3-p448</span>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#extracted to /usr/local/rvm/src/ruby-1.9.3-p448</span>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#configuring...............................................................................................................................................................................................................................................................................................................................................................................................................................................................................</span>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#post-configuration</span>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#compiling...............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................</span>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#installing.........................................................................................................</span>
+</span><span class='line'>curl: <span class="o">(</span>35<span class="o">)</span> Unknown SSL protocol error in connection to rubygems.org:443
+</span><span class='line'>There was an error <span class="k">while </span>trying to resolve rubygems version <span class="k">for</span> <span class="s1">&#39;latest&#39;</span>.
+</span><span class='line'>Halting the installation.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>前面那个错没了，但是新来了一个错。貌似是ssh到rubygems.org网站有问题，突然想起在rvm requirements时安装了openssl，应该是ssl设置的问题。从网上查了下，貌似要重置macport。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo rm -rf /opt/local
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span>sudo rm -rf <span class="nv">$rvm_path</span>/usr
+</span><span class='line'><span class="nv">$ </span>sudo rm -rf <span class="nv">$rvm_path</span>/bin/port
+</span><span class='line'>sudo: cannot get working directory
+</span><span class='line'><span class="nv">$ </span>sudo rvm autolibs homebrew
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后，再重新安装Ruby。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo rvm reinstall 1.9.3
+</span><span class='line'>Removing /usr/local/rvm/src/ruby-1.9.3-p448...
+</span><span class='line'>Removing /usr/local/rvm/rubies/ruby-1.9.3-p448...
+</span><span class='line'>Searching <span class="k">for </span>binary rubies, this might take some time.
+</span><span class='line'>No binary rubies available <span class="k">for</span>: osx/10.8/x86_64/ruby-1.9.3-p448.
+</span><span class='line'>Continuing with compilation. Please <span class="nb">read</span> <span class="s1">&#39;rvm help mount&#39;</span> to get more information on binary rubies.
+</span><span class='line'>Checking requirements <span class="k">for </span>osx_brew.
+</span><span class='line'>Certificates in <span class="s1">&#39;/usr/local/etc/openssl/cert.pem&#39;</span> already are up to date.
+</span><span class='line'>Requirements installation successful.
+</span><span class='line'>Installing Ruby from <span class="nb">source </span>to: /usr/local/rvm/rubies/ruby-1.9.3-p448, this may take a <span class="k">while </span>depending on your cpu<span class="o">(</span>s<span class="o">)</span>...
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#downloading ruby-1.9.3-p448, this may take a while depending on your connection...</span>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#extracting ruby-1.9.3-p448 to /usr/local/rvm/src/ruby-1.9.3-p448</span>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#extracted to /usr/local/rvm/src/ruby-1.9.3-p448</span>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#configuring...............................................................................................................................................................................................................................................................................................................................................................................................................................................................................</span>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#post-configuration</span>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#compiling...............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................</span>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#installing.........................................................................................................</span>
+</span><span class='line'>Retrieving rubygems-2.1.4
+</span><span class='line'>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+</span><span class='line'>                                 Dload  Upload   Total   Spent    Left  Speed
+</span><span class='line'>100  356k  100  356k    0     0  11672      0  0:00:31  0:00:31 --:--:-- 20611
+</span><span class='line'>Extracting rubygems-2.1.4 ...
+</span><span class='line'>Removing old Rubygems files...
+</span><span class='line'><span class="nv">$LANG</span> was empty, setting up <span class="nv">LANG</span><span class="o">=</span>en_US, <span class="k">if </span>it fails again try setting LANG to something sane and try again.
+</span><span class='line'>Installing rubygems-2.1.4 <span class="k">for </span>ruby-1.9.3-p448............................................................................................................................................
+</span><span class='line'>Installation of rubygems completed successfully.
+</span><span class='line'>Saving wrappers to <span class="s1">&#39;/usr/local/rvm/wrappers/ruby-1.9.3-p448&#39;</span>........
+</span><span class='line'>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#adjusting #shebangs for (gem irb erb ri rdoc testrb rake).</span>
+</span><span class='line'>ruby-1.9.3-p448 - <span class="c">#importing default gemsets, this may take time.......................</span>
+</span><span class='line'>Install of ruby-1.9.3-p448 - <span class="c">#complete</span>
+</span><span class='line'>Making gemset ruby-1.9.3-p448 pristine....
+</span><span class='line'>Making gemset ruby-1.9.3-p448@global pristine....
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>终于安装上了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rvm list
+</span><span class='line'>
+</span><span class='line'>rvm rubies
+</span><span class='line'>
+</span><span class='line'>   ruby-1.9.2-p320 <span class="o">[</span> x86_64 <span class="o">]</span>
+</span><span class='line'> * ruby-1.9.3-p194 <span class="o">[</span> x86_64 <span class="o">]</span>
+</span><span class='line'><span class="o">=</span>&gt; ruby-1.9.3-p448 <span class="o">[</span> x86_64 <span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># =&gt; - current</span>
+</span><span class='line'><span class="c"># =* - current &amp;&amp; default</span>
+</span><span class='line'><span class="c">#  * - default</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span>rvm use ruby-1.9.3-p448
+</span><span class='line'><span class="nv">$ </span>rvm list
+</span><span class='line'>
+</span><span class='line'>rvm rubies
+</span><span class='line'>
+</span><span class='line'>   ruby-1.9.2-p320 <span class="o">[</span> x86_64 <span class="o">]</span>
+</span><span class='line'> * ruby-1.9.3-p194 <span class="o">[</span> x86_64 <span class="o">]</span>
+</span><span class='line'><span class="o">=</span>&gt; ruby-1.9.3-p448 <span class="o">[</span> x86_64 <span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># =&gt; - current</span>
+</span><span class='line'><span class="c"># =* - current &amp;&amp; default</span>
+</span><span class='line'><span class="c">#  * - default</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span>vagrant up
+</span><span class='line'>Bringing machine <span class="s1">&#39;default&#39;</span> up with <span class="s1">&#39;virtualbox&#39;</span> provider...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> VirtualBox VM is already running.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>终于将Ruby升级到1.9.3-p448了。回顾这整个过程，都是泪啊。本来是想装个虚拟机玩玩，哪想到惹出这么多事情来。不过好歹问题是解决了。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[让你的CI跑起来-《持续集成》读书总结]]></title>
@@ -33,7 +644,7 @@
 
 <p>持续集成虽然解决不了第一个问题，但是关于第二个问题，持续集成向我们介绍了一种增加项目可见性，提高开发效率，降低项目失败风险的有效实践经验。</p>
 
-<p>其实持续集成蕴含有哲学思想：分而治之。即我们通常说的 “滴水穿石，鬼步千里”。</p>
+<p>其实持续集成蕴含有哲学思想：分而治之。即我们通常说的 “滴水穿石，跬步千里”。</p>
 
 <p>传统瀑布方法一般将系统集成放置到开发完成后，这样会导致一系列的问题。</p>
 
@@ -2422,982 +3033,6 @@ WHERE 1=0;</code></p></li>
 <li><p><strong>如果页面弹出了浏览器自带的警告框（使用JavaScript的Alert方法），<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>在点选次警告框时会偶发性失败。具体原因还未查明。解决方案是尽量不使用Alert方法的警告框，而是自己实现模式窗口（比如Jquery UI的模式窗口）来实现警告框效果。这样即保证了测试的稳定性，另外我们自己可以控制警告框的样式，给用户带来更好的体验。</strong></p></li>
 <li><p><strong>经常更新Selenium的版本。注意经常上Selenium的<a href="http://docs.seleniumhq.org/">官网</a>看是否发布了新的版本，新的版本都修复了那些bug，如果包含你遇到的bug，就可以升级到目前的版本。</strong></p></li>
 </ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[CheckStyle, 强制你遵循编码规范]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/06/21/introduce-checkstyle/"/>
-    <updated>2013-06-21T13:53:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/06/21/introduce-checkstyle</id>
-    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/CheckStyle.png"></p>
-
-<p>如今代码静态检查越来越重要，已经成为构建高质量软件的不可或缺的一个验证步骤。如果你使用的是java语言，那么<a href="http://checkstyle.sourceforge.net/">CheckStyle</a>则是一个利器。
-<a href="http://checkstyle.sourceforge.net/">CheckStyle</a>能够帮助程序员检查代码是否符合制定的规范。通过将<a href="http://checkstyle.sourceforge.net/">CheckStyle</a>的检查引入到项目构建中，可以强制让项目中的所有的开发者遵循制定规范，而不是仅仅停留在纸面上。如果发现代码违反了标准，比如类名未以大写开头、单个方法超过了指定行数、甚至单个方法抛出了3个以上的异常等。这些检查由于是基于源码的，所以不需要编译，执行速度快。</p>
-
-<!-- more -->
-
-
-<p><a href="http://checkstyle.sourceforge.net/">CheckStyle</a>有针对不同IDE和构建工具的各种插件，方便开发者随时随地对代码进行静态检查。下面就讲解下如何将<a href="http://checkstyle.sourceforge.net/">CheckStyle</a>引入到maven构建中。</p>
-
-<h2>配置CheckStyle插件</h2>
-
-<p>在maven中一个名为<code>maven-checkstyle-plugin</code>的插件，用于执行<a href="http://checkstyle.sourceforge.net/">CheckStyle</a> task。下面是一个简单的配置。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>maven-checkstyle-plugin<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;version&gt;</span>2.10<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;executions&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;execution&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;id&gt;</span>checkstyle<span class="nt">&lt;/id&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;phase&gt;</span>validate<span class="nt">&lt;/phase&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;goals&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;goal&gt;</span>check<span class="nt">&lt;/goal&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/goals&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;configuration&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;failOnViolation&gt;</span>true<span class="nt">&lt;/failOnViolation&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/configuration&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/execution&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/executions&gt;</span>
-</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们定义了在maven lifecycle的validate阶段执行check task，并且如果发现有违反标准的情况就会fail当前的build。</p>
-
-<p>maven-checkstyle-plugin内置了4种规范.</p>
-
-<ul>
-<li>config/sun_checks.xml</li>
-<li>config/maven_checks.xml</li>
-<li>config/turbine_checks.xml</li>
-<li>config/avalon_checks.xml</li>
-</ul>
-
-
-<p>其中sun_checks.xml为默认值。如果想要使用其他三种规范，则只需配置configuration。下面是使用maven_checks.xml的示例。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>maven-checkstyle-plugin<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;version&gt;</span>2.10<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;configuration&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;configLocation&gt;</span>config/maven_checks.xml<span class="nt">&lt;/configLocation&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/configuration&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;executions&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;execution&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;id&gt;</span>checkstyle<span class="nt">&lt;/id&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;phase&gt;</span>validate<span class="nt">&lt;/phase&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;goals&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;goal&gt;</span>check<span class="nt">&lt;/goal&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/goals&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;configuration&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;failOnViolation&gt;</span>true<span class="nt">&lt;/failOnViolation&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/configuration&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/execution&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/executions&gt;</span>
-</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>自定义规范文件</h2>
-
-<p>我们可以使用默认的规范未见，当然也支持自定义。下面是google的一个checkstyle规范文件。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-<span class='line-number'>133</span>
-<span class='line-number'>134</span>
-<span class='line-number'>135</span>
-<span class='line-number'>136</span>
-<span class='line-number'>137</span>
-<span class='line-number'>138</span>
-<span class='line-number'>139</span>
-<span class='line-number'>140</span>
-<span class='line-number'>141</span>
-<span class='line-number'>142</span>
-<span class='line-number'>143</span>
-<span class='line-number'>144</span>
-<span class='line-number'>145</span>
-<span class='line-number'>146</span>
-<span class='line-number'>147</span>
-<span class='line-number'>148</span>
-<span class='line-number'>149</span>
-<span class='line-number'>150</span>
-<span class='line-number'>151</span>
-<span class='line-number'>152</span>
-<span class='line-number'>153</span>
-<span class='line-number'>154</span>
-<span class='line-number'>155</span>
-<span class='line-number'>156</span>
-<span class='line-number'>157</span>
-<span class='line-number'>158</span>
-<span class='line-number'>159</span>
-<span class='line-number'>160</span>
-<span class='line-number'>161</span>
-<span class='line-number'>162</span>
-<span class='line-number'>163</span>
-<span class='line-number'>164</span>
-<span class='line-number'>165</span>
-<span class='line-number'>166</span>
-<span class='line-number'>167</span>
-<span class='line-number'>168</span>
-<span class='line-number'>169</span>
-<span class='line-number'>170</span>
-<span class='line-number'>171</span>
-<span class='line-number'>172</span>
-<span class='line-number'>173</span>
-<span class='line-number'>174</span>
-<span class='line-number'>175</span>
-<span class='line-number'>176</span>
-<span class='line-number'>177</span>
-<span class='line-number'>178</span>
-<span class='line-number'>179</span>
-<span class='line-number'>180</span>
-<span class='line-number'>181</span>
-<span class='line-number'>182</span>
-<span class='line-number'>183</span>
-<span class='line-number'>184</span>
-<span class='line-number'>185</span>
-<span class='line-number'>186</span>
-<span class='line-number'>187</span>
-<span class='line-number'>188</span>
-<span class='line-number'>189</span>
-<span class='line-number'>190</span>
-<span class='line-number'>191</span>
-<span class='line-number'>192</span>
-<span class='line-number'>193</span>
-<span class='line-number'>194</span>
-<span class='line-number'>195</span>
-<span class='line-number'>196</span>
-<span class='line-number'>197</span>
-<span class='line-number'>198</span>
-<span class='line-number'>199</span>
-<span class='line-number'>200</span>
-<span class='line-number'>201</span>
-<span class='line-number'>202</span>
-<span class='line-number'>203</span>
-<span class='line-number'>204</span>
-<span class='line-number'>205</span>
-<span class='line-number'>206</span>
-<span class='line-number'>207</span>
-<span class='line-number'>208</span>
-<span class='line-number'>209</span>
-<span class='line-number'>210</span>
-<span class='line-number'>211</span>
-<span class='line-number'>212</span>
-<span class='line-number'>213</span>
-<span class='line-number'>214</span>
-<span class='line-number'>215</span>
-<span class='line-number'>216</span>
-<span class='line-number'>217</span>
-<span class='line-number'>218</span>
-<span class='line-number'>219</span>
-<span class='line-number'>220</span>
-<span class='line-number'>221</span>
-<span class='line-number'>222</span>
-<span class='line-number'>223</span>
-<span class='line-number'>224</span>
-<span class='line-number'>225</span>
-<span class='line-number'>226</span>
-<span class='line-number'>227</span>
-<span class='line-number'>228</span>
-<span class='line-number'>229</span>
-<span class='line-number'>230</span>
-<span class='line-number'>231</span>
-<span class='line-number'>232</span>
-<span class='line-number'>233</span>
-<span class='line-number'>234</span>
-<span class='line-number'>235</span>
-<span class='line-number'>236</span>
-<span class='line-number'>237</span>
-<span class='line-number'>238</span>
-<span class='line-number'>239</span>
-<span class='line-number'>240</span>
-<span class='line-number'>241</span>
-<span class='line-number'>242</span>
-<span class='line-number'>243</span>
-<span class='line-number'>244</span>
-<span class='line-number'>245</span>
-<span class='line-number'>246</span>
-<span class='line-number'>247</span>
-<span class='line-number'>248</span>
-<span class='line-number'>249</span>
-<span class='line-number'>250</span>
-<span class='line-number'>251</span>
-<span class='line-number'>252</span>
-<span class='line-number'>253</span>
-<span class='line-number'>254</span>
-<span class='line-number'>255</span>
-<span class='line-number'>256</span>
-<span class='line-number'>257</span>
-<span class='line-number'>258</span>
-<span class='line-number'>259</span>
-<span class='line-number'>260</span>
-<span class='line-number'>261</span>
-<span class='line-number'>262</span>
-<span class='line-number'>263</span>
-<span class='line-number'>264</span>
-<span class='line-number'>265</span>
-<span class='line-number'>266</span>
-<span class='line-number'>267</span>
-<span class='line-number'>268</span>
-<span class='line-number'>269</span>
-<span class='line-number'>270</span>
-<span class='line-number'>271</span>
-<span class='line-number'>272</span>
-<span class='line-number'>273</span>
-<span class='line-number'>274</span>
-<span class='line-number'>275</span>
-<span class='line-number'>276</span>
-<span class='line-number'>277</span>
-<span class='line-number'>278</span>
-<span class='line-number'>279</span>
-<span class='line-number'>280</span>
-<span class='line-number'>281</span>
-<span class='line-number'>282</span>
-<span class='line-number'>283</span>
-<span class='line-number'>284</span>
-<span class='line-number'>285</span>
-<span class='line-number'>286</span>
-<span class='line-number'>287</span>
-<span class='line-number'>288</span>
-<span class='line-number'>289</span>
-<span class='line-number'>290</span>
-<span class='line-number'>291</span>
-<span class='line-number'>292</span>
-<span class='line-number'>293</span>
-<span class='line-number'>294</span>
-<span class='line-number'>295</span>
-<span class='line-number'>296</span>
-<span class='line-number'>297</span>
-<span class='line-number'>298</span>
-<span class='line-number'>299</span>
-<span class='line-number'>300</span>
-<span class='line-number'>301</span>
-<span class='line-number'>302</span>
-<span class='line-number'>303</span>
-<span class='line-number'>304</span>
-<span class='line-number'>305</span>
-<span class='line-number'>306</span>
-<span class='line-number'>307</span>
-<span class='line-number'>308</span>
-<span class='line-number'>309</span>
-<span class='line-number'>310</span>
-<span class='line-number'>311</span>
-<span class='line-number'>312</span>
-<span class='line-number'>313</span>
-<span class='line-number'>314</span>
-<span class='line-number'>315</span>
-<span class='line-number'>316</span>
-<span class='line-number'>317</span>
-<span class='line-number'>318</span>
-<span class='line-number'>319</span>
-<span class='line-number'>320</span>
-<span class='line-number'>321</span>
-<span class='line-number'>322</span>
-<span class='line-number'>323</span>
-<span class='line-number'>324</span>
-<span class='line-number'>325</span>
-<span class='line-number'>326</span>
-<span class='line-number'>327</span>
-<span class='line-number'>328</span>
-<span class='line-number'>329</span>
-<span class='line-number'>330</span>
-<span class='line-number'>331</span>
-<span class='line-number'>332</span>
-<span class='line-number'>333</span>
-<span class='line-number'>334</span>
-<span class='line-number'>335</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
-</span><span class='line'><span class="cp">&lt;!DOCTYPE module PUBLIC</span>
-</span><span class='line'><span class="cp">        &quot;-//Puppy Crawl//DTD Check Configuration 1.3//EN&quot;</span>
-</span><span class='line'><span class="cp">        &quot;http://www.puppycrawl.com/dtds/configuration_1_3.dtd&quot;&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">&lt;!-- This is a checkstyle configuration file. For descriptions of</span>
-</span><span class='line'><span class="c">what the following rules do, please see the checkstyle configuration</span>
-</span><span class='line'><span class="c">page at http://checkstyle.sourceforge.net/config.html --&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;Checker&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;RegexpSingleline&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="c">&lt;!-- Requires a Google copyright notice in each file.</span>
-</span><span class='line'><span class="c">          Code intended to be open-sourced may have a multi-line copyright</span>
-</span><span class='line'><span class="c">          notice, so that this required text appears on the second line:</span>
-</span><span class='line'><span class="c">          &lt;pre&gt;</span>
-</span><span class='line'><span class="c">            /*</span>
-</span><span class='line'><span class="c">             * Copyright 2008 Google Inc.</span>
-</span><span class='line'><span class="c">             *</span>
-</span><span class='line'><span class="c">             * (details of open-source license...)</span>
-</span><span class='line'><span class="c">          &lt;/pre&gt;</span>
-</span><span class='line'><span class="c">        --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span>
-</span><span class='line'>                  <span class="na">value=</span><span class="s">&quot;^(//| \*) Copyright (\([cC]\) )?[\d]{4}(\-[\d]{4})? (Google Inc\.).*$&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;minimum&quot;</span> <span class="na">value=</span><span class="s">&quot;1&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;maximum&quot;</span> <span class="na">value=</span><span class="s">&quot;10&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;message&quot;</span> <span class="na">value=</span><span class="s">&quot;Google copyright is missing or malformed.&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;FileTabCharacter&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="c">&lt;!-- Checks that there are no tab characters in the file.</span>
-</span><span class='line'><span class="c">        --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;NewlineAtEndOfFile&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;RegexpSingleline&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="c">&lt;!-- Checks that FIXME is not used in comments.  TODO is preferred.</span>
-</span><span class='line'><span class="c">        --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;((//.*)|(\*.*))FIXME&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;message&quot;</span> <span class="na">value=</span><span class="s">&#39;TODO is preferred to FIXME.  e.g. &quot;TODO(johndoe): Refactor when v2 is released.&quot;&#39;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;RegexpSingleline&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="c">&lt;!-- Checks that TODOs are named.  (Actually, just that they are followed</span>
-</span><span class='line'><span class="c">             by an open paren.)</span>
-</span><span class='line'><span class="c">        --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;((//.*)|(\*.*))TODO[^(]&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;message&quot;</span> <span class="na">value=</span><span class="s">&#39;All TODOs should be named.  e.g. &quot;TODO(johndoe): Refactor when v2 is released.&quot;&#39;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">&lt;!-- All Java AST specific tests live under TreeWalker module. --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;TreeWalker&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c">&lt;!--</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">        IMPORT CHECKS</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">        --&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;RedundantImport&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Checks for redundant import statements. --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;ImportOrder&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Checks for out of order import statements. --&gt;</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;groups&quot;</span> <span class="na">value=</span><span class="s">&quot;com.google,android,junit,net,org,java,javax&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- This ensures that static imports go first. --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;option&quot;</span> <span class="na">value=</span><span class="s">&quot;top&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;tokens&quot;</span> <span class="na">value=</span><span class="s">&quot;STATIC_IMPORT, IMPORT&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c">&lt;!--</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">        JAVADOC CHECKS</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">        --&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c">&lt;!-- Checks for Javadoc comments.                     --&gt;</span>
-</span><span class='line'>        <span class="c">&lt;!-- See http://checkstyle.sf.net/config_javadoc.html --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;JavadocMethod&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;scope&quot;</span> <span class="na">value=</span><span class="s">&quot;protected&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowMissingJavadoc&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowMissingParamTags&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowMissingReturnTag&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowMissingThrowsTags&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowThrowsTagsForSubclasses&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowUndeclaredRTE&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;JavadocType&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;scope&quot;</span> <span class="na">value=</span><span class="s">&quot;protected&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;JavadocStyle&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c">&lt;!--</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">        NAMING CHECKS</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">        --&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c">&lt;!-- Item 38 - Adhere to generally accepted naming conventions --&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;PackageName&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Validates identifiers for package names against the</span>
-</span><span class='line'><span class="c">              supplied expression. --&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Here the default checkstyle rule restricts package name parts to</span>
-</span><span class='line'><span class="c">              seven characters, this is not in line with common practice at Google.</span>
-</span><span class='line'><span class="c">            --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;^[a-z]+(\.[a-z][a-z0-9]{1,})*$&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;TypeNameCheck&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Validates static, final fields against the</span>
-</span><span class='line'><span class="c">            expression &quot;^[A-Z][a-zA-Z0-9]*$&quot;. --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;metadata</span> <span class="na">name=</span><span class="s">&quot;altname&quot;</span> <span class="na">value=</span><span class="s">&quot;TypeName&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;ConstantNameCheck&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Validates non-private, static, final fields against the supplied</span>
-</span><span class='line'><span class="c">            public/package final fields &quot;^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$&quot;. --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;metadata</span> <span class="na">name=</span><span class="s">&quot;altname&quot;</span> <span class="na">value=</span><span class="s">&quot;ConstantName&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPublic&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToProtected&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPackage&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPrivate&quot;</span> <span class="na">value=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;^([A-Z][A-Z0-9]*(_[A-Z0-9]+)*|FLAG_.*)$&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;message</span> <span class="na">key=</span><span class="s">&quot;name.invalidPattern&quot;</span>
-</span><span class='line'>                     <span class="na">value=</span><span class="s">&quot;Variable &#39;&#39;{0}&#39;&#39; should be in ALL_CAPS (if it is a constant) or be private (otherwise).&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;StaticVariableNameCheck&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Validates static, non-final fields against the supplied</span>
-</span><span class='line'><span class="c">            expression &quot;^[a-z][a-zA-Z0-9]*_?$&quot;. --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;metadata</span> <span class="na">name=</span><span class="s">&quot;altname&quot;</span> <span class="na">value=</span><span class="s">&quot;StaticVariableName&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPublic&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToProtected&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPackage&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPrivate&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;^[a-z][a-zA-Z0-9]*_?$&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;MemberNameCheck&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Validates non-static members against the supplied expression. --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;metadata</span> <span class="na">name=</span><span class="s">&quot;altname&quot;</span> <span class="na">value=</span><span class="s">&quot;MemberName&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPublic&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToProtected&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPackage&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;applyToPrivate&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;^[a-z][a-zA-Z0-9]*$&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;MethodNameCheck&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Validates identifiers for method names. --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;metadata</span> <span class="na">name=</span><span class="s">&quot;altname&quot;</span> <span class="na">value=</span><span class="s">&quot;MethodName&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;format&quot;</span> <span class="na">value=</span><span class="s">&quot;^[a-z][a-zA-Z0-9]*(_[a-zA-Z0-9]+)*$&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;ParameterName&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Validates identifiers for method parameters against the</span>
-</span><span class='line'><span class="c">              expression &quot;^[a-z][a-zA-Z0-9]*$&quot;. --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;LocalFinalVariableName&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Validates identifiers for local final variables against the</span>
-</span><span class='line'><span class="c">              expression &quot;^[a-z][a-zA-Z0-9]*$&quot;. --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;LocalVariableName&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Validates identifiers for local variables against the</span>
-</span><span class='line'><span class="c">              expression &quot;^[a-z][a-zA-Z0-9]*$&quot;. --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>        <span class="c">&lt;!--</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">        LENGTH and CODING CHECKS</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">        --&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;LineLength&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Checks if a line is too long. --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;max&quot;</span> <span class="na">value=</span><span class="s">&quot;${com.puppycrawl.tools.checkstyle.checks.sizes.LineLength.max}&quot;</span> <span class="na">default=</span><span class="s">&quot;100&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="c">&lt;!--</span>
-</span><span class='line'><span class="c">              The default ignore pattern exempts the following elements:</span>
-</span><span class='line'><span class="c">                - import statements</span>
-</span><span class='line'><span class="c">                - long URLs inside comments</span>
-</span><span class='line'><span class="c">            --&gt;</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;ignorePattern&quot;</span>
-</span><span class='line'>                      <span class="na">value=</span><span class="s">&quot;${com.puppycrawl.tools.checkstyle.checks.sizes.LineLength.ignorePattern}&quot;</span>
-</span><span class='line'>                      <span class="na">default=</span><span class="s">&quot;^(package .*;\s*)|(import .*;\s*)|( *\* *https?://.*)$&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;LeftCurly&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Checks for placement of the left curly brace (&#39;{&#39;). --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;RightCurly&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Checks right curlies on CATCH, ELSE, and TRY blocks are on</span>
-</span><span class='line'><span class="c">            the same line. e.g., the following example is fine:</span>
-</span><span class='line'><span class="c">            &lt;pre&gt;</span>
-</span><span class='line'><span class="c">              if {</span>
-</span><span class='line'><span class="c">                ...</span>
-</span><span class='line'><span class="c">              } else</span>
-</span><span class='line'><span class="c">            &lt;/pre&gt;</span>
-</span><span class='line'><span class="c">            --&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- This next example is not fine:</span>
-</span><span class='line'><span class="c">            &lt;pre&gt;</span>
-</span><span class='line'><span class="c">              if {</span>
-</span><span class='line'><span class="c">                ...</span>
-</span><span class='line'><span class="c">              }</span>
-</span><span class='line'><span class="c">              else</span>
-</span><span class='line'><span class="c">            &lt;/pre&gt;</span>
-</span><span class='line'><span class="c">            --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;option&quot;</span> <span class="na">value=</span><span class="s">&quot;same&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c">&lt;!-- Checks for braces around if and else blocks --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;NeedBraces&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;tokens&quot;</span> <span class="na">value=</span><span class="s">&quot;LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;UpperEll&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Checks that long constants are defined with an upper ell.--&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;FallThrough&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Warn about falling through to the next case statement.  Similar to</span>
-</span><span class='line'><span class="c">            javac -Xlint:fallthrough, but the check is suppressed if a single-line comment</span>
-</span><span class='line'><span class="c">            on the last non-blank line preceding the fallen-into case contains &#39;fall through&#39; (or</span>
-</span><span class='line'><span class="c">            some other variants which we don&#39;t publicized to promote consistency).</span>
-</span><span class='line'><span class="c">            --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;reliefPattern&quot;</span>
-</span><span class='line'>                      <span class="na">value=</span><span class="s">&quot;fall through|Fall through|fallthru|Fallthru|falls through|Falls through|fallthrough|Fallthrough|No break|NO break|no break|continue on&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>        <span class="c">&lt;!--</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">        MODIFIERS CHECKS</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">        --&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;ModifierOrder&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Warn if modifier order is inconsistent with JLS3 8.1.1, 8.3.1, and</span>
-</span><span class='line'><span class="c">                 8.4.3.  The prescribed order is:</span>
-</span><span class='line'><span class="c">                 public, protected, private, abstract, static, final, transient, volatile,</span>
-</span><span class='line'><span class="c">                 synchronized, native, strictfp</span>
-</span><span class='line'><span class="c">              --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>        <span class="c">&lt;!--</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">        WHITESPACE CHECKS</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">        --&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;WhitespaceAround&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Checks that various tokens are surrounded by whitespace.</span>
-</span><span class='line'><span class="c">                 This includes most binary operators and keywords followed</span>
-</span><span class='line'><span class="c">                 by regular or curly braces.</span>
-</span><span class='line'><span class="c">            --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;tokens&quot;</span> <span class="na">value=</span><span class="s">&quot;ASSIGN, BAND, BAND_ASSIGN, BOR,</span>
-</span><span class='line'><span class="s">        BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN,</span>
-</span><span class='line'><span class="s">        EQUAL, GE, GT, LAND, LE, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE,</span>
-</span><span class='line'><span class="s">        LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN,</span>
-</span><span class='line'><span class="s">        LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS,</span>
-</span><span class='line'><span class="s">        MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION,</span>
-</span><span class='line'><span class="s">        SL, SL_ASSIGN, SR_ASSIGN, STAR, STAR_ASSIGN&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;WhitespaceAfter&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Checks that commas, semicolons and typecasts are followed by</span>
-</span><span class='line'><span class="c">                 whitespace.</span>
-</span><span class='line'><span class="c">            --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;tokens&quot;</span> <span class="na">value=</span><span class="s">&quot;COMMA, SEMI, TYPECAST&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;NoWhitespaceAfter&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Checks that there is no whitespace after various unary operators.</span>
-</span><span class='line'><span class="c">                 Linebreaks are allowed.</span>
-</span><span class='line'><span class="c">            --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;tokens&quot;</span> <span class="na">value=</span><span class="s">&quot;BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS,</span>
-</span><span class='line'><span class="s">        UNARY_PLUS&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowLineBreaks&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;NoWhitespaceBefore&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Checks that there is no whitespace before various unary operators.</span>
-</span><span class='line'><span class="c">                 Linebreaks are allowed.</span>
-</span><span class='line'><span class="c">            --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;tokens&quot;</span> <span class="na">value=</span><span class="s">&quot;SEMI, DOT, POST_DEC, POST_INC&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;allowLineBreaks&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;error&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;module</span> <span class="na">name=</span><span class="s">&quot;ParenPad&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!-- Checks that there is no whitespace before close parens or after</span>
-</span><span class='line'><span class="c">                 open parens.</span>
-</span><span class='line'><span class="c">            --&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;severity&quot;</span> <span class="na">value=</span><span class="s">&quot;warning&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nt">&lt;/module&gt;</span>
-</span><span class='line'><span class="nt">&lt;/module&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果想启用自定义的规范文件，则依旧是修改configuration，指向你的文件地址。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>        <span class="nt">&lt;plugin&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>maven-checkstyle-plugin<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;version&gt;</span>2.10<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;configuration&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;configLocation&gt;</span>${basedir}/src/config/custom_checkstyle.xml<span class="nt">&lt;/configLocation&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/configuration&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;executions&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;execution&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;id&gt;</span>checkstyle<span class="nt">&lt;/id&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;phase&gt;</span>validate<span class="nt">&lt;/phase&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;goals&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;goal&gt;</span>check<span class="nt">&lt;/goal&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/goals&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;configuration&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;failOnViolation&gt;</span>true<span class="nt">&lt;/failOnViolation&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/configuration&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/execution&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/executions&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/plugin&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>运行checkstyle检查</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mvn checkstyle:checkstyle
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>查看checkstyle结果</h2>
-
-<p>运行maven命令后可以在console里查看checkstyle运行结果。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">[</span>INFO<span class="o">]</span>
-</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> There are 11 checkstyle errors.
-</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
-</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> BUILD FAILURE
-</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
-</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> Total <span class="nb">time</span>: 2.135s
-</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> Finished at: Fri Jun 21 13:39:24 CST 2013
-</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> Final Memory: 6M/81M
-</span><span class='line'><span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
-</span><span class='line'><span class="o">[</span>ERROR<span class="o">]</span> Failed to execute goal org.apache.maven.plugins:maven-checkstyle-plugin:2.10:check <span class="o">(</span>checkstyle<span class="o">)</span> on project SpringMessageSpike: You have 11 Checkstyle violations. -&gt; <span class="o">[</span>Help 1<span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>checkstye的详细结果信息被存放在target/checkstyle-result.xml中。下面是一个示例。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;checkstyle</span> <span class="na">version=</span><span class="s">&quot;5.6&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'><span class="nt">&lt;file</span> <span class="na">name=</span><span class="s">&quot;/Users/twer/sourcecode/SpringMessageSpike/src/main/java/com/thoughtworks/config/SessionMessageSource.java&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'><span class="nt">&lt;error</span> <span class="na">line=</span><span class="s">&quot;0&quot;</span> <span class="na">severity=</span><span class="s">&quot;error&quot;</span> <span class="na">message=</span><span class="s">&quot;Google copyright is missing or malformed.&quot;</span> <span class="na">source=</span><span class="s">&quot;com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'><span class="nt">&lt;error</span> <span class="na">line=</span><span class="s">&quot;21&quot;</span> <span class="na">severity=</span><span class="s">&quot;warning&quot;</span> <span class="na">message=</span><span class="s">&quot;Wrong order for &amp;apos;org.slf4j.LoggerFactory.getLogger&amp;apos; import.&quot;</span> <span class="na">source=</span><span class="s">&quot;com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'><span class="nt">&lt;error</span> <span class="na">line=</span><span class="s">&quot;27&quot;</span> <span class="na">severity=</span><span class="s">&quot;error&quot;</span> <span class="na">message=</span><span class="s">&quot;Missing a Javadoc comment.&quot;</span> <span class="na">source=</span><span class="s">&quot;com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTypeCheck&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'><span class="nt">&lt;error</span> <span class="na">line=</span><span class="s">&quot;35&quot;</span> <span class="na">severity=</span><span class="s">&quot;error&quot;</span> <span class="na">message=</span><span class="s">&quot;Line is longer than 100 characters (found 115).&quot;</span> <span class="na">source=</span><span class="s">&quot;com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'><span class="nt">&lt;/file&gt;</span>
-</span><span class='line'><span class="nt">&lt;/checkstyle&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>跳过对指定文件的某些检查</h2>
-
-<p>如果对于指定文件检查出了一些问题，但是你想忽略它，则可以使用suppression。</p>
-
-<p>例如在上述例子中有一个checkstyle error是说某行超过了100字符。如果我们不想修复这个错误怎么办那？可以将其suppress掉。</p>
-
-<p>方法是建立一个checkstyle-suppressions.xml文件。其中加入下述内容</p>
-
-<figure class='code'><figcaption><span>checkstyle-suppressions.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">&lt;!DOCTYPE suppressions PUBLIC</span>
-</span><span class='line'><span class="cp">        &quot;-//Puppy Crawl//DTD Suppressions 1.0//EN&quot;</span>
-</span><span class='line'><span class="cp">        &quot;http://www.puppycrawl.com/dtds/suppressions_1_0.dtd&quot;&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;suppressions&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;suppress</span> <span class="na">checks=</span><span class="s">&quot;LineLengthCheck&quot;</span>
-</span><span class='line'>              <span class="na">files=</span><span class="s">&quot;SessionMessageSource.java&quot;</span>
-</span><span class='line'>              <span class="nt">/&gt;</span>
-</span><span class='line'><span class="nt">&lt;/suppressions&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后配置<code>maven-checkstyel-plugin</code>设置<code>suppressionsLocation</code>。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>maven-checkstyle-plugin<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;version&gt;</span>2.10<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;configuration&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;configLocation&gt;</span>${basedir}/src/config/custom_checkstyle.xml<span class="nt">&lt;/configLocation&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;suppressionsLocation&gt;</span>${basedir}/src/config/checkstyle-suppressions.xml<span class="nt">&lt;/suppressionsLocation&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/configuration&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;executions&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;execution&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;id&gt;</span>checkstyle<span class="nt">&lt;/id&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;phase&gt;</span>validate<span class="nt">&lt;/phase&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;goals&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;goal&gt;</span>check<span class="nt">&lt;/goal&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/goals&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;configuration&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;failOnViolation&gt;</span>true<span class="nt">&lt;/failOnViolation&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/configuration&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/execution&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/executions&gt;</span>
-</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
 
 ]]></content>
   </entry>
