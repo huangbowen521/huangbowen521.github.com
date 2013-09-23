@@ -11,6 +11,8 @@ tags: [Ruby]
 
 前段时间在玩Chef-一个IT基础设施自动化工具。由于Chef是由Ruby写的一个gem，那么就需要安装Ruby。当然Ruby我早就安装了，并且使用rvm来管理Ruby及Gem。本来一切看似正常，但是不会预料后面会遇到那么多的坑。
 
+<!-- more -->
+
 Chef本地的repo包中有一个vagrant虚拟机的模板文件，通过它可以setup一个虚拟机，然后使用Chef来操作这个节点。那么就使用vagrant命令来setup这个虚拟机把。
 
 ```bash

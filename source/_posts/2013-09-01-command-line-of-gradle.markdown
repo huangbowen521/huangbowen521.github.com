@@ -72,7 +72,7 @@ Total time: 3.529 secs
 
 * **继续执行task而忽略前面失败的task。**默认情况下，如果有某个task失败，后续的task就不会继续执行。但是有时候我们想运行所有的task来一次性得到所有的构建错误，那么我们可以使用`--continue`命令。使用`--continue`命令后即使遇到某些task失败也不会停止后续task的执行。但是需要注意的是如果某个task失败了，那么依赖于这个task的其他task依旧不会执行，因为这会带来不安全的因素。
 
-* **调用task时使用短名或缩写。**如果一个task的名称过程，那么调用时可以只输入部分名称即可调用，无需输入全名。
+* **调用task时使用短名或缩写。**如果一个task的名称过长，那么调用时可以只输入部分名称即可调用，无需输入全名。
 
 ```groovy
 
@@ -121,7 +121,7 @@ Total time: 3.752 secs
 
 ```groovy
 
-gradle -q -b learnGradle helloWorld
+gradle -q -p learnGradle helloWorld
 
 ```
 
