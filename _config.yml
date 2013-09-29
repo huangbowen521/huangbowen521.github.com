@@ -63,12 +63,12 @@ github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-twitter_user: huangbowen521@gmail.com
-twitter_tweet_count: 4
-twitter_show_replies: false
-twitter_follow_button: true
-twitter_show_follower_count: false
-twitter_tweet_button: true
+# twitter_user: huangbowen521@gmail.com
+# twitter_tweet_count: 4
+# twitter_show_replies: false
+# twitter_follow_button: true
+# twitter_show_follower_count: false
+# twitter_tweet_button: true
 
 # Google +1
 google_plus_one: false
@@ -95,7 +95,7 @@ disqus_show_comment_count: true
 google_analytics_tracking_id: UA-38174207-1
 
 # Facebook Like
-facebook_like: true 
+# facebook_like: true 
 
 # Weibo
 weibo_uid: 2246154347
