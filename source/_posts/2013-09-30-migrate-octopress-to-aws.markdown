@@ -36,7 +36,7 @@ Amazon Route 53 - 亚马逊提供的一种稳定高效的域名解析系统。
 
 第三步，在Amazon management console里选择Services -> S3 service，并创建两个bucket。假如你的博客域名为example.com，那么两个bucket的名称分别为example.com,www.example.com。为什么要创建两个那？是因为我们要保证用户无论输入www.example.com还是example.com都可以访问我们的网站。
 
-{% img /images/twobucket.png %}
+{% img /images/twobucket.png 780 %}
 
 第四步，选择www.example.com这个bucket，点击properties标签，在Static Website Hosting中选择Redirect all requests to another host name，并配置‘Redirect all requests to:’为example.com。这样来自www.example.com bucket的访问都会自动转发给example.com这个bucket。我们只需为example.com这个bucket同步我们的博客文件即可。 
 
