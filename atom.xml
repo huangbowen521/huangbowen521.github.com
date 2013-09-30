@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-09-30T12:43:32+08:00</updated>
+  <updated>2013-09-30T14:33:40+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,162 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[将我的博客迁移到亚马逊云端(1)]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/09/30/migrate-octopress-to-aws/"/>
+    <updated>2013-09-30T14:09:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/09/30/migrate-octopress-to-aws</id>
+    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/cloudcompute.png" width="400"></p>
+
+<p><a href="http://octopress.org/">Octopress</a>已经被公认为Geeker的博客框架。它所拥有的特性都很符合Geeker的癖好:强大的命令行操作方式、简洁的MarkDown语法、灵活的插件配置、美轮美奂的theme（自带响应式设计哦）、完全可定义的部署&#8230;&#8230;</p>
+
+<p>一般大家都喜欢把博客部署到github pages上，免费速度快，与<a href="http://octopress.org/">Octopress</a>无缝结合。但是自己最近迷上了AWS，就捉摸着将自己的<a href="http://octopress.org/">Octopress</a>博客部署到AWS的S3上，使用CloudFront做CDN，使用Amazon Route 53做域名映射。倒腾了两天，终于搞定了，也学到了很多东西。不敢私藏，拿出来和大家分享。</p>
+
+<!-- more -->
+
+
+<p>这篇文章主要讲如何将Octopress博客部署到S3上去。下一篇文章会讲如何将CloudFront做CDN,并与现有域名绑定。</p>
+
+<p>第一步，注册一个亚马逊的账号，注册地址是<a href="https://portal.aws.amazon.com/gp/aws/developer/registration/index.html">https://portal.aws.amazon.com/gp/aws/developer/registration/index.html</a>。注意注册的时候需要提供一张具备外币功能的信用卡。</p>
+
+<p>第二步，登陆到Amazon management console里，单击右上角的名称，选择Security Credentials标签，然后点击左侧标签按照向导创建一个group,一个从属于这个group的user，并为该user生成一个Access key，记录下来Access key Id 及 Secret Access Key。亚马逊的文档还是非常详细的，不懂的可以多看看提示信息和帮助文档。</p>
+
+<p>第三步，在Amazon management console里选择Services -> S3 service，并创建两个bucket。假如你的博客域名为example.com，那么两个bucket的名称分别为example.com,www.example.com。为什么要创建两个那？是因为我们要保证用户无论输入www.example.com还是example.com都可以访问我们的网站。</p>
+
+<p><img src="http://www.huangbowen.net/images/twobucket.png"></p>
+
+<p>第四步，选择www.example.com这个bucket，点击properties标签，在Static Website Hosting中选择Redirect all requests to another host name，并配置‘Redirect all requests to:’为example.com。这样来自www.example.com bucket的访问都会自动转发给example.com这个bucket。我们只需为example.com这个bucket同步我们的博客文件即可。</p>
+
+<p><img src="http://www.huangbowen.net/images/redirectrequest.png" width="780"></p>
+
+<p>第五步，选择example.com这个bucket，在Static Website Hosting中选择‘Enable Website Hosting’,并配置Index Document，我的是index.html。这个Index Document是默认返回的object名称。比如如果用户直接访问bucket的某个目录，系统会检测该目录下是否存在Index Document中配置的文件名，如果有则会自动返回这个object。</p>
+
+<p><img src="http://www.huangbowen.net/images/staticwebsitehosting.png" width="780"></p>
+
+<p>第六步，选择&#8217;Permissions&#8217;标签，点击’add bucket policy‘按钮，加入如下的policy.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span>
+</span><span class='line'>     <span class="s2">&quot;Version&quot;</span><span class="o">:</span> <span class="s2">&quot;2008-10-17&quot;</span><span class="p">,</span>
+</span><span class='line'>     <span class="s2">&quot;Statement&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>          <span class="p">{</span>
+</span><span class='line'>               <span class="s2">&quot;Sid&quot;</span><span class="o">:</span> <span class="s2">&quot;AddPerm&quot;</span><span class="p">,</span>
+</span><span class='line'>               <span class="s2">&quot;Effect&quot;</span><span class="o">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+</span><span class='line'>               <span class="s2">&quot;Principal&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                    <span class="s2">&quot;AWS&quot;</span><span class="o">:</span> <span class="s2">&quot;*&quot;</span>
+</span><span class='line'>               <span class="p">},</span>
+</span><span class='line'>               <span class="s2">&quot;Action&quot;</span><span class="o">:</span> <span class="s2">&quot;s3:GetObject&quot;</span><span class="p">,</span>
+</span><span class='line'>               <span class="s2">&quot;Resource&quot;</span><span class="o">:</span> <span class="s2">&quot;arn:aws:s3:::example.com/*&quot;</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>     <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个policy其实是给所有匿名用户访问该bucket里面文件的权限。</p>
+
+<p><img src="http://www.huangbowen.net/images/bucketpolicy.png" width="780"></p>
+
+<p>第七步，还是在’Permissions‘标签里，点击’Add CORS configuration‘按钮，加入如下的配置：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;CORSConfiguration</span> <span class="na">xmlns=</span><span class="s">&quot;http://s3.amazonaws.com/doc/2006-03-01/&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;CORSRule&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;AllowedOrigin&gt;</span>*<span class="nt">&lt;/AllowedOrigin&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;AllowedMethod&gt;</span>GET<span class="nt">&lt;/AllowedMethod&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;MaxAgeSeconds&gt;</span>3000<span class="nt">&lt;/MaxAgeSeconds&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;AllowedHeader&gt;</span>Authorization<span class="nt">&lt;/AllowedHeader&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/CORSRule&gt;</span>
+</span><span class='line'><span class="nt">&lt;/CORSConfiguration&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个是用来配置跨域访问的权限，即是否允许其他网站访问这个bucket上的资源。由于Octopress博客集成了很多插件，比如google analiycis, github等，都需要跨域加载JavaScript文件，执行JavaScript文件，所以要加入这些配置。</p>
+
+<p><img src="http://www.huangbowen.net/images/corsconfiguration.png" width="780"></p>
+
+<p>第八步，下载安装<a href="http://s3tools.org/s3cmd">s3cmd</a>。<a href="http://s3tools.org/s3cmd">s3cmd</a>是一款操作AWS S3的命令行工具。通过它可以创建或删除bucket，上传或下载object，我们在部署octopress博客时，主要就是通过它来将博客上传到S3上去。如果是mac系统化可以通过HomeBrew直接安装。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># brew install s3cmd</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果是windows系统可以从<a href="http://s3tools.org/s3cmd">官网</a>下载安装包进行安装。</p>
+
+<p>第九步，配置<a href="http://s3tools.org/s3cmd">s3cmd</a>与你的S3的连接。在命令行下输入<code>s3cmd --configure</code>，按照向导来配置与S3的连接。这时候在前面保存的Access key就派上用场了。所有的配置信息其实都存在当前用户名下的.s3cfg文件中。你也可以随后修改这些信息。运行<code>s3cmd ls</code>来检测是否配置成功。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>s3cmd ls <span class="c">#列出所有的bucket</span>
+</span><span class='line'>2013-09-27 05:05  s3://huangbowen.net
+</span><span class='line'>2013-09-28 03:24  s3://www.huangbowen.net
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第十步，配置Octopress支持向S3的部署。在Octopress目录下找到Rakefile文件，修改或添加下述配置。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>deploy_default = &quot;s3&quot;   #部署task
+</span><span class='line'>s3_bucket = &quot;example.com&quot; # bucket名称
+</span><span class='line'>
+</span><span class='line'>s3_cache_secs = 3600  # header中的cache controll属性，即缓存时间，后面CloudFront要用到
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后添加一个新的task。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">desc</span> <span class="s2">&quot;Deploy website via s3cmd&quot;</span>
+</span><span class='line'><span class="n">task</span> <span class="ss">:s3</span> <span class="k">do</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;## Deploying website via s3cmd&quot;</span>
+</span><span class='line'>  <span class="n">ok_failed</span> <span class="nb">system</span><span class="p">(</span><span class="s2">&quot;s3cmd sync --acl-public --reduced-redundancy --add-header </span><span class="se">\&quot;</span><span class="s2">Cache-Control: max-age=</span><span class="si">#{</span><span class="n">s3_cache_secs</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">  public/* s3://</span><span class="si">#{</span><span class="n">s3_bucket</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>OK，大功告成，运行<code>rake generate</code>
+及<code>&amp;&amp; rake deploy</code>就可以将生成的静态站点上传到S3中区。然后就可以通过S3的EndPoint来访问新站点了。（EndPoint可以在Amazon management console的S3 dashboard的
+‘Static Website Hosting’ 标签中找到）</p>
+
+<p>当然现在还不能使用自己的域名来访问，你可以通过配置CNAME来启用自己的域名。</p>
+
+<p>下篇文章会讲如何将CloudFront作为内容分发，并且如何将自己的域名与CloudFront绑定。</p>
+
+<p>现在我的博客已经在云端了，地址是&lt;www.huangbowen.net></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[升级ruby版本那"不堪回首的经历"]]></title>
@@ -2845,198 +3001,6 @@ WHERE 1=0;</code></p></li>
 
 
 <p><a href="https://code.google.com/p/guava-libraries/">Guava</a>中还有很多好玩的东西，大家时间可以多发掘发掘。这篇文章的源码已经被我放置到<a href="https://github.com/huangbowen521/SpringMessageSpike">github</a>中，感兴趣的可以自行查看。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[使用WebDriver遇到的那些坑]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/06/25/practice-of-webdriver/"/>
-    <updated>2013-06-25T22:00:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/06/25/practice-of-webdriver</id>
-    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/automatedRobot.png"></p>
-
-<p>在做web项目的自动化端到端测试时主要使用的是<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>来驱动浏览器。<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>的优点是支持的语言多，支持的浏览器多。主流的浏览器Chrome、Firefox、IE等都支持，手机上的浏览器Android、IPhone等也支持，甚至还支持<a href="http://phantomjs.org/">PhantomJS</a>（由于PhantomJS跑测试时并不需要渲染元素，所以执行速度快）。</p>
-
-<!-- more -->
-
-
-<p>但是我在使用<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>时，遇到了很多坑。这些问题，有的是因为<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>与浏览器不同版本之间兼容性的问题，有的是<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>本身的bug，当然也不乏自己对<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>某些功能理解不透彻。我花时间总结了一下，分享给大家，希望大家以后遇到问题可以避过这些坑，少走弯路。另外也总结了一些使用WebDriver的比较好的实践，也一并分享给大家。</p>
-
-<ul>
-<li><strong>WebDriver每次启动一个Firefox的实例时，会生成一个匿名的profile，并不会使用当前Firefox的profile。这点一定要注意。比如如果访问被测试的web服务需要通过代理，你想直接设置Firefox的代理是行不通的，因为WebDriver启动的Firefox实例并不会使用你这个profile，正确的做法是通过FirefoxProfile来设置。</strong></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">WebDriver</span> <span class="nf">create</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">FirefoxProfile</span> <span class="n">firefoxProfile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FirefoxProfile</span><span class="o">();</span>
-</span><span class='line'>  <span class="n">firefoxProfile</span><span class="o">.</span><span class="na">setPreference</span><span class="o">(</span><span class="s">&quot;network.proxy.type&quot;</span><span class="o">,</span><span class="mi">1</span><span class="o">);</span>
-</span><span class='line'>  <span class="n">firefoxProfile</span><span class="o">.</span><span class="na">setPreference</span><span class="o">(</span><span class="s">&quot;network.proxy.http&quot;</span><span class="o">,</span><span class="n">yourProxy</span><span class="o">);</span>
-</span><span class='line'>  <span class="n">firefoxProfile</span><span class="o">.</span><span class="na">setPreference</span><span class="o">(</span><span class="s">&quot;network.proxy.http_port&quot;</span><span class="o">,</span><span class="n">yourPort</span><span class="o">);</span>
-</span><span class='line'>  <span class="n">firefoxProfile</span><span class="o">.</span><span class="na">setPreference</span><span class="o">(</span><span class="s">&quot;network.proxy.no_proxies_on&quot;</span><span class="o">,</span><span class="s">&quot;&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="k">new</span> <span class="nf">FirefoxDriver</span><span class="o">(</span><span class="n">firefoxProfile</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>通过FirefoProfile也可以设置Firefox其它各种配置。如果要默认给Firefox安装插件的话，可以将插件放置到Firefox安装目录下的默认的plugin文件夹中，这样即使是使用一个全新的profile也可以应用此plugin。</p>
-
-<ul>
-<li><strong>使用WebDriver点击界面上Button元素时，如果当前Button元素被界面上其他元素遮住了，或没出现在界面中（比如Button在页面底部，但是屏幕只能显示页面上半部分），使用默认的WebElement.Click()可能会触发不了Click事件。</strong></li>
-</ul>
-
-
-<p>修正方案是找到该页面元素后直接发送一条Click的JavaScript指令。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">((</span><span class="n">JavascriptExecutor</span><span class="o">)</span><span class="n">webDriver</span><span class="o">).</span><span class="na">executeScript</span><span class="o">(</span><span class="s">&quot;arguments[0].click();&quot;</span><span class="o">,</span> <span class="n">webElement</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>当进行了一些操作发生页面跳转时，最好加一个Wait方法等待page load完成再进行后续操作。方法是在某个时间段内判断document.readyState是不是complete。</strong></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">protected</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">WebDriver</span><span class="o">,</span> <span class="n">Boolean</span><span class="o">&gt;</span> <span class="n">isPageLoaded</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">WebDriver</span><span class="o">,</span> <span class="n">Boolean</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="nd">@Override</span>
-</span><span class='line'>            <span class="kd">public</span> <span class="n">Boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">WebDriver</span> <span class="n">driver</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="k">return</span> <span class="o">((</span><span class="n">JavascriptExecutor</span><span class="o">)</span> <span class="n">driver</span><span class="o">).</span><span class="na">executeScript</span><span class="o">(</span><span class="s">&quot;return document.readyState&quot;</span><span class="o">).</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;complete&quot;</span><span class="o">);</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">};</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">waitForPageLoad</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">WebDriverWait</span> <span class="n">wait</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WebDriverWait</span><span class="o">(</span><span class="n">webDriver</span><span class="o">,</span> <span class="mi">30</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">wait</span><span class="o">.</span><span class="na">until</span><span class="o">(</span><span class="n">isPageLoaded</span><span class="o">());</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>如果页面有Ajax操作，需要写一个Wait方法等待Ajax操作完成。方式与上一条中的基本相同。比如一个Ajax操作是用于向DropDownList中填充数据，则写一个方法判断该DropDownList中元素是否多余0个。</strong></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">WebDriver</span><span class="o">,</span> <span class="n">Boolean</span><span class="o">&gt;</span> <span class="n">haveMoreThanOneOption</span><span class="o">(</span><span class="kd">final</span> <span class="n">By</span> <span class="n">element</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">WebDriver</span><span class="o">,</span> <span class="n">Boolean</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="nd">@Override</span>
-</span><span class='line'>            <span class="kd">public</span> <span class="n">Boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">WebDriver</span> <span class="n">driver</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="n">WebElement</span> <span class="n">webElement</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">element</span><span class="o">);</span>
-</span><span class='line'>                <span class="k">if</span> <span class="o">(</span><span class="n">webElement</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                    <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-</span><span class='line'>                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-</span><span class='line'>                    <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">webElement</span><span class="o">.</span><span class="na">findElements</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">tagName</span><span class="o">(</span><span class="s">&quot;option&quot;</span><span class="o">)).</span><span class="na">size</span><span class="o">();</span>
-</span><span class='line'>                    <span class="k">return</span> <span class="n">size</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="o">;</span>
-</span><span class='line'>                <span class="o">}</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">};</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">waitForDropDownListLoaded</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">WebDriverWait</span> <span class="n">wait</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WebDriverWait</span><span class="o">(</span><span class="n">webDriver</span><span class="o">,</span> <span class="mi">30</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">wait</span><span class="o">.</span><span class="na">until</span><span class="o">(</span><span class="n">isPageLoaded</span><span class="o">());</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以此类推，我们可以判断某个元素是否呈现、某个class是否append成功等一系列方法来判断ajax是否执行完成。</p>
-
-<ul>
-<li><strong>如果网站使用了JQuery的动画效果，我们在运行测试的时候其实可以disable JQuery的animation，一方面可以加快测试的速度，另一方面可以加强测试的稳定性（如果启用了Animation，使用WebDriver驱动浏览器时可能会出现一些无法预料的异常）。</strong></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">((</span><span class="n">JavascriptExecutor</span><span class="o">)</span><span class="n">driver</span><span class="o">).</span><span class="na">executeScript</span><span class="o">(</span><span class="s">&quot;jQuery.fx.off=true&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>由于WebDriver要驱动浏览器，所以测试运行的时间比较长，我们可以并行跑测试以节省时间。如果你使用的是maven构建工具，可以配置surefire plugin时，在configruation节点加入以下配置。</strong></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;parallel&gt;</span>classes<span class="nt">&lt;/parallel&gt;</span>
-</span><span class='line'><span class="nt">&lt;threadCount&gt;</span>3<span class="nt">&lt;/threadCount&gt;</span>
-</span><span class='line'><span class="nt">&lt;perCoreThreadCount&gt;</span>false<span class="nt">&lt;/perCoreThreadCount&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>当测试fail的时候，如果当前使用的WebDriver实现了TakesScreenshot接口，我们就可以调用相应的方法截下当前浏览器呈现的web页面，这样有利于快速定位出错的原因。</strong></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getScreenShot</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">webDriver</span> <span class="k">instanceof</span> <span class="n">TakesScreenshot</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">TakesScreenshot</span> <span class="n">screenshotTaker</span> <span class="o">=</span> <span class="o">(</span><span class="n">TakesScreenshot</span><span class="o">)</span> <span class="n">webDriver</span><span class="o">;</span>
-</span><span class='line'>            <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="n">screenshotTaker</span><span class="o">.</span><span class="na">getScreenshotAs</span><span class="o">(</span><span class="n">savePath</span><span class="o">);</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p><strong>如果页面弹出了浏览器自带的警告框（使用JavaScript的Alert方法），<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>在点选次警告框时会偶发性失败。具体原因还未查明。解决方案是尽量不使用Alert方法的警告框，而是自己实现模式窗口（比如Jquery UI的模式窗口）来实现警告框效果。这样即保证了测试的稳定性，另外我们自己可以控制警告框的样式，给用户带来更好的体验。</strong></p></li>
-<li><p><strong>经常更新Selenium的版本。注意经常上Selenium的<a href="http://docs.seleniumhq.org/">官网</a>看是否发布了新的版本，新的版本都修复了那些bug，如果包含你遇到的bug，就可以升级到目前的版本。</strong></p></li>
-</ul>
-
 ]]></content>
   </entry>
   
