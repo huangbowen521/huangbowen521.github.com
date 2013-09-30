@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: AWS | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/aws/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-09-30T14:33:40+08:00</updated>
+  <updated>2013-09-30T14:52:15+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -28,6 +28,18 @@
 
 
 <p>这篇文章主要讲如何将Octopress博客部署到S3上去。下一篇文章会讲如何将CloudFront做CDN,并与现有域名绑定。</p>
+
+<p>在此之前先普及一些概念。</p>
+
+<p>AWS - Amazon Web Service,亚马逊提供的云服务简称。</p>
+
+<p>S3 - Amazon Simple Storage Service, 亚马逊提供的一种存储静态资源（如css、js、html文件，音视频文件）的服务。</p>
+
+<p>CDN - Content Delivery Network, 内容分发网络。</p>
+
+<p>Amazon CloudFront - 亚马逊提供的一种内容分发服务，提高你的网站访问速度。</p>
+
+<p>Amazon Route 53 - 亚马逊提供的一种稳定高效的域名解析系统。</p>
 
 <p>第一步，注册一个亚马逊的账号，注册地址是<a href="https://portal.aws.amazon.com/gp/aws/developer/registration/index.html">https://portal.aws.amazon.com/gp/aws/developer/registration/index.html</a>。注意注册的时候需要提供一张具备外币功能的信用卡。</p>
 
