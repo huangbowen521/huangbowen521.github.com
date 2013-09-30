@@ -11,7 +11,7 @@ rsync_delete   = false
 rsync_args     = ""  # Any extra arguments to pass to rsync
 deploy_default = "s3"
 s3_bucket = "huangbowen.net"
-s3_cache_secs = 3600
+s3_cache_secs = 600
 
 # This will be configured for you when you run config_deploy
 deploy_branch  = "master"
