@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-09-30T15:35:52+08:00</updated>
+  <updated>2013-10-01T22:04:51+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,73 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[将我的博客迁移到亚马逊云端（2）]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/10/01/migrate-octopress-to-aws-step-2/"/>
+    <updated>2013-10-01T21:54:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/10/01/migrate-octopress-to-aws-step-2</id>
+    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/edgelocation.png"></p>
+
+<p>上篇文章中讲了将我的Octopress博客部署到亚马逊的S3上。而这篇文章则主要讲如何使用亚马逊提供的CloudFront作为内容分发并将自己的独立域名绑定到此CloudFront上。</p>
+
+<!-- more -->
+
+
+<p>首先，需要启用亚马逊的CloudFront。我刚开始以为只需要‘sign up’就行。但是当我在&#8217;AWS Management Console&#8217;中点击‘Services’中的CloudFront时，却得到了‘Account Blocked’错误。</p>
+
+<p><img src="http://www.huangbowen.net/images/accountblocked.png" width="780"></p>
+
+<p>这个问题很奇怪，CloudFront明明已经在&#8217; Services You&#8217;re Signed Up For&#8217; list中了，但是咋个无法使用那？我只好使用gmail给Amazon客服中心发了邮件询问，结果客服中心告诉我需要使用一个business email(商业邮箱)来发送激活申请。我只好使用公司邮箱发送了申请，过了几个小时就收到了回信，告诉我已经可以使用了。</p>
+
+<p>登陆&#8217;AWS Management Console&#8217;后，点击&#8217;Services&#8217;中的‘CloudFront’，就可以看到控制界面了。</p>
+
+<p><img src="http://www.huangbowen.net/images/cloudfront.png" width="780"></p>
+
+<p>点击&#8217;Create Distribution&#8217;按钮，Delivery method选择Download。 Download主要针对一些html，css,js等静态文件，而Streaming则主要是一些音视频文件。</p>
+
+<p><img src="http://www.huangbowen.net/images/deliverymethod.png" width="780"></p>
+
+<p>下一步，要选择Origin,即要进行内容分发的源。虽然亚马逊会自动列出你的S3 bucket，但是千万不要选。而是自己手动输入example.com这个Bucket的Endpoint(Endpoint在S3 Console的Properties标签下的Static Website hosting里看得到)。为什么不直接选S3 bucket那?这是因为当我们访问一个目录时，我们期望能返回默认的object。虽然CouldFront有个Default Root Object设置，只是对根目录起作用，对子目录不起作用。如果使用Bucket的Endpoint，再加上之前已经给该Bucket配置了Default Object，就可以解决这个问题。</p>
+
+<p><img src="http://www.huangbowen.net/images/originname.png" width="780"></p>
+
+<p>在CNAMEs项中输入自己的域名，多个域名以逗号分隔。</p>
+
+<p><img src="http://www.huangbowen.net/images/alternatedomain.png" width="780"></p>
+
+<p>这样子CoudFront就算配置好了。通过管理页面也可以配置Error page等。</p>
+
+<p><img src="http://www.huangbowen.net/images/cloudfrontoverview.png" width="780"></p>
+
+<p>接下来，需要登录自己域名的提供商的管理后台，添加一条自己独立域名的转发，转发到这个CloudFront的Domain Name上。</p>
+
+<p><img src="http://www.huangbowen.net/images/domainnamechange.png" width="780"></p>
+
+<p>一般需要10分钟到2个小时等待新的域名转发设置生效。</p>
+
+<p>另外要专门提一下CloudFront的cache机制。CloudFront主要通过检测Origin中的http header中的cache-control属性。根据cache-control的值来设置cache时间。但是CloudFront最长只保留24小时的cache，过后就会清空并重新cache。对于我的小博客来说24小时太长了，那如何给Octopress注入cache-control这个http header那？其实在上篇文章已经提过了。S3支持给每个object设置 http header，我们可以通过s3cmd来自动设置，这就是为什么在S3 task中要加入这个参数。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">desc</span> <span class="s2">&quot;Deploy website via s3cmd&quot;</span>
+</span><span class='line'><span class="n">task</span> <span class="ss">:s3</span> <span class="k">do</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;## Deploying website via s3cmd&quot;</span>
+</span><span class='line'>  <span class="n">ok_failed</span> <span class="nb">system</span><span class="p">(</span><span class="s2">&quot;s3cmd sync --acl-public --reduced-redundancy --add-header </span><span class="se">\&quot;</span><span class="s2">Cache-Control: max-age=</span><span class="si">#{</span><span class="n">s3_cache_secs</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">  public/* s3://</span><span class="si">#{</span><span class="n">s3_bucket</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中S3_cache_secs就是设置cache时间，我把它设置为3600,也就是一个小时。</p>
+
+<p>至此，我的Octopress博客已经在云端了。感觉访问速度比以前快不少。以前我是部署在github pages，服务器放置在美国。现在使用了CloudFront，亚马逊会自动将请求转发到最近的CloudFront edge location。接下来我再研究下 Amazon Route 53,看看有什么好玩的。</p>
+
+<p>我的博客地址: <a href="http://www.huangbowen.net">http://www.huangbowen.net</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[将我的博客迁移到亚马逊云端(1)]]></title>
@@ -177,7 +244,7 @@
 
 <p>下篇文章会讲如何将CloudFront作为内容分发，并且如何将自己的域名与CloudFront绑定。</p>
 
-<p>现在我的博客已经在云端了，地址是&lt;www.huangbowen.net></p>
+<p>现在我的博客已经在云端了，地址是<a href="http://www.huangbowen.net">http://www.huangbowen.net</a></p>
 ]]></content>
   </entry>
   
@@ -2502,517 +2569,6 @@ WHERE 1=0;</code></p></li>
 
 
 <p>当然<a href="http://mxcl.github.io/homebrew/">Homebrew</a>接收这些软件也是有一定条件的，可以看<a href="https://github.com/mxcl/homebrew/wiki/Acceptable-Formulae">这个文档</a>。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Java经典类库-Guava中的函数式编程讲解]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/06/28/functional-programming-in-guava/"/>
-    <updated>2013-06-28T01:31:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/06/28/functional-programming-in-guava</id>
-    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/FP.jpg"></p>
-
-<p>如果我要新建一个java的项目，那么有两个类库是必备的，一个是junit，另一个是<a href="https://code.google.com/p/guava-libraries/">Guava</a>。选择junit，因为我喜欢TDD，喜欢自动化测试。而是用<a href="https://code.google.com/p/guava-libraries/">Guava</a>，是因为我喜欢简洁的API。<a href="https://code.google.com/p/guava-libraries/">Guava</a>提供了很多的实用工具函数来弥补java标准库的不足，另外<a href="https://code.google.com/p/guava-libraries/">Guava</a>还引入了函数式编程的概念，在一定程度上缓解了java在JDK1.8之前没有lambda的缺陷，使使用java书写简洁易读的函数式风格的代码成为可能。</p>
-
-<!-- more -->
-
-
-<p>下面就简单的介绍下<a href="https://code.google.com/p/guava-libraries/">Guava</a>中的一些体现了函数式编程的API。</p>
-
-<h2>Filter</h2>
-
-<p>我们先创建一个简单的Person类。</p>
-
-<figure class='code'><figcaption><span>Person.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">Person</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果要产生一个Person类的List，通常的写法可能是这样子。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">people</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;();</span>
-</span><span class='line'>        <span class="n">people</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Person</span><span class="o">(</span><span class="s">&quot;bowen&quot;</span><span class="o">,</span><span class="mi">27</span><span class="o">));</span>
-</span><span class='line'>        <span class="n">people</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Person</span><span class="o">(</span><span class="s">&quot;bob&quot;</span><span class="o">,</span> <span class="mi">20</span><span class="o">));</span>
-</span><span class='line'>        <span class="n">people</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Person</span><span class="o">(</span><span class="s">&quot;Katy&quot;</span><span class="o">,</span> <span class="mi">18</span><span class="o">));</span>
-</span><span class='line'>        <span class="n">people</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Person</span><span class="o">(</span><span class="s">&quot;Logon&quot;</span><span class="o">,</span> <span class="mi">24</span><span class="o">));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>而<a href="https://code.google.com/p/guava-libraries/">Guava</a>提供了一个newArrayList的方法，其自带类型推演，并可以方便的生成一个List,并且通过参数传递初始化值。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">people</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="k">new</span> <span class="n">Person</span><span class="o">(</span><span class="s">&quot;bowen&quot;</span><span class="o">,</span> <span class="mi">27</span><span class="o">),</span>
-</span><span class='line'>                <span class="k">new</span> <span class="nf">Person</span><span class="o">(</span><span class="s">&quot;bob&quot;</span><span class="o">,</span> <span class="mi">20</span><span class="o">),</span>
-</span><span class='line'>                <span class="k">new</span> <span class="nf">Person</span><span class="o">(</span><span class="s">&quot;Katy&quot;</span><span class="o">,</span> <span class="mi">18</span><span class="o">),</span>
-</span><span class='line'>                <span class="k">new</span> <span class="nf">Person</span><span class="o">(</span><span class="s">&quot;Logon&quot;</span><span class="o">,</span> <span class="mi">24</span><span class="o">));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>当然，这不算函数式编程的范畴，这是<a href="https://code.google.com/p/guava-libraries/">Guava</a>给我们提供的一个实用的函数。</p>
-
-<p>如果我们选取其中年龄大于20的人，通常的写法可能是这样子。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">oldPeople</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;();</span>
-</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="n">Person</span> <span class="n">person</span> <span class="o">:</span> <span class="n">people</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="mi">20</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="n">oldPeople</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">person</span><span class="o">);</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这就是典型的filter模式。filter即从一个集合中根据一个条件筛选元素。其中person.getAge() >=20就是这个条件。<a href="https://code.google.com/p/guava-libraries/">Guava</a>为这种模式提供了一个filter的方法。所以我们可以这样写。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">oldPeople</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="n">filter</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="mi">20</span><span class="o">;</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">}));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这里的Predicate是<a href="https://code.google.com/p/guava-libraries/">Guava</a>中的一个接口，我们来看看它的定义。</p>
-
-<figure class='code'><figcaption><span>Predicate.java </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@GwtCompatible</span>
-</span><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Predicate</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
-</span><span class='line'>  <span class="cm">/**</span>
-</span><span class='line'><span class="cm">   * Returns the result of applying this predicate to {@code input}. This method is &lt;i&gt;generally</span>
-</span><span class='line'><span class="cm">   * expected&lt;/i&gt;, but not absolutely required, to have the following properties:</span>
-</span><span class='line'><span class="cm">   *</span>
-</span><span class='line'><span class="cm">   * &lt;ul&gt;</span>
-</span><span class='line'><span class="cm">   * &lt;li&gt;Its execution does not cause any observable side effects.</span>
-</span><span class='line'><span class="cm">   * &lt;li&gt;The computation is &lt;i&gt;consistent with equals&lt;/i&gt;; that is, {@link Objects#equal</span>
-</span><span class='line'><span class="cm">   *     Objects.equal}{@code (a, b)} implies that {@code predicate.apply(a) ==</span>
-</span><span class='line'><span class="cm">   *     predicate.apply(b))}.</span>
-</span><span class='line'><span class="cm">   * &lt;/ul&gt;</span>
-</span><span class='line'><span class="cm">   *</span>
-</span><span class='line'><span class="cm">   * @throws NullPointerException if {@code input} is null and this predicate does not accept null</span>
-</span><span class='line'><span class="cm">   *     arguments</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>  <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="nd">@Nullable</span> <span class="n">T</span> <span class="n">input</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="cm">/**</span>
-</span><span class='line'><span class="cm">   * Indicates whether another object is equal to this predicate.</span>
-</span><span class='line'><span class="cm">   *</span>
-</span><span class='line'><span class="cm">   * &lt;p&gt;Most implementations will have no reason to override the behavior of {@link Object#equals}.</span>
-</span><span class='line'><span class="cm">   * However, an implementation may also choose to return {@code true} whenever {@code object} is a</span>
-</span><span class='line'><span class="cm">   * {@link Predicate} that it considers &lt;i&gt;interchangeable&lt;/i&gt; with this one. &quot;Interchangeable&quot;</span>
-</span><span class='line'><span class="cm">   * &lt;i&gt;typically&lt;/i&gt; means that {@code this.apply(t) == that.apply(t)} for all {@code t} of type</span>
-</span><span class='line'><span class="cm">   * {@code T}). Note that a {@code false} result from this method does not imply that the</span>
-</span><span class='line'><span class="cm">   * predicates are known &lt;i&gt;not&lt;/i&gt; to be interchangeable.</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>  <span class="nd">@Override</span>
-</span><span class='line'>  <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="nd">@Nullable</span> <span class="n">Object</span> <span class="n">object</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>里面只有一个apply方法，接收一个泛型的实参，返回一个boolean值。由于java世界中函数并不是一等公民，所以我们无法直接传递一个条件函数，只能通过Predicate这个类包装一下。</p>
-
-<h2>And Predicate</h2>
-
-<p>如果要再实现一个方法来查找People列表中所有名字中包含b字母的列表，我们可以用<a href="https://code.google.com/p/guava-libraries/">Guava</a>简单的实现。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">namedPeople</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="n">filter</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">);</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">}));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>一切是这么的简单。
-那么新需求来了，如果现在需要找年龄>=20并且名称包含b的人，该如何实现那？
-可能你会这样写。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">filteredPeople</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="n">filter</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="mi">20</span><span class="o">;</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">}));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样写的话就有一定的代码重复，因为之前我们已经写了两个Predicate来分别实现这两个条件判断，能不能重用之前的Predicate那？答案是能。
-我们首先将之前生成年龄判断和名称判断的两个Predicate抽成方法。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="nf">ageBiggerThan</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="n">age</span><span class="o">;</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">};</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">private</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="nf">nameContains</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">};</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>而我们的结果其实就是这两个Predicate相与。<a href="https://code.google.com/p/guava-libraries/">Guava</a>给我们提供了and方法，用于对一组Predicate求与。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>      <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">filteredPeople</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="n">filter</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="n">and</span><span class="o">(</span><span class="n">ageBiggerThan</span><span class="o">(</span><span class="mi">20</span><span class="o">),</span> <span class="n">nameContains</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">))));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>由于and接收一组Predicate，返回也是一个Predicate，所以可以直接作为filter的第二个参数。如果不熟悉函数式编程的人可能感觉有点怪异，但是习惯了就会觉得它的强大与简洁。
-当然除了and，<a href="https://code.google.com/p/guava-libraries/">Guava</a>还为我们提供了or，用于对一组Predicate求或。这里就不多讲了，大家可以自己练习下。</p>
-
-<h2>Map(transform)</h2>
-
-<p>列表操作还有另一个常见的模式，就是将数组中的所有元素映射为另一种元素的列表，这就是map pattern。举个例子，求People列表中的所有人名。程序员十有八九都会这样写。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">names</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
-</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="n">Person</span> <span class="n">person</span> <span class="o">:</span> <span class="n">people</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">names</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
-</span><span class='line'>        <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><a href="https://code.google.com/p/guava-libraries/">Guava</a>已经给我们提供了这种Pattern的结果办法，那就是使用transform方法。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">names</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="n">transform</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="kd">public</span> <span class="n">String</span> <span class="nf">apply</span><span class="o">(</span> <span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">}));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Function是另外一种用于封装函数的接口对象。它的定义如下:</p>
-
-<figure class='code'><figcaption><span>Function.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@GwtCompatible</span>
-</span><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Function</span><span class="o">&lt;</span><span class="n">F</span><span class="o">,</span> <span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
-</span><span class='line'>  <span class="cm">/**</span>
-</span><span class='line'><span class="cm">   * Returns the result of applying this function to {@code input}. This method is &lt;i&gt;generally</span>
-</span><span class='line'><span class="cm">   * expected&lt;/i&gt;, but not absolutely required, to have the following properties:</span>
-</span><span class='line'><span class="cm">   *</span>
-</span><span class='line'><span class="cm">   * &lt;ul&gt;</span>
-</span><span class='line'><span class="cm">   * &lt;li&gt;Its execution does not cause any observable side effects.</span>
-</span><span class='line'><span class="cm">   * &lt;li&gt;The computation is &lt;i&gt;consistent with equals&lt;/i&gt;; that is, {@link Objects#equal</span>
-</span><span class='line'><span class="cm">   *     Objects.equal}{@code (a, b)} implies that {@code Objects.equal(function.apply(a),</span>
-</span><span class='line'><span class="cm">   *     function.apply(b))}.</span>
-</span><span class='line'><span class="cm">   * &lt;/ul&gt;</span>
-</span><span class='line'><span class="cm">   *</span>
-</span><span class='line'><span class="cm">   * @throws NullPointerException if {@code input} is null and this function does not accept null</span>
-</span><span class='line'><span class="cm">   *     arguments</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>  <span class="nd">@Nullable</span> <span class="n">T</span> <span class="n">apply</span><span class="o">(</span><span class="nd">@Nullable</span> <span class="n">F</span> <span class="n">input</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="cm">/**</span>
-</span><span class='line'><span class="cm">   * Indicates whether another object is equal to this function.</span>
-</span><span class='line'><span class="cm">   *</span>
-</span><span class='line'><span class="cm">   * &lt;p&gt;Most implementations will have no reason to override the behavior of {@link Object#equals}.</span>
-</span><span class='line'><span class="cm">   * However, an implementation may also choose to return {@code true} whenever {@code object} is a</span>
-</span><span class='line'><span class="cm">   * {@link Function} that it considers &lt;i&gt;interchangeable&lt;/i&gt; with this one. &quot;Interchangeable&quot;</span>
-</span><span class='line'><span class="cm">   * &lt;i&gt;typically&lt;/i&gt; means that {@code Objects.equal(this.apply(f), that.apply(f))} is true for all</span>
-</span><span class='line'><span class="cm">   * {@code f} of type {@code F}. Note that a {@code false} result from this method does not imply</span>
-</span><span class='line'><span class="cm">   * that the functions are known &lt;i&gt;not&lt;/i&gt; to be interchangeable.</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>  <span class="nd">@Override</span>
-</span><span class='line'>  <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="nd">@Nullable</span> <span class="n">Object</span> <span class="n">object</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>它与Predicate非常相似，但不同的是它接收两个泛型，apply方法接收一种泛型实参，返回值是另一种泛型值。正是这个apply方法定义了数组间元素一对一的map规则。</p>
-
-<h2>reduce</h2>
-
-<p>除了filter与map模式外，列表操作还有一种reduce操作。比如求people列表中所有人年龄的和。<a href="https://code.google.com/p/guava-libraries/">Guava</a>并未提供reduce方法。具体原因我们并不清楚。但是我们可以自己简单的实现一个reduce pattern。
-先定义一个Func的接口。</p>
-
-<figure class='code'><figcaption><span>Func.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>     <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Func</span><span class="o">&lt;</span><span class="n">F</span><span class="o">,</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>         <span class="n">T</span> <span class="nf">apply</span><span class="o">(</span><span class="n">F</span> <span class="n">currentElement</span><span class="o">,</span> <span class="n">T</span> <span class="n">origin</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>     <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>apply方法的第一个参数为列表中的当前元素，第二个参数为默认值，返回值类型为默认值类型。
-然后我们定义个reduce的静态方法。</p>
-
-<figure class='code'><figcaption><span>Reduce.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Reduce</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="nf">Reduce</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">F</span><span class="o">,</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="n">reduce</span><span class="o">(</span><span class="kd">final</span> <span class="n">Iterable</span><span class="o">&lt;</span><span class="n">F</span><span class="o">&gt;</span> <span class="n">iterable</span><span class="o">,</span> <span class="kd">final</span> <span class="n">Func</span><span class="o">&lt;</span><span class="n">F</span><span class="o">,</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">func</span><span class="o">,</span> <span class="n">T</span> <span class="n">origin</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">iterable</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span> <span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">();</span> <span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">origin</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="na">apply</span><span class="o">((</span><span class="n">F</span><span class="o">)(</span><span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">()),</span> <span class="n">origin</span><span class="o">);</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">return</span> <span class="n">origin</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>reduce方法接收三个参数，第一个是需要进行reduce操作的列表，第二个是封装reduce操作的Func，第三个参数是初始值。</p>
-
-<p>我们可以使用这个reduce来实现求people列表中所有人的年龄之和。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">Integer</span> <span class="n">ages</span> <span class="o">=</span> <span class="n">Reduce</span><span class="o">.</span><span class="na">reduce</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="k">new</span> <span class="n">Func</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">,</span> <span class="n">Integer</span> <span class="n">origin</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">+</span> <span class="n">origin</span><span class="o">;</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">},</span> <span class="mi">0</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们也可以轻松的写一个方法来得到年龄的最大值。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>        <span class="n">Integer</span> <span class="n">maxAge</span> <span class="o">=</span> <span class="n">Reduce</span><span class="o">.</span><span class="na">reduce</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="k">new</span> <span class="n">Func</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">,</span> <span class="n">Integer</span> <span class="n">origin</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">&gt;</span> <span class="n">origin</span> <span class="o">?</span> <span class="n">person</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">:</span> <span class="n">origin</span><span class="o">;</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">},</span> <span class="mi">0</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Fluent pattern</h2>
-
-<p>现在新需求来了，需要找出年龄>=20岁的人的所有名称。该如何操作那？我们可以使用filter过滤出年龄>=20的人，然后使用transform得到剩下的所有人的人名。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">getName</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="kd">public</span> <span class="n">String</span> <span class="nf">apply</span><span class="o">(</span> <span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">};</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getPeopleNamesByAge</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">names</span> <span class="o">=</span> <span class="n">newArrayList</span><span class="o">(</span><span class="n">transform</span><span class="o">(</span><span class="n">filter</span><span class="o">(</span><span class="n">people</span><span class="o">,</span> <span class="n">ageBiggerThan</span><span class="o">(</span><span class="mi">20</span><span class="o">)),</span> <span class="n">getName</span><span class="o">()));</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样括号套括号的着实不好看。能不能改进一下那？<a href="https://code.google.com/p/guava-libraries/">Guava</a>为我们提供了fluent模式的API,我们可以这样来写。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>      <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">names</span> <span class="o">=</span> <span class="n">from</span><span class="o">(</span><span class="n">people</span><span class="o">).</span><span class="na">filter</span><span class="o">(</span><span class="n">ageBiggerThan</span><span class="o">(</span><span class="mi">20</span><span class="o">)).</span><span class="na">transform</span><span class="o">(</span><span class="n">getName</span><span class="o">()).</span><span class="na">toList</span><span class="o">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><a href="https://code.google.com/p/guava-libraries/">Guava</a>中还有很多好玩的东西，大家时间可以多发掘发掘。这篇文章的源码已经被我放置到<a href="https://github.com/huangbowen521/SpringMessageSpike">github</a>中，感兴趣的可以自行查看。</p>
 ]]></content>
   </entry>
   
