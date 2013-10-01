@@ -148,7 +148,7 @@ OK，大功告成，运行`rake generate`
 
 下篇文章会讲如何将CloudFront作为内容分发，并且如何将自己的域名与CloudFront绑定。
 
-现在我的博客已经在云端了，地址是<www.huangbowen.net>
+现在我的博客已经在云端了，地址是<http://www.huangbowen.net>
 
 
 [Octopress]: http://octopress.org/
