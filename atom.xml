@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-10-01T22:04:51+08:00</updated>
+  <updated>2013-10-03T00:02:37+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,444 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[hello Vagrant]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/10/02/hello-vagrant/"/>
+    <updated>2013-10-02T23:50:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/10/02/hello-vagrant</id>
+    <content type="html"><![CDATA[<p>回想以前，想要安装个虚拟机是多么的麻烦。先要费尽心机找到想要的操作系统镜像文件，然后安装虚拟化软件，按照其提供的GUI界面操作一步步创建,整个过程费时费力。但是，自从使用了Vagrant以后，咱腰不酸了，腿不痛了，一口气起5个虚拟机还不费劲。</p>
+
+<!-- more -->
+
+
+<h2>Vagrant是什么？</h2>
+
+<p>这是<a href="http://www.vagrantup.com/">官网</a>上Vagrant的介绍。</p>
+
+<blockquote><p>Create and Configure lightweight, reproducible, and portable development environments.</p></blockquote>
+
+<p>即用来创建和配置轻量级、可重现的、便携式的开发环境。</p>
+
+<p>使用Vagrant可以将创建虚拟机的整个过程自动化起来,并具有高度的重用性。假如你是个开发者，你可以很容易为每个团队成员创建一模一样的开发环境，从根本上防止‘在我的机器上可以工作’之类的bug。假如你是个测试人员，可以一键创建多个一模一样的测试环境并行跑测试，并且跑完测试后还可以一键销毁这些测试环境，达到真正的按需创建。如果你是devops成员，需要和AWS、Chef之类的工具打交道，那么Vagrant是个很好的结合点。你可以通过Vagrant在AWS上直接创建虚拟机，并且自动运行Chef的脚本配置你的新虚拟机。</p>
+
+<h2>几个概念</h2>
+
+<p>正式介绍Vagrant功能之前先了解一下Vagrant使用的一些概念。</p>
+
+<ul>
+<li><p>Provider - 供应商，在这里指Vagrant调用的虚拟化工具。Vagrant本身并没有能力创建虚拟机，它是调用一些虚拟化工具来创建，如VirtualBox,VMWare，甚至AWS。</p></li>
+<li><p>Box - 可被Vagrant直接使用的虚拟机镜像文件。针对不同的Provider，Box文件的格式是不一样的。</p></li>
+<li><p>Vagrantfile - Vagrant根据Vagrantfile中的配置来创建虚拟机。在Vagrantfile文件中你需要指明使用哪个Box,需要预安装哪些软件，虚拟机的网络配置等。</p></li>
+</ul>
+
+
+<h2>Vagrant的安装</h2>
+
+<p>安装Vagrant非常简单，可以在<a href="http://downloads.vagrantup.com/">Downloads</a>页面选择最新的版本安装。Vagrant支持Windows、Linux、Mac等平台。</p>
+
+<h2>Box管理</h2>
+
+<p>使用Vagrant之前先要给Vagrant添加Box，也就是可供Vagrant使用的虚拟机镜像文件。Vagrant官网本身维护了一些镜像文件，我们可以直接使用。<a href="http://www.vagrantbox.es/">http://www.vagrantbox.es/</a>上面有更多的box可以供我们使用。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#添加名为precise32的box文件</span>
+</span><span class='line'> <span class="nv">$ </span>vagrant init precise32 http://files.vagrantup.com/precise32.box
+</span><span class='line'><span class="nv">$ </span>vagrant box list
+</span><span class='line'>precise32 <span class="o">(</span>virtualbox<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span>vagrant box remove precise64 virtualbox
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到Box与Provider是相关的，每个Box都必须指定Provier，只有使用对应的Provier才能正确使用Box。</p>
+
+<h2>创建并运行虚拟机</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vagrant box list
+</span><span class='line'>precise32 <span class="o">(</span>virtualbox<span class="o">)</span>
+</span><span class='line'><span class="nv">$ </span>vagrant init precise32
+</span><span class='line'>A <span class="sb">`</span>Vagrantfile<span class="sb">`</span> has been placed in this directory. You are now
+</span><span class='line'>ready to <span class="sb">`</span>vagrant up<span class="sb">`</span> your first virtual environment! Please <span class="nb">read</span>
+</span><span class='line'>the comments in the Vagrantfile as well as documentation on
+</span><span class='line'><span class="sb">`</span>vagrantup.com<span class="sb">`</span> <span class="k">for </span>more information on using Vagrant.
+</span><span class='line'><span class="nv">$ </span>vagrant up
+</span><span class='line'>Bringing machine <span class="s1">&#39;default&#39;</span> up with <span class="s1">&#39;virtualbox&#39;</span> provider...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Importing base box <span class="s1">&#39;precise32&#39;</span>...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Matching MAC address <span class="k">for </span>NAT networking...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Setting the name of the VM...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Clearing any previously <span class="nb">set </span>forwarded ports...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Creating shared folders metadata...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Clearing any previously <span class="nb">set </span>network interfaces...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Preparing network interfaces based on configuration...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Forwarding ports...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> -- <span class="nv">22</span> <span class="o">=</span>&gt; 2222 <span class="o">(</span>adapter 1<span class="o">)</span>
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Booting VM...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Waiting <span class="k">for </span>machine to boot. This may take a few minutes...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Machine booted and ready!
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Mounting shared folders...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> -- /vagrant
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>vagrant init precise32</code>会在当前目录下生成一个Vagrantfie文件，其使用precise32作为box。<code>vagrant up</code>则是使用virtual box这个provider来初始化并启动precise32这个虚拟机。</p>
+
+<p>我们可以详细的看看Vagrantfile这个文件。</p>
+
+<figure class='code'><figcaption><span>Vagrantfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># -*- mode: ruby -*-</span>
+</span><span class='line'><span class="c1"># vi: set ft=ruby :</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Vagrantfile API及语法版本</span>
+</span><span class='line'><span class="no">VAGRANTFILE_API_VERSION</span> <span class="o">=</span> <span class="s2">&quot;2&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="no">VAGRANTFILE_API_VERSION</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># 使用的box</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;precise32&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Create a forwarded port mapping which allows access to a specific port</span>
+</span><span class='line'>  <span class="c1"># within the machine from a port on the host machine. In the example below,</span>
+</span><span class='line'>  <span class="c1"># accessing &quot;localhost:8080&quot; will access port 80 on the guest machine.</span>
+</span><span class='line'>  <span class="c1"># config.vm.network :forwarded_port, guest: 80, host: 8080</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Create a private network, which allows host-only access to the machine</span>
+</span><span class='line'>  <span class="c1"># using a specific IP.</span>
+</span><span class='line'>  <span class="c1"># config.vm.network :private_network, ip: &quot;192.168.33.10&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Create a public network, which generally matched to bridged network.</span>
+</span><span class='line'>  <span class="c1"># Bridged networks make the machine appear as another physical device on</span>
+</span><span class='line'>  <span class="c1"># your network.</span>
+</span><span class='line'>  <span class="c1"># config.vm.network :public_network</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># If true, then any SSH connections made will enable agent forwarding.</span>
+</span><span class='line'>  <span class="c1"># Default value: false</span>
+</span><span class='line'>  <span class="c1"># config.ssh.forward_agent = true</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Share an additional folder to the guest VM. The first argument is</span>
+</span><span class='line'>  <span class="c1"># the path on the host to the actual folder. The second argument is</span>
+</span><span class='line'>  <span class="c1"># the path on the guest to mount the folder. And the optional third</span>
+</span><span class='line'>  <span class="c1"># argument is a set of non-required options.</span>
+</span><span class='line'>  <span class="c1"># config.vm.synced_folder &quot;../data&quot;, &quot;/vagrant_data&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Provider-specific configuration so you can fine-tune various</span>
+</span><span class='line'>  <span class="c1"># backing providers for Vagrant. These expose provider-specific options.</span>
+</span><span class='line'>  <span class="c1"># Example for VirtualBox:</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># config.vm.provider :virtualbox do |vb|</span>
+</span><span class='line'>  <span class="c1">#   # Don&#39;t boot with headless mode</span>
+</span><span class='line'>  <span class="c1">#   vb.gui = true</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1">#   # Use VBoxManage to customize the VM. For example to change memory:</span>
+</span><span class='line'>  <span class="c1">#   vb.customize [&quot;modifyvm&quot;, :id, &quot;--memory&quot;, &quot;1024&quot;]</span>
+</span><span class='line'>  <span class="c1"># end</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># View the documentation for the provider you&#39;re using for more</span>
+</span><span class='line'>  <span class="c1"># information on available options.</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Enable provisioning with Puppet stand alone.  Puppet manifests</span>
+</span><span class='line'>  <span class="c1"># are contained in a directory path relative to this Vagrantfile.</span>
+</span><span class='line'>  <span class="c1"># You will need to create the manifests directory and a manifest in</span>
+</span><span class='line'>  <span class="c1"># the file precise32.pp in the manifests_path directory.</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># An example Puppet manifest to provision the message of the day:</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># # group { &quot;puppet&quot;:</span>
+</span><span class='line'>  <span class="c1"># #   ensure =&gt; &quot;present&quot;,</span>
+</span><span class='line'>  <span class="c1"># # }</span>
+</span><span class='line'>  <span class="c1"># #</span>
+</span><span class='line'>  <span class="c1"># # File { owner =&gt; 0, group =&gt; 0, mode =&gt; 0644 }</span>
+</span><span class='line'>  <span class="c1"># #</span>
+</span><span class='line'>  <span class="c1"># # file { &#39;/etc/motd&#39;:</span>
+</span><span class='line'>  <span class="c1"># #   content =&gt; &quot;Welcome to your Vagrant-built virtual machine!</span>
+</span><span class='line'>  <span class="c1"># #               Managed by Puppet.\n&quot;</span>
+</span><span class='line'>  <span class="c1"># # }</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># config.vm.provision :puppet do |puppet|</span>
+</span><span class='line'>  <span class="c1">#   puppet.manifests_path = &quot;manifests&quot;</span>
+</span><span class='line'>  <span class="c1">#   puppet.manifest_file  = &quot;site.pp&quot;</span>
+</span><span class='line'>  <span class="c1"># end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Enable provisioning with chef solo, specifying a cookbooks path, roles</span>
+</span><span class='line'>  <span class="c1"># path, and data_bags path (all relative to this Vagrantfile), and adding</span>
+</span><span class='line'>  <span class="c1"># some recipes and/or roles.</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># config.vm.provision :chef_solo do |chef|</span>
+</span><span class='line'>  <span class="c1">#   chef.cookbooks_path = &quot;../my-recipes/cookbooks&quot;</span>
+</span><span class='line'>  <span class="c1">#   chef.roles_path = &quot;../my-recipes/roles&quot;</span>
+</span><span class='line'>  <span class="c1">#   chef.data_bags_path = &quot;../my-recipes/data_bags&quot;</span>
+</span><span class='line'>  <span class="c1">#   chef.add_recipe &quot;mysql&quot;</span>
+</span><span class='line'>  <span class="c1">#   chef.add_role &quot;web&quot;</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1">#   # You may also specify custom JSON attributes:</span>
+</span><span class='line'>  <span class="c1">#   chef.json = { :mysql_password =&gt; &quot;foo&quot; }</span>
+</span><span class='line'>  <span class="c1"># end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Enable provisioning with chef server, specifying the chef server URL,</span>
+</span><span class='line'>  <span class="c1"># and the path to the validation key (relative to this Vagrantfile).</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># The Opscode Platform uses HTTPS. Substitute your organization for</span>
+</span><span class='line'>  <span class="c1"># ORGNAME in the URL and validation key.</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># If you have your own Chef Server, use the appropriate URL, which may be</span>
+</span><span class='line'>  <span class="c1"># HTTP instead of HTTPS depending on your configuration. Also change the</span>
+</span><span class='line'>  <span class="c1"># validation key to validation.pem.</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># config.vm.provision :chef_client do |chef|</span>
+</span><span class='line'>  <span class="c1">#   chef.chef_server_url = &quot;https://api.opscode.com/organizations/ORGNAME&quot;</span>
+</span><span class='line'>  <span class="c1">#   chef.validation_key_path = &quot;ORGNAME-validator.pem&quot;</span>
+</span><span class='line'>  <span class="c1"># end</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># If you&#39;re using the Opscode platform, your validator client is</span>
+</span><span class='line'>  <span class="c1"># ORGNAME-validator, replacing ORGNAME with your organization name.</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># If you have your own Chef Server, the default validation client name is</span>
+</span><span class='line'>  <span class="c1"># chef-validator, unless you changed the configuration.</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1">#   chef.validation_client_name = &quot;ORGNAME-validator&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>从上述的文件可以看出Vagrantfile可以配置很多东西，比如使用的Box，需要转发的端口，同步指定的目录，使用Chef、puppet等对虚拟机进行预配置等。</p>
+
+<p>如果修改了Vagrantfile中的配置，只需要执行<code>vagrant reload</code>来应用新配置。</p>
+
+<h2>同步目录</h2>
+
+<p>虚拟机启动起来以后就可以ssh上去了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vagrant ssh
+</span><span class='line'>Welcome to Ubuntu 12.04 LTS <span class="o">(</span>GNU/Linux 3.2.0-23-generic-pae i686<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'> * Documentation:  https://help.ubuntu.com/
+</span><span class='line'>Welcome to your Vagrant-built virtual machine.
+</span><span class='line'>Last login: Wed Oct  2 09:41:08 2013 from 10.0.2.2
+</span><span class='line'>vagrant@precise32:~<span class="nv">$ </span>who
+</span><span class='line'>vagrant  pts/0        2013-10-02 09:47 <span class="o">(</span>10.0.2.2<span class="o">)</span>
+</span><span class='line'>vagrant@precise32:~<span class="nv">$ </span>hostname
+</span><span class='line'>precise32
+</span><span class='line'>vagrant@precise32:~<span class="err">$</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Vagrant会自动给虚拟机根目录下创建一个名为vagrant的目录。这个目录可以与主机Vagrantfile所在的目录保持同步。这个同步是相互的，无论改动了主机目录中的文件，还是虚拟机目录中的文件，都可以自动同步到另一方。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant@precise32:~<span class="nv">$ </span><span class="nb">cd</span> /vagrant/
+</span><span class='line'>vagrant@precise32:/vagrant<span class="nv">$ </span>ls
+</span><span class='line'>Vagrantfile
+</span><span class='line'>vagrant@precise32:/vagrant<span class="nv">$ </span>touch test.txt
+</span><span class='line'>vagrant@precise32:/vagrant<span class="nv">$ </span><span class="nb">exit</span>
+</span><span class='line'><span class="nb">logout</span>
+</span><span class='line'>Connection to 127.0.0.1 closed.
+</span><span class='line'><span class="nv">$ </span>ls
+</span><span class='line'>Vagrantfile test.txt
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>多机器管理</h2>
+
+<p>其实Vagrantfile支持配置多台机器，如果你需要设置多台服务器及数据库环境，可以用一个Vagrantfile搞定。</p>
+
+<figure class='code'><figcaption><span>Vagrantfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="s2">&quot;shell&quot;</span><span class="p">,</span> <span class="ss">inline</span><span class="p">:</span> <span class="s2">&quot;echo Hello&quot;</span>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">define</span> <span class="s2">&quot;web&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">web</span><span class="o">|</span>    <span class="n">web</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;apache&quot;</span>  <span class="k">end</span>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">define</span> <span class="s2">&quot;db&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">db</span><span class="o">|</span>    <span class="n">db</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;mysql&quot;</span>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个文件配置了两个box，一个叫web，一个叫db。现在启动虚拟机就需要加上虚拟机名了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#启动web虚拟机</span>
+</span><span class='line'><span class="nv">$ </span>vagrant up web
+</span><span class='line'>
+</span><span class='line'><span class="c">#启用db虚拟机</span>
+</span><span class='line'><span class="nv">$ </span>vagrant up db
+</span><span class='line'>
+</span><span class='line'><span class="c">#默认启动所有的虚拟机</span>
+</span><span class='line'><span class="nv">$ </span>vagrant up
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>关闭虚拟机</h2>
+
+<p>Vagrant提供了好几种方法来关闭虚拟机，你可以根据不同的情况选择不同的方式。</p>
+
+<p><code>vagrant suspend</code>将虚拟机置于休眠状态。这时候主机会保存虚拟机的当前状态。再用<code>vagrant up</code>启动虚拟机时能够返回之前工作的状态。这种方式优点是休眠和启动速度都很快，只有几秒钟。缺点是需要额外的磁盘空间来存储当前状态。</p>
+
+<p><code>vagrant halt</code>则是关机。如果想再次启动还是使用<code>vagrant up</code>命令，不过需要多花些时间。</p>
+
+<p><code>vagrant destroy</code>则会将虚拟机从磁盘中删除。如果想重新创建还是使用<code>vagrant up</code>命令。</p>
+
+<p>另外1.2以上版本的Vagrant还引用了插件机制。可以通过<code>vagrant plugin</code>来添加各种各样的plugin，这给Vagrant的应用带来了更大的灵活性和针对性。比如可以添加<code>vagrant-windows</code>的插件来增加对windows系统的支持，通过添加<code>vagrant-aws</code>插件来实现给AWS创建虚拟机的功能。你也可以编写自己的插件。由于Vagrant是ruby写的一个gem，其插件的编写也是使用的Ruby语言。这里就不多做介绍了。感兴趣的可以去<a href="http://www.vagrantup.com/">官网</a>查看。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[将我的博客迁移到亚马逊云端（2）]]></title>
@@ -2449,126 +2887,6 @@ WHERE 1=0;</code></p></li>
 而且当我跳过去以后，往回跳时，教练将宽度又增加了很多。我给教练说太宽了，跳不过去。教练鼓励我说你一定行得。我一咬牙跳了过来。教练给我说：“有些时候不是自己不行，而是自己给自己的要求太低了。”</p>
 
 <p>勇于走出自己的舒适区，直面压力。让人生大道越走越宽。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Homebrew- MAC上的包管理利器]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/07/01/homebrew-in-mac/"/>
-    <updated>2013-07-01T14:33:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/07/01/homebrew-in-mac</id>
-    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/lotsOfDogs.jpg"></p>
-
-<p>包管理器是神马东西?让我们看看<a href="http://en.wikipedia.org/wiki/Package_management_system">wikipedia</a>上的介绍。</p>
-
-<blockquote><p>In software, a package management system, also called package manager, is a collection of software tools to automate the process of installing, upgrading, configuring, and removing software packages for a computer&#8217;s operating system in a consistent manner.</p></blockquote>
-
-<p>简单的来说，包管理器就是一个提供对一系列软件包的安装、卸载、升级的自动化工具。
-包管理器大体分为两种，一种是管理预编译好的软件（Binary installation/Precomplied packages)，如MAC上的App Store，Windows下的Windows installer。另一种是基于源码的安装包，通过编译脚本来安装软件（Sourcecode-based installation/installing using compile scripts），如MAC上的<a href="http://mxcl.github.io/homebrew/">Homebrew</a>，Linux上的apt-build。</p>
-
-<!-- more -->
-
-
-<p>今天就给大家讲解下<a href="http://mxcl.github.io/homebrew/">Homebrew</a>。</p>
-
-<p><a href="http://mxcl.github.io/homebrew/">Homebrew</a>官网上称自己为:</p>
-
-<blockquote><p>The missing package manager for OS X</p></blockquote>
-
-<p>即自己弥补了在OS X上无包管理器的缺陷。</p>
-
-<h2>需求环境</h2>
-
-<ol>
-<li><p>OS X 10.5及其以上版本。</p></li>
-<li><p>安装XCode里的<a href="https://developer.apple.com/downloads">开发者工具</a>。主要是因为开发者工具中有mac下的gcc编译器，很多软件需要它。</p></li>
-<li><p>ruby。<a href="http://mxcl.github.io/homebrew/">Homebrew</a>使用ruby写的，所以ruby不可或缺。</p></li>
-</ol>
-
-
-<h2>安装<a href="http://mxcl.github.io/homebrew/">Homebrew</a></h2>
-
-<p>只需要在terminal下敲这样一行代码就行。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ruby -e <span class="s2">&quot;$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>brew会被默认安装到/usr/local文件夹中。从上述命令可以看出homebrew是基于ruby的一款包管理器，并且host在github上。</p>
-
-<h2>使用</h2>
-
-<p>在<a href="http://mxcl.github.io/homebrew/">Homebrew</a>中支持安装的软件被称为Formula。</p>
-
-<ul>
-<li><p>查看所有支持的Formual。可以在<a href="https://github.com/mxcl/homebrew/tree/master/Library/Formula/">这里</a>查看。如果不能上网的话可以通过<code>brew server</code>来在本地开启一个server来查看。</p></li>
-<li><p><code>brew search [Formula]</code>, 搜索某个Formula是否被支持。</p></li>
-<li><p><code>brew install [Formula]</code>, 安装某个Formula。</p></li>
-<li><p><code>brew upgrade [Formula]</code>, 升级某个Formula。</p></li>
-<li><p><code>brew uninstall [Formula]</code>, 删除某个Formula。</p></li>
-<li><p><code>brew update</code>, 更新brew支持的Formula列表。</p></li>
-</ul>
-
-
-<p>所有的软件都会默认被安装到<code>/usr/local/Cellar</code>目录下，然后将部分可执行脚本文件通过软链接链接到<code>/usr/local\bin</code>目录下，这样我们就可以在Terminal下使用这些软件。</p>
-
-<p><a href="http://mxcl.github.io/homebrew/">Homebrew</a>对于Formula的管理是基于git的。你可以在<code>/usr/local/</code>下发现有一个<code>.git</code>的文件夹。通过查看<code>.git</code>目录下的<code>config</code>文件，可以知道其实目录是被链接到github上的一个repository。</p>
-
-<figure class='code'><figcaption><span>config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>[core]
-</span><span class='line'>        repositoryformatversion = 0
-</span><span class='line'>        filemode = true
-</span><span class='line'>        bare = false
-</span><span class='line'>        logallrefupdates = true
-</span><span class='line'>        ignorecase = true
-</span><span class='line'>        autocrlf = false
-</span><span class='line'>[remote &quot;origin&quot;]
-</span><span class='line'>        url = https://github.com/mxcl/homebrew.git
-</span><span class='line'>        fetch = +refs/heads/*:refs/remotes/origin/*
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>你也可以为自己的软件加入到<a href="http://mxcl.github.io/homebrew/">Homebrew</a>的支持列表中。只需要写一个ruby脚本check in到其<a href="https://github.com/mxcl/homebrew">github</a>中。
-下面是一个脚本示例。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;formula&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">Wget</span> <span class="o">&lt;</span> <span class="no">Formula</span>
-</span><span class='line'>  <span class="n">homepage</span> <span class="s1">&#39;http://www.gnu.org/wget/&#39;</span>
-</span><span class='line'>  <span class="n">url</span> <span class="s1">&#39;http://ftp.gnu.org/wget-1.12.tar.gz&#39;</span>
-</span><span class='line'>  <span class="n">md5</span> <span class="s1">&#39;308a5476fc096a8a525d07279a6f6aa3&#39;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">install</span>
-</span><span class='line'>    <span class="nb">system</span> <span class="s2">&quot;./configure --prefix=</span><span class="si">#{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>    <span class="nb">system</span> <span class="s1">&#39;make install&#39;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>当然<a href="http://mxcl.github.io/homebrew/">Homebrew</a>接收这些软件也是有一定条件的，可以看<a href="https://github.com/mxcl/homebrew/wiki/Acceptable-Formulae">这个文档</a>。</p>
 ]]></content>
   </entry>
   
