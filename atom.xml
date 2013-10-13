@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-10-08T18:34:32+08:00</updated>
+  <updated>2013-10-14T00:51:59+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,291 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[XML相关知识全接触（一）]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/10/14/xml-knowledge/"/>
+    <updated>2013-10-14T00:32:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/10/14/xml-knowledge</id>
+    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/xml.png" width="400"></p>
+
+<p>XML文件格式已经出来很久了。他的风头如今在JSON、YAML等新兴文件格式的冲击下已经显的不那么强劲。但是XML仍然是当今世界上使用最广泛的文件格式。围绕着它也有一大堆的概念和知识点。所以我们还是很有必要全面了解下。</p>
+
+<!-- more -->
+
+
+<h2>XML</h2>
+
+<p>XML全称为eXtensible Markup Language，即可扩展标记语言。其被设计用来传输及存储数据。</p>
+
+<p>XML与HTML看似比较相似，但是其设计目的并不相同。</p>
+
+<ul>
+<li><p>XML用来传输及存储数据，主要关注数据是什么。</p></li>
+<li><p>HTML用来显示数据，主要关注数据看起来是什么样。</p></li>
+<li><p>HTML的tag是预定义的，比如说table标签，浏览器会知道它是什么含义。</p></li>
+<li><p>XML的tag不是预定义的，需要自己设计tag并描述tag的含义。XML中的tag如果不借助XSLT文件，浏览器只会以简单的文本方式展示。</p></li>
+</ul>
+
+
+<p>很多人认为HTML是XML文件的一个子集。其实这种观点是错误的，因为HTML的实现并未严格遵循XML的语法。比如XML要求每个tag必须要有闭合标记，XML的tag是大小写敏感的，XML给tag添加的属性必须要使用引号包起来…这些语法要求HTML都不满足。</p>
+
+<p>请看XML的一个示例。</p>
+
+<figure class='code'><figcaption><span>book.xml </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;book&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;name&gt;</span>Effective JavaScript<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;category&gt;</span>Program Language<span class="nt">&lt;/category&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;author&gt;</span>Bowen<span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;description&gt;</span>This book is about JavaScript Language.<span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/book&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这是一个简单的XML文件。第一行说明了xml的版本及编码类型。接下来是一个根节点book，根节点可以包含很多子节点。</p>
+
+<h3>XML命名空间</h3>
+
+<p>由于XML的tag并不像HTML那样是预定义的，那么很有可能两个XML中的同名tag具有不同的含义。那么在合并XML等操作时势必会造成冲突。解决的办法就是给XML的tag加上命名空间（即namespace），每一个namespace都可以指定一个前缀。这些前缀会区分同名tag。</p>
+
+<p>假设这里有另一个xml文件。</p>
+
+<figure class='code'><figcaption><span>anotherBook.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;book&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;name&gt;</span>Rework<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;page&gt;</span>120<span class="nt">&lt;/page&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;publishDate&gt;</span>2013-10-08<span class="nt">&lt;/publishDate&gt;</span>
+</span><span class='line'><span class="nt">&lt;/book&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果我们要合并这两个xml节点到同一个xml文件中时，不加namespace会发生冲突，因为含有同名的tag，其子节点的结构并不相同。接下来我们给其加上命名空间并合并。</p>
+
+<figure class='code'><figcaption><span>combined.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;root&gt;</span>
+</span><span class='line'><span class="nt">&lt;ns1:book</span> <span class="na">xmlns:ns1=</span><span class="s">&quot;http://www.huangbowen.net/ns1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:name&gt;</span>Effective JavaScript<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:category&gt;</span>Program Language<span class="nt">&lt;/category&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:author&gt;</span>Bowen<span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:description&gt;</span>This book is about JavaScript Language.<span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/book&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;ns2:book</span> <span class="na">xmlns:ns2=</span><span class="s">&quot;http://www.huangbowen.net/ns2&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>     <span class="nt">&lt;ns2:name&gt;</span>Rework<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns2:page&gt;</span>120<span class="nt">&lt;/page&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns2:publishDate&gt;</span>2013-10-08<span class="nt">&lt;/publishDate&gt;</span>
+</span><span class='line'>     <span class="nt">&lt;/book&gt;</span>
+</span><span class='line'><span class="nt">&lt;/root&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>xmlns是xml namespace的缩写。引号后面是tag的前缀。这个前缀可以省略，比如<code>xmlns="http://www.huangbowen.net/ns1"</code>,相当于没有前缀的tag自动应用默认的命名空间。需要注意的是命名空间的URI只是给命名空间提供一个唯一的标识，xml解析器并不会访问这个URI来获取任何信息。很多公司习惯将这个URI一个web页面，该web页面描述了该namespace的相关信息。</p>
+
+<h2>XSD</h2>
+
+<p>XSD全称为XML Schema Definition,即XML结构定义语言。每个XSD文件是对一个XML文件的结构定义。
+由于XML中的tag并不是预定义的，那么每人都可以创建自己的XML结构文档。如果你想让别人按照你的标准创建一份xml文件，你可以使用XSD文件来描述你的标准。</p>
+
+<p>这是针对本文示例book.xml文件的一个XSD文件。</p>
+
+<figure class='code'><figcaption><span>book.xsd</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;xs:schema</span> <span class="na">attributeFormDefault=</span><span class="s">&quot;unqualified&quot;</span> <span class="na">elementFormDefault=</span><span class="s">&quot;qualified&quot;</span>
+</span><span class='line'>           <span class="na">xmlns:xs=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">&quot;book&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;xs:complexType&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;xs:sequence&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;xs:element</span> <span class="na">type=</span><span class="s">&quot;xs:string&quot;</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;xs:element</span> <span class="na">type=</span><span class="s">&quot;xs:string&quot;</span> <span class="na">name=</span><span class="s">&quot;category&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;xs:element</span> <span class="na">type=</span><span class="s">&quot;xs:string&quot;</span> <span class="na">name=</span><span class="s">&quot;author&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;xs:element</span> <span class="na">type=</span><span class="s">&quot;xs:string&quot;</span> <span class="na">name=</span><span class="s">&quot;description&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/xs:sequence&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/xs:complexType&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/xs:element&gt;</span>
+</span><span class='line'><span class="nt">&lt;/xs:schema&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>从上可以看出其实XSD文件本身就是一个XML文件，它遵循XML语法，比如每个tag都需要有结束标记，必须有且只有一个根节点等。</p>
+
+<p>在一个XML文件中可以添加其Schema的引用信息。</p>
+
+<figure class='code'><figcaption><span>book.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;ns1:book</span> <span class="na">xmlns:ns1=</span><span class="s">&quot;http://www.huangbowen.net/ns1&quot;</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">xsi:targetLocation=</span><span class="s">&quot;http://www.huangbowen.net/book.xsd&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:name&gt;</span>Effective JavaScript<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:category&gt;</span>Program Language<span class="nt">&lt;/category&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:author&gt;</span>Bowen<span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:description&gt;</span>This book is about JavaScript Language.<span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/book&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在IDE中，如果你的XML节点没有遵守你引用的Schema中的定义，就会给出错误提醒。</p>
+
+<h2>XSLT</h2>
+
+<p>XSLT全称为EXtensible Stylesheet Language Transformations。 XSLT用于将XML文档转换为XHTML或其他XML文档。</p>
+
+<p>在讲XSLT之前我们先讲讲XSL。XSL全称为Extensible Stylesheet Language,即可扩展样式表语言。众所周知，CSS是HTML文件的样式表，而XSL则是XML文件的样式表。XSL文件描述了XML文件应该如何被显示。</p>
+
+<p>其实XSL不仅仅是样式表语言，它主要包含3部分:</p>
+
+<ul>
+<li><p>XSLT - 用来转换XML文档</p></li>
+<li><p>XPath - 查询和操作XML文档中的节点</p></li>
+<li><p>XSL-FO - 格式化XML文档</p></li>
+</ul>
+
+
+<p>XSLT使用XPath来查找XML中的元素。</p>
+
+<p>XSLT通过一个xml文件来定义源xml文件与目标文件之间的转换关系。该xml文件必须以<code>&lt;xsl:stylesheet&gt;</code>或<code>&lt;xsl:transform&gt;</code>作为根节点。</p>
+
+<p>对于本文的示例book.xml,如果我们使用浏览器打开显示效果如下。</p>
+
+<p><img src="http://www.huangbowen.net/images/bookxml.png" width="600"></p>
+
+<p>现在我们创建一个XSLT文件将其转换为一个HTML文件。</p>
+
+<figure class='code'><figcaption><span>book.xsl</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;xsl:stylesheet</span> <span class="na">version=</span><span class="s">&quot;1.0&quot;</span>
+</span><span class='line'><span class="na">xmlns:xsl=</span><span class="s">&quot;http://www.w3.org/1999/XSL/Transform&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;xsl:template</span> <span class="na">match=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;html&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;body&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;h2&gt;</span>My Book<span class="nt">&lt;/h2&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;table</span> <span class="na">border=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;</span>name<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;&lt;xsl:value</span><span class="na">-of</span> <span class="na">select=</span><span class="s">&quot;book/name&quot;</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;</span>category<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;&lt;xsl:value</span><span class="na">-of</span> <span class="na">select=</span><span class="s">&quot;book/category&quot;</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;</span>author<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;&lt;xsl:value</span><span class="na">-of</span> <span class="na">select=</span><span class="s">&quot;book/author&quot;</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;</span>description<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;&lt;xsl:value</span><span class="na">-of</span> <span class="na">select=</span><span class="s">&quot;book/description&quot;</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/table&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/body&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/html&gt;</span>
+</span><span class='line'><span class="nt">&lt;/xsl:template&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/xsl:stylesheet&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后我们在book.xml文件中加入对这个XSLT文件的引用。</p>
+
+<figure class='code'><figcaption><span>book.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+</span><span class='line'><span class="cp">&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;book.xsl&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;book&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;name&gt;</span>Effective JavaScript<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;category&gt;</span>Program Language<span class="nt">&lt;/category&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;author&gt;</span>Bowen<span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;description&gt;</span>This book is about JavaScript Language.<span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/book&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>接下来我们再用浏览器打开book.xml文件，发现显示变成了这样。是不是很神奇？</p>
+
+<p><img src="http://www.huangbowen.net/images/bookxmlwithxslt.png" width="600"></p>
+
+<p>注意如果你使用chrome打开该book.xml文件，请设置chrome的<code>--allow-file-access-from-files</code>属性，这样chrome才允许加载本地的xsl文件。解决方案看这里：<a href="http://stackoverflow.com/questions/3828898/can-chrome-be-made-to-perform-an-xsl-transform-on-a-local-file">http://stackoverflow.com/questions/3828898/can-chrome-be-made-to-perform-an-xsl-transform-on-a-local-file</a></p>
+
+<p>OK，这篇文章讲的够多了，下篇接着讲XPath，XML to Object以及XML文档格式与近来风头强劲的JSON、YAML格式的比较。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[hello Vagrant]]></title>
@@ -2854,37 +3139,6 @@ WHERE 1=0;</code></p></li>
 <p>第二天和公司两位美女kk和yy一起去吃午饭。坐在布里斯班河边，品着美味佳肴，享受着sunshine，这种感觉太好了。尤其发现我竟然和kk都是来自一个县上的，真是有缘。下午去逛了下超市，买了一些牛奶和零食。这里的超市可以自助结账。自己刷条目，自己付款，非常方便。由于自己只带了一双鞋，还不太合脚，就去bigW买了一双运动鞋，才花了20刀，比在中国还划算。这里的牛奶也比较便宜，2升2刀多的样子，不过味道有点怪，难道是喝习惯了中国的毒奶、合成奶，还不适应外国的纯牛奶了？这里的鸡蛋不太便宜，12个要将近5刀，鸡蛋上都说明了是来自那个farm的，看来品牌意识都蛮强的。周一下班后又去超市买了一大块生牛排，有350克，花了8刀多。这块牛排已经被腌制好了，回到家煎了20分钟就可以吃了。真是便宜又实惠，而且肉的质量又有保证。</p>
 
 <p>布里斯班天黑得比较早，下午5点过点就黑了，所以下班了也没出去逛。等到周末再好好的逛逛。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[走出你的舒适区]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/07/21/get-out-of-your-comfort-zone/"/>
-    <updated>2013-07-21T00:02:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/07/21/get-out-of-your-comfort-zone</id>
-    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/comfortZone.jpeg"></p>
-
-<p>今天全球CEO来成都office做每月一次的“老郭说事”。在会议的末尾一个应届毕业生问了他一个问题“你是否有每天都需要进步的压力那？”。该毕业生提出这个问题我想很可能是由于她现在处于试用期，感受到了比较大的压力。为了能让毕业生尽快的适应工作节奏，能够独立胜任工作，试用期的员工压力都是很大的。他们要在一定时间内表现出自己，让团队中其他人能够明确看到自己在某段时间内的进步。我们不担心你目前的技术水平，我们关心的是在有限的时间内你能否进步。</p>
-
-<!-- more -->
-
-
-<p>当时我在试用期的时候，压力也是很大的。虽然我有将近4年的工作经验，但是初来公司，英语不会说两句，Java程序可是从来没摸过，什么TDD、Agile、CI更是了解甚少。在ThoughtWorks的前6个月我承受了巨大的压力，有一段时间每天只睡5，6个小时;每天晚上12点还在读英语;一段英文文章被我读了不下千遍。</p>
-
-<p>而郭晓现在作为全球CEO，那么他有没有这种压力那？郭晓的回答是这样的。他说可以把一个人的知识分为三个区域，舒适区，学习区，恐慌区。舒适区的外围是学习区，学习区的外围是恐慌区。大部分的人都喜欢呆在舒适区里，上班的时候都使用的是自己熟悉的技术，交流的都是些熟悉的人，日子就这样一天天的过。但当你有不满足现状的想法时，你可能就需要走出你的舒适区，踏入学习区。比如你烦透了与java这些繁琐的语言打交道，那么你就要进入你的学习区，去学习ruby、JavaScript等动态语言；比如你在工作中一直做的是Dev，想尝试一下QA，那么你也要去学习自动化测试、安全性测试等。”舒适区和学习区是有交集的，你在学习区扩张的时候，舒适区内掌握的技能能提供相当一部分帮助。而恐慌区则包裹着学习区。当你听到恐慌区中的一些名词时，并不会感到那么舒服，甚至有一丝不安。那表明这样那样的原因，你并未开始涉足这个领域。从舒适区直接跳跃到恐慌区比进入到学习区要困难的多。</p>
-
-<p>郭晓举了这样一个例子。当十几年前他还是developer的时候，有一次公司派他到英国的一个项目上去，让他做一个.net项目的tech leader。而在此之前他只是听说过.net这个词语而已。在登机之前他买了一本关于.net的书，利用有限的时间抓紧翻阅。可以想象当时郭晓承受的压力有多大，但是最后他肯定挺了下来，要不然也不会成为现在的全球CEO。</p>
-
-<p>虽然从舒适区直接跨入恐慌区大部分时候有被逼无奈之嫌。但从舒适区到学习区则更多的靠自身的主动。郭晓说他特别喜欢尝试新东西，虽然大部分的东西都是uesless。在尝试新东西的同时能给他带来一种成就感，同时也逐步扩大的自己的舒适区，将学习区吞并。</p>
-
-<p>回想在ThoughtWorks的一年多中，从别人加压到自我施压，是一个不小的转变。从小到大我们习惯了被父母push，被老师push，到了大学就撒了欢，而加入社会却傻眼了。在公司里有人push那是好事，说明还有人关心你。而没人push则分两种情况。一种是你已经可以self managment,另一种则是对你彻底失望。</p>
-
-<p>每天都要有进步的压力！如果自己能够保持一颗好奇心，勇于向未知领域前进，这种压力其实并不存在。在学习的过程中，随着你的知识领域的扩大，机会对你来说只能越来越多。这是一个很好的良性循环。</p>
-
-<p>记得去年做的一次素质拓展运动，当我从10米断桥上的距离只有1米多宽，如果从平地上跨越这个距离是小菜一碟，但为什么放到10米高空还有保险绳的保护，许多人却犹犹豫豫，畏畏缩缩那？这就是走出了自己的舒适区，心态起了变化而已。当你跨过去以后，才觉得不过如此。
-而且当我跳过去以后，往回跳时，教练将宽度又增加了很多。我给教练说太宽了，跳不过去。教练鼓励我说你一定行得。我一咬牙跳了过来。教练给我说：“有些时候不是自己不行，而是自己给自己的要求太低了。”</p>
-
-<p>勇于走出自己的舒适区，直面压力。让人生大道越走越宽。</p>
 ]]></content>
   </entry>
   
