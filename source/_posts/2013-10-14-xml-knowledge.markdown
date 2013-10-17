@@ -67,17 +67,17 @@ XML与HTML看似比较相似，但是其设计目的并不相同。
 
 <root>
 <ns1:book xmlns:ns1="http://www.huangbowen.net/ns1">
-    <ns1:name>Effective JavaScript</name>
-    <ns1:category>Program Language</category>
-    <ns1:author>Bowen</author>
-    <ns1:description>This book is about JavaScript Language.</description>
-</book>
+    <ns1:name>Effective JavaScript</ns1:name>
+    <ns1:category>Program Language</ns1:category>
+    <ns1:author>Bowen</ns1:author>
+    <ns1:description>This book is about JavaScript Language.</ns1:description>
+</ns1:book>
 
 <ns2:book xmlns:ns2="http://www.huangbowen.net/ns2">
-     <ns2:name>Rework</name>
-    <ns2:page>120</page>
-    <ns2:publishDate>2013-10-08</publishDate>
-     </book>
+     <ns2:name>Rework</ns2:name>
+    <ns2:page>120</ns2:page>
+    <ns2:publishDate>2013-10-08</ns2:publishDate>
+     </ns2:book>
 </root>
 
 
@@ -118,11 +118,11 @@ XSD全称为XML Schema Definition,即XML结构定义语言。每个XSD文件是�
 
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ns1:book xmlns:ns1="http://www.huangbowen.net/ns1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:targetLocation="http://www.huangbowen.net/book.xsd">
-    <ns1:name>Effective JavaScript</name>
-    <ns1:category>Program Language</category>
-    <ns1:author>Bowen</author>
-    <ns1:description>This book is about JavaScript Language.</description>
-</book>
+    <ns1:name>Effective JavaScript</ns1:name>
+    <ns1:category>Program Language</ns1:category>
+    <ns1:author>Bowen</ns1:author>
+    <ns1:description>This book is about JavaScript Language.</ns1:description>
+</ns1:book>
 
 ```
 
