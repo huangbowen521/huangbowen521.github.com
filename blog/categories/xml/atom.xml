@@ -4,7 +4,7 @@
   <title><![CDATA[Category: XML | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/xml/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-10-14T00:51:59+08:00</updated>
+  <updated>2013-10-17T14:08:22+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -86,20 +86,20 @@
 <p><root>
 &lt;ns1:book xmlns:ns1="http://www.huangbowen.net/ns1"></p>
 
-<pre><code>&lt;ns1:name&gt;Effective JavaScript&lt;/name&gt;
-&lt;ns1:category&gt;Program Language&lt;/category&gt;
-&lt;ns1:author&gt;Bowen&lt;/author&gt;
-&lt;ns1:description&gt;This book is about JavaScript Language.&lt;/description&gt;
+<pre><code>&lt;ns1:name&gt;Effective JavaScript&lt;/ns1:name&gt;
+&lt;ns1:category&gt;Program Language&lt;/ns1:category&gt;
+&lt;ns1:author&gt;Bowen&lt;/ns1:author&gt;
+&lt;ns1:description&gt;This book is about JavaScript Language.&lt;/ns1:description&gt;
 </code></pre>
 
-<p></book></p>
+<p>&lt;/ns1:book></p>
 
 <p>&lt;ns2:book xmlns:ns2="http://www.huangbowen.net/ns2"></p>
 
-<pre><code> &lt;ns2:name&gt;Rework&lt;/name&gt;
-&lt;ns2:page&gt;120&lt;/page&gt;
-&lt;ns2:publishDate&gt;2013-10-08&lt;/publishDate&gt;
- &lt;/book&gt;
+<pre><code> &lt;ns2:name&gt;Rework&lt;/ns2:name&gt;
+&lt;ns2:page&gt;120&lt;/ns2:page&gt;
+&lt;ns2:publishDate&gt;2013-10-08&lt;/ns2:publishDate&gt;
+ &lt;/ns2:book&gt;
 </code></pre>
 
 <p></root></p>
@@ -145,13 +145,13 @@
 <p>&lt;?xml version="1.0" encoding="ISO-8859-1"?>
 &lt;ns1:book xmlns:ns1="http://www.huangbowen.net/ns1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:targetLocation="http://www.huangbowen.net/book.xsd"></p>
 
-<pre><code>&lt;ns1:name&gt;Effective JavaScript&lt;/name&gt;
-&lt;ns1:category&gt;Program Language&lt;/category&gt;
-&lt;ns1:author&gt;Bowen&lt;/author&gt;
-&lt;ns1:description&gt;This book is about JavaScript Language.&lt;/description&gt;
+<pre><code>&lt;ns1:name&gt;Effective JavaScript&lt;/ns1:name&gt;
+&lt;ns1:category&gt;Program Language&lt;/ns1:category&gt;
+&lt;ns1:author&gt;Bowen&lt;/ns1:author&gt;
+&lt;ns1:description&gt;This book is about JavaScript Language.&lt;/ns1:description&gt;
 </code></pre>
 
-<p></book></p>
+<p>&lt;/ns1:book></p>
 
 <p>```</p>
 
