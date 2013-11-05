@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-10-31T23:45:23+08:00</updated>
+  <updated>2013-11-06T00:30:49+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,42 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[记一次扯到蛋的教训]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/11/06/task-and-validation-is-important/"/>
+    <updated>2013-11-06T00:27:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/11/06/task-and-validation-is-important</id>
+    <content type="html"><![CDATA[<p>上周五的时候我对某个项目做了一个更改，将里面的构建脚本由maven换成了gradle。原因之一是因为maven的配置太繁琐，由于其引入了lifecycle的机制，导致其不够灵活，而gradle作为用groovy写的DSL，代码清爽、简单、灵活。原因之二是我们所有的项目构建都换成了gradle，为了保持技术栈单一，此项目做迁移也是大势所趋。（其实最重要的原因是我想练练手，虽然对maven已经箱单熟悉了，但是gradle的练习不多。）</p>
+
+<!-- more -->
+
+
+<p>完成迁移以后，我在本地试了一下，编译的war包可以成功运行。并且我也修改了构建管道，使其能够支持新的gradle脚本将war包部署到服务器上。</p>
+
+<p>然后我就给项目成员发了封邮件，告知了这件事情。</p>
+
+<p>周一来上班的时候，收到了项目组的回信，大家都对我的劳动表示感谢。其中有一个组员建议我将这个项目的名称更换一下。因为该项目之前叫做ais-stub，他的主要功能是模拟ais服务，但是后来我们也加入了对其他web service的模拟，应该改为service-stub更具有意义。</p>
+
+<p>我觉的这个改动应该比较简单，无非就是修改一下该项目的名称，并且更改构建出来的war包名称，修改构建管道的配置。然后我就动手改了。待我改了war包名称后，想起来这样会引起url中的contextPath也发生变化，而功能测试引用了这个url，那么我就修改了功能测试中的url。然后我又发现我需要修改其他项目中的配置，将使用了该url的地方替换为新的url。待我将我的修改提交后，发现部署失败了。原来是由于war包名称改变，部署脚本在获取war包时找不到新war包，我不得不修改部署脚本。但是修改过程中我发现有一段部署脚本由于权限原因我无法修改，只能请求对该脚本有修改权限的人替我修改，这又浪费了不少时间。全部修改完后我想起项目wiki上的介绍也要跟着改，把所有使用到该项目名称的地方都需要改成新名称……</p>
+
+<p>就这样一步步的做下去，本来觉得2小时就能完成的任务我足足干了4个多小时。最后全部改完后，我试着跑一下看看能运行不。结果傻眼了，将该项目部署到服务器上后，其他项目请求该服务失败，具体原因未知。由于我已经做了太多的改变，很难定位到问题所在。我刚开始怀疑部署有问题，想查看服务器上的构建版本，发现查询不到。找了半天原因后发现原来星期五我做构建脚本迁移时遗漏了一个插件，导致没有将构建版本记录到war包中。我只能先放弃查看服务器上的war包构建版本，而在本地将该项目的服务器起起来，使用其他项目进行访问，结果又一切正常。那证明可能还是服务器上的部署有问题。我查看了构建出来的war包，发现里面的properties文件不是期望的那个，这时我想起周五修改构建管道时，随手删除了一个自认为多余的task，可能正是这个原因导致最后导入war包的properties不对。我只好又修改构建脚本，确保其能包含正确的war包……</p>
+
+<p>很快时间已经到了6点多了，该下班了，但是我仍然深陷这个泥潭，没有找到问题原因，反而时不时要解决一些其他杂七杂八的东西。看来今天是完成不了了，因为修改的东西太多了，每个修改都没有进行验证，所以问题排查很难，并且还经常发现新的问题。</p>
+
+<p>最后，我只好打住。决定明天早上一来把今天所有的修改都撤销掉，等于说今天的活都白干了。今天下班了，感觉很不好。作为一个丰富的程序员，给羊剪羊毛（出自《卓有成效的程序员》，指剪不断理还乱，本来要解决这个问题，但解决过程中面对的都是与根本问题不相干的其他问题）这件事情怎么会发生在我的身上那？</p>
+
+<p>我觉得最大的问题有两个：</p>
+
+<ol>
+<li><p>没有对改名这个任务列详细的task。刚开始太轻敌，以为改名很简单，没有仔细想。结果自己把自己带到了沟里，步子迈的太大了，把蛋给扯到了。列出详细的task好处是你能预估出完成的时间，并且了解可能会出现哪些风险。每个task都循序渐进、可以验证，并且保证随时可以回退。由于没有列task，直接导致我明天撤销修改时还要努力回想到底今天做了哪些修改。</p></li>
+<li><p>我没有及时进行验证。TDD的思想就是先测试-》测试失败->再写实现->测试成功。这样周而复始来驱动出你的代码。由于所有代码都有测试覆盖，你有充分的信心保证你的实现是正确的。而虽然我对项目的修改无法及时通过自动化测试进行验证，但起码也应当在做了一个小改动时及时的手工进行验证。比如在将构建脚本替换成gradle之后，不仅要在本地测试一下是否正确，还应当测试部署到服务器上的war包是否正确。这样至少能及时发现构建版本信息缺失及properties文件不对的问题。</p></li>
+</ol>
+
+
+<p>以前老教导别人做事的时候要列task，要及时验证和反馈，没想自己今天在这上面宰了一跟头，还是太轻敌啊。不过吃一堑长一智，希望以后少犯这种低级错误。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[开阔自己的视野，勇敢的接触新知识]]></title>
@@ -3193,85 +3229,6 @@ task的依赖关系。</li>
 <p>刚来的时候我住在Oaks酒店，后来搬到了River Place的一套公寓。不得不感叹帝国主义的腐朽。公寓虽然面积不大，但是所有设施一应俱全。厨房什么电器都齐备了，烤箱、洗碗机都有。这才是真正的拎包入住。听后这边的公寓大概500刀一周，还是蛮贵的，这价格应该能够付郊区的一栋独栋别墅的月供，所以如果打算定居的话就不是很划算。不过毕竟是城中心，上班、购物什么的都方便。由于住得地方距上班的地方只有不到10分钟路程，所以基本没坐过公交车。布里斯班的公共交通还是蛮贵的，虽然可以办go card，但是打折也不是很多。布里斯班的路不是很宽，行人和车辆都比较遵守交通规则。如果闯红灯被警察抓的话会罚款，44刀。听同事说墨尔本创红灯被抓要被罚200刀。如果车辆从车库里出来时，会主动的避让行人。我有好几次看到车辆要驶入街道，就想等他们先过，但是车主都会停下来招手示意我先过去，这点感觉很好。</p>
 
 <p>暂且就这么多把。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[SQL语法的重要知识点总结]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/07/30/concepts-of-sql-statement/"/>
-    <updated>2013-07-30T22:31:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/07/30/concepts-of-sql-statement</id>
-    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/sql_rebel.jpg"></p>
-
-<p>好几年没写SQL语句了。现在到了新的team，需要用到数据库。作为QA的话时常需要使用客户端工具连接到数据库中找寻或修改数据。这么长时间没使用，一些SQL的使用技巧都忘得差不多了。晚上看了一些资料，花了1个多小时又捡起了曾经的知识。现在总结一下以方便以后查阅。</p>
-
-<!-- more -->
-
-
-<ol>
-<li><p>SQL不是大小写敏感的。</p></li>
-<li><p>分号是分割多条SQL语句的标准的分隔符，所以在单条SQL语句后面总加上分隔符是不会出错的。</p></li>
-<li><p><code>DISTINCT</code>关键字用于剔除重复的结果数据。<code>SELECT DISTINCT City FROM Customers;</code>意味着从Customers表中返回不重复的City值。</p></li>
-<li><p><code>ORDER BY</code>用于对查询结果排序。 <code>ORDER BY column_name ASC</code>表示递增排序，也是默认顺序，可以省略<code>ASC</code>。 <code>ORDER BY column_name DESC</code>表示递减排序; <code>ORDER BY</code>后面可跟多个列名进行排序。</p></li>
-<li><p>返回指定数目的记录。在<code>SQL Server/MS Access</code>中可以使用 <code>SELECT TOP number|percent column_name(s)
-FROM table_name;</code> MySQl中语法是 <code>SELECT column_name(s)
-FROM table_name
-LIMIT number;</code>Oracle中语法是<code>SELECT column_name(s)
-FROM table_name
-WHERE ROWNUM &lt;= number;</code>.  <code>SELECT TOP number PERCENT * FROM table</code>可以返回指定指定百分数的数据。</p></li>
-<li><p>使用<code>LIKE</code>可以匹配字符串值，同时可以使用通配符。<code>%</code>匹配0或多个字符，<code>_</code>匹配一个字符，<code>[charlist]</code>匹配一组字符，<code>[^charlist]</code>或<code>[!charlist]</code>表示匹配不在此列表中的字符。</p></li>
-<li><p>使用<code>AS</code>关键字可以给列或表起别名。也可以给组合后的列起别名，如 <code>SELECT CustomerName, Address+', '+City+', '+PostalCode+', '+Country AS Address
-FROM Customers;</code></p></li>
-<li><p>使用<code>JOIN</code>关键字可以合并两个或连个以上的表的数据行，要基于所有表中的某一列建立一个连接条件。Join有四种：</p>
-
-<ul>
-<li>INNER JOIN返回两个表中满足条件的行数据。</li>
-<li>LEFT JOIN返回左表所有行数据及满足条件的右表行数据。</li>
-<li>RIGHT JOIN返回右表的所有行数据及满足条件的左表行数据。</li>
-<li>FULL JOIN返回左表和右表所有行数据行。</li>
-</ul>
-</li>
-<li><p><code>UNION</code>用于合并两个或多个查询结果。要求查询结果的列数及数据类型要一样。</p></li>
-<li><p><code>SELECT INTO</code>可以将一个表中数据插入到另一个新表中。如 <code>SELECT *
-INTO CustomersBackup2013
-FROM Customers;</code>它还有个巧妙的用法是创建一个空的新表格，其schema与后者一致,方法是<code>SELECT *
-INTO newtable
-FROM table1
-WHERE 1=0;</code></p></li>
-<li><p><code>INSERT INTO SELECT</code>与<code>SELECT INTO</code>使用较相似，不同的是<code>SELECT INTO</code>会创建新表,而<code>INSERT INTO SELECT</code>是插入到已存在的表中。</p></li>
-<li><p>一些常用的SQL函数。（注意这些函数并一定都是通用的，但所有数据库基本上都有类似的功能）</p>
-
-<p><strong>聚合函数</strong></p>
-
-<ul>
-<li>AVG() - 求平均值</li>
-<li>COUNT() - 返回行数</li>
-<li>FIRST() - 返回第一个值</li>
-<li>LAST() - 返回最后一个值</li>
-<li>MAX() - 返回最大值</li>
-<li>MIN() - 返回最小值</li>
-<li>SUM() - 求和</li>
-</ul>
-
-
-<p><strong>其他常用函数</strong></p>
-
-<ul>
-<li>UCASE() - 转换为大写</li>
-<li>LCASE() - 转换为小写</li>
-<li>MID() - 提取字符串</li>
-<li>LEN() - 获取字符串长度</li>
-<li>ROUND() - 对数据进行舍入</li>
-<li>NOW() - 返回当前系统时间</li>
-<li>FORMAT() - 格式化field的显示</li>
-</ul>
-</li>
-<li><p><code>GROUP BY</code>用于对使用了聚合函数的查询结果进行分组。这是一个很强大的语法。</p></li>
-<li><p><code>HAVING</code>用于对使用了聚合函数的字段进行条件筛选。</p></li>
-</ol>
-
-
-<p>如果要详细了解SQL的这些使用的话，我推荐<a href="http://www.w3schools.com/sql/default.asp">http://www.w3schools.com/sql/default.asp</a>。你不仅可以看到说明和示例，也可以随时实时练习。实在是不可不得的好网站。</p>
 ]]></content>
   </entry>
   
