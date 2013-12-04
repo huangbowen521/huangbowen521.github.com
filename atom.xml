@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-11-06T23:14:50+08:00</updated>
+  <updated>2013-12-04T22:24:54+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,85 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Gradle中使用idea插件的一些实践]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/12/04/use-idea-plugin-in-gradle/"/>
+    <updated>2013-12-04T22:19:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/12/04/use-idea-plugin-in-gradle</id>
+    <content type="html"><![CDATA[<p>如果你的项目使用了Gradle作为构建工具，那么你一定要使用Gradle来自动生成IDE的项目文件，无需再手动的将源代码导入到你的IDE中去了。</p>
+
+<!-- more -->
+
+
+<p>如果你使用的是eclipse，可以在build.gradle中加入这么一行.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;eclipse&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后在命令行中输入<code>gradle eclipse</code>就可以生成eclipse的项目文件，直接使用eclipse打开生成的项目文件即可。</p>
+
+<p>当然作为Java程序开发者，最好使的IDE还是Intellij,昨天听闻Intellij 13已经发布了，增加了不少新功能，看来又要掏腰包了。如果要让Gradle自动生成Intellij的项目文件，需要使用idea插件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;idea&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>命令行下输入<code>gradle idea</code>，就会生成Intellij的项目文件，真是省时省力。如果在已经存在Intellij的项目文件情况下，想根据build.gradle中的配置来更新项目文件，可以输入<code>gradle cleanIdea idea</code>。<code>cleanIdea</code>可以清除已有的Intellij项目文件。</p>
+
+<p>Intellij项目文件主要有三种类型。</p>
+
+<ul>
+<li><p>.ipr Intellij工程文件</p></li>
+<li><p>.iml Intellij 模块文件</p></li>
+<li><p>.iws Intellij 工作区文件</p></li>
+</ul>
+
+
+<p>如果只简单的使用<code>gradle idea</code>生成Intellij的工程文件，其实在使用Intellij打开项目以后，我们还要做一些手工配置，比如指定JDK的版本，指定源代码管理工具等。Gradle的idea命令本质上就是生成这三个xml文件,所以Gradle提供了生成文件时的hook(钩子)，让我们可以方便的做定制化，实现最大程度的自动化。这就需要自定义idea这个任务了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">idea</span><span class="o">.</span><span class="na">project</span> <span class="o">{</span>
+</span><span class='line'>     <span class="n">jdkName</span> <span class="o">=</span> <span class="s1">&#39;1.6&#39;</span>
+</span><span class='line'>     <span class="n">languageLevel</span> <span class="o">=</span> <span class="s1">&#39;1.6&#39;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个用来配置项目的jdk及languageLevel。</p>
+
+<p>如果要指定源代码管理工具类型，就需要调用hook修改生成的ipr文件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">idea</span><span class="o">.</span><span class="na">project</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">ipr</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">withXml</span> <span class="o">{</span> <span class="n">provider</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="n">provider</span><span class="o">.</span><span class="na">node</span><span class="o">.</span><span class="na">component</span><span class="o">.</span><span class="na">find</span> <span class="o">{</span> <span class="n">it</span><span class="o">.</span><span class="nd">@name</span> <span class="o">==</span> <span class="s1">&#39;VcsDirectoryMappings&#39;</span> <span class="o">}.</span><span class="na">mapping</span><span class="o">.</span><span class="nd">@vcs</span> <span class="o">=</span> <span class="s1">&#39;Git&#39;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通过这种方式可以最大限度的实现对Intellij项目文件的定制化。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[记一次扯到蛋的教训]]></title>
@@ -3205,30 +3284,6 @@ task的依赖关系。</li>
 <li><p>切忌将站会流于形式，失去原有的意义。站会注重的是team间横向的沟通，并且每天都会发生，如果不能坚持就说明了团队间配合出现了问题，失去了快速反馈的意义。</p></li>
 </ol>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[布里斯班两周感受]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/08/03/impression-of-brisbane-in-two-weeks/"/>
-    <updated>2013-08-03T23:56:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/08/03/impression-of-brisbane-in-two-weeks</id>
-    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/brisbane2.jpg"></p>
-
-<p>不知不觉，到达布里斯班已经两周了，感觉还不错。再谈谈自己的感受。</p>
-
-<!-- more -->
-
-
-<p>虽然现在布里斯班是冬季，但是一点都不冷，白天大多数时候就穿个长袖Tshirt就行，晚上顶多套个外套。如果白天出太阳的话长袖Tshirt甚至还好些热。每天都是蓝天白云，有时候来片乌云下点雨，持续时间不长。站在高楼上可以望到很远，看不到一点污染的迹象，不像成都经常是看对面的大厦都是雾蒙蒙的。布里斯班河穿城而过，河水谈不上很清澈。河里有公共交通船来回穿梭，也有一些旅游船。我坐了一个叫RiverTour的船，1个半小时25刀，沿着布里斯班河走到快进海的地方又折返回来。途中可以看到不少旧建筑，也有很多私人游艇。很多别墅沿河而建，家家有自己的私人码头。布里斯班的古建筑与现代建筑相得益彰，经常在某个高大威猛的现代建筑旁就能发现一些经典的欧式建筑。今天在回公寓的途中就发现了一个大教堂，很宏伟壮观，进去参观了下，真是有气势。听介绍女王曾经来过这个教堂，教堂里还展出了一套当时女王来时牧师穿的衣服。</p>
-
-<p>布里斯班河旁的巨大摩天轮15刀一个人，我在底下想了想没坐。主要是我的公寓就在摩天轮河对面，40楼，看布里斯班景色早看够了。南岸公园里有个露天的人工沙滩和游泳池，有很多人在里面游泳晒太阳，这可是布里斯班冬天啊，可见布里斯班的天气多好。河边还有一处几百米的峭壁，很多人在那里攀岩，真是刺激。草坪随处可见，也有不少的专门供BBQ的台子，一大伙人围着烧烤，香味到处都是。有个叫riverLife的地方可以租小艇和自行车、攀岩设备等。泛舟在布里斯班河也别有一番风味。只不过自己是个旱鸭子，另外听说还要license，所以没有尝试。</p>
-
-<p>这里的物价来说还是有些贵，当然如果你拿得是澳洲的工资的话就觉得比中国相对来说便宜。我中午一般是去foud court吃快餐。一些盖浇饭、炒饭之类的，总体是6到9刀间，可以吃饱。晚上则自己做。煮点意大利面浇点面酱，或者去超市买腌好的牛排，拿回来煎了就可以吃了。一盒8刀左右，有350克，量还是较多的。牛奶品牌非常多，2升的大概4刀左右，绝对不含三聚氰胺。鸡蛋稍贵，一打12个4刀多点。周末的时候会和同事一起下馆子。找个河边的餐馆，边吃饭边欣赏风景边聊天，很是惬意。一餐下来每人平均25刀左右，还算不贵。在外面吃饭一定注意不能浪费。有一次盘子剩了2块肉，服务员说如果不吃完就会double the price。ThoughtWorks在澳洲有Friday Lunch的传统，就是所有的ThoughtWorkers都会在周五中午回到办公室一起吃午餐，顺便聊聊天，交流下感情。ThoughtWorks布里斯班办公室平时都是没人的，大家都跑客户现场上班去了。我们的客户现场离办公室很近，所以中午我们都习惯买了午餐后去办公室吃。还是在自家的办公室好，各种饮料、零食、水果随便吃。</p>
-
-<p>刚来的时候我住在Oaks酒店，后来搬到了River Place的一套公寓。不得不感叹帝国主义的腐朽。公寓虽然面积不大，但是所有设施一应俱全。厨房什么电器都齐备了，烤箱、洗碗机都有。这才是真正的拎包入住。听后这边的公寓大概500刀一周，还是蛮贵的，这价格应该能够付郊区的一栋独栋别墅的月供，所以如果打算定居的话就不是很划算。不过毕竟是城中心，上班、购物什么的都方便。由于住得地方距上班的地方只有不到10分钟路程，所以基本没坐过公交车。布里斯班的公共交通还是蛮贵的，虽然可以办go card，但是打折也不是很多。布里斯班的路不是很宽，行人和车辆都比较遵守交通规则。如果闯红灯被警察抓的话会罚款，44刀。听同事说墨尔本创红灯被抓要被罚200刀。如果车辆从车库里出来时，会主动的避让行人。我有好几次看到车辆要驶入街道，就想等他们先过，但是车主都会停下来招手示意我先过去，这点感觉很好。</p>
-
-<p>暂且就这么多把。</p>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gradle | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/gradle/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-11-06T23:14:50+08:00</updated>
+  <updated>2013-12-04T22:24:54+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,81 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Gradle中使用idea插件的一些实践]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/12/04/use-idea-plugin-in-gradle/"/>
+    <updated>2013-12-04T22:19:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/12/04/use-idea-plugin-in-gradle</id>
+    <content type="html"><![CDATA[<p>如果你的项目使用了Gradle作为构建工具，那么你一定要使用Gradle来自动生成IDE的项目文件，无需再手动的将源代码导入到你的IDE中去了。</p>
+
+<!-- more -->
+
+
+<p>如果你使用的是eclipse，可以在build.gradle中加入这么一行.</p>
+
+<p>```groovy</p>
+
+<p>apply plugin: 'eclipse'</p>
+
+<p>```</p>
+
+<p>然后在命令行中输入<code>gradle eclipse</code>就可以生成eclipse的项目文件，直接使用eclipse打开生成的项目文件即可。</p>
+
+<p>当然作为Java程序开发者，最好使的IDE还是Intellij,昨天听闻Intellij 13已经发布了，增加了不少新功能，看来又要掏腰包了。如果要让Gradle自动生成Intellij的项目文件，需要使用idea插件。</p>
+
+<p>```groovy</p>
+
+<p>apply plugin: 'idea'</p>
+
+<p>```</p>
+
+<p>命令行下输入<code>gradle idea</code>，就会生成Intellij的项目文件，真是省时省力。如果在已经存在Intellij的项目文件情况下，想根据build.gradle中的配置来更新项目文件，可以输入<code>gradle cleanIdea idea</code>。<code>cleanIdea</code>可以清除已有的Intellij项目文件。</p>
+
+<p>Intellij项目文件主要有三种类型。</p>
+
+<ul>
+<li><p>.ipr Intellij工程文件</p></li>
+<li><p>.iml Intellij 模块文件</p></li>
+<li><p>.iws Intellij 工作区文件</p></li>
+</ul>
+
+
+<p>如果只简单的使用<code>gradle idea</code>生成Intellij的工程文件，其实在使用Intellij打开项目以后，我们还要做一些手工配置，比如指定JDK的版本，指定源代码管理工具等。Gradle的idea命令本质上就是生成这三个xml文件,所以Gradle提供了生成文件时的hook(钩子)，让我们可以方便的做定制化，实现最大程度的自动化。这就需要自定义idea这个任务了。</p>
+
+<p>```groovy</p>
+
+<p>idea.project {</p>
+
+<pre><code> jdkName = '1.6'
+ languageLevel = '1.6' 
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>这个用来配置项目的jdk及languageLevel。</p>
+
+<p>如果要指定源代码管理工具类型，就需要调用hook修改生成的ipr文件。</p>
+
+<p>```groovy</p>
+
+<p>idea.project {</p>
+
+<pre><code>ipr {
+    withXml { provider -&gt;
+        provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
+    }
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```
+通过这种方式可以最大限度的实现对Intellij项目文件的定制化。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Gradle的属性设置大全]]></title>
