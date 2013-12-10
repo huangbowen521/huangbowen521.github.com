@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Tag: Build | 黄博文的地盘]]></title>
+  <title><![CDATA[Tag: build | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/build/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-12-05T22:15:38+08:00</updated>
+  <updated>2013-12-10T17:10:59+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,181 +14,87 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Gradle的属性设置大全]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/09/12/setup-properties-in-gradle/"/>
-    <updated>2013-09-12T22:41:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/09/12/setup-properties-in-gradle</id>
-    <content type="html"><![CDATA[<p>Gradle作为一款项目构建工具，由于其强大、灵活、快速、完全兼容Ant等特性，越来越受到人们欢迎。Gradle的灵活有时候也会引起人们的困惑。比如在Gradle中设置变量和属性就有N种办法。由于Gradle的理念是Convention over configruation(约定优于配置),所以如果了解了这些约定，那么在使用Gradle的属性配置时一定会如鱼得水。</p>
+    <title type="html"><![CDATA[使用Gradle运行集成测试]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/12/10/integration-test-in-gradle/"/>
+    <updated>2013-12-10T13:17:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/12/10/integration-test-in-gradle</id>
+    <content type="html"><![CDATA[<p>如果Gradle构建的项目是一个web项目的话，里面可能包含一些集成测试和功能性测试。这些测试和单元测试不同之处是在运行之前要先在本地将web服务启动起来，并且跑完测试后能够自动的关闭web服务。</p>
 
 <!-- more -->
 
 
-<hr />
-
-<p><strong>在项目根目录下建立名为gradle.properties文件，在该文件中定义需要的属性。这些属性在Gradle构建Gradle领域对象（即project对象实例）时会被自动加到project对象实例中作为其属性被直接调用。</strong></p>
-
-<p>```xml gradle.properties</p>
-
-<p>guestName= Bowen</p>
-
-<p>```</p>
+<p>在本地启动web服务我们可以使用Gradle内置的jetty插件。jetty是一个轻量级的web容器，其执行速度快，配置简单，远程调试方便。启用jetty只需在build.gradle中加入对这个插件的引用。</p>
 
 <p>```groovy build.gradle</p>
 
-<p>task hello &lt;&lt; {</p>
-
-<pre><code> println $guestName
- println "hello, $guestName"
-</code></pre>
-
-<p>}</p>
+<p>apply plugin: 'jetty'</p>
 
 <p>```</p>
 
-<p>```bash</p>
-
-<p>$ gradle hello -q
-Bowen
-hello, Bowen</p>
-
-<p>$ gradle properties | grep guestName
-guestName: Bowen</p>
-
-<p>```</p>
-
-<hr />
-
-<p><strong>定义在build.gradle中的ext块中。ext准确的说是Gradle领域对象的一个属性，我们可以将自定义的属性添加到ext对象上，Build.gradle中的其它代码片段可以使用。</strong></p>
+<p>之后可以配置war包的名称，启动的端口等属性。</p>
 
 <p>```groovy build.gradle</p>
 
-<p>ext {</p>
+<p>apply plugin: 'jetty'</p>
 
-<pre><code> guestName='Bowen'
-</code></pre>
+<p>httpPort = 9876</p>
 
-<p>}</p>
-
-<p>task hello &lt;&lt; {</p>
-
-<pre><code> println guestName
- println "hello, $guestName"
-</code></pre>
-
-<p>}</p>
+<p>[jettyRun, jettyRunWar, jettyStop]<em>.stopPort = 9966
+[jettyRun, jettyRunWar, jettyStop]</em>.stopKey = 'stopKey'</p>
 
 <p>```</p>
 
-<p>```bash</p>
+<p>我们需要将集成测试与一般的单元测试分开。因为单元测试并不需要事先启动web服务，保证其执行速度快，能够得到更快的反馈。一般做法是单元测试后缀名为Test.java，集成测试后缀名为IntegrationTest.java。</p>
 
-<p>$ gradle hello -q
-Bowen
-hello, Bowen</p>
-
-<p>$ gradle properties | grep guestName
-guestName: Bowen
-$ gradle properties | grep ext
-ext: org.gradle.api.internal.plugins.DefaultExtraPropertiesExtension@10ef5fa0</p>
-
-<p>```</p>
-
-<p>从上述可以看到ext对象其实是DefaultExtraPropertiesExtension对象的一个实例。</p>
-
-<hr />
-
-<p><strong>在命令行中通过<code>-D</code>或者<code>-P</code>给Gradle实时创建属性。</strong>
-<code>-D</code>属性会被传送给启动Gradle的jvm，作为一个系统属性被jvm使用。</p>
+<p>配置单元测试执行的测试集合。</p>
 
 <p>```groovy build.gradle</p>
 
-<p>task hello &lt;&lt; {</p>
+<p>test {</p>
 
-<pre><code> println System.properties['guestName']
+<pre><code>include '**/*Test.class'
+exclude '**/*IntegrationTest.class'
 </code></pre>
 
 <p>}</p>
 
-<p><code>
-</code>bash</p>
-
-<p>$ gradle hello -DguestName='Bowen' -q
-Bowen</p>
-
 <p>```</p>
 
-<p><code>-P</code>属性则会被直接加载到Gradle领域对象上。</p>
+<p>然后新建一个Task，用于运行集成测试。</p>
 
 <p>```groovy build.gradle</p>
 
-<p>task hello &lt;&lt; {</p>
+<p>task intTest(type: Test, dependsOn: test) {</p>
 
-<pre><code>  println "hello, $guestName"
-</code></pre>
+<pre><code>include '**/*IntegrationTest.class'
 
-<p>}</p>
+doFirst {
 
-<p><code>
-</code>bash</p>
+    jettyRun.daemon = true
+    jettyRun.execute()
 
-<p>$ gradle hello -PguestName='Bowen' -q
-hello, Bowen</p>
+}
 
-<p>```</p>
-
-<hr />
-
-<p><strong>在Gradle配置文件中创建系统属性。刚讲过在gradle.properties文件可以创建属性，同时我们也可以创建系统属性。如果有<code>systemProp.</code>前缀的属性会被识别为系统属性。</strong></p>
-
-<p>```xml gradle.properties</p>
-
-<p>systemProp.guestName = 'Bowen'</p>
-
-<p><code>
-</code>groovy build.gradle</p>
-
-<p>task hello &lt;&lt; {</p>
-
-<pre><code>  println "hello, " + System.properties['guestName']
+doLast {
+    jettyStop.execute()
+}
 </code></pre>
 
 <p>}</p>
 
 <p>```</p>
 
-<p>```bash</p>
+<p>上述代码首先是创建一个名为intTest的task，其类型为Test,依赖于test task。该集成测试只会运行后缀名为IntegrationTest的测试类。在运行测试之前，首先采用后台模式启动jetty服务器，运行完测试后再调用jettyStop task停止jetty服务。</p>
 
-<p>$ gradle hello -q
-hello, Bowen</p>
-
-<p>```</p>
-
-<hr />
-
-<p><strong>将特殊前缀的系统属性或环境变量自动加入到Gradle领域对象中。</strong></p>
-
-<p>如果有环境变量以<code>ORG_GRADLE_PROJECT.</code>为前缀，那么该变量会被自动添加到Gradle领域对象中。同样，如果有系统属性以<code>org.gradle.project.</code>为前缀，那么也会被自动加入到Gradl领域对象中。这一特性的目的之一是为了隐藏一些敏感的信息。比如在执行Gradle脚本时需要传入密码信息，如果以<code>-P</code>的方式传送会被别人看到。而把该属性保存为环境变量，只有系统管理员才有权访问和修改。在运行Gralde的时候该环境变量会被自动加入到Gradle对象中被使用，隔离了明暗数据，又不行影响其他用户使用。（其他用户可以通过<code>-P</code>方式是设置该属性）。</p>
+<p>为了使我们在运行<code>gradle build</code>时也会运行intTest task，可以添加对intTest的依赖。</p>
 
 <p>```groovy build.gradle</p>
 
-<p>task hello &lt;&lt; {</p>
-
-<pre><code>  println "hello, " + guestName 
-</code></pre>
-
-<p>}</p>
+<p>build.dependsOn intTest</p>
 
 <p>```</p>
 
-<p>```bash</p>
-
-<p>$ gradle hello -Dorg.gradle.project.guestName=Bowen -q
-hello, Bowen</p>
-
-<p>$ export ORG_GRADLE_PROJECT_guestName=Bob
-$ gradle hello -q
-hello, Bob</p>
-
-<p>```</p>
+<p>这样在运行<code>gradle build</code>时也会运行集成测试。并且在集成测试前后web服务会自动的启动和关闭。</p>
 ]]></content>
   </entry>
   
