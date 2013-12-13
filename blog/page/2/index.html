@@ -9,7 +9,7 @@
   <meta name="author" content="黄博文">
 
   
-  <meta name="description" content="bundle在ruby的世界里是个好东西，它可以用来管理应用程序的依赖库。它能自动的下载和安装指定的gem，也可以随时更新指定的gem。 rvm则是一个命令行工具，能帮助你轻松的安装，管理多个ruby环境。每个环境可以指定一系列的gem。它允许你为每一个项目指定其ruby的版本，需要的gem的版本 &hellip;">
+  <meta name="description" content="持续集成已经被公认为极具价值的一项工程实践。在初始化一个项目时一个重要的任务就是搭建持续集成服务器，编写构建脚本。在我工作的所有项目中都引入了持续集成机制。它已经像氧气一样成为软件开发过程中的一项工程活动。 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,7 +83,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/">避免每次输入bundler Exec命令</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/09/22/continous-integration/">让你的CI跑起来-《持续集成》读书总结</a></h1>
     
     
       <p class="meta">
@@ -99,47 +99,22 @@
   
 
 
-<time datetime="2013-02-04T00:24:00+08:00" pubdate data-updated="true">Feb 4<span>th</span>, 2013</time>
+<time datetime="2013-09-22T16:49:00+08:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2013</time>
         
-         | <a href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/09/22/continous-integration/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>bundle在ruby的世界里是个好东西，它可以用来管理应用程序的依赖库。它能自动的下载和安装指定的gem，也可以随时更新指定的gem。</p>
-
-<p><a href="https://rvm.io/">rvm</a>则是一个命令行工具，能帮助你轻松的安装，管理多个ruby环境。每个环境可以指定一系列的gem。它允许你为每一个项目指定其ruby的版本，需要的gem的版本。这能最大限度的避免由于ruby环境的差异，或者不同版本的gem造成的各种问题。</p>
-
-<p>当我在项目中引入了rvm后，使用rake命令时，每次都会出现这样的异常。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake aborted!
-</span><span class='line'>You have already activated rake 10.0.0, but your Gemfile requires rake 0.9.2.2. Using bundle <span class="nb">exec </span>may solve this.
-</span><span class='line'>/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/runtime.rb:31:in <span class="sb">`</span>block in setup<span class="s1">&#39;</span>
-</span><span class='line'><span class="s1">/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/runtime.rb:17:in `setup&#39;</span>
-</span><span class='line'>/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler.rb:116:in <span class="sb">`</span>setup<span class="s1">&#39;</span>
-</span><span class='line'><span class="s1">/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/setup.rb:7:in `&lt;top (required)&gt;&#39;</span>
-</span><span class='line'>/Users/twer/sourcecode/octopress/Rakefile:2:in <span class="sb">`</span>&lt;top <span class="o">(</span>required<span class="o">)</span>&gt;<span class="err">&#39;</span>
-</span><span class='line'><span class="o">(</span>See full trace by running task with --trace<span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+  <div class="entry-content"><p>持续集成已经被公认为极具价值的一项工程实践。在初始化一个项目时一个重要的任务就是搭建持续集成服务器，编写构建脚本。在我工作的所有项目中都引入了持续集成机制。它已经像氧气一样成为软件开发过程中的一项工程活动。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/09/22/continous-integration/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -151,7 +126,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/01/19/thoughtworks-immersion-xiao-ji/">ThoughtWorks Immersion 小计</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/09/17/page-object/">翻译-page对象</a></h1>
     
     
       <p class="meta">
@@ -167,32 +142,22 @@
   
 
 
-<time datetime="2013-01-19T23:08:00+08:00" pubdate data-updated="true">Jan 19<span>th</span>, 2013</time>
+<time datetime="2013-09-17T02:14:00+08:00" pubdate data-updated="true">Sep 17<span>th</span>, 2013</time>
         
-         | <a href="/blog/2013/01/19/thoughtworks-immersion-xiao-ji/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/09/17/page-object/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>2012年12月18日，第11期TWI在中国西安举行了。这次参加培训的角色有admin，有hr，有Ux,当然更多的是QA和Dev，估计是最齐全的一届。</p>
-
-<p>虽然TWI已经过去好几天了，但是我还在回味那培训中的一幕幕。</p>
-
-<p>关于这几天的经历，我可以用几个关键字来形容。</p>
-
-<p><strong>吃：</strong></p>
-
-<p>虽然我们来到西安是学习滴，但是也不能委屈了自己的胃。刚到西安就先吃了羊肉泡馍，外加一个肉夹馍才感觉有些饱。第一天中午办公室定的凉皮和肉夹馍，典型的北方特色，符合我的胃口。第二天晚上我们team building，去的小杨烤肉，刚开始打不到车，气氛有些低落，但是到了饭馆气氛慢慢火热起来，最后吃完了大家大摆龙门阵，海量重量级八卦被爆出，气氛异常火热。</p>
-
-<hr />
+  <div class="entry-content"><p>译者注：这篇文章翻译自马丁·福勒（Martin Flower，对，没错，就是软件教父）官网的一篇文章，原文出处在文底。如果你正在做WEB自动化测试，那么我强烈推荐你看这篇文章。另外透露Martin Flower将于10月份左右来成都ThoughtWorks办公室，大家有机会一睹他的风采。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/01/19/thoughtworks-immersion-xiao-ji/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/09/17/page-object/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -204,7 +169,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/">《JavaScript语言精粹》读书笔记</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/09/16/introduction-of-chef/">云时代基础设置自动化管理利器： Chef</a></h1>
     
     
       <p class="meta">
@@ -220,24 +185,24 @@
   
 
 
-<time datetime="2013-01-16T00:22:00+08:00" pubdate data-updated="true">Jan 16<span>th</span>, 2013</time>
+<time datetime="2013-09-16T23:29:00+08:00" pubdate data-updated="true">Sep 16<span>th</span>, 2013</time>
         
-         | <a href="/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/09/16/introduction-of-chef/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>《JavaScript语言精粹》这本书句句是精华。如果你想只读一本书了解JavaScript,这本是你的不二选择。</p>
+  <div class="entry-content"><p><img src="/images/migrate_to_cloud.png"></p>
 
-<p>这么薄的一本书讲JavaScript的特点介绍的非常清楚，是我对JavaScript的认识更加的深入。以前总觉得函数式编程很难理解，但是看了这本书以后我觉得对其有了一个新的认识。严格意义上说JavaScript并不仅仅是一门函数式编程语言，书中有一句话对它的特性做了一个精彩的描述：JavaScript的许多特性都借鉴自其他语言。语法借鉴自java，函数借鉴自Scheme,原型继承借鉴自Self，而JavaScript的正则表达式特性则借鉴自Perl。</p>
+<p>云时代的到来势不可挡。尤其作为程序员，我们每天或多或少的直接或间接的使用者各种云服务。云平台有很多种，如云软件（SaaS， Software as a service）、云平台（PaaS, Platform as a service）、云设备(IaaS, Infrastructure as a service)。云计算由于其价格低廉、按需提高、使用方便等特点，越来越受到人们的欢迎。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/09/16/introduction-of-chef/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -249,7 +214,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/11/11/%3C%3Czhuo-you-cheng-xiao-de-cheng-xu-yuan-%3E%3E-du-shu-bi-ji/">《卓有成效的程序员》读书笔记</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/09/12/setup-properties-in-gradle/">Gradle的属性设置大全</a></h1>
     
     
       <p class="meta">
@@ -265,33 +230,22 @@
   
 
 
-<time datetime="2012-11-11T23:52:00+08:00" pubdate data-updated="true">Nov 11<span>th</span>, 2012</time>
+<time datetime="2013-09-12T22:41:00+08:00" pubdate data-updated="true">Sep 12<span>th</span>, 2013</time>
         
-         | <a href="/blog/2012/11/11/%3C%3Czhuo-you-cheng-xiao-de-cheng-xu-yuan-%3E%3E-du-shu-bi-ji/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/09/12/setup-properties-in-gradle/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>在今年的的ThoughtWorks China away day上，我见到了这本书的作者neal ford, 我们还有过简单的交流，并一起去爬了长城。惭愧的是当时我并没有读过他写的这本书。直到今天我拿到了这本书，并花了大半天的时间通读了一遍。看完以后，我觉得这本书真是太好了，非常值得一读。</p>
-
-<p>但是，我想读这本书的读者，大体会分为两个反应。一种是看了一下前面，觉得没有意思，大概翻了翻，发现作者真是太罗嗦了，就丢到了一边。另一种是爱不释手的从头看到尾，看到有些段落会会心一笑，有些段落则加上重重的标记，并决定马上就要开始实践。</p>
-
-<p>如果换做半年前的我，我是第一种反应，而现在，我当然是第二种反应。主要是这半年在ThoughtWorks的历练，使我变得越来越有成效。列举一个真实的例子。在我的前一个项目中，我们做的产品是一个提交保险单的系统，用户要讲过一个一个的page
- flow直到完成一个保单。如果我要开发的或者测试的feature在第7页上，我每次都需要输入大量的数据，点击大量的按钮从第一页走到第7页。试想每天要重复N次真让人崩溃。后来有人就写了一个JavaScript脚本，可以一次填充一页的数据，并自动跳到下一页。我们把这个脚本保存到一个bookmark上，每次只要点击6下就能到第7页。</p>
-
-<p>也许你们说这样已经简化很多了，但是追求卓越的我们并没有止步。我后来了解了selenium IDE这个在firefox下的插件。这个插件作者在书中有提到过。我用selenium IDE录制了一个脚本，只需要点击一个按键，程序就会自动的走到第7页。这样比手动输入速度至少提高了10倍以上。正如作者所说，我们这样的尽量实现自动化操作节省时间不是第一目标，最重要的目标是不要让程序员在一遍遍的手动操作中变傻，而是让我们精力变的更加集中，focus到更具有价值的地方上去。</p>
-
-<p>我觉得每个程序员都想变得高效，但是面对新的方法，新的工具总是或多或少有点畏惧心理，这是因为他们无法体会到采用一种新方法或者新工具带来的震撼的效果。所以对于我们程序员来说绝对要勇于尝试，勇于突破现状。</p>
-
-<p>回顾了一下作者在书中列举的自己感兴趣的东西，顺便对自己做一个总结。（本人使用的是mac pro，所以tool和plugin只关心mac上的。）</p>
+  <div class="entry-content"><p>Gradle作为一款项目构建工具，由于其强大、灵活、快速、完全兼容Ant等特性，越来越受到人们欢迎。Gradle的灵活有时候也会引起人们的困惑。比如在Gradle中设置变量和属性就有N种办法。由于Gradle的理念是Convention over configruation(约定优于配置),所以如果了解了这些约定，那么在使用Gradle的属性配置时一定会如鱼得水。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2012/11/11/%3C%3Czhuo-you-cheng-xiao-de-cheng-xu-yuan-%3E%3E-du-shu-bi-ji/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/09/12/setup-properties-in-gradle/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -303,7 +257,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/08/08/zai-thoughtworksgong-zuo-liang-ge-duo-yue-de-zong-jie/">在ThoughtWorks工作两个多月的总结</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/09/04/hot-deploy-for-jetty-gradle-plugin/">Gradle里配置jetty实现静态资源的热部署</a></h1>
     
     
       <p class="meta">
@@ -319,30 +273,22 @@
   
 
 
-<time datetime="2012-08-08T01:49:00+08:00" pubdate data-updated="true">Aug 8<span>th</span>, 2012</time>
+<time datetime="2013-09-04T22:32:00+08:00" pubdate data-updated="true">Sep 4<span>th</span>, 2013</time>
         
-         | <a href="/blog/2012/08/08/zai-thoughtworksgong-zuo-liang-ge-duo-yue-de-zong-jie/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/09/04/hot-deploy-for-jetty-gradle-plugin/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>从5月份加入ThoughtWorks到今天，已经接近3个月了。这3个月对我来说意义重大，时间虽然很短，但是我学到了很多很多的东西。我感到需要对自己做一番总结，使自己能够持续快速的进步。
-先说说这2个多月在ThoughtWorks中我的改变。</p>
-
-<ol>
-<li><p><strong>行为意识的改变，变得更加积极主动。</strong>在ThoughtWorks是没有Title的，每天没有人会强迫你干什么，而自己要非常的积极主动来做事情，为团队的发展贡献出自己的力量。</p></li>
-<li><p><strong>思考方式的改变，多问为什么，而不盲从。</strong>ThoughtWorks的每个人都很健谈，尤其是谈论技术来滔滔不绝，这些都是建立在对目标了解透彻的基础上。所以我在思考问题的时候，应该抓住重点，往深处挖掘，而不是停留在表面浅尝辄止。</p></li>
-<li><p><strong>学习能力的改变。</strong>一个人能力有多大，很大一部分取决于他的自我学习能力。学习能力强，接收新事物快，他的知识会源源不断的涌来。在公司这段时间，我发现大家的自我学习能力都很强，一个新技术、新工具很快就能上手使用。我在平时注意收集和观察别人的学习方式，并且尝试使用到自己身上，收到了一定的效果。</p></li>
-</ol>
-
+  <div class="entry-content"><p>通过Gradle我们可以很方便的使用内置jetty启动我们的web程序，在本地进行调试。但是在使用的过程中，我发现了几个问题，导致本地调试的效率大受影响。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2012/08/08/zai-thoughtworksgong-zuo-liang-ge-duo-yue-de-zong-jie/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/09/04/hot-deploy-for-jetty-gradle-plugin/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -354,7 +300,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/08/08/zai-ben-di-an-zhuang-gitde-htmlbang-zhu-wen-dang/">在本地安装git的HTML帮助文档</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/09/01/command-line-of-gradle/">Gradle命令行黑魔法</a></h1>
     
     
       <p class="meta">
@@ -370,28 +316,207 @@
   
 
 
-<time datetime="2012-08-08T00:48:00+08:00" pubdate data-updated="true">Aug 8<span>th</span>, 2012</time>
+<time datetime="2013-09-01T22:25:00+08:00" pubdate data-updated="true">Sep 1<span>st</span>, 2013</time>
         
-         | <a href="/blog/2012/08/08/zai-ben-di-an-zhuang-gitde-htmlbang-zhu-wen-dang/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/09/01/command-line-of-gradle/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>当我们想查询git某条指令如何使用时，<a href="http://git-scm.com/documentation">git</a>官网有详尽的文档供我们查看。在命令行下我们也可以随时通过 git &#8211;help的方法查看某条命令的详细帮助。</p>
+  <div class="entry-content"><p><img src="/images/building.jpg"></p>
 
-<p>相对于在Terminal中内置的帮助文档，HTML格式更清晰，更详尽。</p>
+<p>毫无疑问，现在Gradle已经成为java世界最火的构建工具，风头已经盖过了冗余的ant，落后的maven。Gradle是以Groovy语言编写的一套构建脚本的DSL，由于Groovy语法的优雅，所以导致Gradle天生就有简洁、可读性强、灵活等特性。</p>
 
-<p>但是如果我想在无法上网的情况下也能查看git官网的详尽的帮助文档，有没有办法那？当然有了，下面就教大家如何在本机搭建git的HTML帮助文档。</p>
-
-<p>在Windows上设置很简单，主需要安装<a href="http://code.google.com/p/msysgit/">Msysgit</a>,就会自动为你设置起本地的HTML帮助文档。所以这篇文章主要讲在Mac和Linux下该如何实现。</p>
+<p>Gradle的命令行功能也非常强大。本人从maven转到Gradle，深深被gradle强大的命令行功能折服。通过命令行来实现Gradle的各种特性，就像魔法师在表演魔法一样。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2012/08/08/zai-ben-di-an-zhuang-gitde-htmlbang-zhu-wen-dang/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/09/01/command-line-of-gradle/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/25/the-books-i-read-in-the-half-past-2013/">2013年上半年我读过的那些书</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-25T13:10:00+08:00" pubdate data-updated="true">Aug 25<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/25/the-books-i-read-in-the-half-past-2013/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>2013年过的很快，一不留神8个月就过去了。在今年年初的时候我给自己定下了2013全年阅读30本书的计划。这段时间总共算了下自己读完的加上在读的有10多本。</p>
+
+<p>这些书中既有实体书，也有电子书。实体书有的是公司买的，有的是自己自掏腰包，但是年底可以报账。电子书的话主要是在亚马逊和豆瓣上买的正版书，阅读工具是自己的电脑或者手机。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/08/25/the-books-i-read-in-the-half-past-2013/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/25/preface-of-effective-javascript/">Effective JavaScript译者序</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-25T12:17:00+08:00" pubdate data-updated="true">Aug 25<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/25/preface-of-effective-javascript/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="http://img3.douban.com/lpic/s24868715.jpg"></p>
+
+<p>虽然JavaScript在诞生之初由于商业原因及规范的缺少，一直饱受人们的诟病。但是随着时间的推移，
+人们已经逐渐走出了对这门语言的偏见和误解，开始领略它那强大的语言特性。当下JavaScript语言大红大紫，研究讨论JavaScript的相关书籍也早已汗牛充屋，但是这本书作为Effective软件开发系列中的一员，却是不可或缺。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/08/25/preface-of-effective-javascript/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/13/branchs-in-svn/">SVN中Branch的创建与合并</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-13T00:59:00+08:00" pubdate data-updated="true">Aug 13<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/13/branchs-in-svn/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/branch_trunk.jpg"></p>
+
+<p>在使用源代码版本控制工具时，最佳实践是一直保持一个主干版本。但是为了应付实际开发中的各种情况，适时的开辟一些分支也是很有必要的。比如在持续开发新功能的同时，需要发布一个新版本，那么就需要从开发主干中建立一个用于发布的分支，在分支上进行bug fix，维护版本的稳定，并适时的将一些改动合并回主干。目前大红大紫的源代码版本控制工具git很受大家推崇，原因之一就是其在这方面的功能相当强大。其实老牌的SVN也是有这样的功能的，接下来就给大家讲解下。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/08/13/branchs-in-svn/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/11/only-good-player-has-good-luck/">只有好的棋手才会走运-《打造Facebook》读后感</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-11T12:01:00+08:00" pubdate data-updated="true">Aug 11<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/11/only-good-player-has-good-luck/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/facebook.jpg" width="600"></p>
+
+<p>王淮的《打造Facebook》一书不厚，花半天时间轻松读完。书中没有大段的说教，只有近乎流水的陈述。正如作者所说，打造Facebook这本书由巴克伯格来写再合适不过。可惜他至少在近几年内没有这个打算。而王淮作为加入Facebook最早的员工之一，以工程师角度描述的视角恐怕更适合我们。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/08/11/only-good-player-has-good-luck/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -399,6 +524,8 @@
     </article>
   
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/3/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -410,30 +537,36 @@
   
     <section>
   <h1>About Me</h1>
-  <p>程序员一枚。</p>
+  <p>攻城狮，程序猿。目前就职于ThoughtWorks。</p>
 </section>
+
+<section>
+  <h1>Tag Cloud</h1>
+    <span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#f2f2f2' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x333333&amp;tcolor2=0x333333&amp;hicolor=0x000000&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+21.42857142857143%25%27%3EAgile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eagile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fandroid%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EAndroid%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Faws%27+style%3D%27font-size%3A+21.42857142857143%25%27%3EAWS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fci%27+style%3D%27font-size%3A+27.142857142857142%25%27%3ECI%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fcloud%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ECloud%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdatabase%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EDataBase%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fenglish%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EEnglish%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffp%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EFP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgradle%27+style%3D%27font-size%3A+32.85714285714286%25%27%3EGradle%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhaskell%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EHaskell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhomebrew%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EHomebrew%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjavascript%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EJavaScript%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%E5%AD%A6%E4%B9%A0%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EJava%E5%AD%A6%E4%B9%A0%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flife%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ELife%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fplugin%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eplugin%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Freading%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ereading%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frefactor%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Erefactor%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fshell%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eshell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ESpring%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fstudy%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Estudy%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fsvn%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ESVN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ETesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Etesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxml%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EXML%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%B7%A5%E5%85%B7%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%B7%A5%E5%85%B7%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%80%BB%E7%BB%93%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%80%BB%E7%BB%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+32.85714285714286%25%27%3E%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%27+style%3D%27font-size%3A+50.0%25%27%3E%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BF%BB%E8%AF%91%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%BF%BB%E8%AF%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E8%AF%BB%E4%B9%A6%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%27+style%3D%27font-size%3A+21.42857142857143%25%27%3E%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+</section>
+
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/03/17/haskell-functional-programming-feature/">Haskell函数式编程之特性篇</a>
+        <a href="/blog/2013/12/05/a-old-developer-learn-english/">毕业多年的程序员重拾英语考雅思</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/03/14/haskell-recursion/">Haskell函数式编程之递归</a>
+        <a href="/blog/2013/12/04/use-idea-plugin-in-gradle/">Gradle中使用idea插件的一些实践</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/03/12/enum-in-java/">Java基础学习之Enum</a>
+        <a href="/blog/2013/11/06/task-and-validation-is-important/">记一次扯到蛋的教训</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/03/11/webdriver/">webDriver入门及提高</a>
+        <a href="/blog/2013/10/31/learn-new-things/">开阔自己的视野，勇敢的接触新知识</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/03/03/the-annotated-turing/">《图灵的秘密》读后感</a>
+        <a href="/blog/2013/10/23/aws-cloudformation/">亚马逊云服务之CloudFormation</a>
       </li>
     
   </ul>
@@ -502,28 +635,9 @@
 
 
 
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
 
 
 
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
 
 
 

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tag: proxy | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/proxy/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2013-12-05T22:15:38+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[npm的配置管理及设置代理]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/05/17/setting-npm-configuration/"/>
+    <updated>2013-05-17T00:17:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/05/17/setting-npm-configuration</id>
+    <content type="html"><![CDATA[<p>npm全称为Node Packaged Modules。它是一个用于管理基于node.js编写的package的命令行工具。其本身就是基于node.js写的,这有点像gem与ruby的关系。</p>
+
+<!-- more -->
+
+
+<p>在我们的项目中，需要使用一些基于node.js的javascript库文件，就需要npm对这些依赖库进行方便的管理。由于我们的开发环境由于安全因素在访问一些网站时需要使用代理，其中就包括npm的repositories网站，所以就需要修改npm的配置来加入代理。</p>
+
+<p>下面简要介绍下npm的配置以及如何设置代理。</p>
+
+<h2>npm获取配置有6种方式，优先级由高到底。</h2>
+
+<ol>
+<li><p>命令行参数。 <code>--proxy http://server:port</code>即将proxy的值设为<code>http://server:port</code>。</p></li>
+<li><p>环境变量。 以<code>npm_config_</code>为前缀的环境变量将会被认为是npm的配置属性。如设置proxy可以加入这样的环境变量<code>npm_config_proxy=http://server:port</code>。</p></li>
+<li><p>用户配置文件。可以通过<code>npm config get userconfig</code>查看文件路径。如果是mac系统的话默认路径就是<code>$HOME/.npmrc</code>。</p></li>
+<li><p>全局配置文件。可以通过<code>npm config get globalconfig</code>查看文件路径。mac系统的默认路径是<code>/usr/local/etc/npmrc</code>。</p></li>
+<li><p>内置配置文件。安装npm的目录下的npmrc文件。</p></li>
+<li><p>默认配置。 npm本身有默认配置参数，如果以上5条都没设置，则npm会使用默认配置参数。</p></li>
+</ol>
+
+
+<h2>针对npm配置的命令行操作</h2>
+
+<p>```bash</p>
+
+<pre><code>   npm config set &lt;key&gt; &lt;value&gt; [--global]
+   npm config get &lt;key&gt;
+   npm config delete &lt;key&gt;
+   npm config list
+   npm config edit
+   npm get &lt;key&gt;
+   npm set &lt;key&gt; &lt;value&gt; [--global]
+</code></pre>
+
+<p>```</p>
+
+<p>在设置配置属性时属性值默认是被存储于用户配置文件中，如果加上<code>--global</code>，则被存储在全局配置文件中。</p>
+
+<p>如果要查看npm的所有配置属性（包括默认配置），可以使用<code>npm config ls -l</code>。</p>
+
+<p>如果要查看npm的各种配置的含义，可以使用<code>npm help config</code>。</p>
+
+<h2>为npm设置代理</h2>
+
+<p>```bash</p>
+
+<p>$ npm config set proxy http://server:port<br/>
+$ npm config set https-proxy http://server:port</p>
+
+<p>```</p>
+
+<p>如果代理需要认证的话可以这样来设置。</p>
+
+<p>```bash</p>
+
+<p>$ npm config set proxy http://username:password@server:port
+$ npm config set https-proxy http://username:pawword@server:port</p>
+
+<p>```</p>
+
+<p>如果代理不支持https的话需要修改npm存放package的网站地址。</p>
+
+<p><code>bash
+$ npm config set registry "http://registry.npmjs.org/"
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

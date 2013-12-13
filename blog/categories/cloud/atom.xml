@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Cloud | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/categories/cloud/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2013-12-05T22:15:38+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[将我的博客迁移到亚马逊云端(1)]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/09/30/migrate-octopress-to-aws/"/>
+    <updated>2013-09-30T14:09:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/09/30/migrate-octopress-to-aws</id>
+    <content type="html"><![CDATA[<p><img src="/images/cloudcompute.png" width="400"></p>
+
+<p><a href="http://octopress.org/">Octopress</a>已经被公认为Geeker的博客框架。它所拥有的特性都很符合Geeker的癖好:强大的命令行操作方式、简洁的MarkDown语法、灵活的插件配置、美轮美奂的theme（自带响应式设计哦）、完全可定义的部署......</p>
+
+<p>一般大家都喜欢把博客部署到github pages上，免费速度快，与<a href="http://octopress.org/">Octopress</a>无缝结合。但是自己最近迷上了AWS，就捉摸着将自己的<a href="http://octopress.org/">Octopress</a>博客部署到AWS的S3上，使用CloudFront做CDN，使用Amazon Route 53做域名映射。倒腾了两天，终于搞定了，也学到了很多东西。不敢私藏，拿出来和大家分享。</p>
+
+<!-- more -->
+
+
+<p>这篇文章主要讲如何将Octopress博客部署到S3上去。下一篇文章会讲如何将CloudFront做CDN,并与现有域名绑定。</p>
+
+<p>在此之前先普及一些概念。</p>
+
+<p>AWS - Amazon Web Service,亚马逊提供的云服务简称。</p>
+
+<p>S3 - Amazon Simple Storage Service, 亚马逊提供的一种存储静态资源（如css、js、html文件，音视频文件）的服务。</p>
+
+<p>CDN - Content Delivery Network, 内容分发网络。</p>
+
+<p>Amazon CloudFront - 亚马逊提供的一种内容分发服务，提高你的网站访问速度。</p>
+
+<p>Amazon Route 53 - 亚马逊提供的一种稳定高效的域名解析系统。</p>
+
+<p>第一步，注册一个亚马逊的账号，注册地址是<a href="https://portal.aws.amazon.com/gp/aws/developer/registration/index.html">https://portal.aws.amazon.com/gp/aws/developer/registration/index.html</a>。注意注册的时候需要提供一张具备外币功能的信用卡。</p>
+
+<p>第二步，登陆到Amazon management console里，单击右上角的名称，选择Security Credentials标签，然后点击左侧标签按照向导创建一个group,一个从属于这个group的user，并为该user生成一个Access key，记录下来Access key Id 及 Secret Access Key。亚马逊的文档还是非常详细的，不懂的可以多看看提示信息和帮助文档。</p>
+
+<p>第三步，在Amazon management console里选择Services -> S3 service，并创建两个bucket。假如你的博客域名为example.com，那么两个bucket的名称分别为example.com,www.example.com。为什么要创建两个那？是因为我们要保证用户无论输入www.example.com还是example.com都可以访问我们的网站。</p>
+
+<p><img src="/images/twobucket.png" width="780"></p>
+
+<p>第四步，选择www.example.com这个bucket，点击properties标签，在Static Website Hosting中选择Redirect all requests to another host name，并配置‘Redirect all requests to:’为example.com。这样来自www.example.com bucket的访问都会自动转发给example.com这个bucket。我们只需为example.com这个bucket同步我们的博客文件即可。</p>
+
+<p><img src="/images/redirectrequest.png" width="780"></p>
+
+<p>第五步，选择example.com这个bucket，在Static Website Hosting中选择‘Enable Website Hosting’,并配置Index Document，我的是index.html。这个Index Document是默认返回的object名称。比如如果用户直接访问bucket的某个目录，系统会检测该目录下是否存在Index Document中配置的文件名，如果有则会自动返回这个object。</p>
+
+<p><img src="/images/staticwebsitehosting.png" width="780"></p>
+
+<p>第六步，选择'Permissions'标签，点击’add bucket policy‘按钮，加入如下的policy.</p>
+
+<p>```javascript</p>
+
+<p>{</p>
+
+<pre><code> "Version": "2008-10-17",
+ "Statement": [
+      {
+           "Sid": "AddPerm",
+           "Effect": "Allow",
+           "Principal": {
+                "AWS": "*"
+           },
+           "Action": "s3:GetObject",
+           "Resource": "arn:aws:s3:::example.com/*"
+      }
+ ]
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>这个policy其实是给所有匿名用户访问该bucket里面文件的权限。</p>
+
+<p><img src="/images/bucketpolicy.png" width="780"></p>
+
+<p>第七步，还是在’Permissions‘标签里，点击’Add CORS configuration‘按钮，加入如下的配置：</p>
+
+<p>```xml</p>
+
+<p>&lt;?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"></p>
+
+<pre><code>&lt;CORSRule&gt;
+    &lt;AllowedOrigin&gt;*&lt;/AllowedOrigin&gt;
+    &lt;AllowedMethod&gt;GET&lt;/AllowedMethod&gt;
+    &lt;MaxAgeSeconds&gt;3000&lt;/MaxAgeSeconds&gt;
+    &lt;AllowedHeader&gt;Authorization&lt;/AllowedHeader&gt;
+&lt;/CORSRule&gt;
+</code></pre>
+
+<p></CORSConfiguration></p>
+
+<p>```</p>
+
+<p>这个是用来配置跨域访问的权限，即是否允许其他网站访问这个bucket上的资源。由于Octopress博客集成了很多插件，比如google analiycis, github等，都需要跨域加载JavaScript文件，执行JavaScript文件，所以要加入这些配置。</p>
+
+<p><img src="/images/corsconfiguration.png" width="780"></p>
+
+<p>第八步，下载安装<a href="http://s3tools.org/s3cmd">s3cmd</a>。<a href="http://s3tools.org/s3cmd">s3cmd</a>是一款操作AWS S3的命令行工具。通过它可以创建或删除bucket，上传或下载object，我们在部署octopress博客时，主要就是通过它来将博客上传到S3上去。如果是mac系统化可以通过HomeBrew直接安装。</p>
+
+<p>```bash</p>
+
+<h1>brew install s3cmd</h1>
+
+<p>```</p>
+
+<p>如果是windows系统可以从<a href="http://s3tools.org/s3cmd">官网</a>下载安装包进行安装。</p>
+
+<p>第九步，配置<a href="http://s3tools.org/s3cmd">s3cmd</a>与你的S3的连接。在命令行下输入<code>s3cmd --configure</code>，按照向导来配置与S3的连接。这时候在前面保存的Access key就派上用场了。所有的配置信息其实都存在当前用户名下的.s3cfg文件中。你也可以随后修改这些信息。运行<code>s3cmd ls</code>来检测是否配置成功。</p>
+
+<p>```bash</p>
+
+<p>$ s3cmd ls #列出所有的bucket
+2013-09-27 05:05  s3://huangbowen.net
+2013-09-28 03:24  s3://www.huangbowen.net</p>
+
+<p>```</p>
+
+<p>第十步，配置Octopress支持向S3的部署。在Octopress目录下找到Rakefile文件，修改或添加下述配置。</p>
+
+<p>```xml</p>
+
+<p>deploy_default = "s3"   #部署task
+s3_bucket = "example.com" # bucket名称</p>
+
+<p>s3_cache_secs = 3600  # header中的cache controll属性，即缓存时间，后面CloudFront要用到</p>
+
+<p>```</p>
+
+<p>然后添加一个新的task。</p>
+
+<p>```ruby</p>
+
+<p>desc "Deploy website via s3cmd"
+task :s3 do
+  puts "## Deploying website via s3cmd"
+  ok_failed system("s3cmd sync --acl-public --reduced-redundancy --add-header \"Cache-Control: max-age=#{s3_cache_secs}\"  public/* s3://#{s3_bucket}/")
+end</p>
+
+<p>```</p>
+
+<p>OK，大功告成，运行<code>rake generate</code>
+及<code>&amp;&amp; rake deploy</code>就可以将生成的静态站点上传到S3中区。然后就可以通过S3的EndPoint来访问新站点了。（EndPoint可以在Amazon management console的S3 dashboard的
+‘Static Website Hosting’ 标签中找到）</p>
+
+<p>当然现在还不能使用自己的域名来访问，你可以通过配置CNAME来启用自己的域名。</p>
+
+<p>下篇文章会讲如何将CloudFront作为内容分发，并且如何将自己的域名与CloudFront绑定。</p>
+
+<p>现在我的博客已经在云端了，地址是<a href="http://www.huangbowen.net">http://www.huangbowen.net</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[云时代基础设置自动化管理利器： Chef]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/09/16/introduction-of-chef/"/>
+    <updated>2013-09-16T23:29:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/09/16/introduction-of-chef</id>
+    <content type="html"><![CDATA[<p><img src="/images/migrate_to_cloud.png"></p>
+
+<p>云时代的到来势不可挡。尤其作为程序员，我们每天或多或少的直接或间接的使用者各种云服务。云平台有很多种，如云软件（SaaS， Software as a service）、云平台（PaaS, Platform as a service）、云设备(IaaS, Infrastructure as a service)。云计算由于其价格低廉、按需提高、使用方便等特点，越来越受到人们的欢迎。</p>
+
+<!-- more -->
+
+
+<h2>Chef是什么？</h2>
+
+<p>Chef的出现正是顺应了云潮流。如果你是一个公司的devops成员，每天配置服务器上的软件和服务，为了给服务器新加一个节点而通宵作业，为了解决服务器上的一个奇诡问题而想破脑袋。
+这时候，你应该考虑使用Chef。</p>
+
+<blockquote><p>Chef is built to address the hardest infrastructure challenges on the planet. By modeling IT infrastructure and application delivery as code, Chef provides the power and flexibility to compete in the digital economy.</p></blockquote>
+
+<p>通过这段话，可以总结出Chef的几个特点。</p>
+
+<ol>
+<li><p>Chef是为了解决基础设施难题。</p></li>
+<li><p>Chef通过建模将基础设施及应用程序交付抽象为代码。</p></li>
+<li><p>Chef具有强大的能力及灵活性.</p></li>
+<li>由于配置即代码，基础设施即代码，Chef自动具有了版本控制功能，同时添加复制服务器也变得更容易。</li>
+</ol>
+
+
+<p>Chef主要包括三大块：Workstation、Chef Server、Chef Client。（另外还有个chef-solo，是个简化版的Chef-Client，不在本文讨论范围。）</p>
+
+<p>以下是Chef的架构图。</p>
+
+<p><img src="/images/chef_overview.png" width="600"></p>
+
+<h2>Workstation</h2>
+
+<p>Workstation可以简单地认为是自己的工作电脑，在上面需要建立一个chef-repo。chef-repo管理了cookbooks、recipes、roles、environment等数据。cookbooks、recipes、roles是Chef对infrastructure做的一层抽象。可以打个这样的比喻，cookbooks可以理解为一个菜系，recipes就是这个菜系里面的一道道菜，比如宫保鸡丁，roles则是一桌丰富的宴席，比如满汉全席。而nodes则是一个个盛菜的桌子。我们可以来一个满汉全席（直接给这个node设置一个role），也可以从菜系里抽一些菜品来做一到家常小菜（给指定node设置一个run list，里面包括指定的recipe）。recipe就是一系列的资源，比如在node上需要安装jvm，那么安装jvm的包就是一个recipe。</p>
+
+<p>在Workstation上主要通过knife这个命令行工具来创建和管理这些资源。</p>
+
+<p>```bash</p>
+
+<p>$ knife help list
+Available help topics are:
+  bootstrap
+  chef-shell
+  client
+  configure
+  cookbook
+  cookbook-site
+  data-bag
+  environment
+  exec
+  index
+  knife
+  node
+  role
+  search
+  shef
+  ssh
+  status
+  tag</p>
+
+<p>```
+knife是由ruby写的一个gem。它的API很有表现力。</p>
+
+<p>```bash</p>
+
+<h1>创建一个recipe</h1>
+
+<p>$ knife cookbook create myRecipe
+<strong> Creating cookbook myRecipe
+</strong> Creating README for cookbook: myRecipe
+<strong> Creating CHANGELOG for cookbook: myRecipe
+</strong> Creating metadata for cookbook: myRecipe</p>
+
+<h1>从cookbook server上下载recipe</h1>
+
+<p>$ knife cookbook site install apache2</p>
+
+<h1>将本地的recipe上传到服务器上</h1>
+
+<p>$ knife cookbook upload myRecipe</p>
+
+<h1>查看服务上当前注册的所有的node</h1>
+
+<p>$ knife node list
+bowenhuang-starter</p>
+
+<h1>查看bowenhuang-starter node的详细信息</h1>
+
+<p>$ knife node show bowenhuang-starter
+Node Name:   bowenhuang-starter
+Environment: _default
+FQDN:        bowenhuang-starter
+IP:          10.0.2.15
+Run List:    recipe[apt], recipe[apache2]
+Roles:
+Recipes:     apt, apache2
+Platform:    ubuntu 12.04
+Tags:</p>
+
+<h1>将指定IP或主机名的机器注册到服务器上</h1>
+
+<p>$ knife bootstrap IP \
+  --ssh-user USERNAME \
+  --ssh-password PASSWORD \
+  --ssh-port PORT \
+  --sudo</p>
+
+<p>```</p>
+
+<p>在cehf-repo下需要建立一个隐藏的文件夹.chef，该文件夹中包含三个重要的文件：USER.pem, ORGANIZATION-validator.pem, knife.rb。USER.pem是一个私钥，用于workstation与chef server通讯。ORGANIZATION-validator.pem是另一个私钥，用于bootstrap一个新node时该node第一次与服务器通讯。knife.rb则是knife的配置的文件，比如客户端key文件路径，chef server的api地址，cookbook的路径等。</p>
+
+<h2>Chef Server</h2>
+
+<p>Chef Server用来存储workstaton上传的各种资源，包括cookbooks，roles，environments，nodes等。我们可以使用公有的Server，如opscode,也可以通过开源软件架设自己的私服。Chef server提供了一系列的api，用于与workstation和nodes传输资源和数据。opscode上的server需要注册，注册以后需要建立一个organisation, 并从server上下载生成的USER.pem私钥和ORGANISATION-validitor.pem私钥。Chef server也提供了一个search的API，可以通过workstation根据attributes检索注册在服务器上的node。</p>
+
+<p>Chef Server本来是使用ruby写的，后来为了保持高并发和稳定性，能够同时服务一定数量级的node，Chef Server内核采用了支持高并发的Erlang程序，而前端则仍然使用ruby on rails。</p>
+
+<h2>Nodes</h2>
+
+<p>在bootstrap一个node时候，首先需要在该node上安装chef-client包，并将workstation上的ORGANIZATION-validator.pem文件拷贝到node节点上，供node与chef server建立连接。chef server通过验证后会发给node一个新的私钥，以后node就可以通过这个新的私钥与chef server交互。在node的<code>etc\chef</code>的目录下会生成四个文件：client.pem, client.rb, first-boot.json, validation.pem。vlidation.pem就是从workstation拷贝过来的秘钥，client.pem则是服务器为该node新生成的秘钥，client.rb则定义了服务器的API地址，秘钥文件路径等信息，first-boot.json则存放了bootstrap该node节点时的配置信息，如run list信息，role信息等。</p>
+
+<p>chef-client是一个可定期的后台运行的命令行程序。chef-client会收集当前node的各种信息，如操作信息型号版本等，和chef server建立连接，获取chef server上对该节点的配置信息，并安装指定的recipe，运行指定的服务。</p>
+
+<hr />
+
+<p>通过Chef，可以一键更新所有的服务器，在指定的服务器上安装指定的软件。如果有新同事入职，可以很轻松的setup一台开发机；如果服务器节点需要扩展，也只需要几个命令就可搞定。运筹帷幄，一切皆在掌控之中。</p>
+]]></content>
+  </entry>
+  
+</feed>

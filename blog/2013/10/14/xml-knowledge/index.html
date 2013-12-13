@@ -1,0 +1,569 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>XML相关知识全接触（一） - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="XML文件格式已经出来很久了。他的风头如今在JSON、YAML等新兴文件格式的冲击下已经显的不那么强劲。但是XML仍然是当今世界上使用最广泛的文件格式。围绕着它也有一大堆的概念和知识点。所以我们还是很有必要全面了解下。 XML XML全称为eXtensible Markup Language， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/10/14/xml-knowledge/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">XML相关知识全接触（一）</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-14T00:32:00+08:00" pubdate data-updated="true">Oct 14<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/xml.png" width="400"></p>
+
+<p>XML文件格式已经出来很久了。他的风头如今在JSON、YAML等新兴文件格式的冲击下已经显的不那么强劲。但是XML仍然是当今世界上使用最广泛的文件格式。围绕着它也有一大堆的概念和知识点。所以我们还是很有必要全面了解下。</p>
+
+<!-- more -->
+
+
+<h2>XML</h2>
+
+<p>XML全称为eXtensible Markup Language，即可扩展标记语言。其被设计用来传输及存储数据。</p>
+
+<p>XML与HTML看似比较相似，但是其设计目的并不相同。</p>
+
+<ul>
+<li><p>XML用来传输及存储数据，主要关注数据是什么。</p></li>
+<li><p>HTML用来显示数据，主要关注数据看起来是什么样。</p></li>
+<li><p>HTML的tag是预定义的，比如说table标签，浏览器会知道它是什么含义。</p></li>
+<li><p>XML的tag不是预定义的，需要自己设计tag并描述tag的含义。XML中的tag如果不借助XSLT文件，浏览器只会以简单的文本方式展示。</p></li>
+</ul>
+
+
+<p>很多人认为HTML是XML文件的一个子集。其实这种观点是错误的，因为HTML的实现并未严格遵循XML的语法。比如XML要求每个tag必须要有闭合标记，XML的tag是大小写敏感的，XML给tag添加的属性必须要使用引号包起来…这些语法要求HTML都不满足。</p>
+
+<p>请看XML的一个示例。</p>
+
+<figure class='code'><figcaption><span>book.xml </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;book&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;name&gt;</span>Effective JavaScript<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;category&gt;</span>Program Language<span class="nt">&lt;/category&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;author&gt;</span>Bowen<span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;description&gt;</span>This book is about JavaScript Language.<span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/book&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这是一个简单的XML文件。第一行说明了xml的版本及编码类型。接下来是一个根节点book，根节点可以包含很多子节点。</p>
+
+<h3>XML命名空间</h3>
+
+<p>由于XML的tag并不像HTML那样是预定义的，那么很有可能两个XML中的同名tag具有不同的含义。那么在合并XML等操作时势必会造成冲突。解决的办法就是给XML的tag加上命名空间（即namespace），每一个namespace都可以指定一个前缀。这些前缀会区分同名tag。</p>
+
+<p>假设这里有另一个xml文件。</p>
+
+<figure class='code'><figcaption><span>anotherBook.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;book&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;name&gt;</span>Rework<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;page&gt;</span>120<span class="nt">&lt;/page&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;publishDate&gt;</span>2013-10-08<span class="nt">&lt;/publishDate&gt;</span>
+</span><span class='line'><span class="nt">&lt;/book&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果我们要合并这两个xml节点到同一个xml文件中时，不加namespace会发生冲突，因为含有同名的tag，其子节点的结构并不相同。接下来我们给其加上命名空间并合并。</p>
+
+<figure class='code'><figcaption><span>combined.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;root&gt;</span>
+</span><span class='line'><span class="nt">&lt;ns1:book</span> <span class="na">xmlns:ns1=</span><span class="s">&quot;http://www.huangbowen.net/ns1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:name&gt;</span>Effective JavaScript<span class="nt">&lt;/ns1:name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:category&gt;</span>Program Language<span class="nt">&lt;/ns1:category&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:author&gt;</span>Bowen<span class="nt">&lt;/ns1:author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:description&gt;</span>This book is about JavaScript Language.<span class="nt">&lt;/ns1:description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ns1:book&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;ns2:book</span> <span class="na">xmlns:ns2=</span><span class="s">&quot;http://www.huangbowen.net/ns2&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>     <span class="nt">&lt;ns2:name&gt;</span>Rework<span class="nt">&lt;/ns2:name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns2:page&gt;</span>120<span class="nt">&lt;/ns2:page&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns2:publishDate&gt;</span>2013-10-08<span class="nt">&lt;/ns2:publishDate&gt;</span>
+</span><span class='line'>     <span class="nt">&lt;/ns2:book&gt;</span>
+</span><span class='line'><span class="nt">&lt;/root&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>xmlns是xml namespace的缩写。引号后面是tag的前缀。这个前缀可以省略，比如<code>xmlns="http://www.huangbowen.net/ns1"</code>,相当于没有前缀的tag自动应用默认的命名空间。需要注意的是命名空间的URI只是给命名空间提供一个唯一的标识，xml解析器并不会访问这个URI来获取任何信息。很多公司习惯将这个URI一个web页面，该web页面描述了该namespace的相关信息。</p>
+
+<h2>XSD</h2>
+
+<p>XSD全称为XML Schema Definition,即XML结构定义语言。每个XSD文件是对一个XML文件的结构定义。
+由于XML中的tag并不是预定义的，那么每人都可以创建自己的XML结构文档。如果你想让别人按照你的标准创建一份xml文件，你可以使用XSD文件来描述你的标准。</p>
+
+<p>这是针对本文示例book.xml文件的一个XSD文件。</p>
+
+<figure class='code'><figcaption><span>book.xsd</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;xs:schema</span> <span class="na">attributeFormDefault=</span><span class="s">&quot;unqualified&quot;</span> <span class="na">elementFormDefault=</span><span class="s">&quot;qualified&quot;</span>
+</span><span class='line'>           <span class="na">xmlns:xs=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">&quot;book&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;xs:complexType&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;xs:sequence&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;xs:element</span> <span class="na">type=</span><span class="s">&quot;xs:string&quot;</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;xs:element</span> <span class="na">type=</span><span class="s">&quot;xs:string&quot;</span> <span class="na">name=</span><span class="s">&quot;category&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;xs:element</span> <span class="na">type=</span><span class="s">&quot;xs:string&quot;</span> <span class="na">name=</span><span class="s">&quot;author&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;xs:element</span> <span class="na">type=</span><span class="s">&quot;xs:string&quot;</span> <span class="na">name=</span><span class="s">&quot;description&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/xs:sequence&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/xs:complexType&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/xs:element&gt;</span>
+</span><span class='line'><span class="nt">&lt;/xs:schema&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>从上可以看出其实XSD文件本身就是一个XML文件，它遵循XML语法，比如每个tag都需要有结束标记，必须有且只有一个根节点等。</p>
+
+<p>在一个XML文件中可以添加其Schema的引用信息。</p>
+
+<figure class='code'><figcaption><span>book.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;ns1:book</span> <span class="na">xmlns:ns1=</span><span class="s">&quot;http://www.huangbowen.net/ns1&quot;</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">xsi:targetLocation=</span><span class="s">&quot;http://www.huangbowen.net/book.xsd&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:name&gt;</span>Effective JavaScript<span class="nt">&lt;/ns1:name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:category&gt;</span>Program Language<span class="nt">&lt;/ns1:category&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:author&gt;</span>Bowen<span class="nt">&lt;/ns1:author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ns1:description&gt;</span>This book is about JavaScript Language.<span class="nt">&lt;/ns1:description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ns1:book&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在IDE中，如果你的XML节点没有遵守你引用的Schema中的定义，就会给出错误提醒。</p>
+
+<h2>XSLT</h2>
+
+<p>XSLT全称为EXtensible Stylesheet Language Transformations。 XSLT用于将XML文档转换为XHTML或其他XML文档。</p>
+
+<p>在讲XSLT之前我们先讲讲XSL。XSL全称为Extensible Stylesheet Language,即可扩展样式表语言。众所周知，CSS是HTML文件的样式表，而XSL则是XML文件的样式表。XSL文件描述了XML文件应该如何被显示。</p>
+
+<p>其实XSL不仅仅是样式表语言，它主要包含3部分:</p>
+
+<ul>
+<li><p>XSLT - 用来转换XML文档</p></li>
+<li><p>XPath - 查询和操作XML文档中的节点</p></li>
+<li><p>XSL-FO - 格式化XML文档</p></li>
+</ul>
+
+
+<p>XSLT使用XPath来查找XML中的元素。</p>
+
+<p>XSLT通过一个xml文件来定义源xml文件与目标文件之间的转换关系。该xml文件必须以<code>&lt;xsl:stylesheet&gt;</code>或<code>&lt;xsl:transform&gt;</code>作为根节点。</p>
+
+<p>对于本文的示例book.xml,如果我们使用浏览器打开显示效果如下。</p>
+
+<p><img src="/images/bookxml.png" width="600"></p>
+
+<p>现在我们创建一个XSLT文件将其转换为一个HTML文件。</p>
+
+<figure class='code'><figcaption><span>book.xsl</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;xsl:stylesheet</span> <span class="na">version=</span><span class="s">&quot;1.0&quot;</span>
+</span><span class='line'><span class="na">xmlns:xsl=</span><span class="s">&quot;http://www.w3.org/1999/XSL/Transform&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;xsl:template</span> <span class="na">match=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;html&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;body&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;h2&gt;</span>My Book<span class="nt">&lt;/h2&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;table</span> <span class="na">border=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;</span>name<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;&lt;xsl:value</span><span class="na">-of</span> <span class="na">select=</span><span class="s">&quot;book/name&quot;</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;</span>category<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;&lt;xsl:value</span><span class="na">-of</span> <span class="na">select=</span><span class="s">&quot;book/category&quot;</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;</span>author<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;&lt;xsl:value</span><span class="na">-of</span> <span class="na">select=</span><span class="s">&quot;book/author&quot;</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;</span>description<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;td&gt;&lt;xsl:value</span><span class="na">-of</span> <span class="na">select=</span><span class="s">&quot;book/description&quot;</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/table&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/body&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/html&gt;</span>
+</span><span class='line'><span class="nt">&lt;/xsl:template&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/xsl:stylesheet&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后我们在book.xml文件中加入对这个XSLT文件的引用。</p>
+
+<figure class='code'><figcaption><span>book.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+</span><span class='line'><span class="cp">&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;book.xsl&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;book&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;name&gt;</span>Effective JavaScript<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;category&gt;</span>Program Language<span class="nt">&lt;/category&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;author&gt;</span>Bowen<span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;description&gt;</span>This book is about JavaScript Language.<span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/book&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>接下来我们再用浏览器打开book.xml文件，发现显示变成了这样。是不是很神奇？</p>
+
+<p><img src="/images/bookxmlwithxslt.png" width="600"></p>
+
+<p>注意如果你使用chrome打开该book.xml文件，请设置chrome的<code>--allow-file-access-from-files</code>属性，这样chrome才允许加载本地的xsl文件。解决方案看这里：<a href="http://stackoverflow.com/questions/3828898/can-chrome-be-made-to-perform-an-xsl-transform-on-a-local-file">http://stackoverflow.com/questions/3828898/can-chrome-be-made-to-perform-an-xsl-transform-on-a-local-file</a></p>
+
+<p>OK，这篇文章讲的够多了，下篇接着讲XPath，XML to Object以及XML文档格式与近来风头强劲的JSON、YAML格式的比较。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-14T00:32:00+08:00" pubdate data-updated="true">Oct 14<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/xml/'>XML</a>
+  
+</span>
+
+
+      
+
+<span class="tags">
+  
+    <a class='tag' href='/blog/tags/xml/'>xml</a>, <a class='tag' href='/blog/tags/xsd/'>xsd</a>, <a class='tag' href='/blog/tags/xsl/'>xsl</a>, <a class='tag' href='/blog/tags/xslt/'>xslt</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/10/02/hello-vagrant/" title="Previous Post: hello Vagrant">&laquo; hello Vagrant</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/10/23/aws-cloudformation/" title="Next Post: 亚马逊云服务之CloudFormation">亚马逊云服务之CloudFormation &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>攻城狮，程序猿。目前就职于ThoughtWorks。</p>
+</section>
+
+<section>
+  <h1>Tag Cloud</h1>
+    <span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#f2f2f2' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x333333&amp;tcolor2=0x333333&amp;hicolor=0x000000&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+21.42857142857143%25%27%3EAgile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eagile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fandroid%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EAndroid%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Faws%27+style%3D%27font-size%3A+21.42857142857143%25%27%3EAWS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fci%27+style%3D%27font-size%3A+27.142857142857142%25%27%3ECI%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fcloud%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ECloud%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdatabase%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EDataBase%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fenglish%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EEnglish%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffp%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EFP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgradle%27+style%3D%27font-size%3A+32.85714285714286%25%27%3EGradle%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhaskell%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EHaskell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhomebrew%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EHomebrew%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjavascript%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EJavaScript%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%E5%AD%A6%E4%B9%A0%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EJava%E5%AD%A6%E4%B9%A0%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flife%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ELife%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fplugin%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eplugin%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Freading%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ereading%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frefactor%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Erefactor%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fshell%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eshell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ESpring%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fstudy%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Estudy%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fsvn%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ESVN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ETesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Etesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxml%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EXML%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%B7%A5%E5%85%B7%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%B7%A5%E5%85%B7%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%80%BB%E7%BB%93%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%80%BB%E7%BB%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+32.85714285714286%25%27%3E%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%27+style%3D%27font-size%3A+50.0%25%27%3E%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BF%BB%E8%AF%91%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%BF%BB%E8%AF%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E8%AF%BB%E4%B9%A6%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%27+style%3D%27font-size%3A+21.42857142857143%25%27%3E%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/12/05/a-old-developer-learn-english/">毕业多年的程序员重拾英语考雅思</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/04/use-idea-plugin-in-gradle/">Gradle中使用idea插件的一些实践</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/11/06/task-and-validation-is-important/">记一次扯到蛋的教训</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/31/learn-new-things/">开阔自己的视野，勇敢的接触新知识</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/23/aws-cloudformation/">亚马逊云服务之CloudFormation</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/10/14/xml-knowledge/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/10/14/xml-knowledge/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

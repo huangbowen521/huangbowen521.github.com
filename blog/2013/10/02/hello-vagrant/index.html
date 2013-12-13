@@ -1,0 +1,710 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>hello Vagrant - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="回想以前，想要安装个虚拟机是多么的麻烦。先要费尽心机找到想要的操作系统镜像文件，然后安装虚拟化软件，按照其提供的GUI界面操作一步步创建,整个过程费时费力。但是，自从使用了Vagrant以后，咱腰不酸了，腿不痛了，一口气起5个虚拟机还不费劲。 Vagrant是什么？ 这是官网上Vagrant的介绍 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/10/02/hello-vagrant/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Hello Vagrant</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-02T23:50:00+08:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>回想以前，想要安装个虚拟机是多么的麻烦。先要费尽心机找到想要的操作系统镜像文件，然后安装虚拟化软件，按照其提供的GUI界面操作一步步创建,整个过程费时费力。但是，自从使用了Vagrant以后，咱腰不酸了，腿不痛了，一口气起5个虚拟机还不费劲。</p>
+
+<!-- more -->
+
+
+<h2>Vagrant是什么？</h2>
+
+<p>这是<a href="http://www.vagrantup.com/">官网</a>上Vagrant的介绍。</p>
+
+<blockquote><p>Create and Configure lightweight, reproducible, and portable development environments.</p></blockquote>
+
+<p>即用来创建和配置轻量级、可重现的、便携式的开发环境。</p>
+
+<p>使用Vagrant可以将创建虚拟机的整个过程自动化起来,并具有高度的重用性。假如你是个开发者，你可以很容易为每个团队成员创建一模一样的开发环境，从根本上防止‘在我的机器上可以工作’之类的bug。假如你是个测试人员，可以一键创建多个一模一样的测试环境并行跑测试，并且跑完测试后还可以一键销毁这些测试环境，达到真正的按需创建。如果你是devops成员，需要和AWS、Chef之类的工具打交道，那么Vagrant是个很好的结合点。你可以通过Vagrant在AWS上直接创建虚拟机，并且自动运行Chef的脚本配置你的新虚拟机。</p>
+
+<h2>几个概念</h2>
+
+<p>正式介绍Vagrant功能之前先了解一下Vagrant使用的一些概念。</p>
+
+<ul>
+<li><p>Provider - 供应商，在这里指Vagrant调用的虚拟化工具。Vagrant本身并没有能力创建虚拟机，它是调用一些虚拟化工具来创建，如VirtualBox,VMWare，甚至AWS。</p></li>
+<li><p>Box - 可被Vagrant直接使用的虚拟机镜像文件。针对不同的Provider，Box文件的格式是不一样的。</p></li>
+<li><p>Vagrantfile - Vagrant根据Vagrantfile中的配置来创建虚拟机。在Vagrantfile文件中你需要指明使用哪个Box,需要预安装哪些软件，虚拟机的网络配置等。</p></li>
+</ul>
+
+
+<h2>Vagrant的安装</h2>
+
+<p>安装Vagrant非常简单，可以在<a href="http://downloads.vagrantup.com/">Downloads</a>页面选择最新的版本安装。Vagrant支持Windows、Linux、Mac等平台。</p>
+
+<h2>Box管理</h2>
+
+<p>使用Vagrant之前先要给Vagrant添加Box，也就是可供Vagrant使用的虚拟机镜像文件。Vagrant官网本身维护了一些镜像文件，我们可以直接使用。<a href="http://www.vagrantbox.es/">http://www.vagrantbox.es/</a>上面有更多的box可以供我们使用。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#添加名为precise32的box文件</span>
+</span><span class='line'> <span class="nv">$ </span>vagrant init precise32 http://files.vagrantup.com/precise32.box
+</span><span class='line'><span class="nv">$ </span>vagrant box list
+</span><span class='line'>precise32 <span class="o">(</span>virtualbox<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span>vagrant box remove precise64 virtualbox
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到Box与Provider是相关的，每个Box都必须指定Provier，只有使用对应的Provier才能正确使用Box。</p>
+
+<h2>创建并运行虚拟机</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vagrant box list
+</span><span class='line'>precise32 <span class="o">(</span>virtualbox<span class="o">)</span>
+</span><span class='line'><span class="nv">$ </span>vagrant init precise32
+</span><span class='line'>A <span class="sb">`</span>Vagrantfile<span class="sb">`</span> has been placed in this directory. You are now
+</span><span class='line'>ready to <span class="sb">`</span>vagrant up<span class="sb">`</span> your first virtual environment! Please <span class="nb">read</span>
+</span><span class='line'>the comments in the Vagrantfile as well as documentation on
+</span><span class='line'><span class="sb">`</span>vagrantup.com<span class="sb">`</span> <span class="k">for </span>more information on using Vagrant.
+</span><span class='line'><span class="nv">$ </span>vagrant up
+</span><span class='line'>Bringing machine <span class="s1">&#39;default&#39;</span> up with <span class="s1">&#39;virtualbox&#39;</span> provider...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Importing base box <span class="s1">&#39;precise32&#39;</span>...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Matching MAC address <span class="k">for </span>NAT networking...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Setting the name of the VM...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Clearing any previously <span class="nb">set </span>forwarded ports...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Creating shared folders metadata...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Clearing any previously <span class="nb">set </span>network interfaces...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Preparing network interfaces based on configuration...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Forwarding ports...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> -- <span class="nv">22</span> <span class="o">=</span>&gt; 2222 <span class="o">(</span>adapter 1<span class="o">)</span>
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Booting VM...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Waiting <span class="k">for </span>machine to boot. This may take a few minutes...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Machine booted and ready!
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> Mounting shared folders...
+</span><span class='line'><span class="o">[</span>default<span class="o">]</span> -- /vagrant
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>vagrant init precise32</code>会在当前目录下生成一个Vagrantfie文件，其使用precise32作为box。<code>vagrant up</code>则是使用virtual box这个provider来初始化并启动precise32这个虚拟机。</p>
+
+<p>我们可以详细的看看Vagrantfile这个文件。</p>
+
+<figure class='code'><figcaption><span>Vagrantfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># -*- mode: ruby -*-</span>
+</span><span class='line'><span class="c1"># vi: set ft=ruby :</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Vagrantfile API及语法版本</span>
+</span><span class='line'><span class="no">VAGRANTFILE_API_VERSION</span> <span class="o">=</span> <span class="s2">&quot;2&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="no">VAGRANTFILE_API_VERSION</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># 使用的box</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;precise32&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Create a forwarded port mapping which allows access to a specific port</span>
+</span><span class='line'>  <span class="c1"># within the machine from a port on the host machine. In the example below,</span>
+</span><span class='line'>  <span class="c1"># accessing &quot;localhost:8080&quot; will access port 80 on the guest machine.</span>
+</span><span class='line'>  <span class="c1"># config.vm.network :forwarded_port, guest: 80, host: 8080</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Create a private network, which allows host-only access to the machine</span>
+</span><span class='line'>  <span class="c1"># using a specific IP.</span>
+</span><span class='line'>  <span class="c1"># config.vm.network :private_network, ip: &quot;192.168.33.10&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Create a public network, which generally matched to bridged network.</span>
+</span><span class='line'>  <span class="c1"># Bridged networks make the machine appear as another physical device on</span>
+</span><span class='line'>  <span class="c1"># your network.</span>
+</span><span class='line'>  <span class="c1"># config.vm.network :public_network</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># If true, then any SSH connections made will enable agent forwarding.</span>
+</span><span class='line'>  <span class="c1"># Default value: false</span>
+</span><span class='line'>  <span class="c1"># config.ssh.forward_agent = true</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Share an additional folder to the guest VM. The first argument is</span>
+</span><span class='line'>  <span class="c1"># the path on the host to the actual folder. The second argument is</span>
+</span><span class='line'>  <span class="c1"># the path on the guest to mount the folder. And the optional third</span>
+</span><span class='line'>  <span class="c1"># argument is a set of non-required options.</span>
+</span><span class='line'>  <span class="c1"># config.vm.synced_folder &quot;../data&quot;, &quot;/vagrant_data&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Provider-specific configuration so you can fine-tune various</span>
+</span><span class='line'>  <span class="c1"># backing providers for Vagrant. These expose provider-specific options.</span>
+</span><span class='line'>  <span class="c1"># Example for VirtualBox:</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># config.vm.provider :virtualbox do |vb|</span>
+</span><span class='line'>  <span class="c1">#   # Don&#39;t boot with headless mode</span>
+</span><span class='line'>  <span class="c1">#   vb.gui = true</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1">#   # Use VBoxManage to customize the VM. For example to change memory:</span>
+</span><span class='line'>  <span class="c1">#   vb.customize [&quot;modifyvm&quot;, :id, &quot;--memory&quot;, &quot;1024&quot;]</span>
+</span><span class='line'>  <span class="c1"># end</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># View the documentation for the provider you&#39;re using for more</span>
+</span><span class='line'>  <span class="c1"># information on available options.</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Enable provisioning with Puppet stand alone.  Puppet manifests</span>
+</span><span class='line'>  <span class="c1"># are contained in a directory path relative to this Vagrantfile.</span>
+</span><span class='line'>  <span class="c1"># You will need to create the manifests directory and a manifest in</span>
+</span><span class='line'>  <span class="c1"># the file precise32.pp in the manifests_path directory.</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># An example Puppet manifest to provision the message of the day:</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># # group { &quot;puppet&quot;:</span>
+</span><span class='line'>  <span class="c1"># #   ensure =&gt; &quot;present&quot;,</span>
+</span><span class='line'>  <span class="c1"># # }</span>
+</span><span class='line'>  <span class="c1"># #</span>
+</span><span class='line'>  <span class="c1"># # File { owner =&gt; 0, group =&gt; 0, mode =&gt; 0644 }</span>
+</span><span class='line'>  <span class="c1"># #</span>
+</span><span class='line'>  <span class="c1"># # file { &#39;/etc/motd&#39;:</span>
+</span><span class='line'>  <span class="c1"># #   content =&gt; &quot;Welcome to your Vagrant-built virtual machine!</span>
+</span><span class='line'>  <span class="c1"># #               Managed by Puppet.\n&quot;</span>
+</span><span class='line'>  <span class="c1"># # }</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># config.vm.provision :puppet do |puppet|</span>
+</span><span class='line'>  <span class="c1">#   puppet.manifests_path = &quot;manifests&quot;</span>
+</span><span class='line'>  <span class="c1">#   puppet.manifest_file  = &quot;site.pp&quot;</span>
+</span><span class='line'>  <span class="c1"># end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Enable provisioning with chef solo, specifying a cookbooks path, roles</span>
+</span><span class='line'>  <span class="c1"># path, and data_bags path (all relative to this Vagrantfile), and adding</span>
+</span><span class='line'>  <span class="c1"># some recipes and/or roles.</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># config.vm.provision :chef_solo do |chef|</span>
+</span><span class='line'>  <span class="c1">#   chef.cookbooks_path = &quot;../my-recipes/cookbooks&quot;</span>
+</span><span class='line'>  <span class="c1">#   chef.roles_path = &quot;../my-recipes/roles&quot;</span>
+</span><span class='line'>  <span class="c1">#   chef.data_bags_path = &quot;../my-recipes/data_bags&quot;</span>
+</span><span class='line'>  <span class="c1">#   chef.add_recipe &quot;mysql&quot;</span>
+</span><span class='line'>  <span class="c1">#   chef.add_role &quot;web&quot;</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1">#   # You may also specify custom JSON attributes:</span>
+</span><span class='line'>  <span class="c1">#   chef.json = { :mysql_password =&gt; &quot;foo&quot; }</span>
+</span><span class='line'>  <span class="c1"># end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Enable provisioning with chef server, specifying the chef server URL,</span>
+</span><span class='line'>  <span class="c1"># and the path to the validation key (relative to this Vagrantfile).</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># The Opscode Platform uses HTTPS. Substitute your organization for</span>
+</span><span class='line'>  <span class="c1"># ORGNAME in the URL and validation key.</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># If you have your own Chef Server, use the appropriate URL, which may be</span>
+</span><span class='line'>  <span class="c1"># HTTP instead of HTTPS depending on your configuration. Also change the</span>
+</span><span class='line'>  <span class="c1"># validation key to validation.pem.</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># config.vm.provision :chef_client do |chef|</span>
+</span><span class='line'>  <span class="c1">#   chef.chef_server_url = &quot;https://api.opscode.com/organizations/ORGNAME&quot;</span>
+</span><span class='line'>  <span class="c1">#   chef.validation_key_path = &quot;ORGNAME-validator.pem&quot;</span>
+</span><span class='line'>  <span class="c1"># end</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># If you&#39;re using the Opscode platform, your validator client is</span>
+</span><span class='line'>  <span class="c1"># ORGNAME-validator, replacing ORGNAME with your organization name.</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># If you have your own Chef Server, the default validation client name is</span>
+</span><span class='line'>  <span class="c1"># chef-validator, unless you changed the configuration.</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1">#   chef.validation_client_name = &quot;ORGNAME-validator&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>从上述的文件可以看出Vagrantfile可以配置很多东西，比如使用的Box，需要转发的端口，同步指定的目录，使用Chef、puppet等对虚拟机进行预配置等。</p>
+
+<p>如果修改了Vagrantfile中的配置，只需要执行<code>vagrant reload</code>来应用新配置。</p>
+
+<h2>同步目录</h2>
+
+<p>虚拟机启动起来以后就可以ssh上去了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vagrant ssh
+</span><span class='line'>Welcome to Ubuntu 12.04 LTS <span class="o">(</span>GNU/Linux 3.2.0-23-generic-pae i686<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'> * Documentation:  https://help.ubuntu.com/
+</span><span class='line'>Welcome to your Vagrant-built virtual machine.
+</span><span class='line'>Last login: Wed Oct  2 09:41:08 2013 from 10.0.2.2
+</span><span class='line'>vagrant@precise32:~<span class="nv">$ </span>who
+</span><span class='line'>vagrant  pts/0        2013-10-02 09:47 <span class="o">(</span>10.0.2.2<span class="o">)</span>
+</span><span class='line'>vagrant@precise32:~<span class="nv">$ </span>hostname
+</span><span class='line'>precise32
+</span><span class='line'>vagrant@precise32:~<span class="err">$</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Vagrant会自动给虚拟机根目录下创建一个名为vagrant的目录。这个目录可以与主机Vagrantfile所在的目录保持同步。这个同步是相互的，无论改动了主机目录中的文件，还是虚拟机目录中的文件，都可以自动同步到另一方。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant@precise32:~<span class="nv">$ </span><span class="nb">cd</span> /vagrant/
+</span><span class='line'>vagrant@precise32:/vagrant<span class="nv">$ </span>ls
+</span><span class='line'>Vagrantfile
+</span><span class='line'>vagrant@precise32:/vagrant<span class="nv">$ </span>touch test.txt
+</span><span class='line'>vagrant@precise32:/vagrant<span class="nv">$ </span><span class="nb">exit</span>
+</span><span class='line'><span class="nb">logout</span>
+</span><span class='line'>Connection to 127.0.0.1 closed.
+</span><span class='line'><span class="nv">$ </span>ls
+</span><span class='line'>Vagrantfile test.txt
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>多机器管理</h2>
+
+<p>其实Vagrantfile支持配置多台机器，如果你需要设置多台服务器及数据库环境，可以用一个Vagrantfile搞定。</p>
+
+<figure class='code'><figcaption><span>Vagrantfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="s2">&quot;shell&quot;</span><span class="p">,</span> <span class="ss">inline</span><span class="p">:</span> <span class="s2">&quot;echo Hello&quot;</span>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">define</span> <span class="s2">&quot;web&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">web</span><span class="o">|</span>    <span class="n">web</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;apache&quot;</span>  <span class="k">end</span>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">define</span> <span class="s2">&quot;db&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">db</span><span class="o">|</span>    <span class="n">db</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;mysql&quot;</span>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个文件配置了两个box，一个叫web，一个叫db。现在启动虚拟机就需要加上虚拟机名了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#启动web虚拟机</span>
+</span><span class='line'><span class="nv">$ </span>vagrant up web
+</span><span class='line'>
+</span><span class='line'><span class="c">#启用db虚拟机</span>
+</span><span class='line'><span class="nv">$ </span>vagrant up db
+</span><span class='line'>
+</span><span class='line'><span class="c">#默认启动所有的虚拟机</span>
+</span><span class='line'><span class="nv">$ </span>vagrant up
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>关闭虚拟机</h2>
+
+<p>Vagrant提供了好几种方法来关闭虚拟机，你可以根据不同的情况选择不同的方式。</p>
+
+<p><code>vagrant suspend</code>将虚拟机置于休眠状态。这时候主机会保存虚拟机的当前状态。再用<code>vagrant up</code>启动虚拟机时能够返回之前工作的状态。这种方式优点是休眠和启动速度都很快，只有几秒钟。缺点是需要额外的磁盘空间来存储当前状态。</p>
+
+<p><code>vagrant halt</code>则是关机。如果想再次启动还是使用<code>vagrant up</code>命令，不过需要多花些时间。</p>
+
+<p><code>vagrant destroy</code>则会将虚拟机从磁盘中删除。如果想重新创建还是使用<code>vagrant up</code>命令。</p>
+
+<p>另外1.2以上版本的Vagrant还引用了插件机制。可以通过<code>vagrant plugin</code>来添加各种各样的plugin，这给Vagrant的应用带来了更大的灵活性和针对性。比如可以添加<code>vagrant-windows</code>的插件来增加对windows系统的支持，通过添加<code>vagrant-aws</code>插件来实现给AWS创建虚拟机的功能。你也可以编写自己的插件。由于Vagrant是ruby写的一个gem，其插件的编写也是使用的Ruby语言。这里就不多做介绍了。感兴趣的可以去<a href="http://www.vagrantup.com/">官网</a>查看。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-02T23:50:00+08:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2013</time>
+      
+
+
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/10/01/migrate-octopress-to-aws-step-2/" title="Previous Post: 将我的博客迁移到亚马逊云端（2）">&laquo; 将我的博客迁移到亚马逊云端（2）</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/10/14/xml-knowledge/" title="Next Post: XML相关知识全接触（一）">XML相关知识全接触（一） &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>攻城狮，程序猿。目前就职于ThoughtWorks。</p>
+</section>
+
+<section>
+  <h1>Tag Cloud</h1>
+    <span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#f2f2f2' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x333333&amp;tcolor2=0x333333&amp;hicolor=0x000000&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+21.42857142857143%25%27%3EAgile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eagile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fandroid%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EAndroid%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Faws%27+style%3D%27font-size%3A+21.42857142857143%25%27%3EAWS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fci%27+style%3D%27font-size%3A+27.142857142857142%25%27%3ECI%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fcloud%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ECloud%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdatabase%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EDataBase%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fenglish%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EEnglish%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffp%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EFP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgradle%27+style%3D%27font-size%3A+32.85714285714286%25%27%3EGradle%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhaskell%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EHaskell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhomebrew%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EHomebrew%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjavascript%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EJavaScript%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%E5%AD%A6%E4%B9%A0%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EJava%E5%AD%A6%E4%B9%A0%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flife%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ELife%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fplugin%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eplugin%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Freading%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ereading%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frefactor%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Erefactor%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fshell%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eshell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ESpring%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fstudy%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Estudy%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fsvn%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ESVN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ETesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Etesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxml%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EXML%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%B7%A5%E5%85%B7%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%B7%A5%E5%85%B7%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%80%BB%E7%BB%93%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%80%BB%E7%BB%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+32.85714285714286%25%27%3E%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%27+style%3D%27font-size%3A+50.0%25%27%3E%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BF%BB%E8%AF%91%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%BF%BB%E8%AF%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E8%AF%BB%E4%B9%A6%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%27+style%3D%27font-size%3A+21.42857142857143%25%27%3E%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/12/05/a-old-developer-learn-english/">毕业多年的程序员重拾英语考雅思</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/04/use-idea-plugin-in-gradle/">Gradle中使用idea插件的一些实践</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/11/06/task-and-validation-is-important/">记一次扯到蛋的教训</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/31/learn-new-things/">开阔自己的视野，勇敢的接触新知识</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/23/aws-cloudformation/">亚马逊云服务之CloudFormation</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/10/02/hello-vagrant/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/10/02/hello-vagrant/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

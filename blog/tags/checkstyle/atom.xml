@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tag: CheckStyle | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/checkstyle/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2013-12-05T22:15:38+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[CheckStyle, 强制你遵循编码规范]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/06/21/introduce-checkstyle/"/>
+    <updated>2013-06-21T13:53:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/06/21/introduce-checkstyle</id>
+    <content type="html"><![CDATA[<p><img src="/images/CheckStyle.png"></p>
+
+<p>如今代码静态检查越来越重要，已经成为构建高质量软件的不可或缺的一个验证步骤。如果你使用的是java语言，那么<a href="http://checkstyle.sourceforge.net/">CheckStyle</a>则是一个利器。
+<a href="http://checkstyle.sourceforge.net/">CheckStyle</a>能够帮助程序员检查代码是否符合制定的规范。通过将<a href="http://checkstyle.sourceforge.net/">CheckStyle</a>的检查引入到项目构建中，可以强制让项目中的所有的开发者遵循制定规范，而不是仅仅停留在纸面上。如果发现代码违反了标准，比如类名未以大写开头、单个方法超过了指定行数、甚至单个方法抛出了3个以上的异常等。这些检查由于是基于源码的，所以不需要编译，执行速度快。</p>
+
+<!-- more -->
+
+
+<p><a href="http://checkstyle.sourceforge.net/">CheckStyle</a>有针对不同IDE和构建工具的各种插件，方便开发者随时随地对代码进行静态检查。下面就讲解下如何将<a href="http://checkstyle.sourceforge.net/">CheckStyle</a>引入到maven构建中。</p>
+
+<h2>配置CheckStyle插件</h2>
+
+<p>在maven中一个名为<code>maven-checkstyle-plugin</code>的插件，用于执行<a href="http://checkstyle.sourceforge.net/">CheckStyle</a> task。下面是一个简单的配置。</p>
+
+<p>```xml</p>
+
+<pre><code>&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-checkstyle-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.10&lt;/version&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;id&gt;checkstyle&lt;/id&gt;
+            &lt;phase&gt;validate&lt;/phase&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;check&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+                &lt;failOnViolation&gt;true&lt;/failOnViolation&gt;
+            &lt;/configuration&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>```</p>
+
+<p>我们定义了在maven lifecycle的validate阶段执行check task，并且如果发现有违反标准的情况就会fail当前的build。</p>
+
+<p>maven-checkstyle-plugin内置了4种规范.</p>
+
+<ul>
+<li>config/sun_checks.xml</li>
+<li>config/maven_checks.xml</li>
+<li>config/turbine_checks.xml</li>
+<li>config/avalon_checks.xml</li>
+</ul>
+
+
+<p>其中sun_checks.xml为默认值。如果想要使用其他三种规范，则只需配置configuration。下面是使用maven_checks.xml的示例。</p>
+
+<p>```xml</p>
+
+<pre><code>&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-checkstyle-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.10&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;configLocation&gt;config/maven_checks.xml&lt;/configLocation&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;id&gt;checkstyle&lt;/id&gt;
+            &lt;phase&gt;validate&lt;/phase&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;check&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+                &lt;failOnViolation&gt;true&lt;/failOnViolation&gt;
+            &lt;/configuration&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>```</p>
+
+<h2>自定义规范文件</h2>
+
+<p>我们可以使用默认的规范未见，当然也支持自定义。下面是google的一个checkstyle规范文件。</p>
+
+<p>```xml
+&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE module PUBLIC</p>
+
+<pre><code>    "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_3.dtd"&gt;
+</code></pre>
+
+<!-- This is a checkstyle configuration file. For descriptions of
+what the following rules do, please see the checkstyle configuration
+page at http://checkstyle.sourceforge.net/config.html -->
+
+
+<p><module name="Checker"></p>
+
+<pre><code>&lt;module name="RegexpSingleline"&gt;
+    &lt;!-- Requires a Google copyright notice in each file.
+      Code intended to be open-sourced may have a multi-line copyright
+      notice, so that this required text appears on the second line:
+      &lt;pre&gt;
+        /*
+         * Copyright 2008 Google Inc.
+         *
+         * (details of open-source license...)
+      &lt;/pre&gt;
+    --&gt;
+    &lt;property name="format"
+              value="^(//| \*) Copyright (\([cC]\) )?[\d]{4}(\-[\d]{4})? (Google Inc\.).*$" /&gt;
+    &lt;property name="minimum" value="1" /&gt;
+    &lt;property name="maximum" value="10" /&gt;
+    &lt;property name="message" value="Google copyright is missing or malformed." /&gt;
+    &lt;property name="severity" value="error" /&gt;
+&lt;/module&gt;
+
+&lt;module name="FileTabCharacter"&gt;
+    &lt;!-- Checks that there are no tab characters in the file.
+    --&gt;
+&lt;/module&gt;
+
+&lt;module name="NewlineAtEndOfFile"/&gt;
+
+&lt;module name="RegexpSingleline"&gt;
+    &lt;!-- Checks that FIXME is not used in comments.  TODO is preferred.
+    --&gt;
+    &lt;property name="format" value="((//.*)|(\*.*))FIXME" /&gt;
+    &lt;property name="message" value='TODO is preferred to FIXME.  e.g. "TODO(johndoe): Refactor when v2 is released."' /&gt;
+&lt;/module&gt;
+
+&lt;module name="RegexpSingleline"&gt;
+    &lt;!-- Checks that TODOs are named.  (Actually, just that they are followed
+         by an open paren.)
+    --&gt;
+    &lt;property name="format" value="((//.*)|(\*.*))TODO[^(]" /&gt;
+    &lt;property name="message" value='All TODOs should be named.  e.g. "TODO(johndoe): Refactor when v2 is released."' /&gt;
+&lt;/module&gt;
+
+&lt;!-- All Java AST specific tests live under TreeWalker module. --&gt;
+&lt;module name="TreeWalker"&gt;
+
+    &lt;!--
+
+    IMPORT CHECKS
+
+    --&gt;
+
+    &lt;module name="RedundantImport"&gt;
+        &lt;!-- Checks for redundant import statements. --&gt;
+        &lt;property name="severity" value="error"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="ImportOrder"&gt;
+        &lt;!-- Checks for out of order import statements. --&gt;
+
+        &lt;property name="severity" value="warning"/&gt;
+        &lt;property name="groups" value="com.google,android,junit,net,org,java,javax"/&gt;
+        &lt;!-- This ensures that static imports go first. --&gt;
+        &lt;property name="option" value="top"/&gt;
+        &lt;property name="tokens" value="STATIC_IMPORT, IMPORT"/&gt;
+    &lt;/module&gt;
+
+    &lt;!--
+
+    JAVADOC CHECKS
+
+    --&gt;
+
+    &lt;!-- Checks for Javadoc comments.                     --&gt;
+    &lt;!-- See http://checkstyle.sf.net/config_javadoc.html --&gt;
+    &lt;module name="JavadocMethod"&gt;
+        &lt;property name="scope" value="protected"/&gt;
+        &lt;property name="severity" value="warning"/&gt;
+        &lt;property name="allowMissingJavadoc" value="true"/&gt;
+        &lt;property name="allowMissingParamTags" value="true"/&gt;
+        &lt;property name="allowMissingReturnTag" value="true"/&gt;
+        &lt;property name="allowMissingThrowsTags" value="true"/&gt;
+        &lt;property name="allowThrowsTagsForSubclasses" value="true"/&gt;
+        &lt;property name="allowUndeclaredRTE" value="true"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="JavadocType"&gt;
+        &lt;property name="scope" value="protected"/&gt;
+        &lt;property name="severity" value="error"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="JavadocStyle"&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+    &lt;!--
+
+    NAMING CHECKS
+
+    --&gt;
+
+    &lt;!-- Item 38 - Adhere to generally accepted naming conventions --&gt;
+
+    &lt;module name="PackageName"&gt;
+        &lt;!-- Validates identifiers for package names against the
+          supplied expression. --&gt;
+        &lt;!-- Here the default checkstyle rule restricts package name parts to
+          seven characters, this is not in line with common practice at Google.
+        --&gt;
+        &lt;property name="format" value="^[a-z]+(\.[a-z][a-z0-9]{1,})*$"/&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="TypeNameCheck"&gt;
+        &lt;!-- Validates static, final fields against the
+        expression "^[A-Z][a-zA-Z0-9]*$". --&gt;
+        &lt;metadata name="altname" value="TypeName"/&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="ConstantNameCheck"&gt;
+        &lt;!-- Validates non-private, static, final fields against the supplied
+        public/package final fields "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$". --&gt;
+        &lt;metadata name="altname" value="ConstantName"/&gt;
+        &lt;property name="applyToPublic" value="true"/&gt;
+        &lt;property name="applyToProtected" value="true"/&gt;
+        &lt;property name="applyToPackage" value="true"/&gt;
+        &lt;property name="applyToPrivate" value="false"/&gt;
+        &lt;property name="format" value="^([A-Z][A-Z0-9]*(_[A-Z0-9]+)*|FLAG_.*)$"/&gt;
+        &lt;message key="name.invalidPattern"
+                 value="Variable ''{0}'' should be in ALL_CAPS (if it is a constant) or be private (otherwise)."/&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="StaticVariableNameCheck"&gt;
+        &lt;!-- Validates static, non-final fields against the supplied
+        expression "^[a-z][a-zA-Z0-9]*_?$". --&gt;
+        &lt;metadata name="altname" value="StaticVariableName"/&gt;
+        &lt;property name="applyToPublic" value="true"/&gt;
+        &lt;property name="applyToProtected" value="true"/&gt;
+        &lt;property name="applyToPackage" value="true"/&gt;
+        &lt;property name="applyToPrivate" value="true"/&gt;
+        &lt;property name="format" value="^[a-z][a-zA-Z0-9]*_?$"/&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="MemberNameCheck"&gt;
+        &lt;!-- Validates non-static members against the supplied expression. --&gt;
+        &lt;metadata name="altname" value="MemberName"/&gt;
+        &lt;property name="applyToPublic" value="true"/&gt;
+        &lt;property name="applyToProtected" value="true"/&gt;
+        &lt;property name="applyToPackage" value="true"/&gt;
+        &lt;property name="applyToPrivate" value="true"/&gt;
+        &lt;property name="format" value="^[a-z][a-zA-Z0-9]*$"/&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="MethodNameCheck"&gt;
+        &lt;!-- Validates identifiers for method names. --&gt;
+        &lt;metadata name="altname" value="MethodName"/&gt;
+        &lt;property name="format" value="^[a-z][a-zA-Z0-9]*(_[a-zA-Z0-9]+)*$"/&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="ParameterName"&gt;
+        &lt;!-- Validates identifiers for method parameters against the
+          expression "^[a-z][a-zA-Z0-9]*$". --&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="LocalFinalVariableName"&gt;
+        &lt;!-- Validates identifiers for local final variables against the
+          expression "^[a-z][a-zA-Z0-9]*$". --&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="LocalVariableName"&gt;
+        &lt;!-- Validates identifiers for local variables against the
+          expression "^[a-z][a-zA-Z0-9]*$". --&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+
+    &lt;!--
+
+    LENGTH and CODING CHECKS
+
+    --&gt;
+
+    &lt;module name="LineLength"&gt;
+        &lt;!-- Checks if a line is too long. --&gt;
+        &lt;property name="max" value="${com.puppycrawl.tools.checkstyle.checks.sizes.LineLength.max}" default="100"/&gt;
+        &lt;property name="severity" value="error"/&gt;
+
+        &lt;!--
+          The default ignore pattern exempts the following elements:
+            - import statements
+            - long URLs inside comments
+        --&gt;
+
+        &lt;property name="ignorePattern"
+                  value="${com.puppycrawl.tools.checkstyle.checks.sizes.LineLength.ignorePattern}"
+                  default="^(package .*;\s*)|(import .*;\s*)|( *\* *https?://.*)$"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="LeftCurly"&gt;
+        &lt;!-- Checks for placement of the left curly brace ('{'). --&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="RightCurly"&gt;
+        &lt;!-- Checks right curlies on CATCH, ELSE, and TRY blocks are on
+        the same line. e.g., the following example is fine:
+        &lt;pre&gt;
+          if {
+            ...
+          } else
+        &lt;/pre&gt;
+        --&gt;
+        &lt;!-- This next example is not fine:
+        &lt;pre&gt;
+          if {
+            ...
+          }
+          else
+        &lt;/pre&gt;
+        --&gt;
+        &lt;property name="option" value="same"/&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+    &lt;!-- Checks for braces around if and else blocks --&gt;
+    &lt;module name="NeedBraces"&gt;
+        &lt;property name="severity" value="warning"/&gt;
+        &lt;property name="tokens" value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="UpperEll"&gt;
+        &lt;!-- Checks that long constants are defined with an upper ell.--&gt;
+        &lt;property name="severity" value="error"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="FallThrough"&gt;
+        &lt;!-- Warn about falling through to the next case statement.  Similar to
+        javac -Xlint:fallthrough, but the check is suppressed if a single-line comment
+        on the last non-blank line preceding the fallen-into case contains 'fall through' (or
+        some other variants which we don't publicized to promote consistency).
+        --&gt;
+        &lt;property name="reliefPattern"
+                  value="fall through|Fall through|fallthru|Fallthru|falls through|Falls through|fallthrough|Fallthrough|No break|NO break|no break|continue on"/&gt;
+        &lt;property name="severity" value="error"/&gt;
+    &lt;/module&gt;
+
+
+    &lt;!--
+
+    MODIFIERS CHECKS
+
+    --&gt;
+
+    &lt;module name="ModifierOrder"&gt;
+        &lt;!-- Warn if modifier order is inconsistent with JLS3 8.1.1, 8.3.1, and
+             8.4.3.  The prescribed order is:
+             public, protected, private, abstract, static, final, transient, volatile,
+             synchronized, native, strictfp
+          --&gt;
+    &lt;/module&gt;
+
+
+    &lt;!--
+
+    WHITESPACE CHECKS
+
+    --&gt;
+
+    &lt;module name="WhitespaceAround"&gt;
+        &lt;!-- Checks that various tokens are surrounded by whitespace.
+             This includes most binary operators and keywords followed
+             by regular or curly braces.
+        --&gt;
+        &lt;property name="tokens" value="ASSIGN, BAND, BAND_ASSIGN, BOR,
+    BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN,
+    EQUAL, GE, GT, LAND, LE, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE,
+    LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN,
+    LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS,
+    MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION,
+    SL, SL_ASSIGN, SR_ASSIGN, STAR, STAR_ASSIGN"/&gt;
+        &lt;property name="severity" value="error"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="WhitespaceAfter"&gt;
+        &lt;!-- Checks that commas, semicolons and typecasts are followed by
+             whitespace.
+        --&gt;
+        &lt;property name="tokens" value="COMMA, SEMI, TYPECAST"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="NoWhitespaceAfter"&gt;
+        &lt;!-- Checks that there is no whitespace after various unary operators.
+             Linebreaks are allowed.
+        --&gt;
+        &lt;property name="tokens" value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS,
+    UNARY_PLUS"/&gt;
+        &lt;property name="allowLineBreaks" value="true"/&gt;
+        &lt;property name="severity" value="error"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="NoWhitespaceBefore"&gt;
+        &lt;!-- Checks that there is no whitespace before various unary operators.
+             Linebreaks are allowed.
+        --&gt;
+        &lt;property name="tokens" value="SEMI, DOT, POST_DEC, POST_INC"/&gt;
+        &lt;property name="allowLineBreaks" value="true"/&gt;
+        &lt;property name="severity" value="error"/&gt;
+    &lt;/module&gt;
+
+    &lt;module name="ParenPad"&gt;
+        &lt;!-- Checks that there is no whitespace before close parens or after
+             open parens.
+        --&gt;
+        &lt;property name="severity" value="warning"/&gt;
+    &lt;/module&gt;
+
+&lt;/module&gt;
+</code></pre>
+
+<p></module></p>
+
+<p>```</p>
+
+<p>如果想启用自定义的规范文件，则依旧是修改configuration，指向你的文件地址。</p>
+
+<p>```xml</p>
+
+<pre><code>        &lt;plugin&gt;
+            &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+            &lt;artifactId&gt;maven-checkstyle-plugin&lt;/artifactId&gt;
+            &lt;version&gt;2.10&lt;/version&gt;
+            &lt;configuration&gt;
+                &lt;configLocation&gt;${basedir}/src/config/custom_checkstyle.xml&lt;/configLocation&gt;                  
+            &lt;/configuration&gt;
+            &lt;executions&gt;
+                &lt;execution&gt;
+                    &lt;id&gt;checkstyle&lt;/id&gt;
+                    &lt;phase&gt;validate&lt;/phase&gt;
+                    &lt;goals&gt;
+                        &lt;goal&gt;check&lt;/goal&gt;
+                    &lt;/goals&gt;
+                    &lt;configuration&gt;
+                        &lt;failOnViolation&gt;true&lt;/failOnViolation&gt;
+                    &lt;/configuration&gt;
+                &lt;/execution&gt;
+            &lt;/executions&gt;
+        &lt;/plugin&gt;
+</code></pre>
+
+<p>```</p>
+
+<h2>运行checkstyle检查</h2>
+
+<p>```bash</p>
+
+<p>mvn checkstyle:checkstyle</p>
+
+<p>```</p>
+
+<h2>查看checkstyle结果</h2>
+
+<p>运行maven命令后可以在console里查看checkstyle运行结果。</p>
+
+<p>```bash
+[INFO]
+[INFO] There are 11 checkstyle errors.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2.135s
+[INFO] Finished at: Fri Jun 21 13:39:24 CST 2013
+[INFO] Final Memory: 6M/81M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-checkstyle-plugin:2.10:check (checkstyle) on project SpringMessageSpike: You have 11 Checkstyle violations. -> [Help 1]</p>
+
+<p>```</p>
+
+<p>checkstye的详细结果信息被存放在target/checkstyle-result.xml中。下面是一个示例。</p>
+
+<p>```xml
+&lt;?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="/Users/twer/sourcecode/SpringMessageSpike/src/main/java/com/thoughtworks/config/SessionMessageSource.java">
+<error line="0" severity="error" message="Google copyright is missing or malformed." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="21" severity="warning" message="Wrong order for &apos;org.slf4j.LoggerFactory.getLogger&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
+<error line="27" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTypeCheck"/>
+<error line="35" severity="error" message="Line is longer than 100 characters (found 115)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+</file>
+</checkstyle></p>
+
+<p>```</p>
+
+<h2>跳过对指定文件的某些检查</h2>
+
+<p>如果对于指定文件检查出了一些问题，但是你想忽略它，则可以使用suppression。</p>
+
+<p>例如在上述例子中有一个checkstyle error是说某行超过了100字符。如果我们不想修复这个错误怎么办那？可以将其suppress掉。</p>
+
+<p>方法是建立一个checkstyle-suppressions.xml文件。其中加入下述内容</p>
+
+<p>```xml checkstyle-suppressions.xml</p>
+
+<p>&lt;?xml version="1.0"?></p>
+
+<p>&lt;!DOCTYPE suppressions PUBLIC</p>
+
+<pre><code>    "-//Puppy Crawl//DTD Suppressions 1.0//EN"
+    "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd"&gt;
+</code></pre>
+
+<p><suppressions></p>
+
+<pre><code>&lt;suppress checks="LineLengthCheck"
+          files="SessionMessageSource.java"
+          /&gt;
+</code></pre>
+
+<p></suppressions></p>
+
+<p>```</p>
+
+<p>然后配置<code>maven-checkstyel-plugin</code>设置<code>suppressionsLocation</code>。</p>
+
+<p>```xml</p>
+
+<pre><code>&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-checkstyle-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.10&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;configLocation&gt;${basedir}/src/config/custom_checkstyle.xml&lt;/configLocation&gt;
+        &lt;suppressionsLocation&gt;${basedir}/src/config/checkstyle-suppressions.xml&lt;/suppressionsLocation&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;id&gt;checkstyle&lt;/id&gt;
+            &lt;phase&gt;validate&lt;/phase&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;check&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+                &lt;failOnViolation&gt;true&lt;/failOnViolation&gt;
+            &lt;/configuration&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+</feed>
