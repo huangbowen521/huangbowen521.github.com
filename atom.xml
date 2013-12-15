@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-12-13T10:12:31+08:00</updated>
+  <updated>2013-12-15T22:58:58+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,214 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[使用media queries实现一个响应式的菜单]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/12/15/responsive-menu-by-media-queries/"/>
+    <updated>2013-12-15T21:56:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/12/15/responsive-menu-by-media-queries</id>
+    <content type="html"><![CDATA[<p>Media queries是CSS3引入的一个特性，使用它可以方便的实现各种响应式效果。在这个示例中我们将会使用media queries实现一个响应式的菜单。这个菜单会根据当前浏览器屏幕的大小变化而自动的呈现出不同的样式。如果浏览器屏幕大于800px，菜单则会显示在页面左侧；如果浏览器屏幕介于401px到800px之间，菜单则会显示在页面上方，与其他内容是上下关系；如果屏幕小于400px，则菜单仍在页面上方，但是菜单会变为下拉列表形式。</p>
+
+<!-- more -->
+
+
+<p>预览地址: <a href="http://htmlpreview.github.io/?https://github.com/huangbowen521/ResponsiveDesignTrial/blob/master/responsiveMenu.html">http://htmlpreview.github.io/?https://github.com/huangbowen521/ResponsiveDesignTrial/blob/master/responsiveMenu.html</a></p>
+
+<p>要实现这样的特效，首先要创建一个下拉列表形式的菜单，如下所示。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;small-menu&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;form&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;select</span> <span class="na">name=</span><span class="s">&quot;URL&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;home.html&quot;</span><span class="nt">&gt;</span>我的博客首页<span class="nt">&lt;/option&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;blog.html&quot;</span><span class="nt">&gt;</span>我的博客列表<span class="nt">&lt;/option&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;whoami.html&quot;</span><span class="nt">&gt;</span>我的个人简介<span class="nt">&lt;/option&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/select&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/form&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后还要创建一个使用了ul和li元素的菜单，放置在上面菜单的后面。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;large-menu&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ul&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;li&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;home.html&quot;</span><span class="nt">&gt;</span>我的博客首页<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;li&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;blog.html&quot;</span><span class="nt">&gt;</span>我的博客列表<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;li&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;whoami.html&quot;</span><span class="nt">&gt;</span>我的个人简介<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/ul&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后再加一个div元素，用来放置一些文本以填充页面其他部分。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;content&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;p&gt;</span>
+</span><span class='line'>        上周五的时候我对某个项目做了一个更改，将里面的构建脚本由maven换成了gradle。原因之一是因为maven的配置太繁琐，由于其引入了lifecycle的机制，
+</span><span class='line'>        导致其不够灵活，而gradle作为用groovy写的DSL，代码清爽、简单、灵活。原因之二是我们所有的项目构建都换成了gradle，为了保持技术栈单一，此项目
+</span><span class='line'>        做迁移也是大势所趋。<span class="nt">&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>接下来就要设置media queries了，指定在不同屏幕尺寸下菜单表现出不同的样式。</p>
+
+<p>当屏幕宽度小于400px时，我们需要隐藏ul菜单，显现下拉框菜单。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="k">@media</span> <span class="nt">screen</span> <span class="nt">and</span> <span class="o">(</span> <span class="nt">max-width</span><span class="o">:</span> <span class="nt">400px</span> <span class="o">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nc">.small-menu</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">display</span><span class="o">:</span> <span class="k">inline</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nc">.large-menu</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">display</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当屏幕介于401px和800px时，显示ul菜单，并且将其设置为水平排列。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="k">@media</span> <span class="nt">screen</span> <span class="nt">and</span> <span class="o">(</span> <span class="nt">min-width</span><span class="o">:</span> <span class="nt">401px</span> <span class="o">)</span> <span class="nt">and</span> <span class="o">(</span> <span class="nt">max-width</span><span class="o">:</span> <span class="nt">800px</span> <span class="o">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nc">.small-menu</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">display</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nc">.large-menu</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">display</span><span class="o">:</span> <span class="k">inline</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">width</span><span class="o">:</span> <span class="m">100</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nc">.large-menu</span> <span class="nt">ul</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">list-style-type</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nc">.large-menu</span> <span class="nt">ul</span> <span class="nt">li</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">display</span><span class="o">:</span> <span class="k">inline</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nc">.content</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">width</span><span class="o">:</span> <span class="m">100</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当屏幕尺寸大于800px时，则将ul菜单设置为页面左边，并且菜单排列为垂直排列。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="k">@media</span> <span class="nt">screen</span> <span class="nt">and</span> <span class="o">(</span> <span class="nt">min-width</span><span class="o">:</span> <span class="nt">801px</span> <span class="o">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nc">.small-menu</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">display</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nc">.large-menu</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">display</span><span class="o">:</span> <span class="k">inline</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">float</span><span class="o">:</span> <span class="k">left</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">width</span><span class="o">:</span> <span class="m">20</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nc">.content</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">float</span><span class="o">:</span> <span class="k">right</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">width</span><span class="o">:</span> <span class="m">80</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就简单实现了一个响应式的菜单，其实主要就是根据media queries来设置screen的条件，根据不同screen宽度来给页面元素设置对应的样式。当屏幕宽度发生变化时，会自动应用相应的样式。</p>
+
+<p>代码已经被放置到了github上了，地址是<a href="https://github.com/huangbowen521/ResponsiveDesignTrial">https://github.com/huangbowen521/ResponsiveDesignTrial</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[翻译:反思极限编程]]></title>
@@ -3313,35 +3521,6 @@ task的依赖关系。</li>
 <p>如果一个人一生有70年寿命，除去头20年，那么还有50年。如果半个月看完一本书，那么全年可以看24本。50年就是1200多本。而世界上每个月出本的书籍都远远超过这些。</p>
 
 <p>而作为程序员本来时间就很宝贵，所以看书一定要尽量选精品。最后给大家附上我司的Developer读书路线图，里面不乏经典的书籍。<a href="http://www.cnblogs.com/huang0925/archive/2013/03/26/2983529.html">传送门</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Effective JavaScript译者序]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/08/25/preface-of-effective-javascript/"/>
-    <updated>2013-08-25T12:17:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/08/25/preface-of-effective-javascript</id>
-    <content type="html"><![CDATA[<p><img src="http://img3.douban.com/lpic/s24868715.jpg"></p>
-
-<p>虽然JavaScript在诞生之初由于商业原因及规范的缺少，一直饱受人们的诟病。但是随着时间的推移，
-人们已经逐渐走出了对这门语言的偏见和误解，开始领略它那强大的语言特性。当下JavaScript语言大红大紫，研究讨论JavaScript的相关书籍也早已汗牛充屋，但是这本书作为Effective软件开发系列中的一员，却是不可或缺。</p>
-
-<!-- more -->
-
-
-<p>学会写JavaScript容易，但要成为专家则要难上许多。这一方面是由于JavaScript语言的设计思想与Java、c#等大众语言相差甚大，另一方面是由于其设计时的仓促性导致JavaScript语言本身精华与糟粕并存。本书的作者David Herman作为JavaScript标准化的参与者，在书中自然对JavaScript的精华和糟粕都进行了深入的阐述，并且给出了很多实用的建议。这些建议都来自于第一线的实践经验，无论是初学者还是高级程序员，都可以从中吸收到养分，得到快速成长。</p>
-
-<p>本书深入阐述了JavaScript语言，通过它可以了解到如何有效的写出高移植性、健壮的程序和库。本书传承了Effective软件开发系列的简明的场景驱动风格，通过提示、技术及实用的示例代码解释了JavaScript中的重要概念。</p>
-
-<p>全书共涉及了68条关于JavaScript程序设计的建议。第一章可以让初学者快速熟悉JavaScript,了解JavaScript中的原始类型、隐式强制转换、编码类型等基本概念;第二章着重讲解了有关JavaScript的变量作用域的建议，不仅介绍了怎么做，还着重介绍了为什么，加深理解；第三章和第四章的主题涵盖了函数、对象及原型三大方面，这可是JavaScript区别于其他语言的核心，读者也不必紧张，在David Herman大叔的指引下，你可以轻松掌握这些核心，了解到最佳实践；第五章则阐述了数组和字典这两种常用类型具体使用时的建议，避免陷入一些陷阱；第六章讲述了库和API设计，第七章讲述了并行编程，这是晋升为JavaScript专家的必由之路。</p>
-
-<p>想要深入了解JavaScript并获取一线专家的宝贵经验吗？那么，这本书正好适合你。</p>
-
-<p>我和同事喻杨在翻译这本书的过程中投入了不少精力，生怕给这本经典留下一些遗憾。感谢编辑高婧雅对我们的支持，谅解我们截稿时间的多次拖延。</p>
-
-<p>最后，感谢这本书的购买者，希望能给你们带来一次超凡的阅读体验。</p>
-
-<p>黄博文 2013年8月11日于布里斯班</p>
 ]]></content>
   </entry>
   
