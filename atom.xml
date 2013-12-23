@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-12-15T22:58:58+08:00</updated>
+  <updated>2013-12-23T23:33:34+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,365 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Gatling->次时代性能测试利器]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/12/23/the-power-of-gatling/"/>
+    <updated>2013-12-23T23:07:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/12/23/the-power-of-gatling</id>
+    <content type="html"><![CDATA[<p>Gatling作为一款开源免费的性能测试工具越来越受到广大程序员的欢迎。免费当然是好的，最缺钱的就是程序员了;开源更好啊，缺啥功能、想做定制化的可以自己动手，丰衣足食。其实我最喜欢的原因是其提供了简洁强大的API，原生支持命令行运行，不像JMeter那样需要在界面上点来点去。另外其出色的扩展API和轻量级的HTML报表都值得让人称道。</p>
+
+<!-- more -->
+
+
+<h2>Gatling版本</h2>
+
+<p>Gatling的的官方网站是<a href="http://gatling-tool.org/">http://gatling-tool.org/</a>。目前Gatling有两个主线版本，一个是Gatling 1,最新版本是1.5.3;一个是Gatling 2,最新版本是2.0.0-M3a。Gatling 2使用了JDK7进行编译，使用的Scala版本是2.10，它对Gatling的API进行了一些重构和重新设计,内部也有一些调整。 目前Gatling 2还在开发阶段，所以如果要在项目中使用的话最好还是使用Gatling 1.5.3。</p>
+
+<h2>安装Gatling</h2>
+
+<p>其实Gatling是款绿色软件，可以直接从<a href="https://github.com/excilys/gatling/wiki/Downloads">https://github.com/excilys/gatling/wiki/Downloads</a>下载指定的版本。下载下来解压缩以后，我们可以看到其目录结构。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>twer@bowen-huang:~/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2<span class="nv">$ </span>tree -L 2
+</span><span class='line'>.
+</span><span class='line'>├── bin                             //可执行文件目录
+</span><span class='line'>│   ├── gatling.bat
+</span><span class='line'>│   ├── gatling.sh
+</span><span class='line'>│   ├── recorder.bat
+</span><span class='line'>│   └── recorder.sh
+</span><span class='line'>├── conf                            //配置目录
+</span><span class='line'>│   ├── application.conf
+</span><span class='line'>│   ├── gatling.conf
+</span><span class='line'>│   └── logback.xml
+</span><span class='line'>├── lib                             //依赖的程序库
+</span><span class='line'>│   ├── akka-actor-2.0.4.jar
+</span><span class='line'>│   ├── async-http-client-1.7.18.20130621.jar
+</span><span class='line'>│   ├── commons-io-2.4.jar
+</span><span class='line'>│   ├── commons-lang-2.6.jar
+</span><span class='line'>│   ├── commons-math3-3.1.1.jar
+</span><span class='line'>│   ├── commons-pool-1.6.jar
+</span><span class='line'>│   ├── compiler-interface-0.12.3-sources.jar
+</span><span class='line'>│   ├── config-1.0.1.jar
+</span><span class='line'>│   ├── gatling-app-1.5.2.jar
+</span><span class='line'>│   ├── gatling-charts-1.5.2.jar
+</span><span class='line'>│   ├── gatling-charts-highcharts-1.5.2.jar
+</span><span class='line'>│   ├── gatling-core-1.5.2.jar
+</span><span class='line'>│   ├── gatling-http-1.5.2.jar
+</span><span class='line'>│   ├── gatling-jdbc-1.5.2.jar
+</span><span class='line'>│   ├── gatling-metrics-1.5.2.jar
+</span><span class='line'>│   ├── gatling-recorder-1.5.2.jar
+</span><span class='line'>│   ├── gatling-redis-1.5.2.jar
+</span><span class='line'>│   ├── grizzled-slf4j_2.9.2-0.6.10.jar
+</span><span class='line'>│   ├── incremental-compiler-0.12.3.jar
+</span><span class='line'>│   ├── jaxen-1.1.6.jar
+</span><span class='line'>│   ├── joda-convert-1.2.jar
+</span><span class='line'>│   ├── joda-time-2.2.jar
+</span><span class='line'>│   ├── jodd-core-3.4.4.jar
+</span><span class='line'>│   ├── jodd-lagarto-3.4.4.jar
+</span><span class='line'>│   ├── json-path-0.8.2.fix24.jar
+</span><span class='line'>│   ├── json-smart-1.1.1.jar
+</span><span class='line'>│   ├── jsoup-1.7.2.jar
+</span><span class='line'>│   ├── logback-classic-1.0.12.jar
+</span><span class='line'>│   ├── logback-core-1.0.12.jar
+</span><span class='line'>│   ├── netty-3.6.6.Final.jar
+</span><span class='line'>│   ├── opencsv-2.3.jar
+</span><span class='line'>│   ├── redisclient_2.9.2-2.10.jar
+</span><span class='line'>│   ├── scala-compiler-2.9.3.jar
+</span><span class='line'>│   ├── scala-library-2.9.3.jar
+</span><span class='line'>│   ├── scalate-core_2.9-1.6.1.jar
+</span><span class='line'>│   ├── scalate-util_2.9-1.6.1.jar
+</span><span class='line'>│   ├── scopt_2.9.2-2.1.0.jar
+</span><span class='line'>│   ├── slf4j-api-1.7.5.jar
+</span><span class='line'>│   ├── xercesImpl-2.11.0.jar
+</span><span class='line'>│   ├── xml-apis-1.4.01.jar
+</span><span class='line'>│   ├── xstream-1.4.3.jar
+</span><span class='line'>│   └── zinc-0.2.5.jar
+</span><span class='line'>├── results            //性能测试结果存放目录
+</span><span class='line'>│   └── blogsimulation-20131218210445
+</span><span class='line'>├── target             //性能测试脚本编译结果
+</span><span class='line'>│   ├── cache
+</span><span class='line'>│   ├── classes
+</span><span class='line'>│   └── zincCache
+</span><span class='line'>└── user-files     //性能测试脚本源文件
+</span><span class='line'>    ├── data
+</span><span class='line'>    ├── request-bodies
+</span><span class='line'>    └── simulations
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Gatling在user-files目录中提供了几个性能测试脚本的示例。不过由于脚本中被测试的网站已经无法访问，所以我自己写了几个简单的测试脚本，已经放置到了Github上，可以通过<a href="https://github.com/huangbowen521/GatlingWorkShop">https://github.com/huangbowen521/GatlingWorkShop</a>下载。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>twer@bowen-huang:~/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2/user-files<span class="nv">$ </span>tree simulations
+</span><span class='line'>simulations
+</span><span class='line'>└── blog
+</span><span class='line'>    ├── blog.scala
+</span><span class='line'>    └── github.scala
+</span><span class='line'>
+</span><span class='line'>1 directory, 2 files
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>可以看到在simulations目录下有两个文件，一个是我给自己的博客写的性能测试脚本，一个是给github写的一个性能测试脚本。</p>
+
+<h2>运行Gatling</h2>
+
+<p>在命令行下运行bin目录下的Gatling.sh(如果是windows用户，请运行Gatling.bat)。Gatling会自动列出当前所有的测试脚本供自己选择，然后会让填写simulation id(模拟Id)以及run description（运行描述）。输入完毕后按回车键测试即可启动。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>twer@bowen-huang:~/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2<span class="nv">$ </span>./bin/gatling.sh
+</span><span class='line'>GATLING_HOME is <span class="nb">set </span>to /Users/twer/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2
+</span><span class='line'>Choose a simulation number:
+</span><span class='line'>     <span class="o">[</span>0<span class="o">]</span> blog.BlogSimulation
+</span><span class='line'>     <span class="o">[</span>1<span class="o">]</span> blog.GithubSimulation
+</span><span class='line'>1
+</span><span class='line'>Select simulation id <span class="o">(</span>default is <span class="s1">&#39;githubsimulation&#39;</span><span class="o">)</span>. Accepted characters are a-z, A-Z, 0-9, - and _
+</span><span class='line'>github
+</span><span class='line'>Select run description <span class="o">(</span>optional<span class="o">)</span>
+</span><span class='line'>testing github
+</span><span class='line'>
+</span><span class='line'>Simulation blog.GithubSimulation started…
+</span><span class='line'>
+</span><span class='line'>……
+</span><span class='line'>……
+</span><span class='line'>……
+</span><span class='line'>
+</span><span class='line'>Simulation finished.
+</span><span class='line'>Simulation successful.
+</span><span class='line'>Generating reports...
+</span><span class='line'>Reports generated in 0s.
+</span><span class='line'>Please open the following file : /Users/twer/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2/results/github-20131223214957/index.html
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到命令行中最后一行中标示了性能测试报表的存放路径。</p>
+
+<h2>查看测试报告</h2>
+
+<p>Gatling的测试报表其实就是一个html文件。Gatling使用了HighCharts这款JavaScript库来进行报表的展示。另外Gatling还提供了方便的接口用来自定义报告的展示。</p>
+
+<p>以下是报表的部分截图。</p>
+
+<p><img src="http://www.huangbowen.net/images/gatlingReport1.png" width="800"></p>
+
+<p><img src="http://www.huangbowen.net/images/gatlingReport2.png" width="800"></p>
+
+<h2>测试脚本示例</h2>
+
+<p>这是GithubSimulation的性能测试脚本。其实它就是Scala的一个类，继承自Simulation。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">package</span> <span class="nn">blog</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">import</span> <span class="nn">com.excilys.ebi.gatling.core.Predef._</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">com.excilys.ebi.gatling.http.Predef._</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">com.excilys.ebi.gatling.jdbc.Predef._</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">com.excilys.ebi.gatling.http.Headers.Names._</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">akka.util.duration._</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">bootstrap._</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">GithubSimulation</span> <span class="k">extends</span> <span class="nc">Simulation</span> <span class="o">{</span>
+</span><span class='line'>     <span class="k">var</span> <span class="n">httpConf</span> <span class="k">=</span> <span class="n">httpConfig</span><span class="o">.</span>
+</span><span class='line'>     <span class="n">baseURL</span><span class="o">(</span><span class="s">&quot;https://github.com&quot;</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>     <span class="k">var</span> <span class="n">scn</span> <span class="k">=</span> <span class="n">scenario</span><span class="o">(</span><span class="s">&quot;search in github.com&quot;</span><span class="o">)</span>
+</span><span class='line'>     <span class="o">.</span><span class="n">exec</span><span class="o">(</span>
+</span><span class='line'>          <span class="n">http</span><span class="o">(</span><span class="s">&quot;home page&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">get</span><span class="o">(</span><span class="s">&quot;/&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">check</span><span class="o">(</span><span class="n">status</span><span class="o">.</span><span class="n">is</span><span class="o">(</span><span class="mi">200</span><span class="o">)))</span>
+</span><span class='line'>     <span class="o">.</span><span class="n">pause</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">12</span><span class="o">)</span>
+</span><span class='line'>     <span class="o">.</span><span class="n">exec</span><span class="o">(</span>
+</span><span class='line'>          <span class="n">http</span><span class="o">(</span><span class="s">&quot;do search&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">get</span><span class="o">(</span><span class="s">&quot;/search&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">queryParam</span><span class="o">(</span><span class="s">&quot;q&quot;</span><span class="o">,</span> <span class="s">&quot;gatling&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">check</span><span class="o">(</span><span class="n">status</span><span class="o">.</span><span class="n">is</span><span class="o">(</span><span class="mi">200</span><span class="o">)))</span>
+</span><span class='line'>
+</span><span class='line'>     <span class="n">setUp</span><span class="o">(</span><span class="n">scn</span><span class="o">.</span><span class="n">users</span><span class="o">(</span><span class="mi">500</span><span class="o">).</span><span class="n">ramp</span><span class="o">(</span><span class="mi">10</span><span class="o">).</span><span class="n">protocolConfig</span><span class="o">(</span><span class="n">httpConf</span><span class="o">))</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>在这个类中定义了一个httpConf，指定了被测网站的根目录。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'>     <span class="k">var</span> <span class="n">httpConf</span> <span class="k">=</span> <span class="n">httpConfig</span><span class="o">.</span>
+</span><span class='line'>     <span class="n">baseURL</span><span class="o">(</span><span class="s">&quot;https://github.com&quot;</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后定义了一个测试场景，用户先访问Github首页，检查http返回状态码是否为200，然后暂停一段时间后再执行一个查询操作，查询关键字是gatling，检查http返回状态码是否为200。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'>     <span class="k">var</span> <span class="n">scn</span> <span class="k">=</span> <span class="n">scenario</span><span class="o">(</span><span class="s">&quot;search in github.com&quot;</span><span class="o">)</span>
+</span><span class='line'>     <span class="o">.</span><span class="n">exec</span><span class="o">(</span>
+</span><span class='line'>          <span class="n">http</span><span class="o">(</span><span class="s">&quot;home page&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">get</span><span class="o">(</span><span class="s">&quot;/&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">check</span><span class="o">(</span><span class="n">status</span><span class="o">.</span><span class="n">is</span><span class="o">(</span><span class="mi">200</span><span class="o">)))</span>
+</span><span class='line'>     <span class="o">.</span><span class="n">pause</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">12</span><span class="o">)</span>
+</span><span class='line'>     <span class="o">.</span><span class="n">exec</span><span class="o">(</span>
+</span><span class='line'>          <span class="n">http</span><span class="o">(</span><span class="s">&quot;do search&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">get</span><span class="o">(</span><span class="s">&quot;/search&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">queryParam</span><span class="o">(</span><span class="s">&quot;q&quot;</span><span class="o">,</span> <span class="s">&quot;gatling&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">check</span><span class="o">(</span><span class="n">status</span><span class="o">.</span><span class="n">is</span><span class="o">(</span><span class="mi">200</span><span class="o">)))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后指定500个用户模拟该测试场景。500个用户以每秒50个递增，持续10秒。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'>     <span class="n">setUp</span><span class="o">(</span><span class="n">scn</span><span class="o">.</span><span class="n">users</span><span class="o">(</span><span class="mi">500</span><span class="o">).</span><span class="n">ramp</span><span class="o">(</span><span class="mi">10</span><span class="o">).</span><span class="n">protocolConfig</span><span class="o">(</span><span class="n">httpConf</span><span class="o">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>技术栈</h2>
+
+<p>这里列出了Gatling的一些主要的技术栈。</p>
+
+<ul>
+<li><p><strong>Akka Actors.</strong> Gatling 使用了Akka作为其并发编程的运行时。Akka的Actors模式能够有效的绕过JVM上多线程带来的性能问题。</p></li>
+<li><p><strong>Scala.</strong>选择Scala最大的原因是因为Scala可以很好的集成Akka,另一原因是作为一款运行在JVM上的语言，Scala更容易提供给用户简洁强大的API设计。</p></li>
+<li><p><strong>Async Http Client.</strong> 使用这款开源库来是实现异步http通讯。并且使用了Netty调用http。</p></li>
+<li><p><strong>Highcharts及Highstock.</strong> Gatling使用Highcarts和Highstock这两款JavaScript库来进行测试结果报表的展示。</p></li>
+</ul>
+
+
+<hr />
+
+<p>其实Gatling并不完美，比如目前支持的协议并不多，不支持对数据库的性能测试，不能进行分布式性能测试等。当然Gatling也在不断的进步，看好你哦！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用media queries实现一个响应式的菜单]]></title>
@@ -3432,95 +3791,6 @@ task的依赖关系。</li>
 <li><strong>重新编译Gradle脚本。</strong>第一次运行Gradle命令，会在项目更目录下生成一个.gradle目录来存放编译后的脚本。只有当构建脚本发生修改时采用重新编译。我们可以使用<code>--recompile-scripts</code>来强行重新编译。</li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[2013年上半年我读过的那些书]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/08/25/the-books-i-read-in-the-half-past-2013/"/>
-    <updated>2013-08-25T13:10:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/08/25/the-books-i-read-in-the-half-past-2013</id>
-    <content type="html"><![CDATA[<p>2013年过的很快，一不留神8个月就过去了。在今年年初的时候我给自己定下了2013全年阅读30本书的计划。这段时间总共算了下自己读完的加上在读的有10多本。</p>
-
-<p>这些书中既有实体书，也有电子书。实体书有的是公司买的，有的是自己自掏腰包，但是年底可以报账。电子书的话主要是在亚马逊和豆瓣上买的正版书，阅读工具是自己的电脑或者手机。</p>
-
-<!-- more -->
-
-
-<p>现在我看书越来越倾向于电子书。因为携带方便，购买方便，阅读更方便。看电子书的神器莫过于kindle了。在kindle还没进入中国之前，我们公司的很多人都已经通过各种途径入手了。当时自己想买个日版的（全球最便宜），奈何信用卡有问题，通过不了日本亚马逊的验证。虽然自己有ipad，但总感觉太笨重，并且ipad上娱乐功能太多，容易分心。以后一定要入手一个kindle。</p>
-
-<h2>高效程序员的45个习惯：敏捷开发修炼之道</h2>
-
-<p><a href="http://book.douban.com/subject/4164024/"><img src="http://img5.douban.com/lpic/s4073509.jpg" width="200"></a></p>
-
-<p>又是一本讲敏捷的书。如今这年头技术书不套上敏捷两字都不好意思给别人打招呼。很多人对敏捷有偏见，认为是个嘘头。其实这是个舶来品，被念歪也不可避免。这本书里面的习惯都是很有借鉴意义的。作为一个程序员要有专业素养。而专业素养都有哪些那？请看这本书。</p>
-
-<p>这是我写的一篇读书笔记。<a href="http://www.cnblogs.com/huang0925/archive/2013/05/24/3096581.html">传送门</a></p>
-
-<h2>打造Facebook:亲历Facebook爆发的5年</h2>
-
-<p><a href="http://book.douban.com/subject/20471120/"><img src="http://img3.douban.com/lpic/s24581301.jpg" width="200"></a></p>
-
-<p>一个创业公司的典范，一个硅谷的传奇，一个年轻又低调的CEO……Facebook从来不缺乏神秘。而这本书则是从工程师的视角展示Facebook的方方面面。虽然是金子总会发光的，但现在绝大多数人的首要目标恐怕是如何让自己成为金子。从《打造Facebook》这本书中可以了解这家公司的工程师文化，学习到那些“金子”为什么能成为“金子”，并借鉴到自己身上。</p>
-
-<p>这是我的读书笔记。<a href="http://www.cnblogs.com/huang0925/p/3251040.html">传送门</a></p>
-
-<h2>图灵的秘密:他的生平思想及论文解读</h2>
-
-<p><a href="http://book.douban.com/subject/10779604/"><img src="http://img3.douban.com/lpic/s23127964.jpg" width="200"></a></p>
-
-<p>诚然，我没有完全看懂这本书。当看到哪些大堆大堆的数学符号时，我就懵了。这本书以图灵的那篇惊世骇俗的论文（&lt;论可计算数及其在判定性问题中的应用>（On Computable Numbers, with an Application to the Entscheidungsproblem））为主线，穿插了图灵的一生。大名鼎鼎的图灵机就是出自这篇论文。</p>
-
-<p>这是我的读书笔记。<a href="http://www.cnblogs.com/huang0925/archive/2013/03/31/2992489.html">传送门</a></p>
-
-<h2>Shell脚本学习指南</h2>
-
-<p><a href="http://book.douban.com/subject/3519360/"><img src="http://img4.douban.com/lpic/s3801638.jpg" width="200"></a></p>
-
-<p>坦白说，这本书的质量并不怎么高，一是翻译质量较差劲，而是内容编排有问题。读这本书也是因为想深入了解一下Shell的一些核心概念，能够做到灵活运用。程序员在终端敲出各种字符来完成各种各样的任务，就像是黑魔法师在施展魔法。大多数情况下，终端操作比在UI操作的效率快的不是一点半点。</p>
-
-<p>这是我读了此书后写的一个Shell脚本，现在自己还一直在使用。<a href="http://www.cnblogs.com/huang0925/archive/2013/05/31/3109893.html">传送门</a></p>
-
-<h2>正则表达式必知必会</h2>
-
-<p><a href="http://book.douban.com/subject/2269648/"><img src="http://img3.douban.com/lpic/s2794811.jpg" width="200"></a></p>
-
-<p>这本书不厚，只有100来页，只需要花一个下午就可以翻完。但是它是一本好书，结合实例讲解了正则表达式的全部概念。保证你看完后面对正则表达式再也不胆怯了，也知道在适合的时候使用正则表达式了。
-如果你不了解回溯引用、前后查找、嵌入条件等概念，那么说明你还未掌握正则表达式最power的地方。</p>
-
-<p>这是我读完此书后画的一个脑图。<a href="http://huangbowen.net/blog/2013/02/14/zheng-ze-biao-da-shi-bi-zhi-bi-hui/">传送门</a></p>
-
-<h2>持续集成:软件质量改进和风险降低之道</h2>
-
-<p><a href="http://book.douban.com/subject/2580604/"><img src="http://img5.douban.com/lpic/s2975159.jpg" width="200"></a></p>
-
-<p>这本书从理论角度阐述了持续集成的重要性与可行性。如今持续集成已经成为了软件开发过程中的一项必不可少的实践。如果你的项目中还未引入持续集成，那么赶紧行动起来吧。我工作的项目中持续集成已经成为标配。</p>
-
-<p>这是我写的一篇将云端CI traivs-CI引用到个人项目中的简介。<a href="http://www.cnblogs.com/huang0925/archive/2013/05/30/3108370.html">传送门</a></p>
-
-<h2>Effective JavaScript: 68 Specific Ways to Harness the Power of JavaScript</h2>
-
-<p><a href="http://book.douban.com/subject/10494340/"><img src="http://img3.douban.com/lpic/s24868715.jpg" width="200"></a></p>
-
-<p>这是一本英文书。由于自己是这本书的译者，所以肯定要首先读完这本书。JavaScript是一门与C#、Java等大众语言风格相差甚远的语言。它本身就是借鉴了很多语言的特性，语法借鉴自java，函数借鉴自Scheme,原型继承借鉴自Self，而JavaScript的正则表达式特性则借鉴自Perl。但是由于规范的缺失，JavaScript使用过程中又有很多陷阱。这本书作为Effective development program系列中的一员，是你成为JavaScript专家的捷径。里面有大量的来自一线的开发经验，一定让你大有收获。</p>
-
-<p>这本书目前编辑还在校审，过几个月中文版就会面世。
-这是我写的译者序初稿。<a href="http://huangbowen.net/blog/2013/08/25/preface-of-effective-javascript/">传送门</a></p>
-
-<h2>程序员的思维修炼：开发认知潜能的九堂课</h2>
-
-<p><a href="http://book.douban.com/subject/5372651/"><img src="http://img5.douban.com/lpic/s4548399.jpg" width="200"></a></p>
-
-<p>这本书很精彩。有人说编程需要缜密的思维，严密的逻辑，一个小数点的错误都有可能导致航天飞机的坠毁。而有人说编程需要灵感，一个功能有千万种实现，我们要找出最优雅的那种。这两种观点貌似完全冲突，但是都对。如果你想知道为什么，那就读这本书吧。你会明白为什么专家解决问题总是那么高效，而自己的成长却是那么缓慢。</p>
-
-<p>这是我写的一篇文章，里面有些思想借鉴于它。<a href="http://www.cnblogs.com/huang0925/archive/2013/03/24/2978181.html">传送门</a></p>
-
-<p>此外，还有几本书正在读，有《黑客与画家》、《写给大家看的设计书》、《Rework》、《实例化需求》….还有一本《SICP》尝试读了几次都没读完。这本书确实比较难读懂。
-之后我还会计划多读几本英文书。因为我发现很多原版的技术书都很浅显易懂，而翻译成中文往往会难以理解。</p>
-
-<p>如果一个人一生有70年寿命，除去头20年，那么还有50年。如果半个月看完一本书，那么全年可以看24本。50年就是1200多本。而世界上每个月出本的书籍都远远超过这些。</p>
-
-<p>而作为程序员本来时间就很宝贵，所以看书一定要尽量选精品。最后给大家附上我司的Developer读书路线图，里面不乏经典的书籍。<a href="http://www.cnblogs.com/huang0925/archive/2013/03/26/2983529.html">传送门</a></p>
 ]]></content>
   </entry>
   
