@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2013-12-23T23:33:34+08:00</updated>
+  <updated>2013-12-26T23:33:03+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,237 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[C#中的ThenBy是如何实现的]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/12/26/how-to-implement-thenby-in-c-number/"/>
+    <updated>2013-12-26T23:14:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/12/26/how-to-implement-thenby-in-c-number</id>
+    <content type="html"><![CDATA[<p>C#中给继承自IEnumerable的对象（最熟知的就是List了）提供了很丰富的扩展方法，涉及列表操作的方方面面。而扩展方法ThenBy就是很有意思的一个，它的实现也很巧妙。</p>
+
+<!-- more -->
+
+
+<p>如果有这样的一个Team类，里面有三个属性。</p>
+
+<figure class='code'><figcaption><span>Team.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Team</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">Team</span> <span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">timeCost</span><span class="p">,</span> <span class="kt">int</span> <span class="n">score</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="n">Name</span> <span class="p">=</span> <span class="n">name</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="n">TimeCost</span> <span class="p">=</span> <span class="n">timeCost</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="n">Score</span> <span class="p">=</span> <span class="n">score</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">private</span> <span class="k">set</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">TimeCost</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">private</span> <span class="k">set</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">Score</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">private</span> <span class="k">set</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后我们有一个Team的List。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="n">List</span><span class="p">&lt;</span><span class="n">Team</span><span class="p">&gt;</span> <span class="n">teams</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Team</span><span class="p">&gt;</span> <span class="p">();</span>
+</span><span class='line'><span class="n">teams</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Team</span> <span class="p">(</span><span class="s">&quot;teamA&quot;</span><span class="p">,</span> <span class="m">10</span><span class="p">,</span> <span class="m">22</span><span class="p">));</span>
+</span><span class='line'><span class="n">teams</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Team</span> <span class="p">(</span><span class="s">&quot;teamB&quot;</span><span class="p">,</span> <span class="m">12</span><span class="p">,</span> <span class="m">20</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">teams</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Team</span> <span class="p">(</span><span class="s">&quot;teamC&quot;</span><span class="p">,</span> <span class="m">8</span><span class="p">,</span> <span class="m">18</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么如何求出teams中得分最高的那个队伍那？这个很简单，只需要一句话即可。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="n">teams</span><span class="p">.</span><span class="n">OrderByDescending</span> <span class="p">(</span><span class="n">team</span> <span class="p">=&gt;</span> <span class="n">team</span><span class="p">.</span><span class="n">Score</span><span class="p">).</span><span class="n">First</span> <span class="p">();</span>
+</span><span class='line'><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span> <span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span> <span class="c1">// teamA</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由于List实现了IEnumerable接口，而System.Linq中的Enumerable类中有针对IEnumerable接口的名为OrderByDescending的扩展方法，所以我们直接调用这个扩展方法可以对List按照指定的key进行降序排列，再调用First这个扩展方法来获取列表中的第一个元素。</p>
+
+<p>如果我的List变成这个样子。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="n">List</span><span class="p">&lt;</span><span class="n">Team</span><span class="p">&gt;</span> <span class="n">teams</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Team</span><span class="p">&gt;</span> <span class="p">();</span>
+</span><span class='line'><span class="n">teams</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Team</span> <span class="p">(</span><span class="s">&quot;teamA&quot;</span><span class="p">,</span> <span class="m">10</span><span class="p">,</span> <span class="m">18</span><span class="p">));</span>
+</span><span class='line'><span class="n">teams</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Team</span> <span class="p">(</span><span class="s">&quot;teamB&quot;</span><span class="p">,</span> <span class="m">12</span><span class="p">,</span> <span class="m">16</span><span class="p">));</span>
+</span><span class='line'><span class="n">teams</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Team</span> <span class="p">(</span><span class="s">&quot;teamC&quot;</span><span class="p">,</span> <span class="m">8</span><span class="p">,</span> <span class="m">18</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由于有可能两组以上的队伍都可能拿到最高分，那么在这些最高分的队伍中，我们选取用时最少的作为最终优胜者。有人说那可以这样写。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="n">teams</span><span class="p">.</span><span class="n">OrderByDescending</span> <span class="p">(</span><span class="n">team</span> <span class="p">=&gt;</span> <span class="n">team</span><span class="p">.</span><span class="n">Score</span><span class="p">).</span><span class="n">OrderBy</span><span class="p">(</span><span class="n">team</span> <span class="p">=&gt;</span> <span class="n">team</span><span class="p">.</span><span class="n">TimeCost</span><span class="p">).</span><span class="n">First</span> <span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>先对列表按Score降序排列，再对列表按TimeCost升序排列，然后取结果中的第一个元素。看来貌似是正确的，但其实是错误的。因为第一次调用OrderByDescending方法后返回了一个排序后的数组，再调用OrderBy是另外一次排序了，它会丢弃上一次排序，这与我们定的先看积分，如果积分相同再看耗时的规则违背。</p>
+
+<p>那么应该如何实现那？C#给我们提供了一个叫做ThenBy的方法，可以满足我们的要求。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="n">teams</span><span class="p">.</span><span class="n">OrderByDescending</span> <span class="p">(</span><span class="n">team</span> <span class="p">=&gt;</span> <span class="n">team</span><span class="p">.</span><span class="n">Score</span><span class="p">).</span><span class="n">ThenBy</span><span class="p">(</span><span class="n">team</span> <span class="p">=&gt;</span> <span class="n">team</span><span class="p">.</span><span class="n">TimeCost</span><span class="p">).</span><span class="n">First</span> <span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span> <span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span> <span class="c1">// teamC</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>新的问题又来了。第一次调用OrderByDescending方法时返回的是一个新对象，再对这个新对象调用ThenBy时，它只有记录了上一次排序规则，才能达到我们想要的效果。那么C#是如何记录上次排序使用的key那？</p>
+
+<p>这就先要看OrderByDescending方法是如何实现了的。查看源码发现OrderByDescending有两个重载，实现如下。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="n">IOrderedEnumerable</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;</span> <span class="n">OrderByDescending</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">,</span> <span class="n">TKey</span><span class="p">&gt;</span> <span class="p">(</span><span class="k">this</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;</span> <span class="n">source</span><span class="p">,</span> <span class="n">Func</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">,</span> <span class="n">TKey</span><span class="p">&gt;</span> <span class="n">keySelector</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">source</span><span class="p">.</span><span class="n">OrderByDescending</span> <span class="p">(</span><span class="n">keySelector</span><span class="p">,</span> <span class="k">null</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="n">IOrderedEnumerable</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;</span> <span class="n">OrderByDescending</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">,</span> <span class="n">TKey</span><span class="p">&gt;</span> <span class="p">(</span><span class="k">this</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;</span> <span class="n">source</span><span class="p">,</span> <span class="n">Func</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">,</span> <span class="n">TKey</span><span class="p">&gt;</span> <span class="n">keySelector</span><span class="p">,</span> <span class="n">IComparer</span><span class="p">&lt;</span><span class="n">TKey</span><span class="p">&gt;</span> <span class="n">comparer</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Check</span><span class="p">.</span><span class="n">SourceAndKeySelector</span> <span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">keySelector</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="n">OrderedSequence</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">,</span> <span class="n">TKey</span><span class="p">&gt;</span> <span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">keySelector</span><span class="p">,</span> <span class="n">comparer</span><span class="p">,</span> <span class="n">SortDirection</span><span class="p">.</span><span class="n">Descending</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在第二个重载中我们看到OrderByDescending方法返回时的是一个继承了IOrderedEnumerable接口的对象OrderedSequence。这个对象记录了我们的排序规则。</p>
+
+<p>而我们再查看下ThenBy方法的定义。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="n">IOrderedEnumerable</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;</span> <span class="n">ThenBy</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">,</span> <span class="n">TKey</span><span class="p">&gt;</span> <span class="p">(</span><span class="k">this</span> <span class="n">IOrderedEnumerable</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;</span> <span class="n">source</span><span class="p">,</span> <span class="n">Func</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">,</span> <span class="n">TKey</span><span class="p">&gt;</span> <span class="n">keySelector</span><span class="p">,</span> <span class="n">IComparer</span><span class="p">&lt;</span><span class="n">TKey</span><span class="p">&gt;</span> <span class="n">comparer</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Check</span><span class="p">.</span><span class="n">SourceAndKeySelector</span> <span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">keySelector</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">source</span><span class="p">.</span><span class="n">CreateOrderedEnumerable</span><span class="p">&lt;</span><span class="n">TKey</span><span class="p">&gt;</span> <span class="p">(</span><span class="n">keySelector</span><span class="p">,</span> <span class="n">comparer</span><span class="p">,</span> <span class="k">false</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="n">IOrderedEnumerable</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;</span> <span class="n">ThenBy</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">,</span> <span class="n">TKey</span><span class="p">&gt;</span> <span class="p">(</span><span class="k">this</span> <span class="n">IOrderedEnumerable</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;</span> <span class="n">source</span><span class="p">,</span> <span class="n">Func</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">,</span> <span class="n">TKey</span><span class="p">&gt;</span> <span class="n">keySelector</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">source</span><span class="p">.</span><span class="n">ThenBy</span> <span class="p">(</span><span class="n">keySelector</span><span class="p">,</span> <span class="k">null</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们可以看到ThenBy这个扩展方法追加到的对象类型要实现IOrderedEnumerable接口，而OrderBy方法恰好返回的就是这个类型接口对象。那我们再看看IOrderedEnumerable接口的定义。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">System.Collections</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">namespace</span> <span class="nn">System.Linq</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">interface</span> <span class="n">IOrderedEnumerable</span><span class="p">&lt;</span><span class="n">TElement</span><span class="p">&gt;</span> <span class="p">:</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">TElement</span><span class="p">&gt;,</span> <span class="n">IEnumerable</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//</span>
+</span><span class='line'>        <span class="c1">// Methods</span>
+</span><span class='line'>        <span class="c1">//</span>
+</span><span class='line'>        <span class="n">IOrderedEnumerable</span><span class="p">&lt;</span><span class="n">TElement</span><span class="p">&gt;</span> <span class="n">CreateOrderedEnumerable</span><span class="p">&lt;</span><span class="n">TKey</span><span class="p">&gt;</span> <span class="p">(</span><span class="n">Func</span><span class="p">&lt;</span><span class="n">TElement</span><span class="p">,</span> <span class="n">TKey</span><span class="p">&gt;</span> <span class="n">keySelector</span><span class="p">,</span> <span class="n">IComparer</span><span class="p">&lt;</span><span class="n">TKey</span><span class="p">&gt;</span> <span class="n">comparer</span><span class="p">,</span> <span class="kt">bool</span> <span class="k">descending</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其继承自IEnumerable接口，并且要实现一个名为CreateOrderedEnumerable的方法，正是ThenBy方法实现中调用的这个方法。</p>
+
+<p>所以玄机在OrderedSequence这个类上。实现了IEnumerable接口对象调用OrderBy后会返回OrderedSequence这个对象。而该对象记录了当前排序的规则，其实现了IOrderedEnumerable接口。而ThenBy扩展方法被加到了IOrderedEnumerable接口对象上，其返回值也是一个具有IOrderedEnumerable接口的对象。</p>
+
+<p>照这么说，调用了一次OrderBy后，然后调用多次ThenBy也是可以工作的。我也从官方MSDN中找到了答案：</p>
+
+<blockquote><blockquote><p>ThenBy and ThenByDescending are defined to extend the type IOrderedEnumerable<TElement>, which is also the return type of these methods. This design enables you to specify multiple sort criteria by applying any number of ThenBy or ThenByDescending methods.</p></blockquote></blockquote>
+
+<p>翻译为: ThenBy及ThenByDescending是IOrderedEnumerable类型的扩展方法。ThenBy和ThenByDescending方法的返回值也是IOrderedEnumerable类型。这样设计是为了能够调用任意数量的ThenBy和ThenByDescending方法实现多重排序。</p>
+
+<p>至此，ThenBy的神秘面纱就解开了，但是我不知道如何查看OrderedSequence类的源码，如果能看到这个类的源码就太完美了。知道的同学请告知方法。</p>
+
+<p>注: 上述类的源码来自于Mono的实现。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Gatling->次时代性能测试利器]]></title>
@@ -3372,425 +3603,6 @@ scanIntervalSeconds，这是指定jetty扫描文件改变的时间间隔，默�
 
 
 <p>齐活。接下来运行<code>gradle jettyRun</code>，待服务启动起来以后，如果修改了静态资源，只需要按<code>Ctrl</code>+<code>R</code>刷新页面即可重新加载资源。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Gradle命令行黑魔法]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/09/01/command-line-of-gradle/"/>
-    <updated>2013-09-01T22:25:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/09/01/command-line-of-gradle</id>
-    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/building.jpg"></p>
-
-<p>毫无疑问，现在Gradle已经成为java世界最火的构建工具，风头已经盖过了冗余的ant，落后的maven。Gradle是以Groovy语言编写的一套构建脚本的DSL，由于Groovy语法的优雅，所以导致Gradle天生就有简洁、可读性强、灵活等特性。</p>
-
-<p>Gradle的命令行功能也非常强大。本人从maven转到Gradle，深深被gradle强大的命令行功能折服。通过命令行来实现Gradle的各种特性，就像魔法师在表演魔法一样。</p>
-
-<!-- more -->
-
-
-<ul>
-<li><strong>日志输出。</strong> Gradle中的日志有6个层级。从高到低分别是 ERROR（错误信息）、QUIET（重要信息）、WARNGING（警告信息）、LIFECYCLE（进程信息）、INFO（一般信息）、DEBUG（调试信息）。在执行gradle task时可以适时的调整信息输出等级，以便更方便的观看执行结果。</li>
-</ul>
-
-
-<p><code>-q</code>(或<code>--quiet</code>)是启用重要信息级别，该级别下只会输出自己在命令行下打印的信息及错误信息。</p>
-
-<p><code>-i</code>(或<code>--info</code>)则会输出除debug以外的所有信息。</p>
-
-<p><code>-d</code>（或<code>--debug</code>)会输出所有日志信息。</p>
-
-<p>比如一个build.gradle有这样一个task。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">hello</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
-</span><span class='line'>     <span class="n">println</span> <span class="s1">&#39;hello world!&#39;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>加入<code>-q</code>与不加<code>-q</code>的输出结果不同。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle hello
-</span><span class='line'>:hello
-</span><span class='line'>hello world!
-</span><span class='line'>
-</span><span class='line'>BUILD SUCCESSFUL
-</span><span class='line'>
-</span><span class='line'>Total <span class="nb">time</span>: 3.546 secs
-</span><span class='line'><span class="nv">$ </span>gradle -q hello
-</span><span class='line'>hello world!
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p><strong>堆栈跟踪。</strong>如果执行gradle task失败时，如果想得到更详细的错误信息，那么就可以使用<code>-s</code>(或<code>--stacktrace</code>)来输出详细的错误堆栈。你还可以使用<code>-S</code>(或<code>--full-stacktrace</code>)来输出全部堆栈信息，不过一般不推荐这样做，因为gradle是基于groovy语言，而groovy作为一门动态语言可能会输出与你的错误代码毫不相关的信息。</p></li>
-<li><p><strong>跳过指定的测试。</strong>如果你在执行build的时候想跳过test task，那么可以使用<code>-x</code>命令。</p></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle build -x <span class="nb">test</span>
-</span><span class='line'>:compileJava UP-TO-DATE
-</span><span class='line'>:processResources UP-TO-DATE
-</span><span class='line'>:classes UP-TO-DATE
-</span><span class='line'>:jar UP-TO-DATE
-</span><span class='line'>:assemble UP-TO-DATE
-</span><span class='line'>:check
-</span><span class='line'>:build
-</span><span class='line'>
-</span><span class='line'>BUILD SUCCESSFUL
-</span><span class='line'>
-</span><span class='line'>Total <span class="nb">time</span>: 3.529 secs
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p><strong>继续执行task而忽略前面失败的task。</strong>默认情况下，如果有某个task失败，后续的task就不会继续执行。但是有时候我们想运行所有的task来一次性得到所有的构建错误，那么我们可以使用<code>--continue</code>命令。使用<code>--continue</code>命令后即使遇到某些task失败也不会停止后续task的执行。但是需要注意的是如果某个task失败了，那么依赖于这个task的其他task依旧不会执行，因为这会带来不安全的因素。</p></li>
-<li><p><strong>调用task时使用短名或缩写。</strong>如果一个task的名称过长，那么调用时可以只输入部分名称即可调用，无需输入全名。</p></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">helloWorld</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
-</span><span class='line'>     <span class="n">println</span> <span class="s1">&#39;hello world!&#39;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>比如调用helloWorld可以通过全名调用、前缀调用或首字母调用。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle -q helloWorld
-</span><span class='line'>hello world!
-</span><span class='line'><span class="nv">$ </span>gradle -q hell
-</span><span class='line'>hello world!
-</span><span class='line'><span class="nv">$ </span>gradle -q hW
-</span><span class='line'>hello world!
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>使用指定的gradle文件调用task。</strong>默认情况下，如果你调用gradle task，那么首先会寻找当前目录下的build.gradle文件,以及根据settings.gradle中的配置寻找子项目的build.gradle。但是有时候我们想指定使用某个gradle文件，那么可以使用<code>-b</code>命令。
-比如当前目录有个子目录subproject1,里面有个叫hello.gradle。</li>
-</ul>
-
-
-<figure class='code'><figcaption><span>subproject1/hello.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">helloWorld</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
-</span><span class='line'>     <span class="n">println</span> <span class="s1">&#39;hello world!&#39;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>那么在当前目录可以使用以下命令调用这个task。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle -b subproject1/hello.gradle  helloWorld
-</span><span class='line'>:helloWorld
-</span><span class='line'>hello world!
-</span><span class='line'>
-</span><span class='line'>BUILD SUCCESSFUL
-</span><span class='line'>
-</span><span class='line'>Total <span class="nb">time</span>: 3.752 secs
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>使用指定的项目目录调用task。</strong>前面已经说过，执行gradle的task默认会在当前目录寻找build.gradle及settings.gradle文件。如果我们想在任何地方执行某个项目的task，那么可以使用<code>-p</code>来指定使用的项目。</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">gradle</span> <span class="o">-</span><span class="n">q</span> <span class="o">-</span><span class="n">p</span> <span class="n">learnGradle</span> <span class="n">helloWorld</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这条命令是调用learnGradle这个项目下的helloWorld task。</p>
-
-<ul>
-<li><strong>显示task之间的依赖关系。</strong>众所周知，使用<code>gradle tasks</code>可以列出当前所有可被使用的task，但是并没有显示task之间的依赖关系。我们可以加上<code>--all</code>来显示
-task的依赖关系。</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle tasks --all
-</span><span class='line'>………………
-</span><span class='line'>
-</span><span class='line'>Other tasks
-</span><span class='line'>-----------
-</span><span class='line'>task0
-</span><span class='line'>    task1
-</span><span class='line'>    task2
-</span><span class='line'>    task3
-</span><span class='line'>
-</span><span class='line'>…………
-</span></code></pre></td></tr></table></div></figure>
-
-
-<pre><code>从上面可以看出task0依赖task1、task2及task3。
-</code></pre>
-
-<ul>
-<li><strong>查看指定阶段的依赖关系。</strong>使用<code>gradle dependencies</code> 可以查看项目中包的依赖关系。不过是列出了所有阶段的依赖，如果项目中依赖复杂的话看起来有点头痛。那么可以使用<code>--configuration</code>来查看指定阶段的依赖情况。</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">$</span> <span class="n">gradle</span> <span class="o">-</span><span class="n">q</span> <span class="n">dependencies</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">------------------------------------------------------------</span>
-</span><span class='line'><span class="n">Root</span> <span class="n">project</span>
-</span><span class='line'><span class="o">------------------------------------------------------------</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">archives</span> <span class="o">-</span> <span class="n">Configuration</span> <span class="k">for</span> <span class="n">archive</span> <span class="n">artifacts</span><span class="o">.</span>
-</span><span class='line'><span class="n">No</span> <span class="n">dependencies</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">compile</span> <span class="o">-</span> <span class="n">Compile</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;main&#39;</span><span class="o">.</span>
-</span><span class='line'><span class="n">No</span> <span class="n">dependencies</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">default</span> <span class="o">-</span> <span class="n">Configuration</span> <span class="k">for</span> <span class="k">default</span> <span class="n">artifacts</span><span class="o">.</span>
-</span><span class='line'><span class="n">No</span> <span class="n">dependencies</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">runtime</span> <span class="o">-</span> <span class="n">Runtime</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;main&#39;</span><span class="o">.</span>
-</span><span class='line'><span class="n">No</span> <span class="n">dependencies</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">testCompile</span> <span class="o">-</span> <span class="n">Compile</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;test&#39;</span><span class="o">.</span>
-</span><span class='line'><span class="err">\</span><span class="o">---</span> <span class="nl">junit:junit:</span><span class="mf">4.11</span>
-</span><span class='line'>     <span class="err">\</span><span class="o">---</span> <span class="n">org</span><span class="o">.</span><span class="na">hamcrest</span><span class="o">:</span><span class="n">hamcrest</span><span class="o">-</span><span class="nl">core:</span><span class="mf">1.3</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">testRuntime</span> <span class="o">-</span> <span class="n">Runtime</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;test&#39;</span><span class="o">.</span>
-</span><span class='line'><span class="err">\</span><span class="o">---</span> <span class="nl">junit:junit:</span><span class="mf">4.11</span>
-</span><span class='line'>     <span class="err">\</span><span class="o">---</span> <span class="n">org</span><span class="o">.</span><span class="na">hamcrest</span><span class="o">:</span><span class="n">hamcrest</span><span class="o">-</span><span class="nl">core:</span><span class="mf">1.3</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>使用<code>gradle -q dependencies --configuration testCompile</code>可以只查看testComiple的依赖。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">$</span> <span class="n">gradle</span> <span class="o">-</span><span class="n">q</span> <span class="n">dependencies</span> <span class="o">--</span><span class="n">configuration</span> <span class="n">testCompile</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">------------------------------------------------------------</span>
-</span><span class='line'><span class="n">Root</span> <span class="n">project</span>
-</span><span class='line'><span class="o">------------------------------------------------------------</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">testCompile</span> <span class="o">-</span> <span class="n">Compile</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;test&#39;</span><span class="o">.</span>
-</span><span class='line'><span class="err">\</span><span class="o">---</span> <span class="nl">junit:junit:</span><span class="mf">4.11</span>
-</span><span class='line'>     <span class="err">\</span><span class="o">---</span> <span class="n">org</span><span class="o">.</span><span class="na">hamcrest</span><span class="o">:</span><span class="n">hamcrest</span><span class="o">-</span><span class="nl">core:</span><span class="mf">1.3</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>查看指定dependency的依赖情况。</strong>
-假如我想查看项目中有没有引入junit，那些阶段引入了junit，那么可以使用<code>dependecyInsight</code>来查看。</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle dependencyInsight --dependency junit --configuration testCompile
-</span><span class='line'>:dependencyInsight
-</span><span class='line'>junit:junit:4.11
-</span><span class='line'><span class="se">\-</span>-- testCompile
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>注意<code>dependencyInsight</code>默认只会查看compile阶段的依赖，如果要查看其他阶段可以使用<code>--configuration</code>来指定。</p>
-
-<ul>
-<li><strong>使用<code>--profile</code>命令行可以产生build运行时间的报告。</strong>该报告存储在build/report/profile目录，名称为build运行的时间。</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle build --profile
-</span><span class='line'>:compileJava UP-TO-DATE
-</span><span class='line'>:processResources UP-TO-DATE
-</span><span class='line'>:classes UP-TO-DATE
-</span><span class='line'>:jar UP-TO-DATE
-</span><span class='line'>:assemble UP-TO-DATE
-</span><span class='line'>:compileTestJava UP-TO-DATE
-</span><span class='line'>:processTestResources UP-TO-DATE
-</span><span class='line'>:testClasses UP-TO-DATE
-</span><span class='line'>:test UP-TO-DATE
-</span><span class='line'>:check UP-TO-DATE
-</span><span class='line'>:build UP-TO-DATE
-</span><span class='line'>
-</span><span class='line'>BUILD SUCCESSFUL
-</span><span class='line'>
-</span><span class='line'>Total <span class="nb">time</span>: 3.726 secs
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后在build/report/profile目录下可以看到build的report。</p>
-
-<p><img src="http://www.huangbowen.net/images/gradle_profile.png" width="600"></p>
-
-<p>这个报表非常有用，尤其是在在缩短build时间时可以快速定位那些耗时长的task。</p>
-
-<ul>
-<li><strong>试运行build。</strong>如果你想知道某个task执行时那些task会被一起执行，但是你又不想真正的执行这些task，可以使用<code>-m</code>来试运行。</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle -m build
-</span><span class='line'>:compileJava SKIPPED
-</span><span class='line'>:processResources SKIPPED
-</span><span class='line'>:classes SKIPPED
-</span><span class='line'>:jar SKIPPED
-</span><span class='line'>:assemble SKIPPED
-</span><span class='line'>:compileTestJava SKIPPED
-</span><span class='line'>:processTestResources SKIPPED
-</span><span class='line'>:testClasses SKIPPED
-</span><span class='line'>:test SKIPPED
-</span><span class='line'>:check SKIPPED
-</span><span class='line'>:build SKIPPED
-</span><span class='line'>
-</span><span class='line'>BUILD SUCCESSFUL
-</span><span class='line'>
-</span><span class='line'>Total <span class="nb">time</span>: 3.53 secs
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样我们可以一目了然的看到那些task被执行了，又不需要花太多的时间。</p>
-
-<ul>
-<li><strong>Gradle的图形界面。</strong></li>
-</ul>
-
-
-<p>其实Gradle自带一个图形界面来让习惯gui操作的人来操作Gradle。打开方式很简单。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle --gui
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样就会弹出一个gui界面。</p>
-
-<p><img src="http://www.huangbowen.net/images/gradle_gui.png" width="600"></p>
-
-<p>通过这个gui界面可以很方面的执行gradle的各种命令，还可以将常用的命令保存为favorites。该gui的配置信息默认被存储在当前项目的gradle-app.setting文件中。</p>
-
-<p>注意使用<code>gradle --gui</code>会阻塞当前终端，可以使用<code>gradle --gui&amp;</code>来实现后台运行。</p>
-
-<ul>
-<li><strong>重新编译Gradle脚本。</strong>第一次运行Gradle命令，会在项目更目录下生成一个.gradle目录来存放编译后的脚本。只有当构建脚本发生修改时采用重新编译。我们可以使用<code>--recompile-scripts</code>来强行重新编译。</li>
-</ul>
-
 ]]></content>
   </entry>
   
