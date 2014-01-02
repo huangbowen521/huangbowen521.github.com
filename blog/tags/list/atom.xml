@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Tag: list | 黄博文的地盘]]></title>
+  <title><![CDATA[Tag: List | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/list/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-01-02T21:32:41+08:00</updated>
+  <updated>2014-01-03T00:03:03+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,246 +14,45 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Haskell函数式编程之List操作]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/04/05/haskell-list-processing/"/>
-    <updated>2013-04-05T01:20:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/04/05/haskell-list-processing</id>
-    <content type="html"><![CDATA[<p>List在函数式语言中是一个重要的抽象，很多事情离了它就很难做到。函数式语言的鼻祖Lisp名称就来自List processing。</p>
-
-<p>Haskell本身也给List操作提供了一系列的操作符以及库函数。</p>
+    <title type="html"><![CDATA[Java中的Set, List, Map漫谈]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/01/02/set/"/>
+    <updated>2014-01-02T23:45:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/01/02/set</id>
+    <content type="html"><![CDATA[<p>在编程语言中，集合是指代表一组对象的对象。Java平台专门有一个集合框架(Collections Framework)。集合框架是指表示和操作集合的统一架构，隔离了集合的操作和实现细节。</p>
 
 <!-- more -->
 
 
-<h2>对列表操作的运算符</h2>
+<p>集合框架中的集合接口主要分为两大部分，一部分继承自<code>java.util.Collection</code>，另一部分继承自<code>java.util.Map</code> （其实Map本质上并不是集合，只是看起来好像可以像集合一样操作）。一个有趣的事情是这些接口的实现不一定都需要实现这些接口中的修改方法（如add，remove等），可以给某些不想实现的修改方法抛出一个运行时异常(UnsupportedOperationException)。</p>
 
-<p><strong><code>:</code>将一个元素放置到列表的前端。</strong></p>
+<h2>List</h2>
 
-<p><code>bash
-Prelude&gt; 1 : []
-[1]
-Prelude&gt; 2 : [3,4,5]
-[2,3,4,5]
-Prelude&gt; 'a' : ['g','h','d']
-"aghd"
-Prelude&gt; 'a' : "ghd"
-"aghd"
-</code>
-从上面例子可以看出一个字符串其实就是Char型的列表。
-我们可以这样验证。</p>
+<p>List是Java中的一个接口，继承了Collection接口。它是一个有序集合，又称序列，允许存储重复元素。其实现类常用的有ArrayList、LinkedList等。ArrayList是实现了List接口的可变长数组。它的特点是add方法操作时间复杂度为分期常量时间（amortized constant time），意思即如果添加n个元素则耗时O(n)，其它操作耗时则是线性时间。每个ArrayList都有个容量，即存放元素能力的大小。这个容量是list中元素个数。当添加新的元素时，这个容量也会自动添加，这需要消耗一定时间。如果要添加大量数据到ArrayList，可以先调用<code>ensureCapacity</code>操作，从而减少每次添加新元素容量自动调整的时间。</p>
 
-<p><code>bash
-Prelude&gt; "abc" == ['a','b','c']
-True
-</code></p>
+<p>需要注意的是ArrayList并不是线程同步的。如果多个线程同时访问一个ArrayList实例，至少一个线程修改了其结构（添加或删除元素，或显式的调整了其大小，仅仅设置元素值并不属于结构修改），则会使程序进入不确定的状态。解决方式之一就是使用一个线程同步的对象来封装该ArrayList。或者也可以用Collections.synchronizedList来封装。</p>
 
-<p><strong><code>++</code> 连接两个列表。</strong>
-<code>bash
-Prelude&gt; [1,2,3] ++ [4,5,6]
-[1,2,3,4,5,6]
-Prelude&gt; "abc" ++ "efg"
-"abcefg"
-</code></p>
+<p>```java</p>
 
-<h2>使用Range</h2>
-
-<p>如果要声明一个1到20的数组，除了将这些数字一一列举出来，我们还可以使用Range来实现，操作符是<code>..</code>。</p>
-
-<p><code>bash
-Prelude&gt; [1..10]
-[1,2,3,4,5,6,7,8,9,10]
-Prelude&gt; ['a'..'h']
-"abcdefgh"
-</code></p>
-
-<p>Range的默认步长是1，我们可以指定其步长。方法就是给出前两个元素再加上结尾元素，Haskell会根据前两个元素推断出步长，并应用。</p>
-
-<p><code>bash
-Prelude&gt; [1,3..21]
-[1,3,5,7,9,11,13,15,17,19,21]
-Prelude&gt; [1,3..20]
-[1,3,5,7,9,11,13,15,17,19]
-Prelude&gt; ['a','c'..'k']
-"acegik"
-Prelude&gt; [20,18..0]
-[20,18,16,14,12,10,8,6,4,2,0]
-</code></p>
-
-<h2>使用集合生成新的列表</h2>
-
-<p>Haskell对List的操作还有一种神奇的方式。下面是一个数学公式，我们在初中肯定学过。</p>
-
-<p><code>console
-S = { x | x ∈ N, x &lt; 10}
-</code></p>
-
-<p>S是一个目标集合，N是源集合，S中的元素是属于集合N,并且小于10的元素。</p>
-
-<p>而在Haskell中可以直接使用这种语法。</p>
-
-<p><code>bash
-Prelude&gt; let list = [1,2,3,4,5,6]
-Prelude&gt; [x | x &lt;- list, x &lt; 3]
-[1,2]
-Prelude&gt; [x | x &lt;- list, x &lt; 3, x &gt; 1]
-[2]
-Prelude&gt; [x * 2 | x &lt;- list, x &lt; 3]
-[2,4]
-</code></p>
-
-<h2>常用的列表操作函数</h2>
-
-<p>在<a href="http://huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature/">《Haskell函数式编程之特性篇》</a>中我们定义了一个map函数。它就是对列表的每个元素进行一个函数元素生成另一个列表。</p>
-
-<p>```haskell</p>
-
-<p>map' :: (a -> b) -> [a] -> [b]</p>
-
-<p>map' f [] = []
-map' f (x:xs) =f x : map' f xs</p>
+<p>List list = Collections.synchronizedList(new ArrayList(...));</p>
 
 <p>```</p>
 
-<p>我们可以再定义一个filter函数，用于对列表进行过滤。</p>
+<p>实现原理就是Collections.synchronizedList返回的类的iterator做了特殊处理。如果iterator被创建后，除了自己的add和delete方法，有其他行为导致了List结构被修改，iterator将会抛出一个<code>ConcurrentModificationException</code>异常。当然iterate这种处理方式并不能担保它能处理所有的异步并发修改，只能降低程序陷入不确定状态的概率。</p>
 
-<p>```haskell</p>
+<p>LikedList是一个双重链表，它既实现了List接口，也实现了Deque接口。LikedList也不是线程安全的，解决方式与ArrrayList基本相同。</p>
 
-<p>filter' :: (a -> Bool) -> [a] -> [a]</p>
+<h2>Set</h2>
 
-<p>filter' f [] = []
-filter' f (x:xs)</p>
+<p>Set也是Java中的一个接口，同样继承于Collection。与List不同的是，Set不允许放置重复元素,并且最多只能放置一个null元素。其实现类有HashSet、TreeSet等。</p>
 
-<pre><code> | f x       = x : filter' f xs
- | otherwise = filter' f xs
-</code></pre>
+<p>HashSet的实现其实是依托了一个HashMap的实例。HashSet并不保证元素的迭代顺序每次都是一致的。HashSet的基本操作（add,remove,contains及size）耗时都是常数时间，即迭代Set的耗时与Set的大小乘以HashMap实例的乘积成正比。HashSet也不是线程安全的。</p>
 
-<p>```</p>
+<h2>Map</h2>
 
-<p>除此之外，Haskell还有大量的库函数用于对list进行操作。我们可以自己一一实现它。</p>
+<p>Map则是另一种重要的数据结构，是一组键值对的集合。Map不允许有重复的key存在。
+它的实现中有HashTable和HashMap。两者非常相似，最大的不同是HashMap不是线程安全的，并且允许null值作为key或value，而HashTable则不允许。</p>
 
-<p>head函数用于获取列表的第一个元素。</p>
-
-<p><code>haskell
-head' (x:xs) = x
-</code></p>
-
-<p>tail函数获取列表的除第一个元素外的所有元素。</p>
-
-<p><code>haskell
-tail' (x:xs) = xs
-</code></p>
-
-<p>last函数是获取列表的最后一个元素。</p>
-
-<p>```haskell
-last' (x:xs)</p>
-
-<pre><code> | null xs = x
- | otherwise = last' xs
-</code></pre>
-
-<p>```</p>
-
-<p>init函数返回列表中除最后一个的其他元素。</p>
-
-<p>```haskell
-init' (x:xs)</p>
-
-<pre><code> | null xs = []
- | otherwise = x : init' xs
-</code></pre>
-
-<p>```</p>
-
-<p>你看使用Haskell实现这样的函数是如此的简单。注意这些函数都没有做对空列表的处理。如果给这些函数传递一个空列表会抛出异常。使用Haskll提供的库函数也一样。</p>
-
-<p><code>haskell
-Prelude&gt; head []
-*** Exception: Prelude.head: empty list
-</code></p>
-
-<h2>fold</h2>
-
-<p>对list的操作中我们经常会有这样一个情况，就是给定一个初始值，对list的每个元素进行一个操作，最后得出一个结果,这就像将列表折叠起来一样。比如求数组的最大值、最小值、求和都是这样的模式。Haskell中有相应的函数来实现这种pattern。我们可以自己实现一下。</p>
-
-<p>```haskell</p>
-
-<p>foldl' :: (a -> b -> a) -> a -> [b] -> a</p>
-
-<p>foldl' f s [] = s
-foldl' f s (x:xs) = foldl' f (f s x) xs</p>
-
-<p>```</p>
-
-<p>foldl'函数接收一个函数（这个函数接收一个a类型的值，b类型的值，并返回一个a类型值），一个a类型的值，一个b类型的列表，返回值为a类型的值。 （注意其中的a，b类型并不是确定的类型，它只是代表某类型，这有点像其他编程语言中的泛型。a,b的具体类型是由调用fold'时传入的具体参数推断出来的。）</p>
-
-<p>我们可以用它来计算一个数组的和。</p>
-
-<p><code>bash
-*Main&gt; foldl' (\ s x -&gt; s + x)  0 [1,2,3]
-6
-</code></p>
-
-<p>它与我们在Haskell函数式编程之2中提到的sum' 函数是等价的。
-注意这是一个左flod。即它是对列表的每个元素按照从左到右的顺序进行函数运算。</p>
-
-<p>我们也可以实现一个右fold。</p>
-
-<p>```haskell</p>
-
-<p>foldr' :: (a -> b -> a) -> a -> [b] -> a
-foldr' f s [] = s
-foldr' f s (x:xs) = f (foldr' f s xs) x
-```</p>
-
-<p><code>bash
-*Main&gt; foldr' (\ s x -&gt; s + x)  0 [1,2,3]
-6
-</code></p>
-
-<p>在右fold中，对列表进行函数运算的顺序是从右到左。其实我们可以使用左fold来构造一个右fold。</p>
-
-<p><code>haskell
-foldr2 f s [] = s
-foldr2 f s (x:xs) = f s (foldl' f x xs)
-</code></p>
-
-<p><code>bash
-*Main&gt; foldr2 (\ s x -&gt; s + x)  0 [1,2,3]
-6
-</code></p>
-
-<p>只不过这个右fold有个局限性，那就是a，b两个必须是同一个类型。</p>
-
-<p>我们甚至可以用fold来实现map及filter等函数。</p>
-
-<p>使用左fold实现map和filter。</p>
-
-<p>```haskell
-map2 :: (a -> b) -> [a] -> [b]
-map2 f xs =foldl' (\s x -> s ++ [f x]) [] xs</p>
-
-<p>filter2 :: (a -> Bool) -> [a] -> [a]
-filter2 f [] = []
-filter2 f (x:xs) = foldl' (\s x -> if f x then s ++ [x] else s ) [] xs
-```</p>
-
-<p>使用右fold来实现map和filter。</p>
-
-<p>```haskell
-map3 :: (a -> b) -> [a] -> [b
-map3 f xs =foldr' (\s x -> f x : s) [] xs</p>
-
-<p>filter3 :: (a -> Bool) -> [a] -> [a]
-filter3 f [] = []
-filter3 f (x:xs) = foldr' (\s x -> if f x then x : s else s) [] xs
-```</p>
-
-<p>由于<code>++</code>效率没有<code>:</code>高，所以生成结果为list的时候最好使用右fold。</p>
-
-<p>以上就是关于List操作的各种知识了。其实Haskell中的列表就是一个函数，一个包装了一系列元素的函数。我们甚至可以自己实现自己的List函数。等有空的时候一起实现下。</p>
-
-<p>另外，本篇文章所有源码被我放置在github中，地址是<a href="https://github.com/huangbowen521/HaskellLearning">https://github.com/huangbowen521/HaskellLearning</a>,想要源码的可以自行下载。</p>
+<p>HashMap的性能取决于两个因素：一个是初始容量，一个是负载因数。容量是哈希表中bucket的数量。初始容量则是HashMap被创建时容量。负载因数则是当容量需要自动增加的阀值。当HashMap中的元素超过了负载因数和当前容量的乘积，HashMap则会重新进行hash计算，以便bucket数量增加到以前的近似两倍。一般负载因子的默认值是0.75，这能达到时间和空间的一个平衡。负载因子过大，虽然会减少空间消耗，但是增加查找时间。</p>
 ]]></content>
   </entry>
   

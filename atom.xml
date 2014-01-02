@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-01-02T21:32:41+08:00</updated>
+  <updated>2014-01-03T00:03:03+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,48 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Java中的Set, List, Map漫谈]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/01/02/set/"/>
+    <updated>2014-01-02T23:45:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/01/02/set</id>
+    <content type="html"><![CDATA[<p>在编程语言中，集合是指代表一组对象的对象。Java平台专门有一个集合框架(Collections Framework)。集合框架是指表示和操作集合的统一架构，隔离了集合的操作和实现细节。</p>
+
+<!-- more -->
+
+
+<p>集合框架中的集合接口主要分为两大部分，一部分继承自<code>java.util.Collection</code>，另一部分继承自<code>java.util.Map</code> （其实Map本质上并不是集合，只是看起来好像可以像集合一样操作）。一个有趣的事情是这些接口的实现不一定都需要实现这些接口中的修改方法（如add，remove等），可以给某些不想实现的修改方法抛出一个运行时异常(UnsupportedOperationException)。</p>
+
+<h2>List</h2>
+
+<p>List是Java中的一个接口，继承了Collection接口。它是一个有序集合，又称序列，允许存储重复元素。其实现类常用的有ArrayList、LinkedList等。ArrayList是实现了List接口的可变长数组。它的特点是add方法操作时间复杂度为分期常量时间（amortized constant time），意思即如果添加n个元素则耗时O(n)，其它操作耗时则是线性时间。每个ArrayList都有个容量，即存放元素能力的大小。这个容量是list中元素个数。当添加新的元素时，这个容量也会自动添加，这需要消耗一定时间。如果要添加大量数据到ArrayList，可以先调用<code>ensureCapacity</code>操作，从而减少每次添加新元素容量自动调整的时间。</p>
+
+<p>需要注意的是ArrayList并不是线程同步的。如果多个线程同时访问一个ArrayList实例，至少一个线程修改了其结构（添加或删除元素，或显式的调整了其大小，仅仅设置元素值并不属于结构修改），则会使程序进入不确定的状态。解决方式之一就是使用一个线程同步的对象来封装该ArrayList。或者也可以用Collections.synchronizedList来封装。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">List</span> <span class="n">list</span> <span class="o">=</span> <span class="n">Collections</span><span class="o">.</span><span class="na">synchronizedList</span><span class="o">(</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">(...));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>实现原理就是Collections.synchronizedList返回的类的iterator做了特殊处理。如果iterator被创建后，除了自己的add和delete方法，有其他行为导致了List结构被修改，iterator将会抛出一个<code>ConcurrentModificationException</code>异常。当然iterate这种处理方式并不能担保它能处理所有的异步并发修改，只能降低程序陷入不确定状态的概率。</p>
+
+<p>LikedList是一个双重链表，它既实现了List接口，也实现了Deque接口。LikedList也不是线程安全的，解决方式与ArrrayList基本相同。</p>
+
+<h2>Set</h2>
+
+<p>Set也是Java中的一个接口，同样继承于Collection。与List不同的是，Set不允许放置重复元素,并且最多只能放置一个null元素。其实现类有HashSet、TreeSet等。</p>
+
+<p>HashSet的实现其实是依托了一个HashMap的实例。HashSet并不保证元素的迭代顺序每次都是一致的。HashSet的基本操作（add,remove,contains及size）耗时都是常数时间，即迭代Set的耗时与Set的大小乘以HashMap实例的乘积成正比。HashSet也不是线程安全的。</p>
+
+<h2>Map</h2>
+
+<p>Map则是另一种重要的数据结构，是一组键值对的集合。Map不允许有重复的key存在。
+它的实现中有HashTable和HashMap。两者非常相似，最大的不同是HashMap不是线程安全的，并且允许null值作为key或value，而HashTable则不允许。</p>
+
+<p>HashMap的性能取决于两个因素：一个是初始容量，一个是负载因数。容量是哈希表中bucket的数量。初始容量则是HashMap被创建时容量。负载因数则是当容量需要自动增加的阀值。当HashMap中的元素超过了负载因数和当前容量的乘积，HashMap则会重新进行hash计算，以便bucket数量增加到以前的近似两倍。一般负载因子的默认值是0.75，这能达到时间和空间的一个平衡。负载因子过大，虽然会减少空间消耗，但是增加查找时间。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[我的2013年总结]]></title>
@@ -3332,203 +3374,6 @@
 <hr />
 
 <p>通过Chef，可以一键更新所有的服务器，在指定的服务器上安装指定的软件。如果有新同事入职，可以很轻松的setup一台开发机；如果服务器节点需要扩展，也只需要几个命令就可搞定。运筹帷幄，一切皆在掌控之中。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Gradle的属性设置大全]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/09/12/setup-properties-in-gradle/"/>
-    <updated>2013-09-12T22:41:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/09/12/setup-properties-in-gradle</id>
-    <content type="html"><![CDATA[<p>Gradle作为一款项目构建工具，由于其强大、灵活、快速、完全兼容Ant等特性，越来越受到人们欢迎。Gradle的灵活有时候也会引起人们的困惑。比如在Gradle中设置变量和属性就有N种办法。由于Gradle的理念是Convention over configruation(约定优于配置),所以如果了解了这些约定，那么在使用Gradle的属性配置时一定会如鱼得水。</p>
-
-<!-- more -->
-
-
-<hr />
-
-<p><strong>在项目根目录下建立名为gradle.properties文件，在该文件中定义需要的属性。这些属性在Gradle构建Gradle领域对象（即project对象实例）时会被自动加到project对象实例中作为其属性被直接调用。</strong></p>
-
-<figure class='code'><figcaption><span>gradle.properties</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>guestName= Bowen
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>build.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">hello</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
-</span><span class='line'>     <span class="n">println</span> <span class="n">$guestName</span>
-</span><span class='line'>     <span class="n">println</span> <span class="s2">&quot;hello, $guestName&quot;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle hello -q
-</span><span class='line'>Bowen
-</span><span class='line'>hello, Bowen
-</span><span class='line'>
-</span><span class='line'><span class="nv">$ </span>gradle properties | grep guestName
-</span><span class='line'>guestName: Bowen
-</span></code></pre></td></tr></table></div></figure>
-
-
-<hr />
-
-<p><strong>定义在build.gradle中的ext块中。ext准确的说是Gradle领域对象的一个属性，我们可以将自定义的属性添加到ext对象上，Build.gradle中的其它代码片段可以使用。</strong></p>
-
-<figure class='code'><figcaption><span>build.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">ext</span> <span class="o">{</span>
-</span><span class='line'>     <span class="n">guestName</span><span class="o">=</span><span class="s1">&#39;Bowen&#39;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">task</span> <span class="n">hello</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
-</span><span class='line'>     <span class="n">println</span> <span class="n">guestName</span>
-</span><span class='line'>     <span class="n">println</span> <span class="s2">&quot;hello, $guestName&quot;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle hello -q
-</span><span class='line'>Bowen
-</span><span class='line'>hello, Bowen
-</span><span class='line'>
-</span><span class='line'><span class="nv">$ </span>gradle properties | grep guestName
-</span><span class='line'>guestName: Bowen
-</span><span class='line'><span class="nv">$ </span>gradle properties | grep ext
-</span><span class='line'>ext: org.gradle.api.internal.plugins.DefaultExtraPropertiesExtension@10ef5fa0
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>从上述可以看到ext对象其实是DefaultExtraPropertiesExtension对象的一个实例。</p>
-
-<hr />
-
-<p><strong>在命令行中通过<code>-D</code>或者<code>-P</code>给Gradle实时创建属性。</strong>
-<code>-D</code>属性会被传送给启动Gradle的jvm，作为一个系统属性被jvm使用。</p>
-
-<figure class='code'><figcaption><span>build.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">hello</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
-</span><span class='line'>     <span class="n">println</span> <span class="n">System</span><span class="o">.</span><span class="na">properties</span><span class="o">[</span><span class="s1">&#39;guestName&#39;</span><span class="o">]</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle hello -DguestName<span class="o">=</span><span class="s1">&#39;Bowen&#39;</span> -q
-</span><span class='line'>Bowen
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>-P</code>属性则会被直接加载到Gradle领域对象上。</p>
-
-<figure class='code'><figcaption><span>build.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">hello</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
-</span><span class='line'>      <span class="n">println</span> <span class="s2">&quot;hello, $guestName&quot;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle hello -PguestName<span class="o">=</span><span class="s1">&#39;Bowen&#39;</span> -q
-</span><span class='line'>hello, Bowen
-</span></code></pre></td></tr></table></div></figure>
-
-
-<hr />
-
-<p><strong>在Gradle配置文件中创建系统属性。刚讲过在gradle.properties文件可以创建属性，同时我们也可以创建系统属性。如果有<code>systemProp.</code>前缀的属性会被识别为系统属性。</strong></p>
-
-<figure class='code'><figcaption><span>gradle.properties</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>systemProp.guestName = &#39;Bowen&#39;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span>build.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">hello</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
-</span><span class='line'>      <span class="n">println</span> <span class="s2">&quot;hello, &quot;</span> <span class="o">+</span> <span class="n">System</span><span class="o">.</span><span class="na">properties</span><span class="o">[</span><span class="s1">&#39;guestName&#39;</span><span class="o">]</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle hello -q
-</span><span class='line'>hello, Bowen
-</span></code></pre></td></tr></table></div></figure>
-
-
-<hr />
-
-<p><strong>将特殊前缀的系统属性或环境变量自动加入到Gradle领域对象中。</strong></p>
-
-<p>如果有环境变量以<code>ORG_GRADLE_PROJECT.</code>为前缀，那么该变量会被自动添加到Gradle领域对象中。同样，如果有系统属性以<code>org.gradle.project.</code>为前缀，那么也会被自动加入到Gradl领域对象中。这一特性的目的之一是为了隐藏一些敏感的信息。比如在执行Gradle脚本时需要传入密码信息，如果以<code>-P</code>的方式传送会被别人看到。而把该属性保存为环境变量，只有系统管理员才有权访问和修改。在运行Gralde的时候该环境变量会被自动加入到Gradle对象中被使用，隔离了明暗数据，又不行影响其他用户使用。（其他用户可以通过<code>-P</code>方式是设置该属性）。</p>
-
-<figure class='code'><figcaption><span>build.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">hello</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
-</span><span class='line'>      <span class="n">println</span> <span class="s2">&quot;hello, &quot;</span> <span class="o">+</span> <span class="n">guestName</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle hello -Dorg.gradle.project.guestName<span class="o">=</span>Bowen -q
-</span><span class='line'>hello, Bowen
-</span><span class='line'>
-</span><span class='line'><span class="nv">$ </span><span class="nb">export </span><span class="nv">ORG_GRADLE_PROJECT_guestName</span><span class="o">=</span>Bob
-</span><span class='line'><span class="nv">$ </span>gradle hello -q
-</span><span class='line'>hello, Bob
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   
