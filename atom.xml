@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-02-17T00:48:37+08:00</updated>
+  <updated>2014-02-20T00:29:49+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,204 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveMQ第一弹:安装与运行]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq/"/>
+    <updated>2014-02-20T00:12:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq</id>
+    <content type="html"><![CDATA[<p>ActiveMQ使用java写的，所以天然跨平台，windows，各种类Unix系统都可运行，只需要下载对应的分发包即可。当前AciveMQ的最新版本是5.9.0。我目前在自己机子上安装的版本是5.8.0。</p>
+
+<!-- more -->
+
+
+<p>安装ActivceMQ需要先设置好系统环境。</p>
+
+<ol>
+<li><p>空间剩余磁盘大于60M。（这个肯定没问题）</p></li>
+<li><p>需要预装JDK，版本为1.6.x及其以上。（ActiveMQ就是用java写的，肯定要装java环境的嘛）</p></li>
+</ol>
+
+
+<p>接下来就可以安装ActiveMQ了。</p>
+
+<p>一种是直接下载分发包，地址是<a href="http://activemq.apache.org/">http://activemq.apache.org/</a>。找到想要安装的版本后解压缩即可。</p>
+
+<p>另一种是通过源代码安装，地址是<a href="http://activemq.apache.org/download.html">http://activemq.apache.org/download.html</a>。该源代码是使用maven作为构建工具的，所以需要先安装maven，如何安装可参见<a href="http://maven.apache.org/">maven官网</a>（MAC用户如果安装了homebrew的话，直接运行<code>brew install maven</code>即可）。    然后使用<code>mvn clean install -Dmaven.test.skip=true</code>来构建源代码。如果构建成功的话在target目录下可以看到生成的activemq-x.x-SNAPSHOT.zip文件，解压缩以后就可以使用了。</p>
+
+<p>当然MAC用户的话安装就简单了，直接使用<code>brew install activemq</code>就行（不知道homebrew为何物的参见我写的文章：
+<a href="http://www.huangbowen.net/blog/2013/07/01/homebrew-in-mac/">Homebrew- MAC上的包管理利器</a>）。ActiveMQ会被默认安装到/usr/local/Cellar/activemq。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq<span class="nv">$ </span>ls
+</span><span class='line'>5.7.0 5.8.0
+</span><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq<span class="nv">$ </span><span class="nb">cd </span>5.8.0
+</span><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>ls
+</span><span class='line'>INSTALL_RECEIPT.json NOTICE               bin
+</span><span class='line'>LICENSE              README.txt           libexec
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>HomeBrew会自动将activemq加入到系统路径中。</p>
+
+<p>下表列出了与ActiveMQ有关的一些重要的环境变量。</p>
+
+<ul>
+<li><p>ACTIVEMQ_HOME: /usr/local/Cellar/activemq/5.8.0/libexec</p></li>
+<li><p>ACTIVEMQ_BASE: /usr/local/Cellar/activemq/5.8.0/libexec</p></li>
+<li><p>ACTIVEMQ_CONF: /usr/local/Cellar/activemq/5.8.0/libexec/conf</p></li>
+<li><p>ACTIVEMQ_DATA: /usr/local/Cellar/activemq/5.8.0/libexec/data</p></li>
+</ul>
+
+
+<p><strong>注意一下所有命令有时基于ActiveMQ 5.8.0版本，不同版本命令稍有不同。</strong></p>
+
+<p>先运行<code>activemq setup ~/.activemqrc</code>来指定activemq的环境配置文件。在这个文件中可以自定义activemq使用的JDK路径，jvm参数等信息。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>activemq setup ~/.activemqrc
+</span><span class='line'>INFO: Loading <span class="s1">&#39;/Users/twer/.activemqrc&#39;</span>
+</span><span class='line'>INFO: Creating configuration file: /Users/twer/.activemqrc
+</span><span class='line'>INFO: It<span class="s1">&#39;s recommend to limit access to &#39;</span>/Users/twer/.activemqrc<span class="s1">&#39; to the priviledged user</span>
+</span><span class='line'><span class="s1">INFO: (recommended: chown &#39;</span>twer<span class="s1">&#39;:nogroup &#39;</span>/Users/twer/.activemqrc<span class="s1">&#39;; chmod 600 &#39;</span>/Users/twer/.activemqrc’<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行<code>activemq</code>可以显示activemq相应的配置信息及可用的命令。（注意低版本中此命令是启动ActiveMQ）</p>
+
+<p>运行<code>activemq start</code>可以在一个独立进程中启动activemq。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>activemq start
+</span><span class='line'>INFO: Loading <span class="s1">&#39;/Users/twer/.activemqrc&#39;</span>
+</span><span class='line'>INFO: Using java <span class="s1">&#39;/System/Library/Frameworks/JavaVM.framework/Home/bin/java&#39;</span>
+</span><span class='line'>INFO: Starting - inspect logfiles specified in logging.properties and log4j.properties to get details
+</span><span class='line'>INFO: pidfile created : <span class="s1">&#39;/usr/local/Cellar/activemq/5.8.0/libexec/data/activemq-bowen-huang.local.pid&#39;</span> <span class="o">(</span>pid <span class="s1">&#39;50873&#39;</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到进程id是50873.</p>
+
+<p>终止ActiveMQ的运行有两种方式。一种是使用<code>activemq stop</code>。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>activemq stop
+</span><span class='line'>INFO: Loading <span class="s1">&#39;/Users/twer/.activemqrc&#39;</span>
+</span><span class='line'>INFO: Using java <span class="s1">&#39;/System/Library/Frameworks/JavaVM.framework/Home/bin/java&#39;</span>
+</span><span class='line'>INFO: Waiting at least 30 seconds <span class="k">for </span>regular process termination of pid <span class="s1">&#39;50873&#39;</span> :
+</span><span class='line'>Java Runtime: Apple Inc. 1.6.0_65 /System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
+</span><span class='line'>  Heap sizes: <span class="nv">current</span><span class="o">=</span>1035520k  <span class="nv">free</span><span class="o">=</span>1033420k  <span class="nv">max</span><span class="o">=</span>1035520k
+</span><span class='line'>    JVM args: -Xms1G -Xmx1G -Djava.util.logging.config.file<span class="o">=</span>logging.properties -Dactivemq.classpath<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec/conf; -Dactivemq.home<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec -Dactivemq.base<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec -Dactivemq.conf<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec/conf -Dactivemq.data<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec/data
+</span><span class='line'>Extensions classpath:
+</span><span class='line'>  <span class="o">[</span>/usr/local/Cellar/activemq/5.8.0/libexec/lib,/usr/local/Cellar/activemq/5.8.0/libexec/lib/camel,/usr/local/Cellar/activemq/5.8.0/libexec/lib/optional,/usr/local/Cellar/activemq/5.8.0/libexec/lib/web,/usr/local/Cellar/activemq/5.8.0/libexec/lib/extra<span class="o">]</span>
+</span><span class='line'>ACTIVEMQ_HOME: /usr/local/Cellar/activemq/5.8.0/libexec
+</span><span class='line'>ACTIVEMQ_BASE: /usr/local/Cellar/activemq/5.8.0/libexec
+</span><span class='line'>ACTIVEMQ_CONF: /usr/local/Cellar/activemq/5.8.0/libexec/conf
+</span><span class='line'>ACTIVEMQ_DATA: /usr/local/Cellar/activemq/5.8.0/libexec/data
+</span><span class='line'>Connecting to pid: 50873
+</span><span class='line'>.Stopping broker: localhost
+</span><span class='line'>… FINISHED
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>另一种则是暴力的杀死进程,即<code>kill 50873</code>。</p>
+
+<p>运行<code>activemq console</code>则会在当前console中启动activemq。这种好处是不用多开一个进程，而且可以直接从console中看到log。关闭activemq也很简单，直接按<code>ctrl</code>+<code>C</code>终止终端运行。</p>
+
+<p>ActiveMQ的默认端口是61616，可以检测这端口来判断ActiveMQ是否启动成功。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>netstat -an|grep 61616
+</span><span class='line'>tcp46      0      0  *.61616                *.*                    LISTEN
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以访问web终端<a href="http://localhost:8161/admin">http://localhost:8161/admin</a>来查看和管理ActiveMQ。（默认用户名密码是admin/admin，你也可以修改配置，其在ActiveMQ安装目录下的libexec/conf/jetty-real.properties文件中）。</p>
+
+<p>ActiveMQ支持xml文件格式对其进行配置。其实我们运行<code>activemq start</code>时，ActiveMQ就是默认使用了其安装目录下的libexec/conf/activemq.xml文件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0/libexec/conf<span class="nv">$ </span>ls
+</span><span class='line'>activemq-command.xml                 broker.ks
+</span><span class='line'>activemq-demo.xml                    broker.ts
+</span><span class='line'>activemq-dynamic-network-broker1.xml camel.xml
+</span><span class='line'>activemq-dynamic-network-broker2.xml client.ks
+</span><span class='line'>activemq-jdbc.xml                    client.ts
+</span><span class='line'>activemq-scalability.xml             credentials-enc.properties
+</span><span class='line'>activemq-security.xml                credentials.properties
+</span><span class='line'>activemq-specjms.xml                 jetty-demo.xml
+</span><span class='line'>activemq-static-network-broker1.xml  jetty-realm.properties
+</span><span class='line'>activemq-static-network-broker2.xml  jetty.xml
+</span><span class='line'>activemq-stomp.xml                   jmx.access
+</span><span class='line'>activemq-throughput.xml              jmx.password
+</span><span class='line'>activemq.xml                         log4j.properties
+</span><span class='line'>broker-localhost.cert                logging.properties
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们当然可以使用自定义的配置文件，比如我们改用activemq-demo.xml。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0/libexec<span class="nv">$ </span>activemq start xbean:./conf/activemq-demo.xml
+</span><span class='line'>INFO: Loading <span class="s1">&#39;/Users/twer/.activemqrc&#39;</span>
+</span><span class='line'>INFO: Using java <span class="s1">&#39;/System/Library/Frameworks/JavaVM.framework/Home/bin/java&#39;</span>
+</span><span class='line'>INFO: Starting - inspect logfiles specified in logging.properties and log4j.properties to get details
+</span><span class='line'>INFO: pidfile created : <span class="s1">&#39;/usr/local/Cellar/activemq/5.8.0/libexec/data/activemq-bowen-huang.local.pid&#39;</span> <span class="o">(</span>pid <span class="err">&#39;</span>51375’<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ActiveMQ在5.8.0版本及之后在安装包中包含了一些demo来演示对ActiveMQ的使用。使用方式很简单，首先采用activemq-demo.xml配置文件来启动ActiveMQ，然后访问<a href="http://localhost:8161/demo/">http://localhost:8161/demo/</a>尽情探索把。</p>
+
+<p>这些demo的源码都在ActiveMQ安装目录下的libexec目录中，里面有个<code>user-guide.html</code>，可以用浏览器直接打开，它详细描述了该如何使用这些demo。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[如果让我完善几年前的一个项目，我会做哪些改进?]]></title>
@@ -2437,174 +2635,6 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
 <p>至此，我的Octopress博客已经在云端了。感觉访问速度比以前快不少。以前我是部署在github pages，服务器放置在美国。现在使用了CloudFront，亚马逊会自动将请求转发到最近的CloudFront edge location。接下来我再研究下 Amazon Route 53,看看有什么好玩的。</p>
 
 <p>我的博客地址: <a href="http://www.huangbowen.net">http://www.huangbowen.net</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[将我的博客迁移到亚马逊云端(1)]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/09/30/migrate-octopress-to-aws/"/>
-    <updated>2013-09-30T14:09:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/09/30/migrate-octopress-to-aws</id>
-    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/cloudcompute.png" width="400"></p>
-
-<p><a href="http://octopress.org/">Octopress</a>已经被公认为Geeker的博客框架。它所拥有的特性都很符合Geeker的癖好:强大的命令行操作方式、简洁的MarkDown语法、灵活的插件配置、美轮美奂的theme（自带响应式设计哦）、完全可定义的部署&#8230;&#8230;</p>
-
-<p>一般大家都喜欢把博客部署到github pages上，免费速度快，与<a href="http://octopress.org/">Octopress</a>无缝结合。但是自己最近迷上了AWS，就捉摸着将自己的<a href="http://octopress.org/">Octopress</a>博客部署到AWS的S3上，使用CloudFront做CDN，使用Amazon Route 53做域名映射。倒腾了两天，终于搞定了，也学到了很多东西。不敢私藏，拿出来和大家分享。</p>
-
-<!-- more -->
-
-
-<p>这篇文章主要讲如何将Octopress博客部署到S3上去。下一篇文章会讲如何将CloudFront做CDN,并与现有域名绑定。</p>
-
-<p>在此之前先普及一些概念。</p>
-
-<p>AWS - Amazon Web Service,亚马逊提供的云服务简称。</p>
-
-<p>S3 - Amazon Simple Storage Service, 亚马逊提供的一种存储静态资源（如css、js、html文件，音视频文件）的服务。</p>
-
-<p>CDN - Content Delivery Network, 内容分发网络。</p>
-
-<p>Amazon CloudFront - 亚马逊提供的一种内容分发服务，提高你的网站访问速度。</p>
-
-<p>Amazon Route 53 - 亚马逊提供的一种稳定高效的域名解析系统。</p>
-
-<p>第一步，注册一个亚马逊的账号，注册地址是<a href="https://portal.aws.amazon.com/gp/aws/developer/registration/index.html">https://portal.aws.amazon.com/gp/aws/developer/registration/index.html</a>。注意注册的时候需要提供一张具备外币功能的信用卡。</p>
-
-<p>第二步，登陆到Amazon management console里，单击右上角的名称，选择Security Credentials标签，然后点击左侧标签按照向导创建一个group,一个从属于这个group的user，并为该user生成一个Access key，记录下来Access key Id 及 Secret Access Key。亚马逊的文档还是非常详细的，不懂的可以多看看提示信息和帮助文档。</p>
-
-<p>第三步，在Amazon management console里选择Services -> S3 service，并创建两个bucket。假如你的博客域名为example.com，那么两个bucket的名称分别为example.com,www.example.com。为什么要创建两个那？是因为我们要保证用户无论输入www.example.com还是example.com都可以访问我们的网站。</p>
-
-<p><img src="http://www.huangbowen.net/images/twobucket.png" width="780"></p>
-
-<p>第四步，选择www.example.com这个bucket，点击properties标签，在Static Website Hosting中选择Redirect all requests to another host name，并配置‘Redirect all requests to:’为example.com。这样来自www.example.com bucket的访问都会自动转发给example.com这个bucket。我们只需为example.com这个bucket同步我们的博客文件即可。</p>
-
-<p><img src="http://www.huangbowen.net/images/redirectrequest.png" width="780"></p>
-
-<p>第五步，选择example.com这个bucket，在Static Website Hosting中选择‘Enable Website Hosting’,并配置Index Document，我的是index.html。这个Index Document是默认返回的object名称。比如如果用户直接访问bucket的某个目录，系统会检测该目录下是否存在Index Document中配置的文件名，如果有则会自动返回这个object。</p>
-
-<p><img src="http://www.huangbowen.net/images/staticwebsitehosting.png" width="780"></p>
-
-<p>第六步，选择&#8217;Permissions&#8217;标签，点击’add bucket policy‘按钮，加入如下的policy.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span>
-</span><span class='line'>     <span class="s2">&quot;Version&quot;</span><span class="o">:</span> <span class="s2">&quot;2008-10-17&quot;</span><span class="p">,</span>
-</span><span class='line'>     <span class="s2">&quot;Statement&quot;</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>          <span class="p">{</span>
-</span><span class='line'>               <span class="s2">&quot;Sid&quot;</span><span class="o">:</span> <span class="s2">&quot;AddPerm&quot;</span><span class="p">,</span>
-</span><span class='line'>               <span class="s2">&quot;Effect&quot;</span><span class="o">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
-</span><span class='line'>               <span class="s2">&quot;Principal&quot;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                    <span class="s2">&quot;AWS&quot;</span><span class="o">:</span> <span class="s2">&quot;*&quot;</span>
-</span><span class='line'>               <span class="p">},</span>
-</span><span class='line'>               <span class="s2">&quot;Action&quot;</span><span class="o">:</span> <span class="s2">&quot;s3:GetObject&quot;</span><span class="p">,</span>
-</span><span class='line'>               <span class="s2">&quot;Resource&quot;</span><span class="o">:</span> <span class="s2">&quot;arn:aws:s3:::example.com/*&quot;</span>
-</span><span class='line'>          <span class="p">}</span>
-</span><span class='line'>     <span class="p">]</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个policy其实是给所有匿名用户访问该bucket里面文件的权限。</p>
-
-<p><img src="http://www.huangbowen.net/images/bucketpolicy.png" width="780"></p>
-
-<p>第七步，还是在’Permissions‘标签里，点击’Add CORS configuration‘按钮，加入如下的配置：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;CORSConfiguration</span> <span class="na">xmlns=</span><span class="s">&quot;http://s3.amazonaws.com/doc/2006-03-01/&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;CORSRule&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;AllowedOrigin&gt;</span>*<span class="nt">&lt;/AllowedOrigin&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;AllowedMethod&gt;</span>GET<span class="nt">&lt;/AllowedMethod&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;MaxAgeSeconds&gt;</span>3000<span class="nt">&lt;/MaxAgeSeconds&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;AllowedHeader&gt;</span>Authorization<span class="nt">&lt;/AllowedHeader&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/CORSRule&gt;</span>
-</span><span class='line'><span class="nt">&lt;/CORSConfiguration&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个是用来配置跨域访问的权限，即是否允许其他网站访问这个bucket上的资源。由于Octopress博客集成了很多插件，比如google analiycis, github等，都需要跨域加载JavaScript文件，执行JavaScript文件，所以要加入这些配置。</p>
-
-<p><img src="http://www.huangbowen.net/images/corsconfiguration.png" width="780"></p>
-
-<p>第八步，下载安装<a href="http://s3tools.org/s3cmd">s3cmd</a>。<a href="http://s3tools.org/s3cmd">s3cmd</a>是一款操作AWS S3的命令行工具。通过它可以创建或删除bucket，上传或下载object，我们在部署octopress博客时，主要就是通过它来将博客上传到S3上去。如果是mac系统化可以通过HomeBrew直接安装。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># brew install s3cmd</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果是windows系统可以从<a href="http://s3tools.org/s3cmd">官网</a>下载安装包进行安装。</p>
-
-<p>第九步，配置<a href="http://s3tools.org/s3cmd">s3cmd</a>与你的S3的连接。在命令行下输入<code>s3cmd --configure</code>，按照向导来配置与S3的连接。这时候在前面保存的Access key就派上用场了。所有的配置信息其实都存在当前用户名下的.s3cfg文件中。你也可以随后修改这些信息。运行<code>s3cmd ls</code>来检测是否配置成功。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>s3cmd ls <span class="c">#列出所有的bucket</span>
-</span><span class='line'>2013-09-27 05:05  s3://huangbowen.net
-</span><span class='line'>2013-09-28 03:24  s3://www.huangbowen.net
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>第十步，配置Octopress支持向S3的部署。在Octopress目录下找到Rakefile文件，修改或添加下述配置。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>deploy_default = &quot;s3&quot;   #部署task
-</span><span class='line'>s3_bucket = &quot;example.com&quot; # bucket名称
-</span><span class='line'>
-</span><span class='line'>s3_cache_secs = 3600  # header中的cache controll属性，即缓存时间，后面CloudFront要用到
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后添加一个新的task。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">desc</span> <span class="s2">&quot;Deploy website via s3cmd&quot;</span>
-</span><span class='line'><span class="n">task</span> <span class="ss">:s3</span> <span class="k">do</span>
-</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;## Deploying website via s3cmd&quot;</span>
-</span><span class='line'>  <span class="n">ok_failed</span> <span class="nb">system</span><span class="p">(</span><span class="s2">&quot;s3cmd sync --acl-public --reduced-redundancy --add-header </span><span class="se">\&quot;</span><span class="s2">Cache-Control: max-age=</span><span class="si">#{</span><span class="n">s3_cache_secs</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">  public/* s3://</span><span class="si">#{</span><span class="n">s3_bucket</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>OK，大功告成，运行<code>rake generate</code>
-及<code>&amp;&amp; rake deploy</code>就可以将生成的静态站点上传到S3中区。然后就可以通过S3的EndPoint来访问新站点了。（EndPoint可以在Amazon management console的S3 dashboard的
-‘Static Website Hosting’ 标签中找到）</p>
-
-<p>当然现在还不能使用自己的域名来访问，你可以通过配置CNAME来启用自己的域名。</p>
-
-<p>下篇文章会讲如何将CloudFront作为内容分发，并且如何将自己的域名与CloudFront绑定。</p>
-
-<p>现在我的博客已经在云端了，地址是<a href="http://www.huangbowen.net">http://www.huangbowen.net</a></p>
 ]]></content>
   </entry>
   
