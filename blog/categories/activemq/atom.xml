@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ActiveMQ | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/activemq/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-02-20T00:29:49+08:00</updated>
+  <updated>2014-02-20T23:47:46+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,277 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveMQ第二弹:使用Spring JMS与ActiveMQ通讯]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/02/20/spring-jms-and-activemq-sample/"/>
+    <updated>2014-02-20T23:18:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/02/20/spring-jms-and-activemq-sample</id>
+    <content type="html"><![CDATA[<p>本文章的完整代码可从我的github中下载：<a href="https://github.com/huangbowen521/SpringJMSSample.git">https://github.com/huangbowen521/SpringJMSSample.git</a></p>
+
+<p>上一篇文章中介绍了如何安装和运行ActiveMQ。这一章主要讲述如何使用Spring JMS向ActiveMQ的Message Queue中发消息和读消息。</p>
+
+<!-- more -->
+
+
+<p>首先需要在项目中引入依赖库。</p>
+
+<ul>
+<li><p>spring-core: 用于启动Spring容器，加载bean。</p></li>
+<li><p>spring-jms:使用Spring JMS提供的API。</p></li>
+<li><p>activemq-all:使用ActiveMQ提供的API。</p></li>
+</ul>
+
+
+<p>在本示例中我使用maven来导入相应的依赖库。</p>
+
+<p>```xml pom.xml</p>
+
+<p>  <dependencies></p>
+
+<pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;junit&lt;/groupId&gt;
+  &lt;artifactId&gt;junit&lt;/artifactId&gt;
+  &lt;version&gt;4.11&lt;/version&gt;
+  &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+  &lt;dependency&gt;
+      &lt;groupId&gt;org.apache.activemq&lt;/groupId&gt;
+      &lt;artifactId&gt;activemq-all&lt;/artifactId&gt;
+      &lt;version&gt;5.9.0&lt;/version&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-jms&lt;/artifactId&gt;
+      &lt;version&gt;4.0.2.RELEASE&lt;/version&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+      &lt;version&gt;4.0.2.RELEASE&lt;/version&gt;
+  &lt;/dependency&gt;
+</code></pre>
+
+<p>  </dependencies></p>
+
+<p>```</p>
+
+<p>接下来配置与ActiveMQ的连接，以及一个自定义的MessageSender。</p>
+
+<p>```xml springJMSConfiguration.xml</p>
+
+<p>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
+
+<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans
+</code></pre>
+
+<p> http://www.springframework.org/schema/beans/spring-beans.xsd"></p>
+
+<pre><code>&lt;bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"&gt;
+    &lt;property name="location"&gt;
+        &lt;value&gt;application.properties&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+
+&lt;!-- Activemq connection factory --&gt;
+&lt;bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+    &lt;constructor-arg index="0" value="${jms.broker.url}"/&gt;
+&lt;/bean&gt;
+
+&lt;!-- ConnectionFactory Definition --&gt;
+&lt;bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory"&gt;
+    &lt;constructor-arg ref="amqConnectionFactory"/&gt;
+&lt;/bean&gt;
+
+&lt;!--  Default Destination Queue Definition--&gt;
+&lt;bean id="defaultDestination" class="org.apache.activemq.command.ActiveMQQueue"&gt;
+    &lt;constructor-arg index="0" value="${jms.queue.name}"/&gt;
+&lt;/bean&gt;
+
+&lt;!-- JmsTemplate Definition --&gt;
+&lt;bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate"&gt;
+    &lt;property name="connectionFactory" ref="connectionFactory"/&gt;
+    &lt;property name="defaultDestination" ref="defaultDestination"/&gt;
+&lt;/bean&gt;
+
+&lt;!-- Message Sender Definition --&gt;
+&lt;bean id="messageSender" class="huangbowen.net.jms.MessageSender"&gt;
+    &lt;constructor-arg index="0" ref="jmsTemplate"/&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p></beans></p>
+
+<p>```</p>
+
+<p>在此配置文件中，我们配置了一个ActiveMQ的connection factory,使用的是ActiveMQ提供的ActiveMQConnectionFactory类。然后又配置了一个Spring JMS提供的CachingConnectionFactory。我们定义了一个ActiveMQQueue作为消息的接收Queue。并创建了一个JmsTemplate，使用了之前创建的ConnectionFactory和Message Queue作为参数。最后自定义了一个MessageSender，使用该JmsTemplate进行消息发送。</p>
+
+<p>以下MessageSender的实现。</p>
+
+<p>```java MessageSender.java</p>
+
+<p>package huangbowen.net.jms;</p>
+
+<p>import org.springframework.jms.core.JmsTemplate;</p>
+
+<p>public class MessageSender {</p>
+
+<pre><code>private final JmsTemplate jmsTemplate;
+
+public MessageSender(final JmsTemplate jmsTemplate) {
+    this.jmsTemplate = jmsTemplate;
+}
+
+public void send(final String text) {
+    jmsTemplate.convertAndSend(text);
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```
+这个MessageSender很简单，就是通过jmsTemplate发送一个字符串信息。</p>
+
+<p>我们还需要配置一个Listener来监听和处理当前的Message Queue。</p>
+
+<p>```xml springJMSReceiver.xml</p>
+
+<p>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
+
+<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans
+</code></pre>
+
+<p> http://www.springframework.org/schema/beans/spring-beans.xsd"></p>
+
+<pre><code>&lt;!-- Message Receiver Definition --&gt;
+&lt;bean id="messageReceiver" class="huangbowen.net.jms.MessageReceiver"&gt;
+&lt;/bean&gt;
+&lt;bean class="org.springframework.jms.listener.SimpleMessageListenerContainer"&gt;
+    &lt;property name="connectionFactory" ref="connectionFactory"/&gt;
+    &lt;property name="destinationName" value="${jms.queue.name}"/&gt;
+    &lt;property name="messageListener" ref="messageReceiver"/&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p></beans></p>
+
+<p>```</p>
+
+<p>在上述xml文件中,我们自定义了一个MessageListener，并且使用Spring提供的SimpleMessageListenerContainer作为Container。</p>
+
+<p>以下是MessageLinser的具体实现。</p>
+
+<p>```java MessageReceiver.java</p>
+
+<p>package huangbowen.net.jms;</p>
+
+<p>import javax.jms.*;</p>
+
+<p>public class MessageReceiver implements MessageListener {</p>
+
+<pre><code>public void onMessage(Message message) {
+    if(message instanceof TextMessage) {
+        TextMessage textMessage = (TextMessage) message;
+        try {
+            String text = textMessage.getText();
+            System.out.println(String.format("Received: %s",text));
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>这个MessageListener也相当的简单，就是从Queue中读取出消息以后输出到当前控制台中。</p>
+
+<p>另外有关ActiveMQ的url和所使用的Message Queue的配置在application.properties文件中。</p>
+
+<p>```xml application.properties</p>
+
+<p>jms.broker.url=tcp://localhost:61616
+jms.queue.name=bar</p>
+
+<p>```</p>
+
+<p>好了，配置大功告成。如何演示那？我创建了两个Main方法，一个用于发送消息到ActiveMQ的MessageQueue中，一个用于从MessageQueue中读取消息。</p>
+
+<p>```java SenderApp</p>
+
+<p>package huangbowen.net;</p>
+
+<p>import huangbowen.net.jms.MessageSender;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.StringUtils;</p>
+
+<p>import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;</p>
+
+<p>public class SenderApp
+{</p>
+
+<pre><code>public static void main( String[] args ) throws IOException {
+    MessageSender sender = getMessageSender();
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String text = br.readLine();
+
+    while (!StringUtils.isEmpty(text)) {
+        System.out.println(String.format("send message: %s", text));
+        sender.send(text);
+        text = br.readLine();
+    }
+}
+
+public static MessageSender getMessageSender() {
+    ApplicationContext context = new ClassPathXmlApplicationContext("springJMSConfiguration.xml");
+   return (MessageSender) context.getBean("messageSender");
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>```java ReceiverApp.java</p>
+
+<p>package huangbowen.net;</p>
+
+<p>import org.springframework.context.support.ClassPathXmlApplicationContext;</p>
+
+<p>public class ReceiverApp {</p>
+
+<pre><code>public static void main( String[] args )
+{
+    new ClassPathXmlApplicationContext("springJMSConfiguration.xml", "springJMSReceiver.xml");
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>OK，如果运行的话要先将ActiveMQ服务启动起来（更多启动方式参见我上篇文章）。</p>
+
+<p>```bash</p>
+
+<p>$:/usr/local/Cellar/activemq/5.8.0/libexec$ activemq start xbean:./conf/activemq-demo.xml</p>
+
+<p>```</p>
+
+<p>然后运行SenderApp中的Main方法，就可以在控制台中输入消息发送到ActiveMQ的Message Queue中了。运行ReceiverApp中的Main方法，则会从Queue中将消息读出来，打印到控制台。</p>
+
+<p>这就是使用Spring JMS与ActiveMQ交互的一个简单例子了。完整代码可从https://github.com/huangbowen521/SpringJMSSample下载。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ActiveMQ第一弹:安装与运行]]></title>
