@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 总结 | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/总结/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-02-20T23:47:46+08:00</updated>
+  <updated>2013-12-05T22:15:38+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,25 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[我的2013年总结]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/01/02/my-conclusion-of-2013/"/>
-    <updated>2014-01-02T21:30:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/01/02/my-conclusion-of-2013</id>
-    <content type="html"><![CDATA[<ol>
-<li><p>读了20多本书，有些书让人拍案叫绝，有些书则没产生多大共鸣。上半年读的多些，下半年有些懒散，读的相对少些。</p></li>
-<li><p>翻译了一本书,《Effective JavaScript》并且已经出版，还在翻译另一本。翻译书这事情咋个说那？看似难，其实不难，只是需要花大量时间;看似不难其实难，英文好不一定就翻译的信、达、雅。</p></li>
-<li><p>去澳洲出差了一个月，第一次跑这么远，跑到另一块大陆上。在那里感受到了国外的生活，开阔了自己的视野。</p></li>
-<li><p>经过1个月的准备，英语考过了4个5，算是满足了拿澳洲457visa的要求。但是自我感觉英文在2013年提高并不大，还未到随心所欲的地步。</p></li>
-<li><p>坚持写博客。虽然从2008年就开始写博客，但是中间断断续续，甚至2012年丢掉了之前所有的博客数据。索性在2013年又坚持起来，每个月至少5篇（11月份准备考雅思写的不多）。</p></li>
-<li><p>2013年也尝试了很多新东西，AWS、node.js、ruby、haskell、groovy......收获了很多的东西，但是感觉自己总结的力度还是不够。</p></li>
-</ol>
-
-
-<p>总的来说，2013年是充实的一年，2014年要给自己更大的压力，因为2014年就要为人父了，担上的压力会更重。 不过我对技术的热情和追求不会消退。</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用快捷键，快到极致]]></title>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Tag: C# | 黄博文的地盘]]></title>
+  <title><![CDATA[Tag: c# | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/c-/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-02-20T23:47:46+08:00</updated>
+  <updated>2013-12-05T22:15:38+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,170 +14,293 @@
 
   
   <entry>
-    <title type="html"><![CDATA[C#中的ThenBy是如何实现的]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/12/26/how-to-implement-thenby-in-c-number/"/>
-    <updated>2013-12-26T23:14:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/12/26/how-to-implement-thenby-in-c-number</id>
-    <content type="html"><![CDATA[<p>C#中给继承自IEnumerable的对象（最熟知的就是List了）提供了很丰富的扩展方法，涉及列表操作的方方面面。而扩展方法ThenBy就是很有意思的一个，它的实现也很巧妙。</p>
+    <title type="html"><![CDATA[Java基础学习之Enum]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/03/12/enum-in-java/"/>
+    <updated>2013-03-12T22:17:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/03/12/enum-in-java</id>
+    <content type="html"><![CDATA[<p>Enum是在Java中用来定义枚举类型的关键字。Enum一般用来表示一组相同类型的常量,如性别、日期 、颜色等.</p>
+
+<p>下面是一个最简单的枚举。</p>
+
+<p>```java
+public enum Color
+{</p>
+
+<p>RED,</p>
+
+<p>GREEN,</p>
+
+<p>BLUE</p>
+
+<p>}
+```</p>
 
 <!-- more -->
 
 
-<p>如果有这样的一个Team类，里面有三个属性。</p>
+<p>实际上在Java中枚举类型本质上就是一个类，其继承自java.lang.Enum类。</p>
 
-<p>```csharp Team.cs</p>
+<p>通过默认提供的<code>GetValues()</code>方法可以获取所有枚举对象，其以一个数组的形式返回。</p>
 
-<p>public class Team
+<p>```java</p>
+
+<p>for(Color color : Color.values())
 {</p>
 
-<pre><code>public Team (string name, int timeCost, int score)
-{
-    this.Name = name;
-    this.TimeCost = timeCost;
-    this.Score = score; 
+<p>System.out.printf("%s: %s%n",color,color.toString());</p>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>输出结果为：</p>
+
+<p>```console</p>
+
+<p>RED: RED</p>
+
+<p>GREEN: GREEN</p>
+
+<p>BLUE: BLUE</p>
+
+<p>```</p>
+
+<p>既然是enum本质上是类，那么我们当然可以给其加一些方法。注意最后一个枚举对象要使用“；”结尾，说明枚举值结束使用。</p>
+
+<p>```java</p>
+
+<p>public enum Color
+{</p>
+
+<p>RED("Red Color"),</p>
+
+<p>GREEN("Green Color"),</p>
+
+<p>BLUE("Blue Color");</p>
+
+<p>private final String color;</p>
+
+<p>private Color(String color) {</p>
+
+<pre><code>this.color = color;
+</code></pre>
+
+<p>}</p>
+
+<p>public String getColor() {</p>
+
+<p>return color;</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>注意在enum中是不能声明public的构造函数的，这样是为了避免直接实例化enum对象。</p>
+
+<p>我们可以通过<code>getValues()</code>方法调用<code>getColor()</code>方法。</p>
+
+<p>```java</p>
+
+<p>for(Color color : Color.values())
+{</p>
+
+<p>System.out.printf("%s: %s%n",color,color.getColor());</p>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>以下是输出结果：</p>
+
+<p>```console</p>
+
+<p>RED: Red Color</p>
+
+<p>GREEN: Green Color</p>
+
+<p>BLUE: Blue Color</p>
+
+<p>```</p>
+
+<p>如果大家还是看不太明白的话，我可以展示一个类来对个对比。</p>
+
+<p>```java</p>
+
+<p>public final class Color extends java.lang.Enum{</p>
+
+<pre><code>public static final Color RED;
+
+public static final Color GREEN;
+
+public static final Color  BLUE;
+
+static {};
+
+public java.lang.String getColor();
+
+public static Color[] values();
+
+public static Color valueOf(java.lang.String);
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>这个类的作用等同于我们的Color枚举对象。而每个被枚举的成员其实就是定义的枚举类型的一个实例，它们都被默认为final。无法改变常数名称所设定的值，它们也是public和static的成员，这与接口中的常量限制相同。可以通过类名称直接使用它们。</p>
+
+<p>所以我们大胆的在里面增加一些其它的方法来实现我们的新特性。</p>
+
+<p>在这里我增加了一个新的方法isRed()来判断当前枚举实例是否是红色的。</p>
+
+<p>```java</p>
+
+<p>public enum Color
+{</p>
+
+<p>RED("Red Color"),</p>
+
+<p>GREEN("Green Color"),</p>
+
+<p>BLUE("Blue Color");</p>
+
+<p>private final String color;</p>
+
+<p>private Color(String color) {</p>
+
+<pre><code>this.color = color;
+</code></pre>
+
+<p>}</p>
+
+<p>public String getColor() {</p>
+
+<p>return color;</p>
+
+<p>}</p>
+
+<p>public boolean isRed() {</p>
+
+<p>return this.equals(RED);</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>可以对其进行一个测试。</p>
+
+<p>```java</p>
+
+<p>Color green = Color.GREEN;</p>
+
+<p>System.out.print(green.isRed());</p>
+
+<p>Color red = Color.RED;</p>
+
+<p>System.out.print(red.isRed());</p>
+
+<p>```</p>
+
+<p>第一个输出结果为false，第二个输出结果为true。</p>
+
+<p>通过对Java中enum的运用，往往会产生奇效。比如有这样一个例子，有一个Rover对象，它有一个类型为Enum的direction属性，我们要给Rover实现左转的指令。你可能会写出这样的代码：</p>
+
+<p>```java Direction.java</p>
+
+<p>public enum Direction {</p>
+
+<pre><code>North,
+East,
+South,
+West
+</code></pre>
+
+<p>}</p>
+
+<p><code>
+</code>java Rover.java</p>
+
+<p>public class Rover {</p>
+
+<pre><code>private Direction direction;
+
+public Rover(Direction direction) {
+    this.direction = direction;
 }
 
-public string Name {
-    get;
-    private set;
-}
+public void turnLeft() {
+    if (direction.equals(Direction.East)) {
+        direction = Direction.North;
+    } else if (direction.equals(Direction.North)) {
+        direction = Direction.West;
+    } else if (direction.equals(Direction.West)) {
+        direction = Direction.South;
+    } else if (direction.equals(Direction.South)) {
+        direction = Direction.East;
+    }
 
-public int TimeCost {
-    get;
-    private set;
-}
-
-public int Score {
-    get;
-    private set;
 }
 </code></pre>
 
 <p>}</p>
 
-<p>```</p>
+<p><code>``
+一大堆</code>if...else`的代码看起来真的很丑陋。这还好，如果让你给Rover再加几个方法，比如向右转，旋转到反方向等，那代码就没法看了。
+我们可以这样分析一下，其实给定一个方向之后，向左转的方向也就确定了，所以我们可以将这些逻辑放置到Direction对象中去。下面是改进后的版本。</p>
 
-<p>然后我们有一个Team的List。</p>
+<p>```java Direction.java</p>
 
-<p>```csharp</p>
+<p>public enum Direction {</p>
 
-<p>List<Team> teams = new List<Team> ();
-teams.Add (new Team ("teamA", 10, 22));
-teams.Add (new Team ("teamB", 12, 20));</p>
+<pre><code>North {
+    @Override
+    public Direction turnLeft() {
+    return West;
+    }
+},
+East {
+    @Override
+    public Direction turnLeft() {
+        return North;
+    }
 
-<p>teams.Add (new Team ("teamC", 8, 18));</p>
+},
+South {
+    @Override
+    public Direction turnLeft() {
+        return East;
+    }
+},
+West {
+    @Override
+    public Direction turnLeft() {
+        return South;
+    }
+};
 
-<p>```</p>
-
-<p>那么如何求出teams中得分最高的那个队伍那？这个很简单，只需要一句话即可。</p>
-
-<p>```csharp</p>
-
-<p>var result = teams.OrderByDescending (team => team.Score).First ();
-Console.WriteLine (result.Name); // teamA</p>
-
-<p>```</p>
-
-<p>由于List实现了IEnumerable接口，而System.Linq中的Enumerable类中有针对IEnumerable接口的名为OrderByDescending的扩展方法，所以我们直接调用这个扩展方法可以对List按照指定的key进行降序排列，再调用First这个扩展方法来获取列表中的第一个元素。</p>
-
-<p>如果我的List变成这个样子。</p>
-
-<p>```csharp</p>
-
-<p>List<Team> teams = new List<Team> ();
-teams.Add (new Team ("teamA", 10, 18));
-teams.Add (new Team ("teamB", 12, 16));
-teams.Add (new Team ("teamC", 8, 18));</p>
-
-<p>```</p>
-
-<p>由于有可能两组以上的队伍都可能拿到最高分，那么在这些最高分的队伍中，我们选取用时最少的作为最终优胜者。有人说那可以这样写。</p>
-
-<p>```csharp</p>
-
-<p>var result = teams.OrderByDescending (team => team.Score).OrderBy(team => team.TimeCost).First ();</p>
-
-<p>```</p>
-
-<p>先对列表按Score降序排列，再对列表按TimeCost升序排列，然后取结果中的第一个元素。看来貌似是正确的，但其实是错误的。因为第一次调用OrderByDescending方法后返回了一个排序后的数组，再调用OrderBy是另外一次排序了，它会丢弃上一次排序，这与我们定的先看积分，如果积分相同再看耗时的规则违背。</p>
-
-<p>那么应该如何实现那？C#给我们提供了一个叫做ThenBy的方法，可以满足我们的要求。</p>
-
-<p>```csharp</p>
-
-<p>var result = teams.OrderByDescending (team => team.Score).ThenBy(team => team.TimeCost).First ();</p>
-
-<p>Console.WriteLine (result.Name); // teamC</p>
-
-<p>```</p>
-
-<p>新的问题又来了。第一次调用OrderByDescending方法时返回的是一个新对象，再对这个新对象调用ThenBy时，它只有记录了上一次排序规则，才能达到我们想要的效果。那么C#是如何记录上次排序使用的key那？</p>
-
-<p>这就先要看OrderByDescending方法是如何实现了的。查看源码发现OrderByDescending有两个重载，实现如下。</p>
-
-<p>```csharp</p>
-
-<p>public static IOrderedEnumerable<TSource> OrderByDescending&lt;TSource, TKey> (this IEnumerable<TSource> source, Func&lt;TSource, TKey> keySelector)
-{</p>
-
-<pre><code>return source.OrderByDescending (keySelector, null);
-</code></pre>
-
-<p>}</p>
-
-<p>public static IOrderedEnumerable<TSource> OrderByDescending&lt;TSource, TKey> (this IEnumerable<TSource> source, Func&lt;TSource, TKey> keySelector, IComparer<TKey> comparer)
-{</p>
-
-<pre><code>Check.SourceAndKeySelector (source, keySelector);
-return new OrderedSequence&lt;TSource, TKey&gt; (source, keySelector, comparer, SortDirection.Descending);
+public abstract Direction turnLeft();
 </code></pre>
 
 <p>}</p>
 
 <p>```</p>
 
-<p>在第二个重载中我们看到OrderByDescending方法返回时的是一个继承了IOrderedEnumerable接口的对象OrderedSequence。这个对象记录了我们的排序规则。</p>
+<p>```java Rover.java</p>
 
-<p>而我们再查看下ThenBy方法的定义。</p>
+<p>public class Rover {</p>
 
-<p>```csharp</p>
+<pre><code>private Direction direction;
 
-<p>public static IOrderedEnumerable<TSource> ThenBy&lt;TSource, TKey> (this IOrderedEnumerable<TSource> source, Func&lt;TSource, TKey> keySelector, IComparer<TKey> comparer)
-{</p>
+public Rover(Direction direction) {
+    this.direction = direction;
+}
 
-<pre><code>Check.SourceAndKeySelector (source, keySelector);
-return source.CreateOrderedEnumerable&lt;TKey&gt; (keySelector, comparer, false);
-</code></pre>
-
-<p>}</p>
-
-<p>public static IOrderedEnumerable<TSource> ThenBy&lt;TSource, TKey> (this IOrderedEnumerable<TSource> source, Func&lt;TSource, TKey> keySelector)
-{</p>
-
-<pre><code>return source.ThenBy (keySelector, null);
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>我们可以看到ThenBy这个扩展方法追加到的对象类型要实现IOrderedEnumerable接口，而OrderBy方法恰好返回的就是这个类型接口对象。那我们再看看IOrderedEnumerable接口的定义。</p>
-
-<p>```csharp</p>
-
-<p>using System;
-using System.Collections;
-using System.Collections.Generic;</p>
-
-<p>namespace System.Linq
-{</p>
-
-<pre><code>public interface IOrderedEnumerable&lt;TElement&gt; : IEnumerable&lt;TElement&gt;, IEnumerable
-{
-    //
-    // Methods
-    //
-    IOrderedEnumerable&lt;TElement&gt; CreateOrderedEnumerable&lt;TKey&gt; (Func&lt;TElement, TKey&gt; keySelector, IComparer&lt;TKey&gt; comparer, bool descending);
+public void turnLeft() {
+    direction = direction.turnLeft();
 }
 </code></pre>
 
@@ -185,19 +308,58 @@ using System.Collections.Generic;</p>
 
 <p>```</p>
 
-<p>其继承自IEnumerable接口，并且要实现一个名为CreateOrderedEnumerable的方法，正是ThenBy方法实现中调用的这个方法。</p>
+<p>这样的代码看起来要舒服的多.</p>
 
-<p>所以玄机在OrderedSequence这个类上。实现了IEnumerable接口对象调用OrderBy后会返回OrderedSequence这个对象。而该对象记录了当前排序的规则，其实现了IOrderedEnumerable接口。而ThenBy扩展方法被加到了IOrderedEnumerable接口对象上，其返回值也是一个具有IOrderedEnumerable接口的对象。</p>
+<h2>C#中的Enum</h2>
 
-<p>照这么说，调用了一次OrderBy后，然后调用多次ThenBy也是可以工作的。我也从官方MSDN中找到了答案：</p>
+<p>我也可以简单的讲解下c#中的枚举对象。在c#中声明枚举对象的关键字是enum。</p>
 
-<blockquote><blockquote><p>ThenBy and ThenByDescending are defined to extend the type IOrderedEnumerable<TElement>, which is also the return type of these methods. This design enables you to specify multiple sort criteria by applying any number of ThenBy or ThenByDescending methods.</p></blockquote></blockquote>
+<p>```c#</p>
 
-<p>翻译为: ThenBy及ThenByDescending是IOrderedEnumerable类型的扩展方法。ThenBy和ThenByDescending方法的返回值也是IOrderedEnumerable类型。这样设计是为了能够调用任意数量的ThenBy和ThenByDescending方法实现多重排序。</p>
+<p> 访问修辞符 enum 枚举名:基础类型</p>
 
-<p>至此，ThenBy的神秘面纱就解开了，但是我不知道如何查看OrderedSequence类的源码，如果能看到这个类的源码就太完美了。知道的同学请告知方法。</p>
+<pre><code>{
+    枚举成员
+}
+</code></pre>
 
-<p>注: 上述类的源码来自于Mono的实现。</p>
+<p>```</p>
+
+<p>基础类型必须能够表示该枚举中定义的所有枚举数值。枚举声明可以显式地声明 byte、sbyte、short、ushort、int、uint、long 或 ulong 类型作为对应的基础类型。没有显式地声明基础类型的枚举声明意味着所对应的基础类型是 int.</p>
+
+<p>```c#</p>
+
+<p>public enum Color</p>
+
+<p>{</p>
+
+<p>RED,</p>
+
+<p>GREEN,</p>
+
+<p>BLUE</p>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>所以我们可以直接将一个枚举类型强制转换成其对应的基础类型。</p>
+
+<p><code>c#
+Int  num = (int)Color.Red;
+</code></p>
+
+<p>Num的值为0.</p>
+
+<p>我们也可以反向转换。</p>
+
+<p>```c#</p>
+
+<p>Color color = (Color)num;</p>
+
+<p>```</p>
+
+<p>甚至我们还可以对枚举类型进行与或运算。这些就不细说了，有兴趣的可以查阅相关资料。</p>
 ]]></content>
   </entry>
   

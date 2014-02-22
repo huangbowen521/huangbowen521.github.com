@@ -9,7 +9,7 @@
   <meta name="author" content="黄博文">
 
   
-  <meta name="description" content="在我工作的项目中有这样一个需求。当通过自动部署脚本将当前一个CI构建的WAR包部署到指定服务器后，需要验证该WAR包是否被部署成功。 在这个项目中，持续集成服务器使用的是Jenkins，构建脚本使用的是maven，向服务器的部署使用的是Groovy写的部署脚本，调用了Tableuax API。 &hellip;">
+  <meta name="description" content="第一次接触Selenium 的WebDriver，是在一个Web项目中。该项目使用它来进行功能性测试。当我看到Firefox中的页面内容被一个个自动填充并且自动跳转的时候，感觉真的很神奇。通过这段时间的学习觉得可以将我学的关于WebDriver的知识进行一个总结。 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,7 +83,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/04/18/use-manifest-dot-mf-to-track-war-file/">使用MANIFEST.MF文件来track War包做持续部署</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/03/11/webdriver/">webDriver入门及提高</a></h1>
     
     
       <p class="meta">
@@ -99,27 +99,22 @@
   
 
 
-<time datetime="2013-04-18T12:40:00+08:00" pubdate data-updated="true">Apr 18<span>th</span>, 2013</time>
+<time datetime="2013-03-11T09:39:00+08:00" pubdate data-updated="true">Mar 11<span>th</span>, 2013</time>
         
-         | <a href="/blog/2013/04/18/use-manifest-dot-mf-to-track-war-file/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/03/11/webdriver/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>在我工作的项目中有这样一个需求。当通过自动部署脚本将当前一个CI构建的WAR包部署到指定服务器后，需要验证该WAR包是否被部署成功。</p>
-
-<p>在这个项目中，持续集成服务器使用的是<a href="http://jenkins-ci.org/">Jenkins</a>，构建脚本使用的是<a href="http://maven.apache.org/">maven</a>，向服务器的部署使用的是Groovy写的部署脚本，调用了<a href="http://www.incanica.com/tour/whytableaux">Tableuax</a> API。</p>
-
-<p>在<a href="http://jenkins-ci.org/">Jenkins</a>上有两个job，一个CI job，一个dev job。
-每次提交代码都会在<a href="http://jenkins-ci.org/">Jenkins</a>上trigger CI ob，这个job会执行配置的<a href="http://maven.apache.org/">maven</a>命令<code>mvn clean install</code>，如果构建成功，会自动trigger dev job。这个job会执行部署脚本，部署脚本负责调用<a href="http://www.incanica.com/tour/whytableaux">Tableuax</a> API将前一个job构建的war包部署到服务器上。</p>
+  <div class="entry-content"><p>第一次接触Selenium 的WebDriver，是在一个Web项目中。该项目使用它来进行功能性测试。当我看到Firefox中的页面内容被一个个自动填充并且自动跳转的时候，感觉真的很神奇。通过这段时间的学习觉得可以将我学的关于WebDriver的知识进行一个总结。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/04/18/use-manifest-dot-mf-to-track-war-file/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/03/11/webdriver/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -131,7 +126,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/04/14/octopress-plugin-to-sync-post/">一款Octopress插件用于同步博客到其他站点</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/03/03/the-annotated-turing/">《图灵的秘密》读后感</a></h1>
     
     
       <p class="meta">
@@ -147,24 +142,25 @@
   
 
 
-<time datetime="2013-04-14T22:05:00+08:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time>
+<time datetime="2013-03-03T00:05:00+08:00" pubdate data-updated="true">Mar 3<span>rd</span>, 2013</time>
         
-         | <a href="/blog/2013/04/14/octopress-plugin-to-sync-post/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/03/03/the-annotated-turing/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易&#8230;&#8230;）</p>
+  <div class="entry-content"><p>坦白的说这本书不太适合我。当我看到大段大段的数学符号时，就两眼发蒙。刚开始还感觉跟得上，到后来完全lost了。</p>
 
-<p>这款插件源码被host在github上，地址是<a href="https://github.com/huangbowen521/octopress-syncPost">https://github.com/huangbowen521/octopress-syncPost</a>。</p>
+<p>但是这并不妨碍我从另一个角度来重新了解了图灵、数学、计算机….去年的时候曾听过Jeff讲过的一个session:《世界及宇宙的终极答案》。我敢确定至少一半的内容都是来自这本书。
+图灵在论文中描述了一个想象出来的机器，用来论证数理逻辑中的一个问题，论文题目叫:&lt;论可计算数及其在判定性问题中的应用>（On Computable Numbers, with an Application to the Entscheidungsproblem）。这个想象出来的机器被后人成为图灵机。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/04/14/octopress-plugin-to-sync-post/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/03/03/the-annotated-turing/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -176,7 +172,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/04/09/integrate-karma-to-webstorm/">Karma(原名Testacular)与WebStorm进行集成</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/03/02/haskell-programming-language-first-touch/">Haskell-函数式编程语言之初体验</a></h1>
     
     
       <p class="meta">
@@ -192,24 +188,28 @@
   
 
 
-<time datetime="2013-04-09T01:59:00+08:00" pubdate data-updated="true">Apr 9<span>th</span>, 2013</time>
+<time datetime="2013-03-02T14:55:00+08:00" pubdate data-updated="true">Mar 2<span>nd</span>, 2013</time>
         
-         | <a href="/blog/2013/04/09/integrate-karma-to-webstorm/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/03/02/haskell-programming-language-first-touch/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p><a href="http://karma-runner.github.io/0.8/index.html">Karma</a>是一款运行JavaScript测试的工具。它支持大部分的JavaScript测试框架，并支持多浏览器跑测试、自动监听文件运行测试等功能，实在是JavaScript开发的必备测试利器。有了它，基本不用再一遍遍手动刷新页面来trigger测试了。它的原名是testacular，也不知道作者咋想的，突然之间把项目名称改了。</p>
+  <div class="entry-content"><p>如果你是使用面向对像语言进行编程的程序员，那么你应该去了解掌握一门动态语言。而动态语言的魔力之一就是函数式编程。而要学习了解函数式编程，那么haskell是一个不错的选择。</p>
 
-<p>而<a href="http://www.jetbrains.com/webstorm/">WebStorm</a>则号称是世界上最聪明的JavaScript的IDE。（事实证明，确实如此）。JavaScript code自动提示、浏览器实时同步更新、支持HTML5, <a href="http://nodejs.org/">node.js</a>, TypeScript, CoffeeScript, ECMAScript Harmony, LESS…秉承了JetBrains这个牛逼公司的一贯传统。</p>
+<p>Haskell是是一门纯函数式编程语言(purely functional programming language)。在其世界中函数是第一等对象。并且在haskell中没有赋值，例如你指派a的值为5，然后你无法再给a分配其它的值。所以你不能像命令式语言那样命令电脑“要做什么”，而是通过函数来描述出问题“是什么”。</p>
+
+<p>作为一个纯的函数式编程语言，它支持惰性求值、模式匹配、列表解析、类型类、类型多态……</p>
+
+<p>别着急，让我们慢慢来解开函数式编程的面纱。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/04/09/integrate-karma-to-webstorm/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/03/02/haskell-programming-language-first-touch/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -221,7 +221,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/04/06/use-shortcuts-extremely/">使用快捷键，快到极致</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/02/18/thoughtworks-reading-book/">ThoughtWorks Developer 读书路线图</a></h1>
     
     
       <p class="meta">
@@ -237,22 +237,74 @@
   
 
 
-<time datetime="2013-04-06T15:21:00+08:00" pubdate data-updated="true">Apr 6<span>th</span>, 2013</time>
+<time datetime="2013-02-18T13:31:00+08:00" pubdate data-updated="true">Feb 18<span>th</span>, 2013</time>
         
-         | <a href="/blog/2013/04/06/use-shortcuts-extremely/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/02/18/thoughtworks-reading-book/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>前段时间曾经写过一篇文章，<a href="http://www.cnblogs.com/huang0925/archive/2013/03/24/2978181.html">《优秀程序员无他-善假于物也》</a>。其中谈到一点是优秀的程序员必须要能灵活的掌握常用软件的快捷键。对于程序员来说，每天使用时间最长的软件恐怕就是IDE（Integrated Development Environment）了。如果你是C#的程序员，那么就基本非Visual Studio莫属了。而如果你是Java的程序员，那么eclipse，myeclipse或者Intellij都有人用之。如果你是Ruby等动态语言的程序员，那么Vim、Emacs、RubyMIne…有太多的选择可以成为你的IDE。</p>
+  <div class="entry-content"><p>作为一名合格的ThoughtWorker,每年不读个几十本书都不好意思跟别人打招呼。从读书的角度来说，我还真不算是一名合格的ThoughtWorker。不过没关系，发现了问题就要解决问题。2013年来已经读了2，3本书了，按照这个频率下去今年30本书的目标应该问题不大。但是面对庞大的书籍，那些书是值得一读的那？尤其是技术类书籍，更是种类繁多，参差不齐。作为一个合格的程序员，常常纠结如此。</p>
+
+<p>不用怕，ThoughtWorks考虑到这些问题，特推出了《ThoughtWorks Dev 读书路线图》。感谢Longjun和Zhangyi的贡献。</p>
+
+<p>请注意，这里只是列出了一些推荐书籍，难免有些遗漏。你可以把这些书籍当成一个指引，带领你进入知识的海洋。站在别人的肩上才能看的更远。</p>
+
+<p><img src="/images/reading.jpg" width="700" height="700" title="ThoughtWorks Dev 读书路线图" alt="ThoughtWorks Dev 读书路线图"></p>
+
+<p>点击<a href="/images/reading.jpg">这里</a>查看大图。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/17/2007nian-de-pian-zong-jie-wen-zhang/">2007年的一篇总结文章</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-17T00:48:00+08:00" pubdate data-updated="true">Feb 17<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/17/2007nian-de-pian-zong-jie-wen-zhang/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>今天整理电脑，偶然翻出一篇写于2007年的演讲稿。那是在一次班级团组织生活上向大家介绍自己学习计算机经验的一些感悟。</p>
+
+<p>如今六年过去了，看到六年前自己的感悟，百般滋味涌上心头。六年的时间，从一个意气奋发的少年成长为孩子眼中的叔叔，不变的是对技术的从一而终的热爱。</p>
+
+<p>看着当初稚嫩的自己进行的总结，某些条款至今让我受用，某些甚至自己至今还没做好。看来进步的pattern就是一个实践+总结+实践&#8230; 没有总结光有实践是万万不行的，这就像驴拉一辈子磨也不知道想办法用机器代替一样。</p>
+
+<p>现在将演讲稿的内容贴出来，以后可以继续回味与总结。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/04/06/use-shortcuts-extremely/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/02/17/2007nian-de-pian-zong-jie-wen-zhang/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -264,7 +316,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/04/05/haskell-list-processing/">Haskell函数式编程之List操作</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/02/16/gtshell/">gtShell - 为你常用的目录建立标签并快速跳转</a></h1>
     
     
       <p class="meta">
@@ -280,24 +332,26 @@
   
 
 
-<time datetime="2013-04-05T01:20:00+08:00" pubdate data-updated="true">Apr 5<span>th</span>, 2013</time>
+<time datetime="2013-02-16T17:18:00+08:00" pubdate data-updated="true">Feb 16<span>th</span>, 2013</time>
         
-         | <a href="/blog/2013/04/05/haskell-list-processing/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/02/16/gtshell/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>List在函数式语言中是一个重要的抽象，很多事情离了它就很难做到。函数式语言的鼻祖Lisp名称就来自List processing。</p>
-
-<p>Haskell本身也给List操作提供了一系列的操作符以及库函数。</p>
+  <div class="entry-content"><p>使用场景：
+如果你有很多工作目录，需要每天在这些目录中跳来跳去。那么你就应该试试goShell. 一个使用简单、功能恰到好处的terminal下的小工具。
+gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功能。这样你就不需要在使用cd后面跟随一长串的目录名称。
+它也支持自动完成，你只需要输入开头的几个字母，然后按tab键就可以自动匹配。
+目前源码被我host在<a href="https://github.com/huangbowen521/gtShell">github</a>上。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/04/05/haskell-list-processing/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/02/16/gtshell/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -309,7 +363,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/04/03/change-method-signature/">修改方法签名的重构手法</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/02/14/zheng-ze-biao-da-shi-bi-zhi-bi-hui/">正则表达式必知必会</a></h1>
     
     
       <p class="meta">
@@ -325,22 +379,91 @@
   
 
 
-<time datetime="2013-04-03T00:19:00+08:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time>
+<time datetime="2013-02-14T23:22:00+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2013</time>
         
-         | <a href="/blog/2013/04/03/change-method-signature/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/02/14/zheng-ze-biao-da-shi-bi-zhi-bi-hui/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>今天看到同事写的一篇博客<a href="http://xiaodao.github.com/2011/03/15/correct-refactoring/">《依赖快捷键做重构是不行的》</a>。里面讲了一个这样的案例：本来有一方法，假设叫methodA。</p>
+  <div class="entry-content"><p>读了《正则表达式必知必会》（Regular Expressions - in 10 minutes）一书，很有收获。这本书不厚，只有120多页。但是其由浅入深的系统的介绍了正则表达式。全书内容详实，配了很多实例，是学习正则表达式的一本很好的入门书籍。</p>
+
+<p>我根据这本书画了个Mind Map，来记录自己学到的东西。</p>
+
+<p><img src="/images/RegularExpression.png" width="700" height="700" title="《正则表达式必知必会》Mind Map" alt="《正则表达式必知必会》Mind Map"></p>
+
+<p>点击<a href="/images/RegularExpression.png">这里</a>查看大图。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/">避免每次输入bundler Exec命令</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-04T00:24:00+08:00" pubdate data-updated="true">Feb 4<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>bundle在ruby的世界里是个好东西，它可以用来管理应用程序的依赖库。它能自动的下载和安装指定的gem，也可以随时更新指定的gem。</p>
+
+<p><a href="https://rvm.io/">rvm</a>则是一个命令行工具，能帮助你轻松的安装，管理多个ruby环境。每个环境可以指定一系列的gem。它允许你为每一个项目指定其ruby的版本，需要的gem的版本。这能最大限度的避免由于ruby环境的差异，或者不同版本的gem造成的各种问题。</p>
+
+<p>当我在项目中引入了rvm后，使用rake命令时，每次都会出现这样的异常。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake aborted!
+</span><span class='line'>You have already activated rake 10.0.0, but your Gemfile requires rake 0.9.2.2. Using bundle <span class="nb">exec </span>may solve this.
+</span><span class='line'>/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/runtime.rb:31:in <span class="sb">`</span>block in setup<span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/runtime.rb:17:in `setup&#39;</span>
+</span><span class='line'>/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler.rb:116:in <span class="sb">`</span>setup<span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/setup.rb:7:in `&lt;top (required)&gt;&#39;</span>
+</span><span class='line'>/Users/twer/sourcecode/octopress/Rakefile:2:in <span class="sb">`</span>&lt;top <span class="o">(</span>required<span class="o">)</span>&gt;<span class="err">&#39;</span>
+</span><span class='line'><span class="o">(</span>See full trace by running task with --trace<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/04/03/change-method-signature/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -352,7 +475,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/04/01/min-jie-de-xie-bo-ke/">敏捷的写博客</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/01/19/thoughtworks-immersion-xiao-ji/">ThoughtWorks Immersion 小计</a></h1>
     
     
       <p class="meta">
@@ -368,24 +491,32 @@
   
 
 
-<time datetime="2013-04-01T12:49:00+08:00" pubdate data-updated="true">Apr 1<span>st</span>, 2013</time>
+<time datetime="2013-01-19T23:08:00+08:00" pubdate data-updated="true">Jan 19<span>th</span>, 2013</time>
         
-         | <a href="/blog/2013/04/01/min-jie-de-xie-bo-ke/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/01/19/thoughtworks-immersion-xiao-ji/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h2>为什么写博客</h2>
+  <div class="entry-content"><p>2012年12月18日，第11期TWI在中国西安举行了。这次参加培训的角色有admin，有hr，有Ux,当然更多的是QA和Dev，估计是最齐全的一届。</p>
 
-<p>写技术博客对于程序员的提升是不可估量的。只要你坚持一段时间，你就会发现它给你带来的各种积极的变化。思考问题更加深入了，更容易关注细节了，表达能力也增强了&#8230;&#8230;</p>
+<p>虽然TWI已经过去好几天了，但是我还在回味那培训中的一幕幕。</p>
+
+<p>关于这几天的经历，我可以用几个关键字来形容。</p>
+
+<p><strong>吃：</strong></p>
+
+<p>虽然我们来到西安是学习滴，但是也不能委屈了自己的胃。刚到西安就先吃了羊肉泡馍，外加一个肉夹馍才感觉有些饱。第一天中午办公室定的凉皮和肉夹馍，典型的北方特色，符合我的胃口。第二天晚上我们team building，去的小杨烤肉，刚开始打不到车，气氛有些低落，但是到了饭馆气氛慢慢火热起来，最后吃完了大家大摆龙门阵，海量重量级八卦被爆出，气氛异常火热。</p>
+
+<hr />
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/04/01/min-jie-de-xie-bo-ke/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/01/19/thoughtworks-immersion-xiao-ji/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -397,7 +528,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/03/28/java-annotation/">Java基础知识之Annotation</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/">《JavaScript语言精粹》读书笔记</a></h1>
     
     
       <p class="meta">
@@ -413,126 +544,24 @@
   
 
 
-<time datetime="2013-03-28T01:01:00+08:00" pubdate data-updated="true">Mar 28<span>th</span>, 2013</time>
+<time datetime="2013-01-16T00:22:00+08:00" pubdate data-updated="true">Jan 16<span>th</span>, 2013</time>
         
-         | <a href="/blog/2013/03/28/java-annotation/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>什么是Annotation?</h2>
-
-<p><strong>Annotation翻译为中文即为注解，意思就是提供除了程序本身逻辑外的额外的数据信息。</strong>Annotation对于标注的代码没有直接的影响，它不可以直接与标注的代码产生交互，但其他组件可以使用这些信息。</p>
-
-<p>Annotation信息可以被编译进class文件，也可以保留在Java 虚拟机中，从而在运行时可以获取。甚至对于Annotation本身也可以加Annotation。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/03/28/java-annotation/">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/03/24/senior-programer-good-habits/">优秀程序员无他-善假于物也</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-24T02:31:00+08:00" pubdate data-updated="true">Mar 24<span>th</span>, 2013</time>
-        
-         | <a href="/blog/2013/03/24/senior-programer-good-habits/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>运用一门程序设计语言对大多数程序员来说是小菜一碟,但是更上一层楼成为一名专家级的软件开发者，恐怕目前还是大多数人的梦想。《程序员的思维修炼》一书中将程序员分为5个层级：新手，高级新手，胜任者，精通者，专家。根据作者的调查研究结果，在这5个层级中，大多数的程序员属于高级新手。而且居于这个层级的程序员从入行1、2年的到工作10来年都大有人在。</p>
+  <div class="entry-content"><p>《JavaScript语言精粹》这本书句句是精华。如果你想只读一本书了解JavaScript,这本是你的不二选择。</p>
 
-<p>身为一个程序员，如何才能尽快的突破自身的瓶颈，得到快速的提升那？这可真不是三言两语可以说清楚。本人09年毕业投身软件行业，2012年初离开工作了三年的公司A，加入了现在的公司B。算到现在呆在B公司也即将满一年了。但是我敢说在B公司1年学到的东西，比在A公司3年加起来的总和还要多。
-这么大的进步是源于我养成了较好的学习习惯，每天都保持汲取知识。这些习惯大都是同我身边的同事身上偷来的。现在，我就把这些东西分享给大家，一起共勉。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/03/24/senior-programer-good-habits/">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/03/23/java-generic-type/">Java基础知识之泛型</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-23T00:26:00+08:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time>
-        
-         | <a href="/blog/2013/03/23/java-generic-type/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><strong>当我们在定义类，接口和方法时，可以接收一个类型作为参数，这就叫做泛型</strong>。</p>
-
-<p>函数可以传入普通的参数，也可以传入一个类型参数。不同之处是普通的参数就是值而已，但是类型参数却是个类型。</p>
-
-<p>使用泛型的好处:</p>
-
-<ul>
-<li>强类型检查。在编译时就可以得到类型错误信息。</li>
-<li>避免显式强制转换。</li>
-<li>方便实现通用算法。</li>
-</ul>
-
+<p>这么薄的一本书讲JavaScript的特点介绍的非常清楚，是我对JavaScript的认识更加的深入。以前总觉得函数式编程很难理解，但是看了这本书以后我觉得对其有了一个新的认识。严格意义上说JavaScript并不仅仅是一门函数式编程语言，书中有一句话对它的特性做了一个精彩的描述：JavaScript的许多特性都借鉴自其他语言。语法借鉴自java，函数借鉴自Scheme,原型继承借鉴自Self，而JavaScript的正则表达式特性则借鉴自Perl。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/03/23/java-generic-type/">阅读全文 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/01/16/%3C%3Cjavascriptyu-yan-jing-cui-%3E%3E-du-shu-bi-ji/">阅读全文 &rarr;</a>
     </footer>
   
 
@@ -558,7 +587,7 @@
 
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#f2f2f2' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x333333&amp;tcolor2=0x333333&amp;hicolor=0x000000&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Factivemq%27+style%3D%27font-size%3A+21.42857142857143%25%27%3EActiveMQ%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eagile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+27.142857142857142%25%27%3EAgile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fandroid%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EAndroid%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Faws%27+style%3D%27font-size%3A+21.42857142857143%25%27%3EAWS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fc-%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EC%23%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fci%27+style%3D%27font-size%3A+27.142857142857142%25%27%3ECI%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fcloud%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ECloud%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdatabase%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EDataBase%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdesign%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Edesign%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fenglish%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EEnglish%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffp%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EFP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgradle%27+style%3D%27font-size%3A+38.57142857142857%25%27%3EGradle%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhaskell%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EHaskell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhomebrew%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EHomebrew%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EJava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjavascript%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EJavaScript%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%E5%AD%A6%E4%B9%A0%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EJava%E5%AD%A6%E4%B9%A0%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flife%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ELife%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fplugin%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eplugin%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fpractise%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Epractise%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Freading%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ereading%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frefactor%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Erefactor%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fshell%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eshell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ESpring%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fstudy%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Estudy%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fsvn%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ESVN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Etesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ETesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxml%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EXML%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxp%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EXP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%B7%A5%E5%85%B7%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%B7%A5%E5%85%B7%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%80%BB%E7%BB%93%27+style%3D%27font-size%3A+21.42857142857143%25%27%3E%E6%80%BB%E7%BB%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+32.85714285714286%25%27%3E%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%27+style%3D%27font-size%3A+50.0%25%27%3E%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BF%BB%E8%AF%91%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%BF%BB%E8%AF%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E8%AF%BB%E4%B9%A6%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%27+style%3D%27font-size%3A+21.42857142857143%25%27%3E%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+    <span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#f2f2f2' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x333333&amp;tcolor2=0x333333&amp;hicolor=0x000000&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+21.42857142857143%25%27%3EAgile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eagile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fandroid%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EAndroid%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Faws%27+style%3D%27font-size%3A+21.42857142857143%25%27%3EAWS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fci%27+style%3D%27font-size%3A+27.142857142857142%25%27%3ECI%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fcloud%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ECloud%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdatabase%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EDataBase%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fenglish%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EEnglish%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffp%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EFP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgradle%27+style%3D%27font-size%3A+32.85714285714286%25%27%3EGradle%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhaskell%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EHaskell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhomebrew%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EHomebrew%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjavascript%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EJavaScript%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%E5%AD%A6%E4%B9%A0%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EJava%E5%AD%A6%E4%B9%A0%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flife%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ELife%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fplugin%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eplugin%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Freading%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ereading%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frefactor%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Erefactor%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fshell%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Eshell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ESpring%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fstudy%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Estudy%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fsvn%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ESVN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+15.714285714285715%25%27%3ETesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Etesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxml%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EXML%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%B7%A5%E5%85%B7%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%B7%A5%E5%85%B7%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%80%BB%E7%BB%93%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%80%BB%E7%BB%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+32.85714285714286%25%27%3E%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%27+style%3D%27font-size%3A+50.0%25%27%3E%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BF%BB%E8%AF%91%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E7%BF%BB%E8%AF%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%27+style%3D%27font-size%3A+15.714285714285715%25%27%3E%E8%AF%BB%E4%B9%A6%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%27+style%3D%27font-size%3A+21.42857142857143%25%27%3E%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%3C%2Fa%3E+%3C%2Ftags%3E"></span>
 </section>
 
 <section>
@@ -566,23 +595,23 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/02/20/spring-jms-and-activemq-sample/">ActiveMQ第二弹:使用Spring JMS与ActiveMQ通讯</a>
+        <a href="/blog/2013/12/05/a-old-developer-learn-english/">毕业多年的程序员重拾英语考雅思</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/02/20/install-and-run-activemq/">ActiveMQ第一弹:安装与运行</a>
+        <a href="/blog/2013/12/04/use-idea-plugin-in-gradle/">Gradle中使用idea插件的一些实践</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/02/17/how-to-improve-a-legacy-project/">如果让我完善几年前的一个项目，我会做哪些改进?</a>
+        <a href="/blog/2013/11/06/task-and-validation-is-important/">记一次扯到蛋的教训</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/02/11/thoughts-when-doing-user-story/">做一张故事卡时的感悟</a>
+        <a href="/blog/2013/10/31/learn-new-things/">开阔自己的视野，勇敢的接触新知识</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/01/27/introduction-of-go/">持续集成及部署利器:Go</a>
+        <a href="/blog/2013/10/23/aws-cloudformation/">亚马逊云服务之CloudFormation</a>
       </li>
     
   </ul>
@@ -628,7 +657,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - 黄博文 -
+  Copyright &copy; 2013 - 黄博文 -
   huangbowen521@gmail.com
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
