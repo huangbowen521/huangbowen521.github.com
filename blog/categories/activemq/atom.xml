@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ActiveMQ | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/activemq/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-02-20T23:47:46+08:00</updated>
+  <updated>2014-02-22T19:30:12+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,159 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveMQ第三弹:在Spring中使用内置的Message Broker]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/02/22/using-embeded-broker-in-spring/"/>
+    <updated>2014-02-22T19:16:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/02/22/using-embeded-broker-in-spring</id>
+    <content type="html"><![CDATA[<p>在上个例子中我们演示了如何使用Spring JMS来向ActiveMQ发送消息和接收消息。但是这个例子需要先从控制台使用ActiveMQ提供的命令行功能启动一个Message Broker,然后才能运行示例。这个Message Broker就相当于一个server，无论是发送方还是接收方都可以连接到这个Server进行消息的处理。在某些情况下，让Message Broker和consumer启动在同一个JVM里面，通信效率肯定会高不少。</p>
+
+<!-- more -->
+
+
+<p>ActiveMQ提供了很多方式来创建内置的broker。这篇文章主要介绍使用Spring及XBean来创建一个内置的broker。</p>
+
+<p>首先需要在项目中引入xbean-spring依赖项。</p>
+
+<p>```xml pom.xml</p>
+
+<pre><code>  &lt;dependency&gt;
+      &lt;groupId&gt;org.apache.xbean&lt;/groupId&gt;
+      &lt;artifactId&gt;xbean-spring&lt;/artifactId&gt;
+      &lt;version&gt;3.16&lt;/version&gt;
+  &lt;/dependency&gt; 
+</code></pre>
+
+<p>```</p>
+
+<p>然后在Spring配置文件中加入以下代码:</p>
+
+<p>```xml</p>
+
+<pre><code>&lt;amq:broker id="activeMQBroker"&gt;
+    &lt;amq:transportConnectors&gt;
+        &lt;amq:transportConnector uri="${jms.broker.url}" /&gt;
+    &lt;/amq:transportConnectors&gt;
+&lt;/amq:broker&gt; 
+</code></pre>
+
+<p>```</p>
+
+<p>注意在Spring配置文件中还要加入Namespace的定义。</p>
+
+<p>```xml</p>
+
+<p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
+
+<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:amq="http://activemq.apache.org/schema/core"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.8.0.xsd"&gt; 
+</code></pre>
+
+<p>...
+...
+...</p>
+
+<p></beans></p>
+
+<p>```</p>
+
+<p>完整的Spring配置如下。</p>
+
+<p>```xml embedBroker.xml</p>
+
+<p>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
+
+<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:amq="http://activemq.apache.org/schema/core"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.8.0.xsd"&gt;
+
+&lt;bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"&gt;
+    &lt;property name="location"&gt;
+        &lt;value&gt;application.properties&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+
+&lt;!-- Activemq connection factory --&gt;
+&lt;bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+    &lt;!--&lt;property name="brokerURL" value="${jms.broker.url}"/&gt;--&gt;
+    &lt;constructor-arg index="0" value="${jms.broker.url}"/&gt;
+    &lt;property name="useAsyncSend" value="true"/&gt;
+&lt;/bean&gt;
+
+&lt;amq:broker id="activeMQBroker"&gt;
+    &lt;amq:transportConnectors&gt;
+        &lt;amq:transportConnector uri="${jms.broker.url}" /&gt;
+    &lt;/amq:transportConnectors&gt;
+&lt;/amq:broker&gt;
+
+&lt;!-- ConnectionFactory Definition --&gt;
+&lt;bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory"&gt;
+    &lt;constructor-arg ref="amqConnectionFactory"/&gt;
+&lt;/bean&gt;
+
+&lt;!--  Default Destination Queue Definition--&gt;
+&lt;bean id="defaultDestination" class="org.apache.activemq.command.ActiveMQQueue"&gt;
+    &lt;constructor-arg index="0" value="${jms.queue.name}"/&gt;
+&lt;/bean&gt;
+
+&lt;!-- JmsTemplate Definition --&gt;
+&lt;bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate"&gt;
+    &lt;property name="connectionFactory" ref="connectionFactory"/&gt;
+    &lt;property name="defaultDestination" ref="defaultDestination"/&gt;
+&lt;/bean&gt;
+
+&lt;!-- Message Sender Definition --&gt;
+&lt;bean id="messageSender" class="huangbowen.net.jms.MessageSender"&gt;
+    &lt;constructor-arg index="0" ref="jmsTemplate"/&gt;
+&lt;/bean&gt;
+
+&lt;!-- Message Receiver Definition --&gt;
+&lt;bean id="messageReceiver" class="huangbowen.net.jms.MessageReceiver"&gt;
+&lt;/bean&gt;
+&lt;bean class="org.springframework.jms.listener.SimpleMessageListenerContainer"&gt;
+    &lt;property name="connectionFactory" ref="connectionFactory"/&gt;
+    &lt;property name="destinationName" value="${jms.queue.name}"/&gt;
+    &lt;property name="messageListener" ref="messageReceiver"/&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p></beans></p>
+
+<p>```</p>
+
+<p>在<a href="https://github.com/huangbowen521/SpringJMSSample">示例项目</a>中我新加了一个Main方法来进行测试。可以运行EmbedBrokerApp中的Main方法来进行测试。</p>
+
+<p><img src="/images/messageTest.png"></p>
+
+<p>如果客户端和broker在相同的JVM进程中，客户端连接时可以使用broker url为“vm://localhost:61616”,进程外连接则需要使用”tcp://localhost:61616"。如果有多个broker的话可以给每个broker起个名字。</p>
+
+<p>```xml</p>
+
+<pre><code>&lt;amq:broker brokerName="broker1"&gt;
+    &lt;amq:transportConnectors&gt;
+        &lt;amq:transportConnector uri="tcp://localhost:61616" /&gt;
+    &lt;/amq:transportConnectors&gt;
+&lt;/amq:broker&gt;
+
+&lt;amq:broker brokerName="broker2"&gt;
+    &lt;amq:transportConnectors&gt;
+        &lt;amq:transportConnector uri="tcp://localhost:61617" /&gt;
+    &lt;/amq:transportConnectors&gt;
+&lt;/amq:broker&gt; 
+</code></pre>
+
+<p>```</p>
+
+<p>客户端连接时候可以直接使用broker名称连接，比如使用”vm://broker1”来使用第一个broker。</p>
+
+<p>本章中的完整源码可从完整代码可从<a href="https://github.com/huangbowen521/SpringJMSSample">https://github.com/huangbowen521/SpringJMSSample</a>下载。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ActiveMQ第二弹:使用Spring JMS与ActiveMQ通讯]]></title>
