@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tag: Map | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/map/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-02-20T23:47:46+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Java中的Set, List, Map漫谈]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/01/02/set/"/>
+    <updated>2014-01-02T23:45:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/01/02/set</id>
+    <content type="html"><![CDATA[<p>在编程语言中，集合是指代表一组对象的对象。Java平台专门有一个集合框架(Collections Framework)。集合框架是指表示和操作集合的统一架构，隔离了集合的操作和实现细节。</p>
+
+<!-- more -->
+
+
+<p>集合框架中的集合接口主要分为两大部分，一部分继承自<code>java.util.Collection</code>，另一部分继承自<code>java.util.Map</code> （其实Map本质上并不是集合，只是看起来好像可以像集合一样操作）。一个有趣的事情是这些接口的实现不一定都需要实现这些接口中的修改方法（如add，remove等），可以给某些不想实现的修改方法抛出一个运行时异常(UnsupportedOperationException)。</p>
+
+<h2>List</h2>
+
+<p>List是Java中的一个接口，继承了Collection接口。它是一个有序集合，又称序列，允许存储重复元素。其实现类常用的有ArrayList、LinkedList等。ArrayList是实现了List接口的可变长数组。它的特点是add方法操作时间复杂度为分期常量时间（amortized constant time），意思即如果添加n个元素则耗时O(n)，其它操作耗时则是线性时间。每个ArrayList都有个容量，即存放元素能力的大小。这个容量是list中元素个数。当添加新的元素时，这个容量也会自动添加，这需要消耗一定时间。如果要添加大量数据到ArrayList，可以先调用<code>ensureCapacity</code>操作，从而减少每次添加新元素容量自动调整的时间。</p>
+
+<p>需要注意的是ArrayList并不是线程同步的。如果多个线程同时访问一个ArrayList实例，至少一个线程修改了其结构（添加或删除元素，或显式的调整了其大小，仅仅设置元素值并不属于结构修改），则会使程序进入不确定的状态。解决方式之一就是使用一个线程同步的对象来封装该ArrayList。或者也可以用Collections.synchronizedList来封装。</p>
+
+<p>```java</p>
+
+<p>List list = Collections.synchronizedList(new ArrayList(...));</p>
+
+<p>```</p>
+
+<p>实现原理就是Collections.synchronizedList返回的类的iterator做了特殊处理。如果iterator被创建后，除了自己的add和delete方法，有其他行为导致了List结构被修改，iterator将会抛出一个<code>ConcurrentModificationException</code>异常。当然iterate这种处理方式并不能担保它能处理所有的异步并发修改，只能降低程序陷入不确定状态的概率。</p>
+
+<p>LikedList是一个双重链表，它既实现了List接口，也实现了Deque接口。LikedList也不是线程安全的，解决方式与ArrrayList基本相同。</p>
+
+<h2>Set</h2>
+
+<p>Set也是Java中的一个接口，同样继承于Collection。与List不同的是，Set不允许放置重复元素,并且最多只能放置一个null元素。其实现类有HashSet、TreeSet等。</p>
+
+<p>HashSet的实现其实是依托了一个HashMap的实例。HashSet并不保证元素的迭代顺序每次都是一致的。HashSet的基本操作（add,remove,contains及size）耗时都是常数时间，即迭代Set的耗时与Set的大小乘以HashMap实例的乘积成正比。HashSet也不是线程安全的。</p>
+
+<h2>Map</h2>
+
+<p>Map则是另一种重要的数据结构，是一组键值对的集合。Map不允许有重复的key存在。
+它的实现中有HashTable和HashMap。两者非常相似，最大的不同是HashMap不是线程安全的，并且允许null值作为key或value，而HashTable则不允许。</p>
+
+<p>HashMap的性能取决于两个因素：一个是初始容量，一个是负载因数。容量是哈希表中bucket的数量。初始容量则是HashMap被创建时容量。负载因数则是当容量需要自动增加的阀值。当HashMap中的元素超过了负载因数和当前容量的乘积，HashMap则会重新进行hash计算，以便bucket数量增加到以前的近似两倍。一般负载因子的默认值是0.75，这能达到时间和空间的一个平衡。负载因子过大，虽然会减少空间消耗，但是增加查找时间。</p>
+]]></content>
+  </entry>
+  
+</feed>
