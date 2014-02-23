@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-02-22T19:30:12+08:00</updated>
+  <updated>2014-02-23T15:52:58+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,59 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveMQ第四弹:在HermesJMS中创建ActiveMQ session]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms/"/>
+    <updated>2014-02-23T15:03:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms</id>
+    <content type="html"><![CDATA[<p>Hermes JMS是一个开源免费的跨平台的JMS消息监听工具。它可以很方便和各种JMS框架集成和交互，可以用来监听、发送、接收、修改、存储消息等。这篇文章将讲解HermesJMS如何集成ActiveMQ并与其交互。</p>
+
+<!-- more -->
+
+
+<p>ActiveMQ在通过命令行运行时会自动启动一个Web终端，默认地址是<a href="http://localhost:8161/admin">http://localhost:8161/admin</a>，默认用户名/密码为admin/admin。通过这个web终端可以监控和操作ActiveMQ。但是这个Web终端有两个缺陷，第一是功能较弱，有些需求不能满足；第二是只有通过命令行启动ActiveMQ才会启动这个Web终端，如果是使用内置的broker，则无法使用该Web终端。而HermesJMS恰好弥补了这两个缺陷。</p>
+
+<p>要想使用HermesJMS，首先要下载它。HermesJMS的官方网站是<a href="http://www.hermesjms.com/confluence/display/HJMS/Home">http://www.hermesjms.com/confluence/display/HJMS/Home</a>。其源码放置在sourceforge上。目前最新版本是1.14，已经两年多没推出新版本了。下载地址:<a href="http://sourceforge.net/projects/hermesjms/files/hermesjms/1.14/">http://sourceforge.net/projects/hermesjms/files/hermesjms/1.14/</a>。MAC系统的要下载dmg文件，其余系统可下载jar文件。</p>
+
+<p>下载完成以后，要配置ActiveMQ到provider去。打开Hermes，点击<code>create new session</code>按钮，然后在界面下方选中Providers tab，添加对ActiveMQ的配置。我们以ActiveMQ5.8.0版本为例。首先创建一个名为ActiveMQ5.8.0的group，然后向其添加两个jar包:activemq-all-5.8.0.jar及geronimo-j2ee-management_1.1_spec_1.0.1.jar。这两个jar包都可以在ActiveMQ安装目录下找到。</p>
+
+<p><img src="http://www.huangbowen.net/images/setupProvider.png" width="800"></p>
+
+<p>然后就可以创建一个ActiveMQ的Session了。点击Sessions tab，输入以下配置信息。</p>
+
+<p><img src="http://www.huangbowen.net/images/setupSession.png" width="800"></p>
+
+<p>设置Plugin为ActiveMQ是为了能够自动检测当前Provider中的Queue和Topic信息。</p>
+
+<p>然后启动一个ActiveMQ broker。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0/libexec<span class="nv">$ </span>activemq console xbean:./conf/activemq-demo.xml
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就可以通过hermesJMS和其进行交互了。双击左侧菜单树中的msgQueue节点，可以查看该Queue中的信息。右键点击该节点选择<code>send message</code>向Queue中发送信息。</p>
+
+<p><img src="http://www.huangbowen.net/images/sendMessage.png" width="800"></p>
+
+<p>然后刷新Queue就可以看到消息已经在Queue里了。</p>
+
+<p><img src="http://www.huangbowen.net/images/monitorQueue.png" width="800"></p>
+
+<p>我们也可以打开ActiveMQ的Web终端向msgQueue中发送消息。地址:<a href="http://localhost:8161/admin/queues.jsp">http://localhost:8161/admin/queues.jsp</a></p>
+
+<p><img src="http://www.huangbowen.net/images/webconsole.png" width="800"></p>
+
+<p>然后在HermesJMS中刷新即可看到新的消息。</p>
+
+<p><img src="http://www.huangbowen.net/images/msgFromWebConsole.png" width="800"></p>
+
+<p>Hermes JMS还支持将消息存储到一个JDBC数据库中，具体可以查阅官方文档。</p>
+
+<p>在使用Hermes JMS的过程中可以说到处是坑，软件弹出异常的次数不少于20次。可以说这个软件在健壮性、和兼容性方面还需要增强。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ActiveMQ第三弹:在Spring中使用内置的Message Broker]]></title>
@@ -2460,291 +2513,6 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
 <hr />
 
 <p>由于CloudFormation支持对几乎所有的AWS资源进行创建和配置，并且能够按照指定顺序创建，其Template简洁易懂、容易配置、可重用，所以是你使用AWS的不可多得的好帮手。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[XML相关知识全接触（一）]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/10/14/xml-knowledge/"/>
-    <updated>2013-10-14T00:32:00+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/10/14/xml-knowledge</id>
-    <content type="html"><![CDATA[<p><img src="http://www.huangbowen.net/images/xml.png" width="400"></p>
-
-<p>XML文件格式已经出来很久了。他的风头如今在JSON、YAML等新兴文件格式的冲击下已经显的不那么强劲。但是XML仍然是当今世界上使用最广泛的文件格式。围绕着它也有一大堆的概念和知识点。所以我们还是很有必要全面了解下。</p>
-
-<!-- more -->
-
-
-<h2>XML</h2>
-
-<p>XML全称为eXtensible Markup Language，即可扩展标记语言。其被设计用来传输及存储数据。</p>
-
-<p>XML与HTML看似比较相似，但是其设计目的并不相同。</p>
-
-<ul>
-<li><p>XML用来传输及存储数据，主要关注数据是什么。</p></li>
-<li><p>HTML用来显示数据，主要关注数据看起来是什么样。</p></li>
-<li><p>HTML的tag是预定义的，比如说table标签，浏览器会知道它是什么含义。</p></li>
-<li><p>XML的tag不是预定义的，需要自己设计tag并描述tag的含义。XML中的tag如果不借助XSLT文件，浏览器只会以简单的文本方式展示。</p></li>
-</ul>
-
-
-<p>很多人认为HTML是XML文件的一个子集。其实这种观点是错误的，因为HTML的实现并未严格遵循XML的语法。比如XML要求每个tag必须要有闭合标记，XML的tag是大小写敏感的，XML给tag添加的属性必须要使用引号包起来…这些语法要求HTML都不满足。</p>
-
-<p>请看XML的一个示例。</p>
-
-<figure class='code'><figcaption><span>book.xml </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;book&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;name&gt;</span>Effective JavaScript<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;category&gt;</span>Program Language<span class="nt">&lt;/category&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;author&gt;</span>Bowen<span class="nt">&lt;/author&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;description&gt;</span>This book is about JavaScript Language.<span class="nt">&lt;/description&gt;</span>
-</span><span class='line'><span class="nt">&lt;/book&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这是一个简单的XML文件。第一行说明了xml的版本及编码类型。接下来是一个根节点book，根节点可以包含很多子节点。</p>
-
-<h3>XML命名空间</h3>
-
-<p>由于XML的tag并不像HTML那样是预定义的，那么很有可能两个XML中的同名tag具有不同的含义。那么在合并XML等操作时势必会造成冲突。解决的办法就是给XML的tag加上命名空间（即namespace），每一个namespace都可以指定一个前缀。这些前缀会区分同名tag。</p>
-
-<p>假设这里有另一个xml文件。</p>
-
-<figure class='code'><figcaption><span>anotherBook.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;book&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;name&gt;</span>Rework<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;page&gt;</span>120<span class="nt">&lt;/page&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;publishDate&gt;</span>2013-10-08<span class="nt">&lt;/publishDate&gt;</span>
-</span><span class='line'><span class="nt">&lt;/book&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果我们要合并这两个xml节点到同一个xml文件中时，不加namespace会发生冲突，因为含有同名的tag，其子节点的结构并不相同。接下来我们给其加上命名空间并合并。</p>
-
-<figure class='code'><figcaption><span>combined.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;root&gt;</span>
-</span><span class='line'><span class="nt">&lt;ns1:book</span> <span class="na">xmlns:ns1=</span><span class="s">&quot;http://www.huangbowen.net/ns1&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;ns1:name&gt;</span>Effective JavaScript<span class="nt">&lt;/ns1:name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;ns1:category&gt;</span>Program Language<span class="nt">&lt;/ns1:category&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;ns1:author&gt;</span>Bowen<span class="nt">&lt;/ns1:author&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;ns1:description&gt;</span>This book is about JavaScript Language.<span class="nt">&lt;/ns1:description&gt;</span>
-</span><span class='line'><span class="nt">&lt;/ns1:book&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;ns2:book</span> <span class="na">xmlns:ns2=</span><span class="s">&quot;http://www.huangbowen.net/ns2&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>     <span class="nt">&lt;ns2:name&gt;</span>Rework<span class="nt">&lt;/ns2:name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;ns2:page&gt;</span>120<span class="nt">&lt;/ns2:page&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;ns2:publishDate&gt;</span>2013-10-08<span class="nt">&lt;/ns2:publishDate&gt;</span>
-</span><span class='line'>     <span class="nt">&lt;/ns2:book&gt;</span>
-</span><span class='line'><span class="nt">&lt;/root&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>xmlns是xml namespace的缩写。引号后面是tag的前缀。这个前缀可以省略，比如<code>xmlns="http://www.huangbowen.net/ns1"</code>,相当于没有前缀的tag自动应用默认的命名空间。需要注意的是命名空间的URI只是给命名空间提供一个唯一的标识，xml解析器并不会访问这个URI来获取任何信息。很多公司习惯将这个URI一个web页面，该web页面描述了该namespace的相关信息。</p>
-
-<h2>XSD</h2>
-
-<p>XSD全称为XML Schema Definition,即XML结构定义语言。每个XSD文件是对一个XML文件的结构定义。
-由于XML中的tag并不是预定义的，那么每人都可以创建自己的XML结构文档。如果你想让别人按照你的标准创建一份xml文件，你可以使用XSD文件来描述你的标准。</p>
-
-<p>这是针对本文示例book.xml文件的一个XSD文件。</p>
-
-<figure class='code'><figcaption><span>book.xsd</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;xs:schema</span> <span class="na">attributeFormDefault=</span><span class="s">&quot;unqualified&quot;</span> <span class="na">elementFormDefault=</span><span class="s">&quot;qualified&quot;</span>
-</span><span class='line'>           <span class="na">xmlns:xs=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">&quot;book&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;xs:complexType&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;xs:sequence&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;xs:element</span> <span class="na">type=</span><span class="s">&quot;xs:string&quot;</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;xs:element</span> <span class="na">type=</span><span class="s">&quot;xs:string&quot;</span> <span class="na">name=</span><span class="s">&quot;category&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;xs:element</span> <span class="na">type=</span><span class="s">&quot;xs:string&quot;</span> <span class="na">name=</span><span class="s">&quot;author&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;xs:element</span> <span class="na">type=</span><span class="s">&quot;xs:string&quot;</span> <span class="na">name=</span><span class="s">&quot;description&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/xs:sequence&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/xs:complexType&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/xs:element&gt;</span>
-</span><span class='line'><span class="nt">&lt;/xs:schema&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>从上可以看出其实XSD文件本身就是一个XML文件，它遵循XML语法，比如每个tag都需要有结束标记，必须有且只有一个根节点等。</p>
-
-<p>在一个XML文件中可以添加其Schema的引用信息。</p>
-
-<figure class='code'><figcaption><span>book.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;ns1:book</span> <span class="na">xmlns:ns1=</span><span class="s">&quot;http://www.huangbowen.net/ns1&quot;</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">xsi:targetLocation=</span><span class="s">&quot;http://www.huangbowen.net/book.xsd&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;ns1:name&gt;</span>Effective JavaScript<span class="nt">&lt;/ns1:name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;ns1:category&gt;</span>Program Language<span class="nt">&lt;/ns1:category&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;ns1:author&gt;</span>Bowen<span class="nt">&lt;/ns1:author&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;ns1:description&gt;</span>This book is about JavaScript Language.<span class="nt">&lt;/ns1:description&gt;</span>
-</span><span class='line'><span class="nt">&lt;/ns1:book&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在IDE中，如果你的XML节点没有遵守你引用的Schema中的定义，就会给出错误提醒。</p>
-
-<h2>XSLT</h2>
-
-<p>XSLT全称为EXtensible Stylesheet Language Transformations。 XSLT用于将XML文档转换为XHTML或其他XML文档。</p>
-
-<p>在讲XSLT之前我们先讲讲XSL。XSL全称为Extensible Stylesheet Language,即可扩展样式表语言。众所周知，CSS是HTML文件的样式表，而XSL则是XML文件的样式表。XSL文件描述了XML文件应该如何被显示。</p>
-
-<p>其实XSL不仅仅是样式表语言，它主要包含3部分:</p>
-
-<ul>
-<li><p>XSLT - 用来转换XML文档</p></li>
-<li><p>XPath - 查询和操作XML文档中的节点</p></li>
-<li><p>XSL-FO - 格式化XML文档</p></li>
-</ul>
-
-
-<p>XSLT使用XPath来查找XML中的元素。</p>
-
-<p>XSLT通过一个xml文件来定义源xml文件与目标文件之间的转换关系。该xml文件必须以<code>&lt;xsl:stylesheet&gt;</code>或<code>&lt;xsl:transform&gt;</code>作为根节点。</p>
-
-<p>对于本文的示例book.xml,如果我们使用浏览器打开显示效果如下。</p>
-
-<p><img src="http://www.huangbowen.net/images/bookxml.png" width="600"></p>
-
-<p>现在我们创建一个XSLT文件将其转换为一个HTML文件。</p>
-
-<figure class='code'><figcaption><span>book.xsl</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;xsl:stylesheet</span> <span class="na">version=</span><span class="s">&quot;1.0&quot;</span>
-</span><span class='line'><span class="na">xmlns:xsl=</span><span class="s">&quot;http://www.w3.org/1999/XSL/Transform&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;xsl:template</span> <span class="na">match=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;html&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;body&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;h2&gt;</span>My Book<span class="nt">&lt;/h2&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;table</span> <span class="na">border=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;tr&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;td&gt;</span>name<span class="nt">&lt;/td&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;td&gt;&lt;xsl:value</span><span class="na">-of</span> <span class="na">select=</span><span class="s">&quot;book/name&quot;</span> <span class="nt">/&gt;&lt;/td&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/tr&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;tr&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;td&gt;</span>category<span class="nt">&lt;/td&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;td&gt;&lt;xsl:value</span><span class="na">-of</span> <span class="na">select=</span><span class="s">&quot;book/category&quot;</span> <span class="nt">/&gt;&lt;/td&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/tr&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;tr&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;td&gt;</span>author<span class="nt">&lt;/td&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;td&gt;&lt;xsl:value</span><span class="na">-of</span> <span class="na">select=</span><span class="s">&quot;book/author&quot;</span> <span class="nt">/&gt;&lt;/td&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/tr&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;tr&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;td&gt;</span>description<span class="nt">&lt;/td&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;td&gt;&lt;xsl:value</span><span class="na">-of</span> <span class="na">select=</span><span class="s">&quot;book/description&quot;</span> <span class="nt">/&gt;&lt;/td&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/tr&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/table&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/body&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/html&gt;</span>
-</span><span class='line'><span class="nt">&lt;/xsl:template&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;/xsl:stylesheet&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后我们在book.xml文件中加入对这个XSLT文件的引用。</p>
-
-<figure class='code'><figcaption><span>book.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
-</span><span class='line'><span class="cp">&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;book.xsl&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;book&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;name&gt;</span>Effective JavaScript<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;category&gt;</span>Program Language<span class="nt">&lt;/category&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;author&gt;</span>Bowen<span class="nt">&lt;/author&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;description&gt;</span>This book is about JavaScript Language.<span class="nt">&lt;/description&gt;</span>
-</span><span class='line'><span class="nt">&lt;/book&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>接下来我们再用浏览器打开book.xml文件，发现显示变成了这样。是不是很神奇？</p>
-
-<p><img src="http://www.huangbowen.net/images/bookxmlwithxslt.png" width="600"></p>
-
-<p>注意如果你使用chrome打开该book.xml文件，请设置chrome的<code>--allow-file-access-from-files</code>属性，这样chrome才允许加载本地的xsl文件。解决方案看这里：<a href="http://stackoverflow.com/questions/3828898/can-chrome-be-made-to-perform-an-xsl-transform-on-a-local-file">http://stackoverflow.com/questions/3828898/can-chrome-be-made-to-perform-an-xsl-transform-on-a-local-file</a></p>
-
-<p>OK，这篇文章讲的够多了，下篇接着讲XPath，XML to Object以及XML文档格式与近来风头强劲的JSON、YAML格式的比较。</p>
 ]]></content>
   </entry>
   

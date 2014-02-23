@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tag: ActiveMQ | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/activemq/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-02-23T15:52:58+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveMQ第四弹:在HermesJMS中创建ActiveMQ session]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms/"/>
+    <updated>2014-02-23T15:03:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms</id>
+    <content type="html"><![CDATA[<p>Hermes JMS是一个开源免费的跨平台的JMS消息监听工具。它可以很方便和各种JMS框架集成和交互，可以用来监听、发送、接收、修改、存储消息等。这篇文章将讲解HermesJMS如何集成ActiveMQ并与其交互。</p>
+
+<!-- more -->
+
+
+<p>ActiveMQ在通过命令行运行时会自动启动一个Web终端，默认地址是<a href="http://localhost:8161/admin">http://localhost:8161/admin</a>，默认用户名/密码为admin/admin。通过这个web终端可以监控和操作ActiveMQ。但是这个Web终端有两个缺陷，第一是功能较弱，有些需求不能满足；第二是只有通过命令行启动ActiveMQ才会启动这个Web终端，如果是使用内置的broker，则无法使用该Web终端。而HermesJMS恰好弥补了这两个缺陷。</p>
+
+<p>要想使用HermesJMS，首先要下载它。HermesJMS的官方网站是<a href="http://www.hermesjms.com/confluence/display/HJMS/Home">http://www.hermesjms.com/confluence/display/HJMS/Home</a>。其源码放置在sourceforge上。目前最新版本是1.14，已经两年多没推出新版本了。下载地址:<a href="http://sourceforge.net/projects/hermesjms/files/hermesjms/1.14/">http://sourceforge.net/projects/hermesjms/files/hermesjms/1.14/</a>。MAC系统的要下载dmg文件，其余系统可下载jar文件。</p>
+
+<p>下载完成以后，要配置ActiveMQ到provider去。打开Hermes，点击<code>create new session</code>按钮，然后在界面下方选中Providers tab，添加对ActiveMQ的配置。我们以ActiveMQ5.8.0版本为例。首先创建一个名为ActiveMQ5.8.0的group，然后向其添加两个jar包:activemq-all-5.8.0.jar及geronimo-j2ee-management_1.1_spec_1.0.1.jar。这两个jar包都可以在ActiveMQ安装目录下找到。</p>
+
+<p><img src="/images/setupProvider.png" width="800"></p>
+
+<p>然后就可以创建一个ActiveMQ的Session了。点击Sessions tab，输入以下配置信息。</p>
+
+<p><img src="/images/setupSession.png" width="800"></p>
+
+<p>设置Plugin为ActiveMQ是为了能够自动检测当前Provider中的Queue和Topic信息。</p>
+
+<p>然后启动一个ActiveMQ broker。</p>
+
+<p>```bash</p>
+
+<p>$:/usr/local/Cellar/activemq/5.8.0/libexec$ activemq console xbean:./conf/activemq-demo.xml</p>
+
+<p>```</p>
+
+<p>这样就可以通过hermesJMS和其进行交互了。双击左侧菜单树中的msgQueue节点，可以查看该Queue中的信息。右键点击该节点选择<code>send message</code>向Queue中发送信息。</p>
+
+<p><img src="/images/sendMessage.png" width="800"></p>
+
+<p>然后刷新Queue就可以看到消息已经在Queue里了。</p>
+
+<p><img src="/images/monitorQueue.png" width="800"></p>
+
+<p>我们也可以打开ActiveMQ的Web终端向msgQueue中发送消息。地址:<a href="http://localhost:8161/admin/queues.jsp">http://localhost:8161/admin/queues.jsp</a></p>
+
+<p><img src="/images/webconsole.png" width="800"></p>
+
+<p>然后在HermesJMS中刷新即可看到新的消息。</p>
+
+<p><img src="/images/msgFromWebConsole.png" width="800"></p>
+
+<p>Hermes JMS还支持将消息存储到一个JDBC数据库中，具体可以查阅官方文档。</p>
+
+<p>在使用Hermes JMS的过程中可以说到处是坑，软件弹出异常的次数不少于20次。可以说这个软件在健壮性、和兼容性方面还需要增强。</p>
+]]></content>
+  </entry>
+  
+</feed>
