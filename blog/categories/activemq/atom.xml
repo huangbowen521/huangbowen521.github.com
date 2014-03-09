@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ActiveMQ | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/activemq/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-02-24T01:11:38+08:00</updated>
+  <updated>2014-03-10T01:27:17+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,9 +14,220 @@
 
   
   <entry>
+    <title type="html"><![CDATA[ActiveMQ第五弹:增加ReDelivery功能]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/10/use-redelivery-in-activemq/"/>
+    <updated>2014-03-10T01:17:00+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/10/use-redelivery-in-activemq</id>
+    <content type="html"><![CDATA[<p>在使用Message Queue的过程中，总会由于种种原因而导致消息失败。一个经典的场景是一个生成者向Queue中发消息，里面包含了一组邮件地址和邮件内容。而消费者从Queue中将消息一条条读出来，向指定邮件地址发送邮件。消费者在发送消息的过程中由于种种原因会导致失败，比如网络超时、当前邮件服务器不可用等。这样我们就希望建立一种机制，对于未发送成功的邮件再重新发送，也就是重新处理。重新处理超过一定次数还不成功，就放弃对该消息的处理，记录下来，继续对剩余消息进行处理。</p>
+
+<!-- more -->
+
+
+<p>ActiveMQ为我们实现了这一功能，叫做ReDelivery(重新投递)。当消费者在处理消息时有异常发生，会将消息重新放回Queue里，进行下一次处理。当超过重试次数时，消息会被放置到一个特殊的Queue中，即Dead Letter Queue,简称DLQ，用于进行后续分析。</p>
+
+<p>废话不多说，一起来实现吧。（该示例中的全部代码已放置到<a href="https://github.com/huangbowen521/SpringJMSSample">GitHub</a>上，请自行下载。）</p>
+
+<p>还是接着本系列中的示例代码来进行。要实现ReDelivery功能，要给LinsterContainer加上事务处理。设置SimpleMessageListenerContainer的sessionTransacted属性为true。</p>
+
+<p>```xml activeMQConnection.xml</p>
+
+<pre><code>&lt;!-- Message Receiver Definition --&gt;
+&lt;bean id="messageReceiver" class="huangbowen.net.jms.retry.MessageReceiver"&gt;
+&lt;/bean&gt;
+&lt;bean class="org.springframework.jms.listener.SimpleMessageListenerContainer"&gt;
+    &lt;property name="connectionFactory" ref="connectionFactory"/&gt;
+    &lt;property name="destinationName" value="${jms.queue.name}"/&gt;
+    &lt;property name="messageListener" ref="messageReceiver"/&gt;
+    &lt;property name="sessionTransacted" value="true" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p>```</p>
+
+<p>然后创建一个ReDeliveryPolicy，来定义ReDelivery的机制。</p>
+
+<p>```xml activeMQConnection.xml</p>
+
+<pre><code>&lt;amq:redeliveryPolicy id="activeMQRedeliveryPolicy" destination="#defaultDestination" redeliveryDelay="100" maximumRedeliveries="4" /&gt;
+</code></pre>
+
+<p>```</p>
+
+<p>这里设置ReDelivery的时间间隔是100毫秒，最大重发次数是4次。</p>
+
+<p>在ActiveMQ的Connection Factory中应用这个Policy。就是给Connection Factory设置属性redeliveryPolicy为我们刚刚创建的Policy。</p>
+
+<p>```xml activeMQConnection.xml</p>
+
+<pre><code>&lt;!-- Activemq connection factory --&gt;
+&lt;bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+    &lt;property name="brokerURL" value="${jms.broker.url}?"/&gt;
+    &lt;property name="useAsyncSend" value="true"/&gt;
+    &lt;property name="redeliveryPolicy" ref="activeMQRedeliveryPolicy" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p>```</p>
+
+<p>这样ReDelivery机制就设置好了。那么怎么能证明我不是在忽悠你们那？当然最好的办法是写自动化测试来测试这个功能了。</p>
+
+<p>首先修改下broker的配置，将其对消息的持久化设置为false，这样每次运行测试时Queue中消息都为0，用于还原现场。然后设置一个Destination Policy，当消息超过重试次数仍未被正确处理时，就把它放入到以<code>DLQ.</code>为前缀的Queue中。由于ActiveMQ默认对非持久化的Message不放入DLQ中的，所以手动设置processNonPersistent为true。</p>
+
+<p>```xml activeMQConnection.xml</p>
+
+<pre><code>&lt;amq:broker id="activeMQBroker" persistent="false"&gt;
+    &lt;amq:transportConnectors&gt;
+        &lt;amq:transportConnector uri="${jms.broker.url}"/&gt;
+    &lt;/amq:transportConnectors&gt;
+    &lt;amq:destinationPolicy&gt;
+        &lt;amq:policyMap&gt;
+            &lt;amq:policyEntries&gt;
+                &lt;amq:policyEntry queue="&gt;"&gt;
+                    &lt;amq:deadLetterStrategy&gt;
+                        &lt;amq:individualDeadLetterStrategy
+                                queuePrefix="DLQ." useQueueForQueueMessages="true" processExpired="true"
+                                processNonPersistent="true" /&gt;
+                    &lt;/amq:deadLetterStrategy&gt;
+                &lt;/amq:policyEntry&gt;
+            &lt;/amq:policyEntries&gt;
+        &lt;/amq:policyMap&gt;
+    &lt;/amq:destinationPolicy&gt;
+&lt;/amq:broker&gt;
+</code></pre>
+
+<p>```</p>
+
+<p>然后新建一个MessageListener，当接收到消息就抛出一个异常，这样用以启动ReDelivery机制。</p>
+
+<p>```java retry/MessageReceiver</p>
+
+<p>package huangbowen.net.jms.retry;</p>
+
+<p>import org.springframework.jms.support.JmsUtils;</p>
+
+<p>import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.TextMessage;</p>
+
+<p>public class MessageReceiver implements MessageListener {</p>
+
+<pre><code>public void onMessage(Message message) {
+    if(message instanceof TextMessage) {
+        TextMessage textMessage = (TextMessage) message;
+        try {
+            String text = textMessage.getText();
+            System.out.println(String.format("Received: %s",text));
+            throw new JMSException("process failed");
+        } catch (JMSException e) {
+            System.out.println("there is JMS exception: " + e.getMessage() );
+            throw JmsUtils.convertJmsAccessException(e);
+        }
+    }
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>最后新建一个集成测试类。</p>
+
+<p>```java ReDeliveryFunctionIntegrationTest.java</p>
+
+<p>package huangbowen.net;</p>
+
+<p>import huangbowen.net.jms.MessageSender;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.BrowserCallback;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;</p>
+
+<p>import javax.jms.JMSException;
+import javax.jms.QueueBrowser;
+import javax.jms.Session;
+import java.util.Enumeration;</p>
+
+<p>import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;</p>
+
+<p>@ContextConfiguration(locations = {"/retry/activeMQConnection.xml"})
+@DirtiesContext
+public class ReDeliveryFunctionIntegrationTest extends AbstractJUnit4SpringContextTests {</p>
+
+<pre><code>private final static String DLQ = "DLQ.bar";
+@Autowired
+public JmsTemplate jmsTemplate;
+
+@Autowired
+public MessageSender messageSender;
+
+
+private int getMessagesInDLQ() {
+    return jmsTemplate.browse(DLQ, new BrowserCallback&lt;Integer&gt;() {
+        @Override
+        public Integer doInJms(Session session, QueueBrowser browser) throws JMSException {
+            Enumeration messages = browser.getEnumeration();
+            int total = 0;
+            while(messages.hasMoreElements()) {
+                messages.nextElement();
+                total++;
+            }
+
+            return  total;
+        }
+    });
+}
+
+@Test
+public void shouldRetryIfExceptionHappened() throws Exception {
+
+    assertThat(getMessagesInDLQ(), is(0));
+
+    messageSender.send("this is a message");
+    Thread.sleep(5000);
+
+    assertThat(getMessagesInDLQ(), is(1));
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>我们通过Spring的Autowired功能拿到配置中的JmsTemplate和MessageSender。使用JmsTemplate的brower方法来读取当前DLQ.bar Queue中有多少剩余的消息。用MessageSender来发送一条消息，这样即使我们有Listener来处理这条消息，但是由于每次都会抛出异常，超过限定次数后，被放置到了DLQ.bar中。我们检测DLQ.bar中的消息数量就可以知道ReDelivery功能是否正确。</p>
+
+<p>运行测试，成功通过。这是日志信息：</p>
+
+<p>```text</p>
+
+<p>send: this is a message
+Received: this is a message
+there is JMS exception: process failed
+Received: this is a message
+there is JMS exception: process failed
+Received: this is a message
+there is JMS exception: process failed
+Received: this is a message
+there is JMS exception: process failed
+Received: this is a message
+there is JMS exception: process failed</p>
+
+<p>Process finished with exit code 0</p>
+
+<p>```</p>
+
+<p>本系列的全部示例代码请在<a href="https://github.com/huangbowen521/SpringJMSSample">https://github.com/huangbowen521/SpringJMSSample</a>下载。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[ActiveMQ第四弹:在HermesJMS中创建ActiveMQ session]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms/"/>
-    <updated>2014-02-23T15:03:00+08:00</updated>
+    <updated>2014-02-23T15:03:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms</id>
     <content type="html"><![CDATA[<p>Hermes JMS是一个开源免费的跨平台的JMS消息监听工具。它可以很方便和各种JMS框架集成和交互，可以用来监听、发送、接收、修改、存储消息等。这篇文章将讲解HermesJMS如何集成ActiveMQ并与其交互。</p>
 
@@ -70,7 +281,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveMQ第三弹:在Spring中使用内置的Message Broker]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/22/using-embeded-broker-in-spring/"/>
-    <updated>2014-02-22T19:16:00+08:00</updated>
+    <updated>2014-02-22T19:16:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/22/using-embeded-broker-in-spring</id>
     <content type="html"><![CDATA[<p>在上个例子中我们演示了如何使用Spring JMS来向ActiveMQ发送消息和接收消息。但是这个例子需要先从控制台使用ActiveMQ提供的命令行功能启动一个Message Broker,然后才能运行示例。这个Message Broker就相当于一个server，无论是发送方还是接收方都可以连接到这个Server进行消息的处理。在某些情况下，让Message Broker和consumer启动在同一个JVM里面，通信效率肯定会高不少。</p>
 
@@ -223,7 +434,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveMQ第二弹:使用Spring JMS与ActiveMQ通讯]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/20/spring-jms-and-activemq-sample/"/>
-    <updated>2014-02-20T23:18:00+08:00</updated>
+    <updated>2014-02-20T23:18:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/20/spring-jms-and-activemq-sample</id>
     <content type="html"><![CDATA[<p>本文章的完整代码可从我的github中下载：<a href="https://github.com/huangbowen521/SpringJMSSample.git">https://github.com/huangbowen521/SpringJMSSample.git</a></p>
 
@@ -494,7 +705,7 @@ public static MessageSender getMessageSender() {
   <entry>
     <title type="html"><![CDATA[ActiveMQ第一弹:安装与运行]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq/"/>
-    <updated>2014-02-20T00:12:00+08:00</updated>
+    <updated>2014-02-20T00:12:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq</id>
     <content type="html"><![CDATA[<p>ActiveMQ使用java写的，所以天然跨平台，windows，各种类Unix系统都可运行，只需要下载对应的分发包即可。当前AciveMQ的最新版本是5.9.0。我目前在自己机子上安装的版本是5.8.0。</p>
 

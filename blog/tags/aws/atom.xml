@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: AWS | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/aws/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-02-24T01:11:38+08:00</updated>
+  <updated>2014-03-10T01:27:17+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[亚马逊云服务之CloudFormation]]></title>
     <link href="http://www.huangbowen.net/blog/2013/10/23/aws-cloudformation/"/>
-    <updated>2013-10-23T16:07:00+08:00</updated>
+    <updated>2013-10-23T16:07:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/10/23/aws-cloudformation</id>
     <content type="html"><![CDATA[<p>亚马逊的Web Service其实包含了一套云服务。云服务主要分为三种:</p>
 
@@ -179,7 +179,7 @@
   <entry>
     <title type="html"><![CDATA[将我的博客迁移到亚马逊云端（2）]]></title>
     <link href="http://www.huangbowen.net/blog/2013/10/01/migrate-octopress-to-aws-step-2/"/>
-    <updated>2013-10-01T21:54:00+08:00</updated>
+    <updated>2013-10-01T21:54:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/10/01/migrate-octopress-to-aws-step-2</id>
     <content type="html"><![CDATA[<p><img src="/images/edgelocation.png"></p>
 
@@ -243,7 +243,7 @@ end</p>
   <entry>
     <title type="html"><![CDATA[将我的博客迁移到亚马逊云端(1)]]></title>
     <link href="http://www.huangbowen.net/blog/2013/09/30/migrate-octopress-to-aws/"/>
-    <updated>2013-09-30T14:09:00+08:00</updated>
+    <updated>2013-09-30T14:09:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/09/30/migrate-octopress-to-aws</id>
     <content type="html"><![CDATA[<p><img src="/images/cloudcompute.png" width="400"></p>
 
