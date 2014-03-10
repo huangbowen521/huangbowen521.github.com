@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Spring-Context | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/categories/spring-context/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-03-11T02:35:13+10:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Spring-Context之一:一个简单的例子]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/11/first-exmaple-of-spring-conext/"/>
+    <updated>2014-03-11T02:27:00+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/11/first-exmaple-of-spring-conext</id>
+    <content type="html"><![CDATA[<p>很久之前就想系统的学习和掌握Spring框架，但是拖了很久都没有行动。现在趁着在外出差杂事不多，就花时间来由浅入深的研究下Spring框架。Spring框架这几年来已经发展成为一个巨无霸产品。从最初的只是用来作为依赖注入到现在已经是无法不包。其涉及的领域有依赖注入、MVC、JMS、Web flow、Batch job、Web service、Security…..几乎是涵盖了技术开发的所有方面。本人虽然从事Java语言开发时间不长，但是对Spring中的很多组件都有所涉猎，比如上面列出的那几个都有用过。可以说Spring是Java程序员必须要掌握的一个库。</p>
+
+<!-- more -->
+
+
+<p>现在Spring的最新的稳定版本是4.0.2,该版本中包含了大量的新特性，是比较重要的一次release。本系列将基本使用该版本进行讲解。</p>
+
+<p>第一讲就用一个简单的例子开始吧，初步学会使用Spring-Context的依赖注入功能。</p>
+
+<p>首先使用maven创建一个新的项目。</p>
+
+<p>```bash</p>
+
+<p>$: mvn archetype:generate</p>
+
+<p>```</p>
+
+<p>创建成功后在pom.xml文件中加入对Spring-Context的依赖。</p>
+
+<p>```xml pom.xml</p>
+
+<p><dependencies></p>
+
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+    &lt;version&gt;4.0.2.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<p></dependencies></p>
+
+<p>```</p>
+
+<p>然后我们创建一个MovieService的接口。</p>
+
+<p>```java MovieService.java</p>
+
+<p>package huangbowen.net.service;</p>
+
+<p>public interface MovieService {</p>
+
+<pre><code>String getMovieName();
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>创建一个DefaultMovieService来实现这个接口。</p>
+
+<p>```java DefaultMovieService.java</p>
+
+<p>package huangbowen.net.service;</p>
+
+<p>public class DefaultMovieService implements MovieService {</p>
+
+<pre><code>public String getMovieName() {
+    return "A Touch of Sin";
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>然后创建一个Cinema类，会使用MoviceService来放电影。</p>
+
+<p>```java Cinema.java</p>
+
+<p>package huangbowen.net.service;</p>
+
+<p>import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;</p>
+
+<p>@Component
+public class Cinema {</p>
+
+<pre><code>@Autowired
+private MovieService movieService;
+
+public void printMovieName() {
+    System.out.println(movieService.getMovieName());
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>建立一个Application类。</p>
+
+<p>```java Application.java</p>
+
+<p>package huangbowen.net;</p>
+
+<p>import huangbowen.net.service.Cinema;
+import huangbowen.net.service.DefaultMovieService;
+import huangbowen.net.service.MovieService;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;</p>
+
+<p>@Configuration
+@ComponentScan
+public class Application
+{</p>
+
+<pre><code>@Bean
+public MovieService getMovieService() {
+    return new DefaultMovieService();
+}
+
+public static void main( String[] args )
+{
+    AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(Application.class);
+    Cinema cinema = applicationContext.getBean(Cinema.class);
+    cinema.printMovieName();
+
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>Ok,运行main函数，得到控制台输出：</p>
+
+<p>```text</p>
+
+<p>A Touch of Sin</p>
+
+<p>```</p>
+
+<p>本例子中主要使用Annotation功能来实现对MoviceService的注入。我们将Cinema.java的头部标注为@Component说明该类交由Spring托管。而Cinema.java中的属性MoviceService标注为@Autowired，则Spring在初始化Cinema类时会从Application Context中找到类型为MovieService的Bean，并赋值给Cinema。在Application.java中我们声明了一个类型为MovieService的Bean。并且标注Application.java为@Configuration,这是告诉Spring在Application.java中定义了一个或多个@Bean方法，让Spring容器可以在运行时生成这些Bean。@ComponentScan则会让Spring容器自动扫描当前package下的标有@Component的class，这些class都将由Spring托管。</p>
+
+<p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
+]]></content>
+  </entry>
+  
+</feed>

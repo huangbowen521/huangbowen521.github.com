@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-03-10T01:27:17+10:00</updated>
+  <updated>2014-03-11T02:35:13+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,195 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Spring-Context之一:一个简单的例子]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/11/first-exmaple-of-spring-conext/"/>
+    <updated>2014-03-11T02:27:00+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/11/first-exmaple-of-spring-conext</id>
+    <content type="html"><![CDATA[<p>很久之前就想系统的学习和掌握Spring框架，但是拖了很久都没有行动。现在趁着在外出差杂事不多，就花时间来由浅入深的研究下Spring框架。Spring框架这几年来已经发展成为一个巨无霸产品。从最初的只是用来作为依赖注入到现在已经是无法不包。其涉及的领域有依赖注入、MVC、JMS、Web flow、Batch job、Web service、Security…..几乎是涵盖了技术开发的所有方面。本人虽然从事Java语言开发时间不长，但是对Spring中的很多组件都有所涉猎，比如上面列出的那几个都有用过。可以说Spring是Java程序员必须要掌握的一个库。</p>
+
+<!-- more -->
+
+
+<p>现在Spring的最新的稳定版本是4.0.2,该版本中包含了大量的新特性，是比较重要的一次release。本系列将基本使用该版本进行讲解。</p>
+
+<p>第一讲就用一个简单的例子开始吧，初步学会使用Spring-Context的依赖注入功能。</p>
+
+<p>首先使用maven创建一个新的项目。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span> mvn archetype:generate
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>创建成功后在pom.xml文件中加入对Spring-Context的依赖。</p>
+
+<figure class='code'><figcaption><span>pom.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;dependencies&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;artifactId&gt;</span>spring-context<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;version&gt;</span>4.0.2.RELEASE<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'><span class="nt">&lt;/dependencies&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后我们创建一个MovieService的接口。</p>
+
+<figure class='code'><figcaption><span>MovieService.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">huangbowen</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">service</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MovieService</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">String</span> <span class="nf">getMovieName</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>创建一个DefaultMovieService来实现这个接口。</p>
+
+<figure class='code'><figcaption><span>DefaultMovieService.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">huangbowen</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">service</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DefaultMovieService</span> <span class="kd">implements</span> <span class="n">MovieService</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getMovieName</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;A Touch of Sin&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>然后创建一个Cinema类，会使用MoviceService来放电影。</p>
+
+<figure class='code'><figcaption><span>Cinema.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">huangbowen</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">service</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@Component</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Cinema</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Autowired</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">MovieService</span> <span class="n">movieService</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printMovieName</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">movieService</span><span class="o">.</span><span class="na">getMovieName</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>建立一个Application类。</p>
+
+<figure class='code'><figcaption><span>Application.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">huangbowen</span><span class="o">.</span><span class="na">net</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">huangbowen.net.service.Cinema</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">huangbowen.net.service.DefaultMovieService</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">huangbowen.net.service.MovieService</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.context.annotation.AnnotationConfigApplicationContext</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.context.annotation.ComponentScan</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@Configuration</span>
+</span><span class='line'><span class="nd">@ComponentScan</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Application</span>
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Bean</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">MovieService</span> <span class="nf">getMovieService</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">DefaultMovieService</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="n">String</span><span class="o">[]</span> <span class="n">args</span> <span class="o">)</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>        <span class="n">AnnotationConfigApplicationContext</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AnnotationConfigApplicationContext</span><span class="o">(</span><span class="n">Application</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Cinema</span> <span class="n">cinema</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">Cinema</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">cinema</span><span class="o">.</span><span class="na">printMovieName</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ok,运行main函数，得到控制台输出：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>A Touch of Sin
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>本例子中主要使用Annotation功能来实现对MoviceService的注入。我们将Cinema.java的头部标注为@Component说明该类交由Spring托管。而Cinema.java中的属性MoviceService标注为@Autowired，则Spring在初始化Cinema类时会从Application Context中找到类型为MovieService的Bean，并赋值给Cinema。在Application.java中我们声明了一个类型为MovieService的Bean。并且标注Application.java为@Configuration,这是告诉Spring在Application.java中定义了一个或多个@Bean方法，让Spring容器可以在运行时生成这些Bean。@ComponentScan则会让Spring容器自动扫描当前package下的标有@Component的class，这些class都将由Spring托管。</p>
+
+<p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ActiveMQ第五弹:增加ReDelivery功能]]></title>
@@ -2627,42 +2816,6 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
 
 
 <p>通过这种方式可以最大限度的实现对Intellij项目文件的定制化。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[记一次扯到蛋的教训]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/11/06/task-and-validation-is-important/"/>
-    <updated>2013-11-06T00:27:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/11/06/task-and-validation-is-important</id>
-    <content type="html"><![CDATA[<p>上周五的时候我对某个项目做了一个更改，将里面的构建脚本由maven换成了gradle。原因之一是因为maven的配置太繁琐，由于其引入了lifecycle的机制，导致其不够灵活，而gradle作为用groovy写的DSL，代码清爽、简单、灵活。原因之二是我们所有的项目构建都换成了gradle，为了保持技术栈单一，此项目做迁移也是大势所趋。（其实最重要的原因是我想练练手，虽然对maven已经相当熟悉了，但是gradle的练习不多。）</p>
-
-<!-- more -->
-
-
-<p>完成迁移以后，我在本地试了一下，编译的war包可以成功运行。并且我也修改了构建管道，使其能够支持新的gradle脚本将war包部署到服务器上。</p>
-
-<p>然后我就给项目成员发了封邮件，告知了这件事情。</p>
-
-<p>周一来上班的时候，收到了项目组的回信，大家都对我的劳动表示感谢。其中有一个组员建议我将这个项目的名称更换一下。因为该项目之前叫做ais-stub，他的主要功能是模拟ais服务，但是后来我们也加入了对其他web service的模拟，应该改为service-stub更具有意义。</p>
-
-<p>我觉的这个改动应该比较简单，无非就是修改一下该项目的名称，并且更改构建出来的war包名称，修改构建管道的配置。然后我就动手改了。待我改了war包名称后，想起来这样会引起url中的contextPath也发生变化，而功能测试引用了这个url，那么我就修改了功能测试中的url。然后我又发现我需要修改其他项目中的配置，将使用了该url的地方替换为新的url。待我将我的修改提交后，发现部署失败了。原来是由于war包名称改变，部署脚本在获取war包时找不到新war包，我不得不修改部署脚本。但是修改过程中我发现有一段部署脚本由于权限原因我无法修改，只能请求对该脚本有修改权限的人替我修改，这又浪费了不少时间。全部修改完后我想起项目wiki上的介绍也要跟着改，把所有使用到该项目名称的地方都需要改成新名称……</p>
-
-<p>就这样一步步的做下去，本来觉得2小时就能完成的任务我足足干了4个多小时。最后全部改完后，我试着跑一下看看能运行不。结果傻眼了，将该项目部署到服务器上后，其他项目请求该服务失败，具体原因未知。由于我已经做了太多的改变，很难定位到问题所在。我刚开始怀疑部署有问题，想查看服务器上的构建版本，发现查询不到。找了半天原因后发现原来星期五我做构建脚本迁移时遗漏了一个插件，导致没有将构建版本记录到war包中。我只能先放弃查看服务器上的war包构建版本，而在本地将该项目的服务器起起来，使用其他项目进行访问，结果又一切正常。那证明可能还是服务器上的部署有问题。我查看了构建出来的war包，发现里面的properties文件不是期望的那个，这时我想起周五修改构建管道时，随手删除了一个自认为多余的task，可能正是这个原因导致最后导入war包的properties不对。我只好又修改构建脚本，确保其能包含正确的war包……</p>
-
-<p>很快时间已经到了6点多了，该下班了，但是我仍然深陷这个泥潭，没有找到问题原因，反而时不时要解决一些其他杂七杂八的东西。看来今天是完成不了了，因为修改的东西太多了，每个修改都没有进行验证，所以问题排查很难，并且还经常发现新的问题。</p>
-
-<p>最后，我只好打住。决定明天早上一来把今天所有的修改都撤销掉，等于说今天的活都白干了。今天下班了，感觉很不好。作为一个丰富的程序员，给羊剪羊毛（出自《卓有成效的程序员》，指剪不断理还乱，本来要解决这个问题，但解决过程中面对的都是与根本问题不相干的其他问题）这件事情怎么会发生在我的身上那？</p>
-
-<p>我觉得最大的问题有两个：</p>
-
-<ol>
-<li><p>没有对改名这个任务列详细的task。刚开始太轻敌，以为改名很简单，没有仔细想。结果自己把自己带到了沟里，步子迈的太大了，把蛋给扯到了。列出详细的task好处是你能预估出完成的时间，并且了解可能会出现哪些风险。每个task都循序渐进、可以验证，并且保证随时可以回退。由于没有列task，直接导致我明天撤销修改时还要努力回想到底今天做了哪些修改。</p></li>
-<li><p>我没有及时进行验证。TDD的思想就是先测试-》测试失败->再写实现->测试成功。这样周而复始来驱动出你的代码。由于所有代码都有测试覆盖，你有充分的信心保证你的实现是正确的。而虽然我对项目的修改无法及时通过自动化测试进行验证，但起码也应当在做了一个小改动时及时的手工进行验证。比如在将构建脚本替换成gradle之后，不仅要在本地测试一下是否正确，还应当测试部署到服务器上的war包是否正确。这样至少能及时发现构建版本信息缺失及properties文件不对的问题。</p></li>
-</ol>
-
-
-<p>以前老教导别人做事的时候要列task，要及时验证和反馈，没想自己今天在这上面宰了一跟头，还是太轻敌啊。不过吃一堑长一智，希望以后少犯这种低级错误。</p>
 ]]></content>
   </entry>
   
