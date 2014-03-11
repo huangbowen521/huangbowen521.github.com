@@ -238,7 +238,7 @@
     </url>
     <url>
         <loc>http://www.huangbowen.net/blog/2013/09/23/not-easy-to-install-ruby/</loc>
-        <lastmod>2013-09-23T18:57:25+10:00</lastmod>
+        <lastmod>2014-03-11T02:43:31+10:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/blog/2013/09/30/migrate-octopress-to-aws/</loc>
@@ -351,16 +351,20 @@
         <lastmod>2014-03-11T02:34:49+10:00</lastmod>
     </url>
     <url>
+        <loc>http://www.huangbowen.net/blog/2014/03/12/use-spring-test/</loc>
+        <lastmod>2014-03-12T01:05:08+10:00</lastmod>
+    </url>
+    <url>
         <loc>http://www.huangbowen.net/about/</loc>
         <lastmod>2013-08-16T00:01:39+10:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/blog/archives/</loc>
-        <lastmod>2014-03-11T02:34:49+10:00</lastmod>
+        <lastmod>2014-03-12T01:05:08+10:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/</loc>
-        <lastmod>2014-03-11T02:34:49+10:00</lastmod>
+        <lastmod>2014-03-12T01:05:08+10:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/robots.txt</loc>

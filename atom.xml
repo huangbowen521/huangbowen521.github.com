@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-03-11T02:35:13+10:00</updated>
+  <updated>2014-03-12T01:05:36+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,152 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Spring-Context之二:使用Spring提供的测试框架进行测试]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/12/use-spring-test/"/>
+    <updated>2014-03-12T01:01:00+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/12/use-spring-test</id>
+    <content type="html"><![CDATA[<p>Spring框架是无侵入性的，所以你的代码可以完全是POJO（plain old java object），直接使用Junit就可以完成大部分的单元测试。但是在集成测试方面就比较吃力了。单元测试层面你可以mock一些依赖对象，但是集成测试时需要真实的依赖对象，而这些对象都是在Spring容器的控制之下。那么如何在引入了Spring的情况下进行集成测试那？别着急，Spring框架早为我们想到了这点，本身提供了集成测试的功能。</p>
+
+<!-- more -->
+
+
+<p>就拿上一次那个简单的例子来做实验吧。</p>
+
+<p>首先引入对junit以及spring-test库的依赖。</p>
+
+<figure class='code'><figcaption><span>pom.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>   <span class="nt">&lt;dependencies&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>junit<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>junit<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>4.11<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>spring-test<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>4.0.2.RELEASE<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/dependencies&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>spring-test模块是专门为使用了spring框架的项目进行集成测试的辅助类库。其有以下几个目的。</p>
+
+<ul>
+<li><p>提供在运行测试时对Spring IOC容器的缓存，提高集成测试速度。</p></li>
+<li><p>对测试实例提供依赖注入功能。</p></li>
+<li><p>集成测试中提供事务管理。</p></li>
+<li><p>提供一些辅助类库帮助开发者更好的编写集成测试。</p></li>
+</ul>
+
+
+<p>然后新建一个ApplicationTest.java类，代码如下所示。</p>
+
+<figure class='code'><figcaption><span>ApplicationTest.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">huangbowen</span><span class="o">.</span><span class="na">net</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">huangbowen.net.service.Cinema</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.junit.Test</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.junit.runner.RunWith</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.context.ApplicationContext</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.test.context.ContextConfiguration</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.test.context.junit4.SpringJUnit4ClassRunner</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">Assert</span><span class="o">.</span><span class="na">assertNotNull</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@RunWith</span><span class="o">(</span><span class="n">SpringJUnit4ClassRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'><span class="nd">@ContextConfiguration</span><span class="o">(</span><span class="n">classes</span> <span class="o">=</span> <span class="o">{</span><span class="n">Application</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApplicationTest</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Autowired</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">ApplicationContext</span> <span class="n">applicationContext</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Autowired</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Cinema</span> <span class="n">cinema</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Test</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetCinemaInstance</span><span class="o">()</span>  <span class="o">{</span>
+</span><span class='line'>        <span class="n">Cinema</span> <span class="n">cinema</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">Cinema</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">assertNotNull</span><span class="o">(</span><span class="n">cinema</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Test</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetAutowiredCinema</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">assertNotNull</span><span class="o">(</span><span class="n">cinema</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Test</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetMovieServiceInstance</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">assertNotNull</span><span class="o">(</span><span class="n">cinema</span><span class="o">.</span><span class="na">getMovieService</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">cinema</span><span class="o">.</span><span class="na">getMovieService</span><span class="o">(),</span> <span class="n">instanceOf</span><span class="o">(</span><span class="n">DefaultMovieService</span><span class="o">.</span><span class="na">class</span><span class="o">));</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在本例中ApplicationTest有两个注解。@RunWith(SpringJUnit4ClassRunner.class).是Spring TestContext 框架提供的一个自定义的JUnit runner，这样在测试类中就可以获取ApplicationContext，甚至直接进行依赖注入，使用事务控制测试方法执行等。声明了@RunWith(SpringJUnit4ClassRunner.class)以后一般还要声明@ContextConfiguration注解。这个注解是用于告诉测试类本项目中的Spring配置。这里我们传入Application.class类，因为这个类中配置了Spring的bean。</p>
+
+<p>然后就可以在测试类中使用强大的@Autowired功能了。我们写了三个测试方法，第一个是通过Autowired功能拿到ApplicationContext，第二个是通过Autowired功能直接拿到cinema，第三个则是验证Cinema中的MovieService是被正确注入了的。</p>
+
+<p>Ok,今天就到这里。本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Spring-Context之一:一个简单的例子]]></title>
@@ -2737,85 +2883,6 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
 <p>回国之后打算考雅思。也没有怎么特别准备，只是买了一本雅思题库书，做了4套模拟题，熟悉了一下雅思题型。考试前心理还是挺忐忑的，毕竟好久没有参加过这样的考试了。考完以后感觉发挥的还是可以，5分应该没问题。成绩出来后也不出所料，顺利过关。我觉的雅思考到5分还是很容易的，但是要达到7分就要下一些功夫。听力和阅读要考够7分再努力把应该可以。而写作和阅读则一定要有所积累，并且一定要多学习国外那种很native的用法。其实我在和外国同事交流过程中发现他们其实有很多很常用的用法，但是在国内英语教材中很难体现出来。多看一些美剧，多读一些英文书籍能够提高这方面的能力。</p>
 
 <p>现在英语在平时的工作和学习中早已不可或缺。它已经不是挡在我面前的一座大山，而是成为我个人成长的助推器。希望这篇文章能够激励咱们的IT同仁们，都能够克服英语这个难关。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Gradle中使用idea插件的一些实践]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/12/04/use-idea-plugin-in-gradle/"/>
-    <updated>2013-12-04T22:19:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/12/04/use-idea-plugin-in-gradle</id>
-    <content type="html"><![CDATA[<p>如果你的项目使用了Gradle作为构建工具，那么你一定要使用Gradle来自动生成IDE的项目文件，无需再手动的将源代码导入到你的IDE中去了。</p>
-
-<!-- more -->
-
-
-<p>如果你使用的是eclipse，可以在build.gradle中加入这么一行.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;eclipse&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后在命令行中输入<code>gradle eclipse</code>就可以生成eclipse的项目文件，直接使用eclipse打开生成的项目文件即可。</p>
-
-<p>当然作为Java程序开发者，最好使的IDE还是Intellij,昨天听闻Intellij 13已经发布了，增加了不少新功能，看来又要掏腰包了。如果要让Gradle自动生成Intellij的项目文件，需要使用idea插件。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;idea&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>命令行下输入<code>gradle idea</code>，就会生成Intellij的项目文件，真是省时省力。如果在已经存在Intellij的项目文件情况下，想根据build.gradle中的配置来更新项目文件，可以输入<code>gradle cleanIdea idea</code>。<code>cleanIdea</code>可以清除已有的Intellij项目文件。</p>
-
-<p>Intellij项目文件主要有三种类型。</p>
-
-<ul>
-<li><p>.ipr Intellij工程文件</p></li>
-<li><p>.iml Intellij 模块文件</p></li>
-<li><p>.iws Intellij 工作区文件</p></li>
-</ul>
-
-
-<p>如果只简单的使用<code>gradle idea</code>生成Intellij的工程文件，其实在使用Intellij打开项目以后，我们还要做一些手工配置，比如指定JDK的版本，指定源代码管理工具等。Gradle的idea命令本质上就是生成这三个xml文件,所以Gradle提供了生成文件时的hook(钩子)，让我们可以方便的做定制化，实现最大程度的自动化。这就需要自定义idea这个任务了。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">idea</span><span class="o">.</span><span class="na">project</span> <span class="o">{</span>
-</span><span class='line'>     <span class="n">jdkName</span> <span class="o">=</span> <span class="s1">&#39;1.6&#39;</span>
-</span><span class='line'>     <span class="n">languageLevel</span> <span class="o">=</span> <span class="s1">&#39;1.6&#39;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个用来配置项目的jdk及languageLevel。</p>
-
-<p>如果要指定源代码管理工具类型，就需要调用hook修改生成的ipr文件。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">idea</span><span class="o">.</span><span class="na">project</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">ipr</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">withXml</span> <span class="o">{</span> <span class="n">provider</span> <span class="o">-&gt;</span>
-</span><span class='line'>            <span class="n">provider</span><span class="o">.</span><span class="na">node</span><span class="o">.</span><span class="na">component</span><span class="o">.</span><span class="na">find</span> <span class="o">{</span> <span class="n">it</span><span class="o">.</span><span class="nd">@name</span> <span class="o">==</span> <span class="s1">&#39;VcsDirectoryMappings&#39;</span> <span class="o">}.</span><span class="na">mapping</span><span class="o">.</span><span class="nd">@vcs</span> <span class="o">=</span> <span class="s1">&#39;Git&#39;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>通过这种方式可以最大限度的实现对Intellij项目文件的定制化。</p>
 ]]></content>
   </entry>
   
