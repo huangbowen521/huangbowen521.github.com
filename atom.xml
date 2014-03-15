@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-03-13T02:18:15+10:00</updated>
+  <updated>2014-03-16T02:36:27+11:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,9 +14,166 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Spring-Context之四:Spring容器及bean的定义]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/16/bean-defination-in-spring/"/>
+    <updated>2014-03-16T02:29:00+11:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/16/bean-defination-in-spring</id>
+    <content type="html"><![CDATA[<p>Spring框架的核心功能之一就是控制反转（Inversion of Control, IoC），也叫做依赖注入（dependency injection, DI）。关于依赖注入的具体内容可以参见Martin Fowler写的一篇文章<a href="http://martinfowler.com/articles/injection.html">《Inversion of Control Containers and the Dependency Injection pattern》</a>。</p>
+
+<!-- more -->
+
+
+<p>Spring容器接口是BeanFactory，其提供了一些方法来配置和管理对象。ApplicationContext是BeanFactory的子接口，它集成了Spring的AOP特性，信息资源管理（用于全球化），公共事件等。简单的说，BeanFactory提供了配置框架及基本的功能，而ApplicationContext增加了更多的企业级定制功能。比如其实现类WebApplicationContext可用于web应用程序中。</p>
+
+<p>在Spring中，应用程序中受Spring IoC容器管理的对象叫做bean，即bean是一个由Spring IoC容器实例化、装配及其它管理的对象。下图是Spring IoC容器的一个简单图解。</p>
+
+<p><img src="http://www.huangbowen.net/images/iocOverView.png"></p>
+
+<p>以下列出了几个常用的实现了ApplicationContext的容器对象。</p>
+
+<ul>
+<li><p>AnnotationConfigApplicationContext :接收注解的class作为输入来初始化配置。</p></li>
+<li><p>GenericGroovyApplicationContext: 根据Groovy DSL来初始化配置。</p></li>
+<li><p>ClassPathXmlApplicationContext:根据当前classpath下的xml文件初始化配置。</p></li>
+<li><p>FileSystemXmlApplicationContext:根据文件系统路径下的xml文件初始化配置。</p></li>
+</ul>
+
+
+<p>Bean的定义有多种方式，XML定义，Annoation定义，Java代码直接定义，Groovy DSL定义等。之前例子基本都演示过这些定义方法。</p>
+
+<p>一个简单的XML定义是这样的。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.springframework.org/schema/beans&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+</span><span class='line'>       <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://www.springframework.org/schema/beans</span>
+</span><span class='line'><span class="s">        http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;movieService&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.service.DefaultMovieService”/</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/beans&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其包含一个id和一个class。id是一个bean的唯一标示，同一个spring容器中不能有两个id一样的bean，不过你也可以给bean起别名，使用name属性即可，多个别名可以用逗号,分号或空格分开。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;movieService&quot;</span> <span class="na">name=</span><span class="s">&quot;service1 service2&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.service.DefaultMovieService&quot;</span><span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;movieService&quot;</span> <span class="na">name=</span><span class="s">“service1,service2&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.service.DefaultMovieService&quot;</span><span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;movieService&quot;</span> <span class="na">name=</span><span class="s">&quot;service1;service2&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.service.DefaultMovieService&quot;</span><span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以使用alisa来起别名。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;movieService&quot;</span> <span class="na">name=</span><span class="s">&quot;service1,service2&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.service.DefaultMovieService&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;alias</span> <span class="na">name=</span><span class="s">&quot;movieService&quot;</span> <span class="na">alias=</span><span class="s">&quot;service3&quot;</span><span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果你的bean的实例不是通过构造函数直接生成的，而是通过工厂方法生成那，那么也有相应的配置方法。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;defaultMovieService&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.service.MovieServiceFactory&quot;</span> <span class="na">factory-method=</span><span class="s">&quot;GetMovieService&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>MovieServiceFactory </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">huangbowen</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">service</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MovieServiceFactory</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="n">DefaultMovieService</span> <span class="n">defaultMovieService</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DefaultMovieService</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">MovieService</span> <span class="nf">GetMovieService</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">defaultMovieService</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果bean对象是由一个实例工厂生成的，那么应该这样配置。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;serviceLocator&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.service.MovieServiceLocator&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;instantMovieService&quot;</span> <span class="na">factory-bean=</span><span class="s">&quot;serviceLocator&quot;</span> <span class="na">factory-method=</span><span class="s">&quot;GetMovieService&quot;</span><span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>MovieServiceLocator</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">huangbowen</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">service</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MovieServiceLocator</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="n">DefaultMovieService</span> <span class="n">defaultMovieService</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DefaultMovieService</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">MovieService</span> <span class="nf">GetMovieService</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">defaultMovieService</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Spring-Context之三:使用XML和Groovy DSL配置Bean]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/13/use-groovy-dsl-in-spring/"/>
-    <updated>2014-03-13T02:13:00+10:00</updated>
+    <updated>2014-03-13T02:13:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/13/use-groovy-dsl-in-spring</id>
     <content type="html"><![CDATA[<p>在第一讲中显示了如何使用注解配置bean，其实这是Spring3引进的特性,Spring2使用的是XML的方式来配置Bean，那时候漫天的XML文件使得Spring有着<code>配置地狱</code>的称号。Spring也一直在力求改变这一缺陷。Spring3引入的注解方式确实使配置精简不少，而Spring4则引入了Groovy DSL来配置，其语法比XML要简单很多，而且Groovy本身是门语言，其配置文件就相当于代码，可以用来实现复杂的配置。</p>
 
@@ -377,7 +534,7 @@
   <entry>
     <title type="html"><![CDATA[Spring-Context之二:使用Spring提供的测试框架进行测试]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/12/use-spring-test/"/>
-    <updated>2014-03-12T01:01:00+10:00</updated>
+    <updated>2014-03-12T01:01:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/12/use-spring-test</id>
     <content type="html"><![CDATA[<p>Spring框架是无侵入性的，所以你的代码可以完全是POJO（plain old java object），直接使用Junit就可以完成大部分的单元测试。但是在集成测试方面就比较吃力了。单元测试层面你可以mock一些依赖对象，但是集成测试时需要真实的依赖对象，而这些对象都是在Spring容器的控制之下。那么如何在引入了Spring的情况下进行集成测试那？别着急，Spring框架早为我们想到了这点，本身提供了集成测试的功能。</p>
 
@@ -523,7 +680,7 @@
   <entry>
     <title type="html"><![CDATA[Spring-Context之一:一个简单的例子]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/11/first-exmaple-of-spring-conext/"/>
-    <updated>2014-03-11T02:27:00+10:00</updated>
+    <updated>2014-03-11T02:27:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/11/first-exmaple-of-spring-conext</id>
     <content type="html"><![CDATA[<p>很久之前就想系统的学习和掌握Spring框架，但是拖了很久都没有行动。现在趁着在外出差杂事不多，就花时间来由浅入深的研究下Spring框架。Spring框架这几年来已经发展成为一个巨无霸产品。从最初的只是用来作为依赖注入到现在已经是无法不包。其涉及的领域有依赖注入、MVC、JMS、Web flow、Batch job、Web service、Security…..几乎是涵盖了技术开发的所有方面。本人虽然从事Java语言开发时间不长，但是对Spring中的很多组件都有所涉猎，比如上面列出的那几个都有用过。可以说Spring是Java程序员必须要掌握的一个库。</p>
 
@@ -712,7 +869,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveMQ第五弹:增加ReDelivery功能]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/10/use-redelivery-in-activemq/"/>
-    <updated>2014-03-10T01:17:00+10:00</updated>
+    <updated>2014-03-10T01:17:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/10/use-redelivery-in-activemq</id>
     <content type="html"><![CDATA[<p>在使用Message Queue的过程中，总会由于种种原因而导致消息失败。一个经典的场景是一个生成者向Queue中发消息，里面包含了一组邮件地址和邮件内容。而消费者从Queue中将消息一条条读出来，向指定邮件地址发送邮件。消费者在发送消息的过程中由于种种原因会导致失败，比如网络超时、当前邮件服务器不可用等。这样我们就希望建立一种机制，对于未发送成功的邮件再重新发送，也就是重新处理。重新处理超过一定次数还不成功，就放弃对该消息的处理，记录下来，继续对剩余消息进行处理。</p>
 
@@ -1033,7 +1190,7 @@
   <entry>
     <title type="html"><![CDATA[如何让你的简历脱颖而出]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/24/build-your-outstanding-resume/"/>
-    <updated>2014-02-24T00:50:00+10:00</updated>
+    <updated>2014-02-24T00:50:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/24/build-your-outstanding-resume</id>
     <content type="html"><![CDATA[<p>年后的2、3月份是每年换工作的高峰期。可能很多人在过年以前早都萌生了换工作的想法。过年时在亲朋好友的刺激下，更坚定了这个想法。年终奖既已到手，对前公司的最后一丝留恋也随之逝去。在各大招聘网上更新自己的简历，主动和猎头联系让其帮忙物色，新一轮大潮已经开始。</p>
 
@@ -1069,7 +1226,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveMQ第四弹:在HermesJMS中创建ActiveMQ session]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms/"/>
-    <updated>2014-02-23T15:03:00+10:00</updated>
+    <updated>2014-02-23T15:03:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms</id>
     <content type="html"><![CDATA[<p>Hermes JMS是一个开源免费的跨平台的JMS消息监听工具。它可以很方便和各种JMS框架集成和交互，可以用来监听、发送、接收、修改、存储消息等。这篇文章将讲解HermesJMS如何集成ActiveMQ并与其交互。</p>
 
@@ -1122,7 +1279,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveMQ第三弹:在Spring中使用内置的Message Broker]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/22/using-embeded-broker-in-spring/"/>
-    <updated>2014-02-22T19:16:00+10:00</updated>
+    <updated>2014-02-22T19:16:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/22/using-embeded-broker-in-spring</id>
     <content type="html"><![CDATA[<p>在上个例子中我们演示了如何使用Spring JMS来向ActiveMQ发送消息和接收消息。但是这个例子需要先从控制台使用ActiveMQ提供的命令行功能启动一个Message Broker,然后才能运行示例。这个Message Broker就相当于一个server，无论是发送方还是接收方都可以连接到这个Server进行消息的处理。在某些情况下，让Message Broker和consumer启动在同一个JVM里面，通信效率肯定会高不少。</p>
 
@@ -1347,7 +1504,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveMQ第二弹:使用Spring JMS与ActiveMQ通讯]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/20/spring-jms-and-activemq-sample/"/>
-    <updated>2014-02-20T23:18:00+10:00</updated>
+    <updated>2014-02-20T23:18:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/20/spring-jms-and-activemq-sample</id>
     <content type="html"><![CDATA[<p>本文章的完整代码可从我的github中下载：<a href="https://github.com/huangbowen521/SpringJMSSample.git">https://github.com/huangbowen521/SpringJMSSample.git</a></p>
 
@@ -1737,7 +1894,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveMQ第一弹:安装与运行]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq/"/>
-    <updated>2014-02-20T00:12:00+10:00</updated>
+    <updated>2014-02-20T00:12:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq</id>
     <content type="html"><![CDATA[<p>ActiveMQ使用java写的，所以天然跨平台，windows，各种类Unix系统都可运行，只需要下载对应的分发包即可。当前AciveMQ的最新版本是5.9.0。我目前在自己机子上安装的版本是5.8.0。</p>
 
@@ -1935,7 +2092,7 @@
   <entry>
     <title type="html"><![CDATA[如果让我完善几年前的一个项目，我会做哪些改进?]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/17/how-to-improve-a-legacy-project/"/>
-    <updated>2014-02-17T00:18:00+10:00</updated>
+    <updated>2014-02-17T00:18:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/17/how-to-improve-a-legacy-project</id>
     <content type="html"><![CDATA[<p>在08年的时候，我还没有大学毕业，当时在一家公司实习。那时候老板接了一个项目，是一个给中石油某下属公司做的一个web版本的管理系统，我和一个同学硬着头皮接下来做完了。这个系统后端用的是c#的web form,前端普通的html+css+javascript，数据库使用的是sql server2005，部署服务器使用的是Microsoft Server 2008。现在回顾这个系统，虽然代码写的烂，架构写的烂，但是能够正常运行，这是偶尔有一些莫名其妙难以解决的小bug。毕竟是自己5年前的代码嘛，那时候自己太嫩了，好多东西都不知道，没有多少经验。</p>
 
@@ -1970,7 +2127,7 @@
   <entry>
     <title type="html"><![CDATA[做一张故事卡时的感悟]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/11/thoughts-when-doing-user-story/"/>
-    <updated>2014-02-11T17:36:00+10:00</updated>
+    <updated>2014-02-11T17:36:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/11/thoughts-when-doing-user-story</id>
     <content type="html"><![CDATA[<p>今天和同事一起领了一个故事卡来做。看完用户故事卡中的描述和验收准则后一头雾水，不知道从哪里下手。由于卡中提到了几个模块都属于遗留系统中的功能，以前没有触及这些模块，对业务、对代码都不太了解。而且还要对这些模块进行修改，而这部分代码都是陈旧的EJB代码，复杂冗长，配置繁琐，修改点无法确定，影响范围无法预估。</p>
 
@@ -2000,7 +2157,7 @@
   <entry>
     <title type="html"><![CDATA[持续集成及部署利器:Go]]></title>
     <link href="http://www.huangbowen.net/blog/2014/01/27/introduction-of-go/"/>
-    <updated>2014-01-27T18:39:00+10:00</updated>
+    <updated>2014-01-27T18:39:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/01/27/introduction-of-go</id>
     <content type="html"><![CDATA[<p>Go是一款先进的持续集成和发布管理系统,由ThoughtWorks开发。（不要和Google的编程语言Go混淆了！）其前身为Cruise,是ThoughtWorks在做咨询和交付交付项目时自己开发的一款开源的持续集成工具。后来随着持续集成及持续部署的火热，ThoughtWorks专门成立了一个项目组，基于Cruise开发除了Go这款工具。</p>
 
@@ -2060,7 +2217,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[记一次在StackOverFlow上问问题的经历]]></title>
     <link href="http://www.huangbowen.net/blog/2014/01/21/ask-question-on-stackoverflow/"/>
-    <updated>2014-01-21T12:47:00+10:00</updated>
+    <updated>2014-01-21T12:47:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/01/21/ask-question-on-stackoverflow</id>
     <content type="html"><![CDATA[<p>最近一直在做测试方面的事情，被测的一些功能需要连接到FTP服务器上。而我在做本地测试时为了方便，就使用java写了一个简单的ftp服务器，可以在命令行下直接启动运行。</p>
 
@@ -2155,7 +2312,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[Java中的Set, List, Map漫谈]]></title>
     <link href="http://www.huangbowen.net/blog/2014/01/02/set/"/>
-    <updated>2014-01-02T23:45:00+10:00</updated>
+    <updated>2014-01-02T23:45:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/01/02/set</id>
     <content type="html"><![CDATA[<p>在编程语言中，集合是指代表一组对象的对象。Java平台专门有一个集合框架(Collections Framework)。集合框架是指表示和操作集合的统一架构，隔离了集合的操作和实现细节。</p>
 
@@ -2197,7 +2354,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[我的2013年总结]]></title>
     <link href="http://www.huangbowen.net/blog/2014/01/02/my-conclusion-of-2013/"/>
-    <updated>2014-01-02T21:30:00+10:00</updated>
+    <updated>2014-01-02T21:30:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2014/01/02/my-conclusion-of-2013</id>
     <content type="html"><![CDATA[<ol>
 <li><p>读了20多本书，有些书让人拍案叫绝，有些书则没产生多大共鸣。上半年读的多些，下半年有些懒散，读的相对少些。</p></li>
@@ -2216,7 +2373,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[C#中的ThenBy是如何实现的]]></title>
     <link href="http://www.huangbowen.net/blog/2013/12/26/how-to-implement-thenby-in-c-number/"/>
-    <updated>2013-12-26T23:14:00+10:00</updated>
+    <updated>2013-12-26T23:14:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2013/12/26/how-to-implement-thenby-in-c-number</id>
     <content type="html"><![CDATA[<p>C#中给继承自IEnumerable的对象（最熟知的就是List了）提供了很丰富的扩展方法，涉及列表操作的方方面面。而扩展方法ThenBy就是很有意思的一个，它的实现也很巧妙。</p>
 
@@ -2447,7 +2604,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[Gatling->次时代性能测试利器]]></title>
     <link href="http://www.huangbowen.net/blog/2013/12/23/the-power-of-gatling/"/>
-    <updated>2013-12-23T23:07:00+10:00</updated>
+    <updated>2013-12-23T23:07:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2013/12/23/the-power-of-gatling</id>
     <content type="html"><![CDATA[<p>Gatling作为一款开源免费的性能测试工具越来越受到广大程序员的欢迎。免费当然是好的，最缺钱的就是程序员了;开源更好啊，缺啥功能、想做定制化的可以自己动手，丰衣足食。其实我最喜欢的原因是其提供了简洁强大的API，原生支持命令行运行，不像JMeter那样需要在界面上点来点去。另外其出色的扩展API和轻量级的HTML报表都值得让人称道。</p>
 
@@ -2806,7 +2963,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[使用media queries实现一个响应式的菜单]]></title>
     <link href="http://www.huangbowen.net/blog/2013/12/15/responsive-menu-by-media-queries/"/>
-    <updated>2013-12-15T21:56:00+10:00</updated>
+    <updated>2013-12-15T21:56:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2013/12/15/responsive-menu-by-media-queries</id>
     <content type="html"><![CDATA[<p>Media queries是CSS3引入的一个特性，使用它可以方便的实现各种响应式效果。在这个示例中我们将会使用media queries实现一个响应式的菜单。这个菜单会根据当前浏览器屏幕的大小变化而自动的呈现出不同的样式。如果浏览器屏幕大于800px，菜单则会显示在页面左侧；如果浏览器屏幕介于401px到800px之间，菜单则会显示在页面上方，与其他内容是上下关系；如果屏幕小于400px，则菜单仍在页面上方，但是菜单会变为下拉列表形式。</p>
 
@@ -3014,7 +3171,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[翻译:反思极限编程]]></title>
     <link href="http://www.huangbowen.net/blog/2013/12/12/reflection-of-extreme-programming/"/>
-    <updated>2013-12-12T23:19:00+10:00</updated>
+    <updated>2013-12-12T23:19:00+11:00</updated>
     <id>http://www.huangbowen.net/blog/2013/12/12/reflection-of-extreme-programming</id>
     <content type="html"><![CDATA[<p>译者注: Bob大叔14年后再次谈论极限编程。极限编程经历了14年的风风雨雨后，Bob大叔将会给它怎么样的定义那？</p>
 
@@ -3092,103 +3249,6 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
 <p><strong>优秀的软件实践的核心</strong></p>
 
 <p>原文出处: <a href="http://blog.8thlight.com/uncle-bob/2013/12/10/Thankyou-Kent.html">http://blog.8thlight.com/uncle-bob/2013/12/10/Thankyou-Kent.html</a>, 作者Uncle Bob Martin。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[使用Gradle运行集成测试]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/12/10/integration-test-in-gradle/"/>
-    <updated>2013-12-10T13:17:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/12/10/integration-test-in-gradle</id>
-    <content type="html"><![CDATA[<p>如果Gradle构建的项目是一个web项目的话，里面可能包含一些集成测试和功能性测试。这些测试和单元测试不同之处是在运行之前要先在本地将web服务启动起来，并且跑完测试后能够自动的关闭web服务。</p>
-
-<!-- more -->
-
-
-<p>在本地启动web服务我们可以使用Gradle内置的jetty插件。jetty是一个轻量级的web容器，其执行速度快，配置简单，远程调试方便。启用jetty只需在build.gradle中加入对这个插件的引用。</p>
-
-<figure class='code'><figcaption><span>build.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;jetty&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>之后可以配置war包的名称，启动的端口等属性。</p>
-
-<figure class='code'><figcaption><span>build.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;jetty&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">httpPort</span> <span class="o">=</span> <span class="mi">9876</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">[</span><span class="n">jettyRun</span><span class="o">,</span> <span class="n">jettyRunWar</span><span class="o">,</span> <span class="n">jettyStop</span><span class="o">]*.</span><span class="na">stopPort</span> <span class="o">=</span> <span class="mi">9966</span>
-</span><span class='line'><span class="o">[</span><span class="n">jettyRun</span><span class="o">,</span> <span class="n">jettyRunWar</span><span class="o">,</span> <span class="n">jettyStop</span><span class="o">]*.</span><span class="na">stopKey</span> <span class="o">=</span> <span class="s1">&#39;stopKey&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们需要将集成测试与一般的单元测试分开。因为单元测试并不需要事先启动web服务，保证其执行速度快，能够得到更快的反馈。一般做法是单元测试后缀名为Test.java，集成测试后缀名为IntegrationTest.java。</p>
-
-<p>配置单元测试执行的测试集合。</p>
-
-<figure class='code'><figcaption><span>build.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">test</span> <span class="o">{</span>
-</span><span class='line'>  <span class="n">include</span> <span class="s1">&#39;**/*Test.class&#39;</span>
-</span><span class='line'>  <span class="n">exclude</span> <span class="s1">&#39;**/*IntegrationTest.class&#39;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后新建一个Task，用于运行集成测试。</p>
-
-<figure class='code'><figcaption><span>build.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="nf">intTest</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Test</span><span class="o">,</span> <span class="nl">dependsOn:</span> <span class="n">test</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">include</span> <span class="s1">&#39;**/*IntegrationTest.class&#39;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">doFirst</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">jettyRun</span><span class="o">.</span><span class="na">daemon</span> <span class="o">=</span> <span class="kc">true</span>
-</span><span class='line'>      <span class="n">jettyRun</span><span class="o">.</span><span class="na">execute</span><span class="o">()</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">doLast</span> <span class="o">{</span>
-</span><span class='line'>      <span class="n">jettyStop</span><span class="o">.</span><span class="na">execute</span><span class="o">()</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上述代码首先是创建一个名为intTest的task，其类型为Test,依赖于test task。该集成测试只会运行后缀名为IntegrationTest的测试类。在运行测试之前，首先采用后台模式启动jetty服务器，运行完测试后再调用jettyStop task停止jetty服务。</p>
-
-<p>为了使我们在运行<code>gradle build</code>时也会运行intTest task，可以添加对intTest的依赖。</p>
-
-<figure class='code'><figcaption><span>build.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">build</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">intTest</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样在运行<code>gradle build</code>时也会运行集成测试。并且在集成测试前后web服务会自动的启动和关闭。</p>
 ]]></content>
   </entry>
   
