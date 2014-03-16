@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-03-16T02:36:27+11:00</updated>
+  <updated>2014-03-16T20:49:18+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,9 +14,141 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Spring-Context之五:基于构造器进行依赖注入]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/16/constructor-based-injection-in-spring/"/>
+    <updated>2014-03-16T20:19:00+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/16/constructor-based-injection-in-spring</id>
+    <content type="html"><![CDATA[<p>上一节讲述了如何在XML中定义bean。这些bean都比较简单，基本只是个单一对象。但是在企业级开发中，一个对象或多或少都要跟其他对象发生关联，比如继承、调用、实现接口等。传统的方法中，如果对象A某方法的实现要调用对象B的方法，那么一般由对象A来维护对象B的生命周期，包括创建、调用、销毁等。而引入了控制反转（即依赖注入）以后，对象A只管负责对对象B的调用，对象B的整个声明周期都交由IoC容器管理。甚至对象A在实现时基于接口实现，IoC容器可以按需注入实现了指定接口的对象到对象A中，这样无需修改任何代码就可以灵活的实现需求变动。</p>
+
+<!-- more -->
+
+
+<p>Spring中对bean的依赖注入主要有两种方式，一种是基于构造器注入，一种是基于Setter方法注入。</p>
+
+<p>以下是构造方法注入的一个简单例子。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MessageHandler</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">MessageService</span> <span class="n">messageService</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">MessageHandler</span><span class="o">(</span><span class="n">MessageService</span> <span class="n">messageService</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">messageService</span> <span class="o">=</span> <span class="n">messageService</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">handle</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">messageService</span><span class="o">.</span><span class="na">sendService</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageService&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.DependecyInjection.ConstructorInjection.SimpleMessageService&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageHandler&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.DependecyInjection.ConstructorInjection.MessageHandler&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">ref=</span><span class="s">&quot;messageService&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里的java对象是POJO（plain old java object）的，说明了Spring框架是无侵入性的。在xml中通过constructor-arg属性来向MessageHandler注入对象，ref指向了另一个bean。</p>
+
+<p>由于该构造函数只有一个参数，所以无需指明注入的是哪个参数。</p>
+
+<p>如果构造函数有多个参数，那么有很多方式可以指定注入的对象与参数的对应关系。</p>
+
+<p>可以通过索引来指定。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;person&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.DependecyInjection.ConstructorInjection.Person&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">&quot;0&quot;</span> <span class="na">value=</span><span class="s">&quot;Tom&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">&quot;1&quot;</span> <span class="na">value=</span><span class="s">&quot;20&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以通过类型来指定。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;person&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.DependecyInjection.ConstructorInjection.Person&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">type=</span><span class="s">&quot;java.lang.String&quot;</span> <span class="na">value=</span><span class="s">&quot;Tom&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">type=</span><span class="s">&quot;int&quot;</span> <span class="na">value=</span><span class="s">&quot;20&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这要求两个类型不能一样或者不能有继承关系，要不然Spring就不知道映射关系了。如果出现了这样的情况，就需要借助其它的方式来告诉Spring你的参数映射关系。</p>
+
+<p>也可以通过参数名来指定。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;person&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.DependecyInjection.ConstructorInjection.Person&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span> <span class="na">value=</span><span class="s">&quot;Tom&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">&quot;age&quot;</span> <span class="na">value=</span><span class="s">&quot;20&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种注入方法有个风险就是如果你的源代码在编译时关闭了debug标志，那么Spring就无法获取构造器的参数名了。不过可以使用@ConstructorProperties 属性显式指定构造器参数名称。</p>
+
+<figure class='code'><figcaption><span>Person.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@ConstructorProperties</span><span class="o">({</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="s">&quot;age&quot;</span><span class="o">})</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">Person</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Spring-Context之四:Spring容器及bean的定义]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/16/bean-defination-in-spring/"/>
-    <updated>2014-03-16T02:29:00+11:00</updated>
+    <updated>2014-03-16T02:29:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/16/bean-defination-in-spring</id>
     <content type="html"><![CDATA[<p>Spring框架的核心功能之一就是控制反转（Inversion of Control, IoC），也叫做依赖注入（dependency injection, DI）。关于依赖注入的具体内容可以参见Martin Fowler写的一篇文章<a href="http://martinfowler.com/articles/injection.html">《Inversion of Control Containers and the Dependency Injection pattern》</a>。</p>
 
@@ -173,7 +305,7 @@
   <entry>
     <title type="html"><![CDATA[Spring-Context之三:使用XML和Groovy DSL配置Bean]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/13/use-groovy-dsl-in-spring/"/>
-    <updated>2014-03-13T02:13:00+11:00</updated>
+    <updated>2014-03-13T02:13:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/13/use-groovy-dsl-in-spring</id>
     <content type="html"><![CDATA[<p>在第一讲中显示了如何使用注解配置bean，其实这是Spring3引进的特性,Spring2使用的是XML的方式来配置Bean，那时候漫天的XML文件使得Spring有着<code>配置地狱</code>的称号。Spring也一直在力求改变这一缺陷。Spring3引入的注解方式确实使配置精简不少，而Spring4则引入了Groovy DSL来配置，其语法比XML要简单很多，而且Groovy本身是门语言，其配置文件就相当于代码，可以用来实现复杂的配置。</p>
 
@@ -534,7 +666,7 @@
   <entry>
     <title type="html"><![CDATA[Spring-Context之二:使用Spring提供的测试框架进行测试]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/12/use-spring-test/"/>
-    <updated>2014-03-12T01:01:00+11:00</updated>
+    <updated>2014-03-12T01:01:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/12/use-spring-test</id>
     <content type="html"><![CDATA[<p>Spring框架是无侵入性的，所以你的代码可以完全是POJO（plain old java object），直接使用Junit就可以完成大部分的单元测试。但是在集成测试方面就比较吃力了。单元测试层面你可以mock一些依赖对象，但是集成测试时需要真实的依赖对象，而这些对象都是在Spring容器的控制之下。那么如何在引入了Spring的情况下进行集成测试那？别着急，Spring框架早为我们想到了这点，本身提供了集成测试的功能。</p>
 
@@ -680,7 +812,7 @@
   <entry>
     <title type="html"><![CDATA[Spring-Context之一:一个简单的例子]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/11/first-exmaple-of-spring-conext/"/>
-    <updated>2014-03-11T02:27:00+11:00</updated>
+    <updated>2014-03-11T02:27:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/11/first-exmaple-of-spring-conext</id>
     <content type="html"><![CDATA[<p>很久之前就想系统的学习和掌握Spring框架，但是拖了很久都没有行动。现在趁着在外出差杂事不多，就花时间来由浅入深的研究下Spring框架。Spring框架这几年来已经发展成为一个巨无霸产品。从最初的只是用来作为依赖注入到现在已经是无法不包。其涉及的领域有依赖注入、MVC、JMS、Web flow、Batch job、Web service、Security…..几乎是涵盖了技术开发的所有方面。本人虽然从事Java语言开发时间不长，但是对Spring中的很多组件都有所涉猎，比如上面列出的那几个都有用过。可以说Spring是Java程序员必须要掌握的一个库。</p>
 
@@ -869,7 +1001,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveMQ第五弹:增加ReDelivery功能]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/10/use-redelivery-in-activemq/"/>
-    <updated>2014-03-10T01:17:00+11:00</updated>
+    <updated>2014-03-10T01:17:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/10/use-redelivery-in-activemq</id>
     <content type="html"><![CDATA[<p>在使用Message Queue的过程中，总会由于种种原因而导致消息失败。一个经典的场景是一个生成者向Queue中发消息，里面包含了一组邮件地址和邮件内容。而消费者从Queue中将消息一条条读出来，向指定邮件地址发送邮件。消费者在发送消息的过程中由于种种原因会导致失败，比如网络超时、当前邮件服务器不可用等。这样我们就希望建立一种机制，对于未发送成功的邮件再重新发送，也就是重新处理。重新处理超过一定次数还不成功，就放弃对该消息的处理，记录下来，继续对剩余消息进行处理。</p>
 
@@ -1190,7 +1322,7 @@
   <entry>
     <title type="html"><![CDATA[如何让你的简历脱颖而出]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/24/build-your-outstanding-resume/"/>
-    <updated>2014-02-24T00:50:00+11:00</updated>
+    <updated>2014-02-24T00:50:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/24/build-your-outstanding-resume</id>
     <content type="html"><![CDATA[<p>年后的2、3月份是每年换工作的高峰期。可能很多人在过年以前早都萌生了换工作的想法。过年时在亲朋好友的刺激下，更坚定了这个想法。年终奖既已到手，对前公司的最后一丝留恋也随之逝去。在各大招聘网上更新自己的简历，主动和猎头联系让其帮忙物色，新一轮大潮已经开始。</p>
 
@@ -1226,7 +1358,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveMQ第四弹:在HermesJMS中创建ActiveMQ session]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms/"/>
-    <updated>2014-02-23T15:03:00+11:00</updated>
+    <updated>2014-02-23T15:03:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms</id>
     <content type="html"><![CDATA[<p>Hermes JMS是一个开源免费的跨平台的JMS消息监听工具。它可以很方便和各种JMS框架集成和交互，可以用来监听、发送、接收、修改、存储消息等。这篇文章将讲解HermesJMS如何集成ActiveMQ并与其交互。</p>
 
@@ -1279,7 +1411,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveMQ第三弹:在Spring中使用内置的Message Broker]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/22/using-embeded-broker-in-spring/"/>
-    <updated>2014-02-22T19:16:00+11:00</updated>
+    <updated>2014-02-22T19:16:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/22/using-embeded-broker-in-spring</id>
     <content type="html"><![CDATA[<p>在上个例子中我们演示了如何使用Spring JMS来向ActiveMQ发送消息和接收消息。但是这个例子需要先从控制台使用ActiveMQ提供的命令行功能启动一个Message Broker,然后才能运行示例。这个Message Broker就相当于一个server，无论是发送方还是接收方都可以连接到这个Server进行消息的处理。在某些情况下，让Message Broker和consumer启动在同一个JVM里面，通信效率肯定会高不少。</p>
 
@@ -1504,7 +1636,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveMQ第二弹:使用Spring JMS与ActiveMQ通讯]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/20/spring-jms-and-activemq-sample/"/>
-    <updated>2014-02-20T23:18:00+11:00</updated>
+    <updated>2014-02-20T23:18:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/20/spring-jms-and-activemq-sample</id>
     <content type="html"><![CDATA[<p>本文章的完整代码可从我的github中下载：<a href="https://github.com/huangbowen521/SpringJMSSample.git">https://github.com/huangbowen521/SpringJMSSample.git</a></p>
 
@@ -1894,7 +2026,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveMQ第一弹:安装与运行]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq/"/>
-    <updated>2014-02-20T00:12:00+11:00</updated>
+    <updated>2014-02-20T00:12:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq</id>
     <content type="html"><![CDATA[<p>ActiveMQ使用java写的，所以天然跨平台，windows，各种类Unix系统都可运行，只需要下载对应的分发包即可。当前AciveMQ的最新版本是5.9.0。我目前在自己机子上安装的版本是5.8.0。</p>
 
@@ -2092,7 +2224,7 @@
   <entry>
     <title type="html"><![CDATA[如果让我完善几年前的一个项目，我会做哪些改进?]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/17/how-to-improve-a-legacy-project/"/>
-    <updated>2014-02-17T00:18:00+11:00</updated>
+    <updated>2014-02-17T00:18:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/17/how-to-improve-a-legacy-project</id>
     <content type="html"><![CDATA[<p>在08年的时候，我还没有大学毕业，当时在一家公司实习。那时候老板接了一个项目，是一个给中石油某下属公司做的一个web版本的管理系统，我和一个同学硬着头皮接下来做完了。这个系统后端用的是c#的web form,前端普通的html+css+javascript，数据库使用的是sql server2005，部署服务器使用的是Microsoft Server 2008。现在回顾这个系统，虽然代码写的烂，架构写的烂，但是能够正常运行，这是偶尔有一些莫名其妙难以解决的小bug。毕竟是自己5年前的代码嘛，那时候自己太嫩了，好多东西都不知道，没有多少经验。</p>
 
@@ -2127,7 +2259,7 @@
   <entry>
     <title type="html"><![CDATA[做一张故事卡时的感悟]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/11/thoughts-when-doing-user-story/"/>
-    <updated>2014-02-11T17:36:00+11:00</updated>
+    <updated>2014-02-11T17:36:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/11/thoughts-when-doing-user-story</id>
     <content type="html"><![CDATA[<p>今天和同事一起领了一个故事卡来做。看完用户故事卡中的描述和验收准则后一头雾水，不知道从哪里下手。由于卡中提到了几个模块都属于遗留系统中的功能，以前没有触及这些模块，对业务、对代码都不太了解。而且还要对这些模块进行修改，而这部分代码都是陈旧的EJB代码，复杂冗长，配置繁琐，修改点无法确定，影响范围无法预估。</p>
 
@@ -2157,7 +2289,7 @@
   <entry>
     <title type="html"><![CDATA[持续集成及部署利器:Go]]></title>
     <link href="http://www.huangbowen.net/blog/2014/01/27/introduction-of-go/"/>
-    <updated>2014-01-27T18:39:00+11:00</updated>
+    <updated>2014-01-27T18:39:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/01/27/introduction-of-go</id>
     <content type="html"><![CDATA[<p>Go是一款先进的持续集成和发布管理系统,由ThoughtWorks开发。（不要和Google的编程语言Go混淆了！）其前身为Cruise,是ThoughtWorks在做咨询和交付交付项目时自己开发的一款开源的持续集成工具。后来随着持续集成及持续部署的火热，ThoughtWorks专门成立了一个项目组，基于Cruise开发除了Go这款工具。</p>
 
@@ -2217,7 +2349,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[记一次在StackOverFlow上问问题的经历]]></title>
     <link href="http://www.huangbowen.net/blog/2014/01/21/ask-question-on-stackoverflow/"/>
-    <updated>2014-01-21T12:47:00+11:00</updated>
+    <updated>2014-01-21T12:47:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/01/21/ask-question-on-stackoverflow</id>
     <content type="html"><![CDATA[<p>最近一直在做测试方面的事情，被测的一些功能需要连接到FTP服务器上。而我在做本地测试时为了方便，就使用java写了一个简单的ftp服务器，可以在命令行下直接启动运行。</p>
 
@@ -2312,7 +2444,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[Java中的Set, List, Map漫谈]]></title>
     <link href="http://www.huangbowen.net/blog/2014/01/02/set/"/>
-    <updated>2014-01-02T23:45:00+11:00</updated>
+    <updated>2014-01-02T23:45:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/01/02/set</id>
     <content type="html"><![CDATA[<p>在编程语言中，集合是指代表一组对象的对象。Java平台专门有一个集合框架(Collections Framework)。集合框架是指表示和操作集合的统一架构，隔离了集合的操作和实现细节。</p>
 
@@ -2354,7 +2486,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[我的2013年总结]]></title>
     <link href="http://www.huangbowen.net/blog/2014/01/02/my-conclusion-of-2013/"/>
-    <updated>2014-01-02T21:30:00+11:00</updated>
+    <updated>2014-01-02T21:30:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/01/02/my-conclusion-of-2013</id>
     <content type="html"><![CDATA[<ol>
 <li><p>读了20多本书，有些书让人拍案叫绝，有些书则没产生多大共鸣。上半年读的多些，下半年有些懒散，读的相对少些。</p></li>
@@ -2373,7 +2505,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[C#中的ThenBy是如何实现的]]></title>
     <link href="http://www.huangbowen.net/blog/2013/12/26/how-to-implement-thenby-in-c-number/"/>
-    <updated>2013-12-26T23:14:00+11:00</updated>
+    <updated>2013-12-26T23:14:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/12/26/how-to-implement-thenby-in-c-number</id>
     <content type="html"><![CDATA[<p>C#中给继承自IEnumerable的对象（最熟知的就是List了）提供了很丰富的扩展方法，涉及列表操作的方方面面。而扩展方法ThenBy就是很有意思的一个，它的实现也很巧妙。</p>
 
@@ -2604,7 +2736,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[Gatling->次时代性能测试利器]]></title>
     <link href="http://www.huangbowen.net/blog/2013/12/23/the-power-of-gatling/"/>
-    <updated>2013-12-23T23:07:00+11:00</updated>
+    <updated>2013-12-23T23:07:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/12/23/the-power-of-gatling</id>
     <content type="html"><![CDATA[<p>Gatling作为一款开源免费的性能测试工具越来越受到广大程序员的欢迎。免费当然是好的，最缺钱的就是程序员了;开源更好啊，缺啥功能、想做定制化的可以自己动手，丰衣足食。其实我最喜欢的原因是其提供了简洁强大的API，原生支持命令行运行，不像JMeter那样需要在界面上点来点去。另外其出色的扩展API和轻量级的HTML报表都值得让人称道。</p>
 
@@ -2963,7 +3095,7 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
   <entry>
     <title type="html"><![CDATA[使用media queries实现一个响应式的菜单]]></title>
     <link href="http://www.huangbowen.net/blog/2013/12/15/responsive-menu-by-media-queries/"/>
-    <updated>2013-12-15T21:56:00+11:00</updated>
+    <updated>2013-12-15T21:56:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/12/15/responsive-menu-by-media-queries</id>
     <content type="html"><![CDATA[<p>Media queries是CSS3引入的一个特性，使用它可以方便的实现各种响应式效果。在这个示例中我们将会使用media queries实现一个响应式的菜单。这个菜单会根据当前浏览器屏幕的大小变化而自动的呈现出不同的样式。如果浏览器屏幕大于800px，菜单则会显示在页面左侧；如果浏览器屏幕介于401px到800px之间，菜单则会显示在页面上方，与其他内容是上下关系；如果屏幕小于400px，则菜单仍在页面上方，但是菜单会变为下拉列表形式。</p>
 
@@ -3165,90 +3297,6 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
 <p>这样就简单实现了一个响应式的菜单，其实主要就是根据media queries来设置screen的条件，根据不同screen宽度来给页面元素设置对应的样式。当屏幕宽度发生变化时，会自动应用相应的样式。</p>
 
 <p>代码已经被放置到了github上了，地址是<a href="https://github.com/huangbowen521/ResponsiveDesignTrial">https://github.com/huangbowen521/ResponsiveDesignTrial</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[翻译:反思极限编程]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/12/12/reflection-of-extreme-programming/"/>
-    <updated>2013-12-12T23:19:00+11:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/12/12/reflection-of-extreme-programming</id>
-    <content type="html"><![CDATA[<p>译者注: Bob大叔14年后再次谈论极限编程。极限编程经历了14年的风风雨雨后，Bob大叔将会给它怎么样的定义那？</p>
-
-<!-- more -->
-
-
-<p>在我手中拿着的一本白皮薄书，在14年前彻底的改变了软件世界。这本书的标题是解析极限编程，副标题是拥抱变化。作者是Kent Beck,出版时间为1999年。</p>
-
-<p>这本书很薄，不到200页。排版很宽，间隔很远。写作风格即自由散漫又平易近人。章节不多，概念简单。</p>
-
-<p>但是其影响却像地震一样，甚至至今震动仍未平息下来。</p>
-
-<p>起始于第53页的章节10，列出了12项实践，引爆了行业内的大辩论。并催生了一场革命，改变了我们编写软件的所有方式。这些实践是:</p>
-
-<ul>
-<li><p><strong>计划游戏</strong>：当今被成为SCRUM。此观点认为软件应该按照任务列表中的优先级循序渐进的开发。</p></li>
-<li><p><strong>小版本</strong>：应当频繁和渐进式地部署软件。</p></li>
-<li><p><strong>隐喻</strong>：该概念最终在Eric Evans编写的《领域驱动设计》一书中明确化。系统结构应当建立在针对问题域的简单的智力模型之上。</p></li>
-<li><p><strong>简单设计</strong>：任何时候都要保证系统尽可能的简单，不用考虑对未来的担心。</p></li>
-<li><p><strong>测试</strong>：程序员和客户一起编写自动化测试来验证产品代码的行为与预期一致。当今我们称之为测试驱动开发（TDD）及验收测试驱动开发(ATDD)。</p></li>
-<li><p><strong>重构</strong>：软件内部结构能够并且应当被持续改进。</p></li>
-<li><p><strong>结对编程</strong>：如果团队成员各自单独工作，那么这称不上一个团队。真正的团队需要经常通过键盘进行合作。这样可以相互充分的分享知识, 正是团队成员的义务。</p></li>
-<li><p><strong>集体所有权</strong>：代码归属于整个团队，而不是某个个体。</p></li>
-<li><p><strong>每周工作40小时</strong>：经常加班的团队是失败的团队。</p></li>
-<li><p><strong>现场客户</strong>：在团队中加入一名真正的客户，用于对需求负责，开发团队能够始终轻易的接触到他。</p></li>
-<li><p><strong>编码标准</strong>：团队应当使用一致的编码风格保证代码整洁，易于沟通。</p></li>
-</ul>
-
-
-<h2>争议？</h2>
-
-<p>很奇怪是不是？是不是并不是所有实践都有争议？但是14年前引起了疯狂争议。确实，整本书出版时，人们争议书中的描述不可能应用于实践，争议所有拥护者是如何的必躬屈膝，不听劝解，甚至是一行代码没写过的傻子&#8230;&#8230;</p>
-
-<p>呃，我不应当让这些过去的感受压倒我。因为，毕竟它们早已消失不再，而我们依然存在。</p>
-
-<p>看看这12项实践，你没有践行其中哪项？我温柔的读者中的大多数可能长期的践行大多数实践。如果说它们已经被普及肯定稍显夸张，但是更不夸张的说，它们现在已经成为主流。更重要的是，还未践行这些实践的团队至少在尝试它们。这些实践已经可以被完美的落地实施，而不再是一个被唾骂的异端。</p>
-
-<h2>崛起</h2>
-
-<p>过去的14年已经变得陌生。极限编程论战催生出来的敏捷运动，飞速成功，随后被项目经理接受，推动程序员。我们已经看到了确定性的、疯狂的成功，以及相应的（可预见的）无力的认证。我们看到了只采用了计划游戏（例如SCRUM)而忽略其他11个实践的策略失败了。这种策略被Martin Fowler称为<strong>无力的Scrum</strong>。我们已经经历了咨询师和作者们持续的加工和宣传，以及看板、精益及每一个新的项目管理方法的竞争。我们已经看到了软件工艺运动的发展，以及敏捷基因被逐渐的退化和稀释。</p>
-
-<p>在所有的炒作和翻腾中，这12项实践依然留存，只是其中一些名字有稍微改变。一周工作40小时变成了可持续增长率。测试变成了TDD。隐喻变成了DDD。小版本变成了持续集成和持续部署。但是尽管名称改变，但是这些实践依然和14年前描述的差不多。</p>
-
-<p>我们也看到极限编程这个名称几乎完全不用了。极少数人现在还使用这个词。一些人仍然使用XP这个缩写，但名称的大部分都已经消失。如果听到一个团队描述他们正在做的是极限编程，甚至正在践行所描述的这12项实践，我会觉得非常罕见。名称变了，但是实践未变。这些实践是持久的。
-在翻腾，炒作，争议的咆哮和胡言乱语中，在人类争夺一个又一个位置的风雨中，在人类的贪婪，激情和骄傲的杂乱中，在所有的政治中，这些实践依然留存。</p>
-
-<h2>稳定的价值观</h2>
-
-<p>我相信这些实践这么持久是因为他们基于稳定的价值观这个坚实的基础。Kent Beck在他的书中第7章第29页描述了这样的价值观：</p>
-
-<ul>
-<li><p>沟通</p></li>
-<li><p>简单</p></li>
-<li><p>反馈</p></li>
-<li><p>勇气</p></li>
-</ul>
-
-
-<p>我可以尝试论证为什么这些价值观是正确的，但是我他们自身已经论证了这些。软件工匠能够拒绝这些价值观中的任何一个吗？软件工匠能够不努力争取在工作中保证这些价值观的展现吗？这些价值观正是软件工艺的价值观。</p>
-
-<p>我可以尝试辩论书中这12项实践拥抱和体现了这些价值观，但是这些实践的持久性足够证明,尽管围绕这些实践的名词和运动已经消散。</p>
-
-<h2>成功</h2>
-
-<p>极限编程已经成功了！它成功的超越了其支持者的最疯狂的梦想。它的成功是因为从诞生时的争议中幸存下来，在不可避免的倡导者的流失中幸存下来。它成功了是因为它活的比自己的名字更久！</p>
-
-<p>极限编程的成功正像结构化编程的成功。甚至没人再会考虑结构化编程，因为他们一直在使用结构化编程。我们正在尝试达到没人再会考虑极限编程的目标。</p>
-
-<p>这就是成功！一个想法从这场运动诞生一直存活到成为我们日常生活的一部分，这就是成功！</p>
-
-<h2>回顾</h2>
-
-<p>所以现在，2013年的最后几个星期，我花了些时间回顾1999年。那个时间Kent Beck写了一个突破性的书。这本书改变了一切。回顾并谨记:极限编程。简单的说，请承认它是:</p>
-
-<p><strong>优秀的软件实践的核心</strong></p>
-
-<p>原文出处: <a href="http://blog.8thlight.com/uncle-bob/2013/12/10/Thankyou-Kent.html">http://blog.8thlight.com/uncle-bob/2013/12/10/Thankyou-Kent.html</a>, 作者Uncle Bob Martin。</p>
 ]]></content>
   </entry>
   

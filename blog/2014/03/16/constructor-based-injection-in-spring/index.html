@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Haskell-函数式编程语言之初体验 - 黄博文的地盘</title>
+  <title>Spring-Context之五:基于构造器进行依赖注入 - 黄博文的地盘</title>
   <meta name="author" content="黄博文">
 
   
-  <meta name="description" content="如果你是使用面向对像语言进行编程的程序员，那么你应该去了解掌握一门动态语言。而动态语言的魔力之一就是函数式编程。而要学习了解函数式编程，那么haskell是一个不错的选择。 Haskell是是一门纯函数式编程语言(purely functional programming language)。 &hellip;">
+  <meta name="description" content="上一节讲述了如何在XML中定义bean。这些bean都比较简单，基本只是个单一对象。但是在企业级开发中，一个对象或多或少都要跟其他对象发生关联，比如继承、调用、实现接口等。传统的方法中，如果对象A某方法的实现要调用对象B的方法，那么一般由对象A来维护对象B的生命周期，包括创建、调用、销毁等。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch/">
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2014/03/16/constructor-based-injection-in-spring/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -80,7 +80,7 @@
   
   <header>
     
-      <h1 class="entry-title">Haskell-函数式编程语言之初体验</h1>
+      <h1 class="entry-title">Spring-Context之五:基于构造器进行依赖注入</h1>
     
     
       <p class="meta">
@@ -96,7 +96,7 @@
   
 
 
-<time datetime="2013-03-02T14:55:00+10:00" pubdate data-updated="true">Mar 2<span>nd</span>, 2013</time>
+<time datetime="2014-03-16T20:19:00+10:00" pubdate data-updated="true">Mar 16<span>th</span>, 2014</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -105,112 +105,14 @@
   </header>
 
 
-<div class="entry-content"><p>如果你是使用面向对像语言进行编程的程序员，那么你应该去了解掌握一门动态语言。而动态语言的魔力之一就是函数式编程。而要学习了解函数式编程，那么haskell是一个不错的选择。</p>
-
-<p>Haskell是是一门纯函数式编程语言(purely functional programming language)。在其世界中函数是第一等对象。并且在haskell中没有赋值，例如你指派a的值为5，然后你无法再给a分配其它的值。所以你不能像命令式语言那样命令电脑“要做什么”，而是通过函数来描述出问题“是什么”。</p>
-
-<p>作为一个纯的函数式编程语言，它支持惰性求值、模式匹配、列表解析、类型类、类型多态……</p>
-
-<p>别着急，让我们慢慢来解开函数式编程的面纱。</p>
+<div class="entry-content"><p>上一节讲述了如何在XML中定义bean。这些bean都比较简单，基本只是个单一对象。但是在企业级开发中，一个对象或多或少都要跟其他对象发生关联，比如继承、调用、实现接口等。传统的方法中，如果对象A某方法的实现要调用对象B的方法，那么一般由对象A来维护对象B的生命周期，包括创建、调用、销毁等。而引入了控制反转（即依赖注入）以后，对象A只管负责对对象B的调用，对象B的整个声明周期都交由IoC容器管理。甚至对象A在实现时基于接口实现，IoC容器可以按需注入实现了指定接口的对象到对象A中，这样无需修改任何代码就可以灵活的实现需求变动。</p>
 
 <!-- more -->
 
 
-<h2>安装Haskell</h2>
+<p>Spring中对bean的依赖注入主要有两种方式，一种是基于构造器注入，一种是基于Setter方法注入。</p>
 
-<ol>
-<li><p>可以去<a href="http://www.Haskell.org/Haskellwiki/Haskell">官网</a>下载安装包进行安装。</p></li>
-<li><p>mac平台的用户可以通过<a href="http://mxcl.github.com/homebrew/">homebrew</a>进行安装。</p></li>
-</ol>
-
-
-<p>在terminal下输入<code>brew install haskell-platform</code>即可。</p>
-
-<h2>使用Haskell</h2>
-
-<p>安装完毕后haskell platform的解释器GHC就已经在你的电脑上了。GHC可以解释执行Haskell脚本，即后缀名为.hs的文件。你可可以通过在terminal输入<code>ghci</code>进入交互模式。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>twer@bowen-huang:~<span class="nv">$ </span>ghci
-</span><span class='line'>GHCi, version 7.4.2: http://www.haskell.org/ghc/ :? <span class="k">for </span><span class="nb">help</span>
-</span><span class='line'>Loading package ghc-prim ... linking … <span class="k">done</span>.
-</span><span class='line'>Loading package integer-gmp ... linking … <span class="k">done</span>.
-</span><span class='line'>Loading package base ... linking … <span class="k">done</span>.
-</span><span class='line'>Prelude&gt; 1+2
-</span><span class='line'>3
-</span><span class='line'>Prelude&gt; 3*4
-</span><span class='line'>12
-</span><span class='line'>Prelude&gt; 5/1
-</span><span class='line'>5.0
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>关于Haskell的编辑器你可以使用任何喜欢的编辑器:Vim、Emacs、Sublime、TextMate…..我比较喜欢Sublime。因为在Sublime自带Haskell的快捷编译执行。只需要按Ctrl+B来直接运行Scripts脚本。</p>
-
-<p>在ghci交互模式下可以使用<code>:l</code>命令来load一个Haskell脚本，然后就可以调用此脚本中的函数。我们先写一个&#8217;Hello world!’程序，然后通过ghci来load和调用.</p>
-
-<figure class='code'><figcaption><span>HelloWorld.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">main</span> <span class="ow">=</span> <span class="n">print</span> <span class="o">$</span> <span class="s">&quot;Hello world!&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; :l HelloWorld.hs
-</span><span class='line'><span class="o">[</span>1 of 1<span class="o">]</span> Compiling Main <span class="o">(</span> HelloWorld.hs, interpreted <span class="o">)</span>
-</span><span class='line'>Ok, modules loaded: Main.
-</span><span class='line'>*Main&gt; main
-</span><span class='line'><span class="s2">&quot;Hello world!&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果对文件进行了修改，也可以直接通过<code>:r</code>来重新加载文件。</p>
-
-<h2>Haskell的基本语法</h2>
-
-<h3>加减乘除操作</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; 1 + 2
-</span><span class='line'>3
-</span><span class='line'>Prelude&gt; 3 - 1
-</span><span class='line'>2
-</span><span class='line'>Prelude&gt; 3 * 4
-</span><span class='line'>12
-</span><span class='line'>Prelude&gt; 5 / 1
-</span><span class='line'>5.0
-</span><span class='line'>Prelude&gt; 10 / <span class="o">(</span>-5<span class="o">)</span>
-</span><span class='line'>-2.0
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>注意对负数进行操作时要将其用()括起来，否则系统会报错。</p>
-
-<h3>判等与比较操作</h3>
+<p>以下是构造方法注入的一个简单例子。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -224,91 +126,109 @@
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nv">5</span> <span class="o">==</span> 5
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; <span class="nv">10</span> <span class="o">==</span> 8
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; 5 /<span class="o">=</span> 5
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; 10 /<span class="o">=</span> 8
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; 5 &gt;<span class="o">=</span> 3
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; 5 &lt;<span class="o">=</span> 3
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> True
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; True <span class="o">&amp;&amp;</span> False
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; False <span class="o">||</span> False
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; True <span class="o">||</span> False
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; not True
-</span><span class='line'>False
-</span><span class='line'>Prelude&gt; not False
-</span><span class='line'>True
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MessageHandler</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">MessageService</span> <span class="n">messageService</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">MessageHandler</span><span class="o">(</span><span class="n">MessageService</span> <span class="n">messageService</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">messageService</span> <span class="o">=</span> <span class="n">messageService</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">handle</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">messageService</span><span class="o">.</span><span class="na">sendService</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>控制流转</h3>
+<p></p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Prelude&gt; <span class="nb">let </span>isHello <span class="nv">x</span> <span class="o">=</span> <span class="k">if </span><span class="nv">x</span> <span class="o">==</span> <span class="s2">&quot;Hello&quot;</span> <span class="k">then </span>True <span class="k">else </span>False
-</span><span class='line'>Prelude&gt; isHello <span class="s2">&quot;Hello&quot;</span>
-</span><span class='line'>True
-</span><span class='line'>Prelude&gt; isHello <span class="s2">&quot;World&quot;</span>
-</span><span class='line'>False
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageService&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.DependecyInjection.ConstructorInjection.SimpleMessageService&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageHandler&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.DependecyInjection.ConstructorInjection.MessageHandler&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">ref=</span><span class="s">&quot;messageService&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>注意这里的条件判断中的else是不可以省略的，这样保证条件语句总会返回一个值。所以我们可以将整个<code>if..then..else</code> pattern看做一个表达式。</p>
+<p>这里的java对象是POJO（plain old java object）的，说明了Spring框架是无侵入性的。在xml中通过constructor-arg属性来向MessageHandler注入对象，ref指向了另一个bean。</p>
 
-<p>如果在脚本文件中写的话不需要使用<code>let</code>关键字。并且也可以采用另一个写法。</p>
+<p>由于该构造函数只有一个参数，所以无需指明注入的是哪个参数。</p>
 
-<figure class='code'><figcaption><span>isHello.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p>如果构造函数有多个参数，那么有很多方式可以指定注入的对象与参数的对应关系。</p>
+
+<p>可以通过索引来指定。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isHello</span> <span class="n">x</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">x</span> <span class="o">==</span> <span class="s">&quot;Hello&quot;</span> <span class="ow">=</span> <span class="kt">True</span>
-</span><span class='line'> <span class="o">|</span> <span class="n">otherwise</span>     <span class="ow">=</span> <span class="kt">False</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;person&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.DependecyInjection.ConstructorInjection.Person&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">&quot;0&quot;</span> <span class="na">value=</span><span class="s">&quot;Tom&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">&quot;1&quot;</span> <span class="na">value=</span><span class="s">&quot;20&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>|表示或，otherwise关键字表示其它的情况。当然你也可以将这三行代码写成一行，这样也是能够正常运行的。分成三行只是为了更加可读。</p>
+<p>也可以通过类型来指定。</p>
 
-<p>还有第三种写法，实际上与面对对象语言中的<code>switch…case</code>语句有些类似。</p>
-
-<figure class='code'><figcaption><span>isHello.hs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">isHello</span> <span class="n">x</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">x</span> <span class="kr">of</span>
-</span><span class='line'> <span class="s">&quot;Hello&quot;</span> <span class="ow">-&gt;</span> <span class="kt">True</span>
-</span><span class='line'> <span class="n">otherwise</span> <span class="ow">-&gt;</span> <span class="kt">False</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;person&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.DependecyInjection.ConstructorInjection.Person&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">type=</span><span class="s">&quot;java.lang.String&quot;</span> <span class="na">value=</span><span class="s">&quot;Tom&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">type=</span><span class="s">&quot;int&quot;</span> <span class="na">value=</span><span class="s">&quot;20&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>这和第二种写法很类似。其实第二种写法本质上就是<code>case</code>语句，它只是<code>case</code>语句的一个语法糖而已。</p>
+<p>这要求两个类型不能一样或者不能有继承关系，要不然Spring就不知道映射关系了。如果出现了这样的情况，就需要借助其它的方式来告诉Spring你的参数映射关系。</p>
 
-<p>另外，在Haskell中是没有各种循环语句的，如果要实现相似的特性当然要使用递归了。</p>
+<p>也可以通过参数名来指定。</p>
 
-<p>第二节中，我们会讨论这个问题。</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;person&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.DependecyInjection.ConstructorInjection.Person&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span> <span class="na">value=</span><span class="s">&quot;Tom&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">&quot;age&quot;</span> <span class="na">value=</span><span class="s">&quot;20&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种注入方法有个风险就是如果你的源代码在编译时关闭了debug标志，那么Spring就无法获取构造器的参数名了。不过可以使用@ConstructorProperties 属性显式指定构造器参数名称。</p>
+
+<figure class='code'><figcaption><span>Person.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@ConstructorProperties</span><span class="o">({</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="s">&quot;age&quot;</span><span class="o">})</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">Person</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
 </div>
 
 
@@ -331,23 +251,17 @@
   
 
 
-<time datetime="2013-03-02T14:55:00+10:00" pubdate data-updated="true">Mar 2<span>nd</span>, 2013</time>
+<time datetime="2014-03-16T20:19:00+10:00" pubdate data-updated="true">Mar 16<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/编程开发/'>编程开发</a>
+    <a class='category' href='/blog/categories/spring-context/'>Spring-Context</a>
   
 </span>
 
 
       
-
-<span class="tags">
-  
-    <a class='tag' href='/blog/tags/haskell/'>Haskell</a>, <a class='tag' href='/blog/tags/language/'>Language</a>, <a class='tag' href='/blog/tags/函数式编程/'>函数式编程</a>
-  
-</span>
 
 
     </p>
@@ -361,10 +275,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/02/18/thoughtworks-reading-book/" title="Previous Post: ThoughtWorks developer 读书路线图">&laquo; ThoughtWorks developer 读书路线图</a>
+        <a class="basic-alignment left" href="/blog/2014/03/16/bean-defination-in-spring/" title="Previous Post: Spring-Context之四:Spring容器及bean的定义">&laquo; Spring-Context之四:Spring容器及bean的定义</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/03/03/the-annotated-turing/" title="Next Post: 《图灵的秘密》读后感">《图灵的秘密》读后感 &raquo;</a>
       
     </p>
   </footer>
@@ -471,8 +383,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch/';
-        var disqus_url = 'http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch/';
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2014/03/16/constructor-based-injection-in-spring/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2014/03/16/constructor-based-injection-in-spring/';
         var disqus_script = 'embed.js';
       
     (function () {

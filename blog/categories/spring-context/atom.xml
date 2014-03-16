@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Spring-Context | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/spring-context/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-03-16T02:36:27+11:00</updated>
+  <updated>2014-03-16T20:49:18+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,9 +14,129 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Spring-Context之五:基于构造器进行依赖注入]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/16/constructor-based-injection-in-spring/"/>
+    <updated>2014-03-16T20:19:00+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/16/constructor-based-injection-in-spring</id>
+    <content type="html"><![CDATA[<p>上一节讲述了如何在XML中定义bean。这些bean都比较简单，基本只是个单一对象。但是在企业级开发中，一个对象或多或少都要跟其他对象发生关联，比如继承、调用、实现接口等。传统的方法中，如果对象A某方法的实现要调用对象B的方法，那么一般由对象A来维护对象B的生命周期，包括创建、调用、销毁等。而引入了控制反转（即依赖注入）以后，对象A只管负责对对象B的调用，对象B的整个声明周期都交由IoC容器管理。甚至对象A在实现时基于接口实现，IoC容器可以按需注入实现了指定接口的对象到对象A中，这样无需修改任何代码就可以灵活的实现需求变动。</p>
+
+<!-- more -->
+
+
+<p>Spring中对bean的依赖注入主要有两种方式，一种是基于构造器注入，一种是基于Setter方法注入。</p>
+
+<p>以下是构造方法注入的一个简单例子。</p>
+
+<p>```java</p>
+
+<p>public class MessageHandler {</p>
+
+<pre><code>private MessageService messageService;
+
+public MessageHandler(MessageService messageService) {
+    this.messageService = messageService;
+}
+
+public String handle() {
+    return messageService.sendService();
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>```xml</p>
+
+<p><bean id="messageService" class="huangbowen.net.DependecyInjection.ConstructorInjection.SimpleMessageService"/></p>
+
+<p><bean id="messageHandler" class="huangbowen.net.DependecyInjection.ConstructorInjection.MessageHandler"></p>
+
+<pre><code>&lt;constructor-arg ref="messageService"/&gt;
+</code></pre>
+
+<p></bean></p>
+
+<p>```</p>
+
+<p>这里的java对象是POJO（plain old java object）的，说明了Spring框架是无侵入性的。在xml中通过constructor-arg属性来向MessageHandler注入对象，ref指向了另一个bean。</p>
+
+<p>由于该构造函数只有一个参数，所以无需指明注入的是哪个参数。</p>
+
+<p>如果构造函数有多个参数，那么有很多方式可以指定注入的对象与参数的对应关系。</p>
+
+<p>可以通过索引来指定。</p>
+
+<p>```xml</p>
+
+<p><bean id="person" class="huangbowen.net.DependecyInjection.ConstructorInjection.Person"></p>
+
+<pre><code>&lt;constructor-arg index="0" value="Tom"/&gt;
+&lt;constructor-arg index="1" value="20"/&gt;
+</code></pre>
+
+<p></bean></p>
+
+<p>```</p>
+
+<p>也可以通过类型来指定。</p>
+
+<p>```xml</p>
+
+<p><bean id="person" class="huangbowen.net.DependecyInjection.ConstructorInjection.Person"></p>
+
+<pre><code>&lt;constructor-arg type="java.lang.String" value="Tom"/&gt;
+&lt;constructor-arg type="int" value="20"/&gt;
+</code></pre>
+
+<p></bean></p>
+
+<p>```</p>
+
+<p>这要求两个类型不能一样或者不能有继承关系，要不然Spring就不知道映射关系了。如果出现了这样的情况，就需要借助其它的方式来告诉Spring你的参数映射关系。</p>
+
+<p>也可以通过参数名来指定。</p>
+
+<p>```xml</p>
+
+<p><bean id="person" class="huangbowen.net.DependecyInjection.ConstructorInjection.Person"></p>
+
+<pre><code>&lt;constructor-arg name="name" value="Tom"/&gt;
+&lt;constructor-arg name="age" value="20"/&gt;
+</code></pre>
+
+<p></bean></p>
+
+<p>```</p>
+
+<p>这种注入方法有个风险就是如果你的源代码在编译时关闭了debug标志，那么Spring就无法获取构造器的参数名了。不过可以使用@ConstructorProperties 属性显式指定构造器参数名称。</p>
+
+<p>```java Person.java</p>
+
+<p>public class Person {</p>
+
+<pre><code>private String name;
+private int age;
+
+@ConstructorProperties({"name", "age"})
+public Person(String name, int age) {
+    this.name = name;
+    this.age = age;
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Spring-Context之四:Spring容器及bean的定义]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/16/bean-defination-in-spring/"/>
-    <updated>2014-03-16T02:29:00+11:00</updated>
+    <updated>2014-03-16T02:29:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/16/bean-defination-in-spring</id>
     <content type="html"><![CDATA[<p>Spring框架的核心功能之一就是控制反转（Inversion of Control, IoC），也叫做依赖注入（dependency injection, DI）。关于依赖注入的具体内容可以参见Martin Fowler写的一篇文章<a href="http://martinfowler.com/articles/injection.html">《Inversion of Control Containers and the Dependency Injection pattern》</a>。</p>
 
@@ -150,7 +270,7 @@ public MovieService GetMovieService() {
   <entry>
     <title type="html"><![CDATA[Spring-Context之三:使用XML和Groovy DSL配置Bean]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/13/use-groovy-dsl-in-spring/"/>
-    <updated>2014-03-13T02:13:00+11:00</updated>
+    <updated>2014-03-13T02:13:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/13/use-groovy-dsl-in-spring</id>
     <content type="html"><![CDATA[<p>在第一讲中显示了如何使用注解配置bean，其实这是Spring3引进的特性,Spring2使用的是XML的方式来配置Bean，那时候漫天的XML文件使得Spring有着<code>配置地狱</code>的称号。Spring也一直在力求改变这一缺陷。Spring3引入的注解方式确实使配置精简不少，而Spring4则引入了Groovy DSL来配置，其语法比XML要简单很多，而且Groovy本身是门语言，其配置文件就相当于代码，可以用来实现复杂的配置。</p>
 
@@ -391,7 +511,7 @@ public void shouldGetMovieServiceInstance() {
   <entry>
     <title type="html"><![CDATA[Spring-Context之二:使用Spring提供的测试框架进行测试]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/12/use-spring-test/"/>
-    <updated>2014-03-12T01:01:00+11:00</updated>
+    <updated>2014-03-12T01:01:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/12/use-spring-test</id>
     <content type="html"><![CDATA[<p>Spring框架是无侵入性的，所以你的代码可以完全是POJO（plain old java object），直接使用Junit就可以完成大部分的单元测试。但是在集成测试方面就比较吃力了。单元测试层面你可以mock一些依赖对象，但是集成测试时需要真实的依赖对象，而这些对象都是在Spring容器的控制之下。那么如何在引入了Spring的情况下进行集成测试那？别着急，Spring框架早为我们想到了这点，本身提供了集成测试的功能。</p>
 
@@ -491,7 +611,7 @@ public void shouldGetMovieServiceInstance() {
   <entry>
     <title type="html"><![CDATA[Spring-Context之一:一个简单的例子]]></title>
     <link href="http://www.huangbowen.net/blog/2014/03/11/first-exmaple-of-spring-conext/"/>
-    <updated>2014-03-11T02:27:00+11:00</updated>
+    <updated>2014-03-11T02:27:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/03/11/first-exmaple-of-spring-conext</id>
     <content type="html"><![CDATA[<p>很久之前就想系统的学习和掌握Spring框架，但是拖了很久都没有行动。现在趁着在外出差杂事不多，就花时间来由浅入深的研究下Spring框架。Spring框架这几年来已经发展成为一个巨无霸产品。从最初的只是用来作为依赖注入到现在已经是无法不包。其涉及的领域有依赖注入、MVC、JMS、Web flow、Batch job、Web service、Security…..几乎是涵盖了技术开发的所有方面。本人虽然从事Java语言开发时间不长，但是对Spring中的很多组件都有所涉猎，比如上面列出的那几个都有用过。可以说Spring是Java程序员必须要掌握的一个库。</p>
 
