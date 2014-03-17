@@ -1,6 +1,6 @@
 #!/bin/bash
 rake generate && rake deploy
 git add -A
-git ci -m "$0"
-git pull
+
+git ci -m "$1"
 git push origin source
