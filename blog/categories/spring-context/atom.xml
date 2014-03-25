@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Spring-Context | 黄博文的地盘]]></title>
+  <title><![CDATA[Category: Spring-context | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/spring-context/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-03-23T01:59:54+10:00</updated>
+  <updated>2014-03-26T01:00:29+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,336 +14,18 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Spring-Context之六:基于Setter方法进行依赖注入]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/03/18/setter-injection-in-spring/"/>
-    <updated>2014-03-18T00:33:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/03/18/setter-injection-in-spring</id>
-    <content type="html"><![CDATA[<p>上文讲了基于构造器进行依赖注入，这里讲解基于Setter方法进行注入。在Java世界中有个约定（Convention）,那就是属性的设置和获取的方法名一般是:set+属性名(参数)及get+属性名()的方式。boolean类型稍有不同，可以使用is+属性名()方式来获取。</p>
+    <title type="html"><![CDATA[Spring-Context之七:使用p-namesapce和c-namespace简化bean的定义]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/26/using-p-namespace-and-c-namespace/"/>
+    <updated>2014-03-26T00:50:00+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/26/using-p-namespace-and-c-namespace</id>
+    <content type="html"><![CDATA[<p>在Spring中定义bean的方式多种多样，即使使用xml的方式来配置也能派生出很多不同的方式。</p>
 
 <!-- more -->
 
 
-<p>以下是一个示例。</p>
-
-<p>```java MessageHandler.java</p>
-
-<p>public class MessageHandler {</p>
-
-<pre><code>private MessageService messageService;
-
-public MessageService getMessageService() {
-    return messageService;
-}
-
-public void setMessageService(MessageService messageService) {
-    this.messageService = messageService;
-}
-
-public String handle() {
-    return messageService.sendService();
-}
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>使用Setter方法注入如下所示。</p>
+<p>比如如下的bean定义:</p>
 
 <p>```xml</p>
-
-<p><bean id="messageService" class="huangbowen.net.DependecyInjection.ConstructorInjection.SimpleMessageService"/></p>
-
-<pre><code>&lt;bean id="messageHandler" class="huangbowen.net.DependecyInjection.SetterInjection.MessageHandler"&gt;
-    &lt;property name="messageService" ref="messageService"/&gt;
-&lt;/bean&gt;
-</code></pre>
-
-<p>```</p>
-
-<p>如果property的name为messageService,那么必须在类中有个叫做<code>setMessageService</code>的方法，这样才能完成注入。如果将MessageHandler.java中的<code>setMessageService</code>方法改为<code>setMessageService1</code>，那么注入就会失败，失败message如下所示。</p>
-
-<p>```text</p>
-
-<p>...
-java.lang.IllegalStateException: Failed to load ApplicationContext</p>
-
-<p>...
-Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'messageHandler' defined in class path resource [spring-context.xml]: Error setting property values; nested exception is org.springframework.beans.NotWritablePropertyException: Invalid property 'messageService' of bean class [huangbowen.net.DependecyInjection.SetterInjection.MessageHandler]: Bean property 'messageService' is not writable or has an invalid setter method. Did you mean 'messageService1'?</p>
-
-<p>...</p>
-
-<p>```</p>
-
-<p>当然可以同时使用构造器注入和setter方法注入。</p>
-
-<p>```java  Person.java</p>
-
-<p>public class Person {</p>
-
-<pre><code>private String name;
-
-public Person(String name) {
-    this.name = name;
-}
-
-private int age;
-
-public int getAge() {
-    return age;
-}
-
-public void setAge(int age) {
-    this.age = age;
-}
-
-public String getName() {
-    return name;
-}
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>bean定义如下：</p>
-
-<p>```xml</p>
-
-<pre><code>&lt;bean id="person" class="huangbowen.net.DependecyInjection.SetterInjection.Person"&gt;
-    &lt;constructor-arg value="Tom"/&gt;
-    &lt;property name="age" value="20"/&gt;
-&lt;/bean&gt;
-</code></pre>
-
-<p>```</p>
-
-<p>要实现一个bean，即可以使用构造器注入，也可以使用setter注入，甚至可以在一个bean中综合使用这两种方式。那么在真正开发中应该作何取舍那？一般来说，使用构造器注入的依赖必须是强制的依赖，而使用setter注入的依赖则是可选的依赖。使用构造器注入生成的对象是完全初始化了的，用户可以直接拿来用，但是相比于setter方法而言用户也就失去了定制化的能力。如果你发现构造器参数过多，那么很可能说明该类承担的职责过多，应该从设计解耦的角度对类的职责进行拆分。使用setter注入的对象好处是，用户可以按需重新注入新的属性。</p>
-
-<p>另外在进行依赖注入时，可以将某些属性抽出来成为一个元素，或者将元素内联成为一个属性。比如ref这个属性。</p>
-
-<p>```xml</p>
-
-<pre><code>&lt;bean id="messageHandler" class="huangbowen.net.DependecyInjection.SetterInjection.MessageHandler"&gt;
-    &lt;property name="messageService" ref="messageService" /&gt;
-&lt;/bean&gt;
-</code></pre>
-
-<p>```</p>
-
-<p>它与以下xml配置完全等价。</p>
-
-<p>```xml</p>
-
-<p> <bean id="messageHandler" class="huangbowen.net.DependecyInjection.SetterInjection.MessageHandler"></p>
-
-<pre><code>    &lt;property name="messageService"&gt;
-        &lt;ref bean="messageService"/&gt;
-    &lt;/property&gt;
-&lt;/bean&gt;
-</code></pre>
-
-<p>```</p>
-
-<p>value属性也可以独立为元素。</p>
-
-<p>```xml</p>
-
-<pre><code>&lt;bean id="person" class="huangbowen.net.DependecyInjection.SetterInjection.Person"&gt;
-    &lt;constructor-arg value="Tom"/&gt;
-    &lt;property name="age" value="20"/&gt;
-&lt;/bean&gt; 
-</code></pre>
-
-<p>```</p>
-
-<p>其等价于:</p>
-
-<p>```xml</p>
-
-<pre><code>&lt;bean id="person" class="huangbowen.net.DependecyInjection.SetterInjection.Person"&gt;
-    &lt;constructor-arg value="Tom"/&gt;
-    &lt;property name="age"&gt;
-        &lt;value&gt;20&lt;/value&gt;
-    &lt;/property&gt;
-&lt;/bean&gt;
-</code></pre>
-
-<p>```</p>
-
-<p>也可以显式指定value的类型。</p>
-
-<p>```xml</p>
-
-<pre><code>&lt;bean id="person" class="huangbowen.net.DependecyInjection.SetterInjection.Person"&gt;
-    &lt;constructor-arg value="Tom"/&gt;
-    &lt;property name="age"&gt;
-        &lt;value type="int"&gt;20&lt;/value&gt;
-    &lt;/property&gt;
-&lt;/bean&gt;
-</code></pre>
-
-<p>```</p>
-
-<p>比如有一个属性是个boolean值，如果想将其注入为true的话，不指定具体类型的话，Spring可能会将其作为字符串true对待。当然Spring会尝试将传入的字符串转换为setter方法希望的类型，但这种自动转换有时候并不是你期望的，这种情况下你就需要显式指定其类型。</p>
-
-<p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Spring-Context之五:基于构造器进行依赖注入]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/03/16/constructor-based-injection-in-spring/"/>
-    <updated>2014-03-16T20:19:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/03/16/constructor-based-injection-in-spring</id>
-    <content type="html"><![CDATA[<p>上一节讲述了如何在XML中定义bean。这些bean都比较简单，基本只是个单一对象。但是在企业级开发中，一个对象或多或少都要跟其他对象发生关联，比如继承、调用、实现接口等。传统的方法中，如果对象A某方法的实现要调用对象B的方法，那么一般由对象A来维护对象B的生命周期，包括创建、调用、销毁等。而引入了控制反转（即依赖注入）以后，对象A只管负责对对象B的调用，对象B的整个声明周期都交由IoC容器管理。甚至对象A在实现时基于接口实现，IoC容器可以按需注入实现了指定接口的对象到对象A中，这样无需修改任何代码就可以灵活的实现需求变动。</p>
-
-<!-- more -->
-
-
-<p>Spring中对bean的依赖注入主要有两种方式，一种是基于构造器注入，一种是基于Setter方法注入。</p>
-
-<p>以下是构造方法注入的一个简单例子。</p>
-
-<p>```java</p>
-
-<p>public class MessageHandler {</p>
-
-<pre><code>private MessageService messageService;
-
-public MessageHandler(MessageService messageService) {
-    this.messageService = messageService;
-}
-
-public String handle() {
-    return messageService.sendService();
-}
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>```xml</p>
-
-<p><bean id="messageService" class="huangbowen.net.DependecyInjection.ConstructorInjection.SimpleMessageService"/></p>
-
-<p><bean id="messageHandler" class="huangbowen.net.DependecyInjection.ConstructorInjection.MessageHandler"></p>
-
-<pre><code>&lt;constructor-arg ref="messageService"/&gt;
-</code></pre>
-
-<p></bean></p>
-
-<p>```</p>
-
-<p>这里的java对象是POJO（plain old java object）的，说明了Spring框架是无侵入性的。在xml中通过constructor-arg属性来向MessageHandler注入对象，ref指向了另一个bean。</p>
-
-<p>由于该构造函数只有一个参数，所以无需指明注入的是哪个参数。</p>
-
-<p>如果构造函数有多个参数，那么有很多方式可以指定注入的对象与参数的对应关系。</p>
-
-<p>可以通过索引来指定。</p>
-
-<p>```xml</p>
-
-<p><bean id="person" class="huangbowen.net.DependecyInjection.ConstructorInjection.Person"></p>
-
-<pre><code>&lt;constructor-arg index="0" value="Tom"/&gt;
-&lt;constructor-arg index="1" value="20"/&gt;
-</code></pre>
-
-<p></bean></p>
-
-<p>```</p>
-
-<p>也可以通过类型来指定。</p>
-
-<p>```xml</p>
-
-<p><bean id="person" class="huangbowen.net.DependecyInjection.ConstructorInjection.Person"></p>
-
-<pre><code>&lt;constructor-arg type="java.lang.String" value="Tom"/&gt;
-&lt;constructor-arg type="int" value="20"/&gt;
-</code></pre>
-
-<p></bean></p>
-
-<p>```</p>
-
-<p>这要求两个类型不能一样或者不能有继承关系，要不然Spring就不知道映射关系了。如果出现了这样的情况，就需要借助其它的方式来告诉Spring你的参数映射关系。</p>
-
-<p>也可以通过参数名来指定。</p>
-
-<p>```xml</p>
-
-<p><bean id="person" class="huangbowen.net.DependecyInjection.ConstructorInjection.Person"></p>
-
-<pre><code>&lt;constructor-arg name="name" value="Tom"/&gt;
-&lt;constructor-arg name="age" value="20"/&gt;
-</code></pre>
-
-<p></bean></p>
-
-<p>```</p>
-
-<p>这种注入方法有个风险就是如果你的源代码在编译时关闭了debug标志，那么Spring就无法获取构造器的参数名了。不过可以使用@ConstructorProperties 属性显式指定构造器参数名称。</p>
-
-<p>```java Person.java</p>
-
-<p>public class Person {</p>
-
-<pre><code>private String name;
-private int age;
-
-@ConstructorProperties({"name", "age"})
-public Person(String name, int age) {
-    this.name = name;
-    this.age = age;
-}
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Spring-Context之四:Spring容器及bean的定义]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/03/16/bean-defination-in-spring/"/>
-    <updated>2014-03-16T02:29:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/03/16/bean-defination-in-spring</id>
-    <content type="html"><![CDATA[<p>Spring框架的核心功能之一就是控制反转（Inversion of Control, IoC），也叫做依赖注入（dependency injection, DI）。关于依赖注入的具体内容可以参见Martin Fowler写的一篇文章<a href="http://martinfowler.com/articles/injection.html">《Inversion of Control Containers and the Dependency Injection pattern》</a>。</p>
-
-<!-- more -->
-
-
-<p>Spring容器接口是BeanFactory，其提供了一些方法来配置和管理对象。ApplicationContext是BeanFactory的子接口，它集成了Spring的AOP特性，信息资源管理（用于全球化），公共事件等。简单的说，BeanFactory提供了配置框架及基本的功能，而ApplicationContext增加了更多的企业级定制功能。比如其实现类WebApplicationContext可用于web应用程序中。</p>
-
-<p>在Spring中，应用程序中受Spring IoC容器管理的对象叫做bean，即bean是一个由Spring IoC容器实例化、装配及其它管理的对象。下图是Spring IoC容器的一个简单图解。</p>
-
-<p><img src="/images/iocOverView.png"></p>
-
-<p>以下列出了几个常用的实现了ApplicationContext的容器对象。</p>
-
-<ul>
-<li><p>AnnotationConfigApplicationContext :接收注解的class作为输入来初始化配置。</p></li>
-<li><p>GenericGroovyApplicationContext: 根据Groovy DSL来初始化配置。</p></li>
-<li><p>ClassPathXmlApplicationContext:根据当前classpath下的xml文件初始化配置。</p></li>
-<li><p>FileSystemXmlApplicationContext:根据文件系统路径下的xml文件初始化配置。</p></li>
-</ul>
-
-
-<p>Bean的定义有多种方式，XML定义，Annoation定义，Java代码直接定义，Groovy DSL定义等。之前例子基本都演示过这些定义方法。</p>
-
-<p>一个简单的XML定义是这样的。</p>
-
-<p>```xml</p>
-
-<p>&lt;?xml version="1.0" encoding="UTF-8"?></p>
 
 <p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
 
@@ -351,128 +33,10 @@ public Person(String name, int age) {
    xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
 
-&lt;bean id="movieService" class="huangbowen.net.service.DefaultMovieService”/&gt;
-</code></pre>
 
-<p></beans></p>
-
-<p>```</p>
-
-<p>其包含一个id和一个class。id是一个bean的唯一标示，同一个spring容器中不能有两个id一样的bean，不过你也可以给bean起别名，使用name属性即可，多个别名可以用逗号,分号或空格分开。</p>
-
-<p>```xml</p>
-
-<p><bean id="movieService" name="service1 service2" class="huangbowen.net.service.DefaultMovieService"/></p>
-
-<p>```</p>
-
-<p>```xml</p>
-
-<p><bean id="movieService" name=“service1,service2" class="huangbowen.net.service.DefaultMovieService"/></p>
-
-<p>```</p>
-
-<p>```xml</p>
-
-<p><bean id="movieService" name="service1;service2" class="huangbowen.net.service.DefaultMovieService"/></p>
-
-<p>```</p>
-
-<p>也可以使用alisa来起别名。</p>
-
-<p>```xml</p>
-
-<p><bean id="movieService" name="service1,service2" class="huangbowen.net.service.DefaultMovieService"/></p>
-
-<p><alias name="movieService" alias="service3"/></p>
-
-<p>```</p>
-
-<p>如果你的bean的实例不是通过构造函数直接生成的，而是通过工厂方法生成那，那么也有相应的配置方法。</p>
-
-<p>```xml</p>
-
-<p><bean id="defaultMovieService" class="huangbowen.net.service.MovieServiceFactory" factory-method="GetMovieService" /></p>
-
-<p>```</p>
-
-<p>```java MovieServiceFactory</p>
-
-<p>package huangbowen.net.service;</p>
-
-<p>public class MovieServiceFactory {</p>
-
-<pre><code>private static DefaultMovieService defaultMovieService = new DefaultMovieService();
-
-public static MovieService GetMovieService() {
-    return defaultMovieService;
-}
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>如果bean对象是由一个实例工厂生成的，那么应该这样配置。</p>
-
-<p>```xml</p>
-
-<pre><code>&lt;bean id="serviceLocator" class="huangbowen.net.service.MovieServiceLocator"/&gt;
-
-&lt;bean id="instantMovieService" factory-bean="serviceLocator" factory-method="GetMovieService"/&gt;
-</code></pre>
-
-<p>```</p>
-
-<p>```java MovieServiceLocator</p>
-
-<p>package huangbowen.net.service;</p>
-
-<p>public class MovieServiceLocator {</p>
-
-<pre><code>private static DefaultMovieService defaultMovieService = new DefaultMovieService();
-
-public MovieService GetMovieService() {
-    return defaultMovieService;
-}
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Spring-Context之三:使用XML和Groovy DSL配置Bean]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/03/13/use-groovy-dsl-in-spring/"/>
-    <updated>2014-03-13T02:13:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/03/13/use-groovy-dsl-in-spring</id>
-    <content type="html"><![CDATA[<p>在第一讲中显示了如何使用注解配置bean，其实这是Spring3引进的特性,Spring2使用的是XML的方式来配置Bean，那时候漫天的XML文件使得Spring有着<code>配置地狱</code>的称号。Spring也一直在力求改变这一缺陷。Spring3引入的注解方式确实使配置精简不少，而Spring4则引入了Groovy DSL来配置，其语法比XML要简单很多，而且Groovy本身是门语言，其配置文件就相当于代码，可以用来实现复杂的配置。</p>
-
-<!-- more -->
-
-
-<p>废话少说，让我们来对Groovy DSL配置来个第一次亲密接触。</p>
-
-<p>首先我们先实现一个XML的bean配置，沿用第一讲中的例子。</p>
-
-<p>```xml configuration.xml</p>
-
-<p>&lt;?xml version="1.0" encoding="UTF-8"?></p>
-
-<p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
-
-<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
-
-&lt;bean id="movieService" class="huangbowen.net.service.DefaultMovieService"/&gt;
-
-&lt;bean id="cinema" class="huangbowen.net.service.Cinema"&gt;
-    &lt;property name="movieService" ref="movieService"/&gt;
+&lt;bean id="person" class="Person"&gt;
+    &lt;property name="name" value="Tom"/&gt;
+    &lt;property name="age" value="20"/&gt;
 &lt;/bean&gt;
 </code></pre>
 
@@ -480,309 +44,132 @@ public MovieService GetMovieService() {
 
 <p>```</p>
 
-<p>这个XML文件就不用我多做解释了，很清晰明了。Ok，照例写个测试来测一下。</p>
+<p>这样的bean有三行，通过使用p-namespace以后可以简化为一行。</p>
 
-<p>```java XmlConfigurationTest.java</p>
+<p>```xml</p>
 
-<p>package huangbowen.net;</p>
+<p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
 
-<p>import huangbowen.net.service.Cinema;
-import huangbowen.net.service.DefaultMovieService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</p>
+<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:p="http://www.springframework.org/schema/p"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
 
-<p>import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;</p>
-
-<p>@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"/configuration.xml"})
-public class XmlConfigurationTest {</p>
-
-<pre><code>@Autowired
-private ApplicationContext applicationContext;
-
-@Autowired
-private Cinema cinema;
-
-@Test
-public void shouldGetCinemaInstance()  {
-    Cinema cinema = applicationContext.getBean(Cinema.class);
-    assertNotNull(cinema);
-}
-
-@Test
-public void shouldGetAutowiredCinema() {
-    assertNotNull(cinema);
-}
-
-@Test
-public void shouldGetMovieServiceInstance() {
-    assertNotNull(cinema.getMovieService());
-    assertThat(cinema.getMovieService(), instanceOf(DefaultMovieService.class));
-}
+&lt;bean id="person" class="Person" p:name="Tom" p:age="20"/&gt;
 </code></pre>
 
-<p>}</p>
+<p></beans></p>
 
 <p>```</p>
 
-<p>这个测试与第二讲中的测试基本上一样，不过Spring配置的读取是从configuration.xml来的，在@ContextConfiguration中指定了该xml文件为Spring配置文件。</p>
+<p>那么什么是<code>p-namespace</code>那？它的作用就是使用xml中的元素属性取代<code>&lt;property/&gt;</code>节点来定义bean的属性。这个神奇的p是什么东西那？它其实是使用了namespace的xml扩展配置格式。beans的配置格式是定义在一个xsd格式中的（即 http://www.springframework.org/schema/beans/spring-beans.xsd），但p却没有一个xsd格式文件与其对应，但是它可以被spring内核解析处理。</p>
 
-<p>如果想使用Groovy DSL的话第一步需要引入groovy依赖。</p>
+<p>上面只是演示了对属性为普通值的时使用<code>p-namespace</code>的注入，如果属性为另一个bean的引用时该如何处理那？很简单。</p>
 
-<p>```xml pom.xml</p>
+<p>这是使用正常方式注入属性。</p>
 
-<p><dependency></p>
+<p>```xml</p>
 
-<pre><code>&lt;groupId&gt;org.codehaus.groovy&lt;/groupId&gt;
-&lt;artifactId&gt;groovy-all&lt;/artifactId&gt;
-&lt;version&gt;2.2.2&lt;/version&gt;
+<pre><code>&lt;bean id="messageService" class="SimpleMessageService"/&gt;
+&lt;bean id="messageHandler" class="MessageHandler"&gt;
+    &lt;property name="messageService"&gt;
+        &lt;ref bean="messageService" /&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
 </code></pre>
 
-<p></dependency></p>
-
 <p>```</p>
 
-<p>然后就可以新建一个groovy文件来实现配置编写。</p>
+<p>使用<code>p-namespace</code>后是这样的。</p>
 
-<p>```groovy Configuration.groovy</p>
+<p>```xml</p>
 
-<p>beans {</p>
-
-<p>   movieService huangbowen.net.service.DefaultMovieService</p>
-
-<p>   cinema huangbowen.net.service.Cinema, movieService : movieService</p>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>这其实体现不出来Groovy DSL的强大灵活，因为我们的例子太简单了。</p>
-
-<p>beans相当于xml中的beans标签，第一行中是 bean id + class的形式。
-第二行是bean id + class + properties map的形式。第二个参数是一个map数组，分别对应property和值。</p>
-
-<p>实现同样的Bean配置有很多种写法。</p>
-
-<p>```groovy</p>
-
-<p>movieService (huangbowen.net.service.DefaultMovieService)</p>
-
-<p>cinema(huangbowen.net.service.Cinema, {movieService : movieService})</p>
-
-<p>```</p>
-
-<p>上面这种其实是Groovy语法的一个特性，在调用方法时括号是可选的，既可以加，也可以不加。</p>
-
-<p>```groovy</p>
-
-<p>movieService huangbowen.net.service.DefaultMovieService</p>
-
-<p>cinema (huangbowen.net.service.Cinema) {</p>
-
-<pre><code>movieService :ref movieService
+<pre><code>&lt;bean id="messageService" class="SimpleMessageService"/&gt;
+&lt;bean id="messageHandler" class=“MessageHandler” p:messageService-ref=“messageService”/&gt;
 </code></pre>
 
-<p>}</p>
+<p>```</p>
+
+<p>加上<code>-ref</code>后缀即表示是对一个bean的引用。</p>
+
+<p>那既然setter方法注入bean可以使用<code>p-namespace</code>，那么构造器方式注入有没有相应的简写那？答案是肯定的，那就是<code>c-namespace</code>，原理和使用方法与<code>p-namespace</code>大同小异。</p>
+
+<p>使用<code>c-namespace</code>前:</p>
+
+<p>```xml</p>
+
+<p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
+
+<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:c="http://www.springframework.org/schema/c"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+
+
+&lt;bean id="person" class="Person"&gt;
+    &lt;constructor-arg name="name"&gt;
+        &lt;value&gt;Tom&lt;/value&gt;
+    &lt;/constructor-arg&gt;
+    &lt;constructor-arg name="age" value="20"/&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p></beans></p>
 
 <p>```</p>
 
-<p>上面这中使用了另一个设置属性的方法，通过一个闭包将属性设置进去。</p>
+<p>使用<code>c-namespace</code>后:</p>
 
-<p>```groovy</p>
+<p>```xml</p>
 
-<p>movieService huangbowen.net.service.DefaultMovieService</p>
+<p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
 
-<p>cinema (huangbowen.net.service.Cinema) {</p>
-
-<pre><code>movieService : movieService
+<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:c="http://www.springframework.org/schema/c"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
 </code></pre>
 
-<p>}</p>
-
-<p>```
-这种更好理解了，ref方法也是可选的。</p>
-
-<p>来照旧写个测试来测一下。</p>
-
-<p>```java GroovyDSLConfigurationTest.java</p>
-
-<p>package huangbowen.net;</p>
-
-<p>import huangbowen.net.service.Cinema;
-import huangbowen.net.service.DefaultMovieService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.groovy.GroovyBeanDefinitionReader;
-import org.springframework.beans.factory.support.BeanDefinitionReader;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AbstractGenericContextLoader;</p>
-
-<p>import static huangbowen.net.GroovyDSLConfigurationTest.*;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;</p>
-
-<p>@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value = "classpath:Configuration.groovy", loader = GenericGroovyContextLoader.class)
-public class GroovyDSLConfigurationTest {</p>
-
-<pre><code>public static class GenericGroovyContextLoader extends
-        AbstractGenericContextLoader {
-
-    @Override
-    protected BeanDefinitionReader createBeanDefinitionReader(
-            GenericApplicationContext context) {
-        return new GroovyBeanDefinitionReader(context);
-    }
-
-    @Override
-    protected String getResourceSuffix() {
-        return ".groovy";
-    }
-
-}
-
-@Autowired
-private ApplicationContext applicationContext;
-
-@Autowired
-private Cinema cinema;
-
-@Test
-public void shouldGetCinemaInstance()  {
-    Cinema cinema = applicationContext.getBean(Cinema.class);
-    assertNotNull(cinema);
-}
-
-@Test
-public void shouldGetAutowiredCinema() {
-    assertNotNull(cinema);
-}
-
-@Test
-public void shouldGetMovieServiceInstance() {
-    assertNotNull(cinema.getMovieService());
-    assertThat(cinema.getMovieService(), instanceOf(DefaultMovieService.class));
-}
-</code></pre>
-
-<p>}</p>
+<p><bean id="person"  c:name="Tom" c:age="20"/>
+</beans></p>
 
 <p>```</p>
 
-<p>在集成测试中如果加载xml配置文件，Spring提供了GenericXmlContextLoader类，如果加载注解方式的配置类，Spring提供了AnnotationConfigContextLoader类。但是对于Groovy配置文件Spring testContext框架还未提供相应的Loader，所以在本测试方法中需要自己实现一个Loader，其实也简单，只要实现两个方法即可。</p>
+<p>也可以使用<code>-ref</code>后缀来表示对另一个bean的引用。</p>
+
+<p>```xml</p>
+
+<p> <bean id="messageService" class="SimpleMessageService"/></p>
+
+<pre><code>&lt;bean id="messageHandler" class="MessageHandler" c:messageService-ref="messageService"/&gt;
+</code></pre>
+
+<p>```</p>
+
+<p>在前面章节讲解构造器注入时，可以使用构造参数索引来注入依赖，<code>c-namespace</code>也支持这一方式。</p>
+
+<p>```xml</p>
+
+<p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
+
+<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:c="http://www.springframework.org/schema/c"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+</code></pre>
+
+<p><bean id="person”  c:_0="Tom" c:_1="20"/></p>
+
+<p><bean id="messageService" class="SimpleMessageService"/>
+<bean id="messageHandler" class="MessageHandler" c:_0-ref="messageService"/></p>
+
+<p></beans></p>
+
+<p>```</p>
+
+<p>怎么样，是不是很强大啊。但是太过强大也容易伤人伤己。在项目中使用这些技巧之前最好先和项目成员达成一致。</p>
 
 <p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Spring-Context之二:使用Spring提供的测试框架进行测试]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/03/12/use-spring-test/"/>
-    <updated>2014-03-12T01:01:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/03/12/use-spring-test</id>
-    <content type="html"><![CDATA[<p>Spring框架是无侵入性的，所以你的代码可以完全是POJO（plain old java object），直接使用Junit就可以完成大部分的单元测试。但是在集成测试方面就比较吃力了。单元测试层面你可以mock一些依赖对象，但是集成测试时需要真实的依赖对象，而这些对象都是在Spring容器的控制之下。那么如何在引入了Spring的情况下进行集成测试那？别着急，Spring框架早为我们想到了这点，本身提供了集成测试的功能。</p>
-
-<!-- more -->
-
-
-<p>就拿上一次那个简单的例子来做实验吧。</p>
-
-<p>首先引入对junit以及spring-test库的依赖。</p>
-
-<p>```xml pom.xml</p>
-
-<p>   <dependencies></p>
-
-<pre><code>    &lt;dependency&gt;
-        &lt;groupId&gt;junit&lt;/groupId&gt;
-        &lt;artifactId&gt;junit&lt;/artifactId&gt;
-        &lt;version&gt;4.11&lt;/version&gt;
-        &lt;scope&gt;test&lt;/scope&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-test&lt;/artifactId&gt;
-        &lt;version&gt;4.0.2.RELEASE&lt;/version&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;
-</code></pre>
-
-<p>```</p>
-
-<p>spring-test模块是专门为使用了spring框架的项目进行集成测试的辅助类库。其有以下几个目的。</p>
-
-<ul>
-<li><p>提供在运行测试时对Spring IOC容器的缓存，提高集成测试速度。</p></li>
-<li><p>对测试实例提供依赖注入功能。</p></li>
-<li><p>集成测试中提供事务管理。</p></li>
-<li><p>提供一些辅助类库帮助开发者更好的编写集成测试。</p></li>
-</ul>
-
-
-<p>然后新建一个ApplicationTest.java类，代码如下所示。</p>
-
-<p>```java ApplicationTest.java</p>
-
-<p>package huangbowen.net;</p>
-
-<p>import huangbowen.net.service.Cinema;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</p>
-
-<p>import static org.junit.Assert.assertNotNull;</p>
-
-<p>@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {Application.class})
-public class ApplicationTest {</p>
-
-<pre><code>@Autowired
-private ApplicationContext applicationContext;
-
-@Autowired
-private Cinema cinema;
-
-@Test
-public void shouldGetCinemaInstance()  {
-    Cinema cinema = applicationContext.getBean(Cinema.class);
-    assertNotNull(cinema);
-}
-
-@Test
-public void shouldGetAutowiredCinema() {
-    assertNotNull(cinema);
-}
-
-@Test
-public void shouldGetMovieServiceInstance() {
-    assertNotNull(cinema.getMovieService());
-    assertThat(cinema.getMovieService(), instanceOf(DefaultMovieService.class));
-}
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>在本例中ApplicationTest有两个注解。@RunWith(SpringJUnit4ClassRunner.class).是Spring TestContext 框架提供的一个自定义的JUnit runner，这样在测试类中就可以获取ApplicationContext，甚至直接进行依赖注入，使用事务控制测试方法执行等。声明了@RunWith(SpringJUnit4ClassRunner.class)以后一般还要声明@ContextConfiguration注解。这个注解是用于告诉测试类本项目中的Spring配置。这里我们传入Application.class类，因为这个类中配置了Spring的bean。</p>
-
-<p>然后就可以在测试类中使用强大的@Autowired功能了。我们写了三个测试方法，第一个是通过Autowired功能拿到ApplicationContext，第二个是通过Autowired功能直接拿到cinema，第三个则是验证Cinema中的MovieService是被正确注入了的。</p>
-
-<p>Ok,今天就到这里。本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
 ]]></content>
   </entry>
   

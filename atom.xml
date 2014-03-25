@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-03-23T01:59:54+10:00</updated>
+  <updated>2014-03-26T01:00:29+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,204 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Spring-Context之七:使用p-namesapce和c-namespace简化bean的定义]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/26/using-p-namespace-and-c-namespace/"/>
+    <updated>2014-03-26T00:50:00+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/26/using-p-namespace-and-c-namespace</id>
+    <content type="html"><![CDATA[<p>在Spring中定义bean的方式多种多样，即使使用xml的方式来配置也能派生出很多不同的方式。</p>
+
+<!-- more -->
+
+
+<p>比如如下的bean定义:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.springframework.org/schema/beans&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+</span><span class='line'>       <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://www.springframework.org/schema/beans</span>
+</span><span class='line'><span class="s">        http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;person&quot;</span> <span class="na">class=</span><span class="s">&quot;Person&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span> <span class="na">value=</span><span class="s">&quot;Tom&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;age&quot;</span> <span class="na">value=</span><span class="s">&quot;20&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/beans&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样的bean有三行，通过使用p-namespace以后可以简化为一行。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.springframework.org/schema/beans&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:p=</span><span class="s">&quot;http://www.springframework.org/schema/p&quot;</span>
+</span><span class='line'>       <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://www.springframework.org/schema/beans</span>
+</span><span class='line'><span class="s">        http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;person&quot;</span> <span class="na">class=</span><span class="s">&quot;Person&quot;</span> <span class="na">p:name=</span><span class="s">&quot;Tom&quot;</span> <span class="na">p:age=</span><span class="s">&quot;20&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/beans&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么什么是<code>p-namespace</code>那？它的作用就是使用xml中的元素属性取代<code>&lt;property/&gt;</code>节点来定义bean的属性。这个神奇的p是什么东西那？它其实是使用了namespace的xml扩展配置格式。beans的配置格式是定义在一个xsd格式中的（即 http://www.springframework.org/schema/beans/spring-beans.xsd），但p却没有一个xsd格式文件与其对应，但是它可以被spring内核解析处理。</p>
+
+<p>上面只是演示了对属性为普通值的时使用<code>p-namespace</code>的注入，如果属性为另一个bean的引用时该如何处理那？很简单。</p>
+
+<p>这是使用正常方式注入属性。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageService&quot;</span> <span class="na">class=</span><span class="s">&quot;SimpleMessageService&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageHandler&quot;</span> <span class="na">class=</span><span class="s">&quot;MessageHandler&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;messageService&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;ref</span> <span class="na">bean=</span><span class="s">&quot;messageService&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/property&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用<code>p-namespace</code>后是这样的。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageService&quot;</span> <span class="na">class=</span><span class="s">&quot;SimpleMessageService&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageHandler&quot;</span> <span class="na">class=</span><span class="s">“MessageHandler”</span> <span class="na">p:messageService-ref=</span><span class="s">“messageService”/</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>加上<code>-ref</code>后缀即表示是对一个bean的引用。</p>
+
+<p>那既然setter方法注入bean可以使用<code>p-namespace</code>，那么构造器方式注入有没有相应的简写那？答案是肯定的，那就是<code>c-namespace</code>，原理和使用方法与<code>p-namespace</code>大同小异。</p>
+
+<p>使用<code>c-namespace</code>前:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.springframework.org/schema/beans&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:c=</span><span class="s">&quot;http://www.springframework.org/schema/c&quot;</span>
+</span><span class='line'>       <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://www.springframework.org/schema/beans</span>
+</span><span class='line'><span class="s">        http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;person&quot;</span> <span class="na">class=</span><span class="s">&quot;Person&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;value&gt;</span>Tom<span class="nt">&lt;/value&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/constructor-arg&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">&quot;age&quot;</span> <span class="na">value=</span><span class="s">&quot;20&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/beans&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用<code>c-namespace</code>后:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.springframework.org/schema/beans&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:c=</span><span class="s">&quot;http://www.springframework.org/schema/c&quot;</span>
+</span><span class='line'>       <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://www.springframework.org/schema/beans</span>
+</span><span class='line'><span class="s">        http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;person&quot;</span>  <span class="na">c:name=</span><span class="s">&quot;Tom&quot;</span> <span class="na">c:age=</span><span class="s">&quot;20&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/beans&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以使用<code>-ref</code>后缀来表示对另一个bean的引用。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'> <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageService&quot;</span> <span class="na">class=</span><span class="s">&quot;SimpleMessageService&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageHandler&quot;</span> <span class="na">class=</span><span class="s">&quot;MessageHandler&quot;</span> <span class="na">c:messageService-ref=</span><span class="s">&quot;messageService&quot;</span><span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在前面章节讲解构造器注入时，可以使用构造参数索引来注入依赖，<code>c-namespace</code>也支持这一方式。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.springframework.org/schema/beans&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:c=</span><span class="s">&quot;http://www.springframework.org/schema/c&quot;</span>
+</span><span class='line'>       <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://www.springframework.org/schema/beans</span>
+</span><span class='line'><span class="s">        http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;person”  c:_0=&quot;</span><span class="err">Tom&quot;</span> <span class="na">c:_1=</span><span class="s">&quot;20&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageService&quot;</span> <span class="na">class=</span><span class="s">&quot;SimpleMessageService&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageHandler&quot;</span> <span class="na">class=</span><span class="s">&quot;MessageHandler&quot;</span> <span class="na">c:_0-ref=</span><span class="s">&quot;messageService&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/beans&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>怎么样，是不是很强大啊。但是太过强大也容易伤人伤己。在项目中使用这些技巧之前最好先和项目成员达成一致。</p>
+
+<p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ActiveMQ第六弹:设置多个并行的消费者]]></title>
@@ -2830,25 +3028,6 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
 它的实现中有HashTable和HashMap。两者非常相似，最大的不同是HashMap不是线程安全的，并且允许null值作为key或value，而HashTable则不允许。</p>
 
 <p>HashMap的性能取决于两个因素：一个是初始容量，一个是负载因数。容量是哈希表中bucket的数量。初始容量则是HashMap被创建时容量。负载因数则是当容量需要自动增加的阀值。当HashMap中的元素超过了负载因数和当前容量的乘积，HashMap则会重新进行hash计算，以便bucket数量增加到以前的近似两倍。一般负载因子的默认值是0.75，这能达到时间和空间的一个平衡。负载因子过大，虽然会减少空间消耗，但是增加查找时间。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[我的2013年总结]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/01/02/my-conclusion-of-2013/"/>
-    <updated>2014-01-02T21:30:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/01/02/my-conclusion-of-2013</id>
-    <content type="html"><![CDATA[<ol>
-<li><p>读了20多本书，有些书让人拍案叫绝，有些书则没产生多大共鸣。上半年读的多些，下半年有些懒散，读的相对少些。</p></li>
-<li><p>翻译了一本书,《Effective JavaScript》并且已经出版，还在翻译另一本。翻译书这事情咋个说那？看似难，其实不难，只是需要花大量时间;看似不难其实难，英文好不一定就翻译的信、达、雅。</p></li>
-<li><p>去澳洲出差了一个月，第一次跑这么远，跑到另一块大陆上。在那里感受到了国外的生活，开阔了自己的视野。</p></li>
-<li><p>经过1个月的准备，英语考过了4个5，算是满足了拿澳洲457visa的要求。但是自我感觉英文在2013年提高并不大，还未到随心所欲的地步。</p></li>
-<li><p>坚持写博客。虽然从2008年就开始写博客，但是中间断断续续，甚至2012年丢掉了之前所有的博客数据。索性在2013年又坚持起来，每个月至少5篇（11月份准备考雅思写的不多）。</p></li>
-<li><p>2013年也尝试了很多新东西，AWS、node.js、ruby、haskell、groovy&#8230;&#8230;收获了很多的东西，但是感觉自己总结的力度还是不够。</p></li>
-</ol>
-
-
-<p>总的来说，2013年是充实的一年，2014年要给自己更大的压力，因为2014年就要为人父了，担上的压力会更重。 不过我对技术的热情和追求不会消退。</p>
 ]]></content>
   </entry>
   
