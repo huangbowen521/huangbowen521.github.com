@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-03-26T01:00:29+10:00</updated>
+  <updated>2014-03-29T00:59:44+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,111 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[切换到ZSH以后遇到的坑]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/29/using-zsh/"/>
+    <updated>2014-03-29T00:51:00+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/29/using-zsh</id>
+    <content type="html"><![CDATA[<p>了解到ZSH的强大以后打算将自己目前使用的bash切换到ZSH。具体ZSH比bash强在那里就不多少了，网上的文章一搜一大把。个人主要是被ZSH强大的自动补全吸引过来的。虽然bash装了bash-completaion以后也有了一定的自动补全能力，但是和ZSH比起来还是差距太大。</p>
+
+<!-- more -->
+
+
+<p>ZSH虽然功能强大，但是配置繁琐，并且shell脚本的语法一向比较奇葩，如果自己定制还需要对shell脚本有一定的了解。本来想用ZSH来节省时间，但是还要花大量时间来配置ZSH无疑会生使众多程序员望而却步。好在github有oh-my-ZSH这个项目，自动把大量的配置给你搞好了，基本上做到了开箱即用。</p>
+
+<p>具体如何安装ZSH和配置oh-my-zsh就不多说了，请参见<a href="https://github.com/robbyrussell/oh-my-zsh">https://github.com/robbyrussell/oh-my-zsh</a>。</p>
+
+<p>安装完毕后运行<code>chsh -s /bin/zsh</code>将当前默认的shell切换为zsh。另外需要做的是要将以前~/.bash_profile中的配置复制到~/.zshrc中，这样保证以前在bash中定义的别名、命令等可以继续正常工作。</p>
+
+<p>虽然说ZSH无缝兼容bash，但是刚开始使用还是遇到了一些坑，好歹都一一解决了。</p>
+
+<h2>编码问题</h2>
+
+<p>当我运行Octopress博客的生成博客命令时，遇到了这个奇怪的错。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rake generate
+</span><span class='line'>
+</span><span class='line'>YAML Exception reading 2013-12-15-responsive-menu-by-media-queries.markdown: invalid byte sequence in US-ASCII
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看起来貌似是默认编码的问题，ZSH使用的默认编码是US-ASCII，但我期望的是UTF-8。</p>
+
+<p>ok,查看当前zsh shell下的编码是什么。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>locale
+</span><span class='line'><span class="nv">LANG</span><span class="o">=</span>
+</span><span class='line'><span class="nv">LC_COLLATE</span><span class="o">=</span><span class="s2">&quot;C&quot;</span>
+</span><span class='line'><span class="nv">LC_CTYPE</span><span class="o">=</span><span class="s2">&quot;C&quot;</span>
+</span><span class='line'><span class="nv">LC_MESSAGES</span><span class="o">=</span><span class="s2">&quot;C&quot;</span>
+</span><span class='line'><span class="nv">LC_MONETARY</span><span class="o">=</span><span class="s2">&quot;C&quot;</span>
+</span><span class='line'><span class="nv">LC_NUMERIC</span><span class="o">=</span><span class="s2">&quot;C&quot;</span>
+</span><span class='line'><span class="nv">LC_TIME</span><span class="o">=</span><span class="s2">&quot;C&quot;</span>
+</span><span class='line'><span class="nv">LC_ALL</span><span class="o">=</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由于没设值，所以ZSH就选取了US-ASCII。</p>
+
+<p>解决办法也很简单，在<code>~/.zshrc</code>中加入以下两行。</p>
+
+<figure class='code'><figcaption><span>~/.zshrc</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>export LC_ALL=en_US.UTF-8  export LANG=en_US.UTF-8```然后重新加载zshrc文件并查看编码。$ source ~/.zshrc$ locale
+</span><span class='line'># Compilation flagsLANG=&quot;en_US.UTF-8&quot;
+</span><span class='line'>LC_COLLATE=&quot;en_US.UTF-8&quot;
+</span><span class='line'>LC_CTYPE=&quot;en_US.UTF-8&quot;
+</span><span class='line'>LC_MESSAGES=&quot;en_US.UTF-8&quot;
+</span><span class='line'>LC_MONETARY=&quot;en_US.UTF-8&quot;
+</span><span class='line'>LC_NUMERIC=&quot;en_US.UTF-8&quot;
+</span><span class='line'>LC_TIME=&quot;en_US.UTF-8&quot;
+</span><span class='line'>LC_ALL=&quot;en_US.UTF-8”
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>通配符问题</h2>
+
+<p>我又发现如果命令行中有[] *等字符会被zsh优先作为通配符处理，这样导致某些命令会被ZSH错误解析。</p>
+
+<p>比如:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rake new_post<span class="o">[</span>‘a new post’<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里的[]是ruby语言中的语法，但是被ZSH解析成了通配符，所以报错。解决方法也简单，关闭ZSH的这一特性。</p>
+
+<p>在~/.zshrc中加入下面一行即可搞定。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>setopt no_nomatch
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Spring-Context之七:使用p-namesapce和c-namespace简化bean的定义]]></title>
@@ -2986,48 +3091,6 @@ Jenkins作为开源产品，社区比较活跃，文档资料和插件都比较�
 <li><p>在StackOverFlow上问问题时不要太着急，先查找下有没有类似的已经解决的问题，这样可以节省时间。</p></li>
 </ol>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Java中的Set, List, Map漫谈]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/01/02/set/"/>
-    <updated>2014-01-02T23:45:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/01/02/set</id>
-    <content type="html"><![CDATA[<p>在编程语言中，集合是指代表一组对象的对象。Java平台专门有一个集合框架(Collections Framework)。集合框架是指表示和操作集合的统一架构，隔离了集合的操作和实现细节。</p>
-
-<!-- more -->
-
-
-<p>集合框架中的集合接口主要分为两大部分，一部分继承自<code>java.util.Collection</code>，另一部分继承自<code>java.util.Map</code> （其实Map本质上并不是集合，只是看起来好像可以像集合一样操作）。一个有趣的事情是这些接口的实现不一定都需要实现这些接口中的修改方法（如add，remove等），可以给某些不想实现的修改方法抛出一个运行时异常(UnsupportedOperationException)。</p>
-
-<h2>List</h2>
-
-<p>List是Java中的一个接口，继承了Collection接口。它是一个有序集合，又称序列，允许存储重复元素。其实现类常用的有ArrayList、LinkedList等。ArrayList是实现了List接口的可变长数组。它的特点是add方法操作时间复杂度为分期常量时间（amortized constant time），意思即如果添加n个元素则耗时O(n)，其它操作耗时则是线性时间。每个ArrayList都有个容量，即存放元素能力的大小。这个容量是list中元素个数。当添加新的元素时，这个容量也会自动添加，这需要消耗一定时间。如果要添加大量数据到ArrayList，可以先调用<code>ensureCapacity</code>操作，从而减少每次添加新元素容量自动调整的时间。</p>
-
-<p>需要注意的是ArrayList并不是线程同步的。如果多个线程同时访问一个ArrayList实例，至少一个线程修改了其结构（添加或删除元素，或显式的调整了其大小，仅仅设置元素值并不属于结构修改），则会使程序进入不确定的状态。解决方式之一就是使用一个线程同步的对象来封装该ArrayList。或者也可以用Collections.synchronizedList来封装。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">List</span> <span class="n">list</span> <span class="o">=</span> <span class="n">Collections</span><span class="o">.</span><span class="na">synchronizedList</span><span class="o">(</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">(...));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>实现原理就是Collections.synchronizedList返回的类的iterator做了特殊处理。如果iterator被创建后，除了自己的add和delete方法，有其他行为导致了List结构被修改，iterator将会抛出一个<code>ConcurrentModificationException</code>异常。当然iterate这种处理方式并不能担保它能处理所有的异步并发修改，只能降低程序陷入不确定状态的概率。</p>
-
-<p>LikedList是一个双重链表，它既实现了List接口，也实现了Deque接口。LikedList也不是线程安全的，解决方式与ArrrayList基本相同。</p>
-
-<h2>Set</h2>
-
-<p>Set也是Java中的一个接口，同样继承于Collection。与List不同的是，Set不允许放置重复元素,并且最多只能放置一个null元素。其实现类有HashSet、TreeSet等。</p>
-
-<p>HashSet的实现其实是依托了一个HashMap的实例。HashSet并不保证元素的迭代顺序每次都是一致的。HashSet的基本操作（add,remove,contains及size）耗时都是常数时间，即迭代Set的耗时与Set的大小乘以HashMap实例的乘积成正比。HashSet也不是线程安全的。</p>
-
-<h2>Map</h2>
-
-<p>Map则是另一种重要的数据结构，是一组键值对的集合。Map不允许有重复的key存在。
-它的实现中有HashTable和HashMap。两者非常相似，最大的不同是HashMap不是线程安全的，并且允许null值作为key或value，而HashTable则不允许。</p>
-
-<p>HashMap的性能取决于两个因素：一个是初始容量，一个是负载因数。容量是哈希表中bucket的数量。初始容量则是HashMap被创建时容量。负载因数则是当容量需要自动增加的阀值。当HashMap中的元素超过了负载因数和当前容量的乘积，HashMap则会重新进行hash计算，以便bucket数量增加到以前的近似两倍。一般负载因子的默认值是0.75，这能达到时间和空间的一个平衡。负载因子过大，虽然会减少空间消耗，但是增加查找时间。</p>
 ]]></content>
   </entry>
   
