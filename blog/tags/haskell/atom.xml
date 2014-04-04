@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: haskell | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/haskell/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -29,8 +29,7 @@
 
 <p><strong><code>:</code>将一个元素放置到列表的前端。</strong></p>
 
-<p><code>bash
-Prelude&gt; 1 : []
+<pre><code class="bash">Prelude&gt; 1 : []
 [1]
 Prelude&gt; 2 : [3,4,5]
 [2,3,4,5]
@@ -38,14 +37,14 @@ Prelude&gt; 'a' : ['g','h','d']
 "aghd"
 Prelude&gt; 'a' : "ghd"
 "aghd"
-</code>
-从上面例子可以看出一个字符串其实就是Char型的列表。
+</code></pre>
+
+<p>从上面例子可以看出一个字符串其实就是Char型的列表。
 我们可以这样验证。</p>
 
-<p><code>bash
-Prelude&gt; "abc" == ['a','b','c']
+<pre><code class="bash">Prelude&gt; "abc" == ['a','b','c']
 True
-</code></p>
+</code></pre>
 
 <p><strong><code>++</code> 连接两个列表。</strong>
 <code>bash
@@ -59,17 +58,15 @@ Prelude&gt; "abc" ++ "efg"
 
 <p>如果要声明一个1到20的数组，除了将这些数字一一列举出来，我们还可以使用Range来实现，操作符是<code>..</code>。</p>
 
-<p><code>bash
-Prelude&gt; [1..10]
+<pre><code class="bash">Prelude&gt; [1..10]
 [1,2,3,4,5,6,7,8,9,10]
 Prelude&gt; ['a'..'h']
 "abcdefgh"
-</code></p>
+</code></pre>
 
 <p>Range的默认步长是1，我们可以指定其步长。方法就是给出前两个元素再加上结尾元素，Haskell会根据前两个元素推断出步长，并应用。</p>
 
-<p><code>bash
-Prelude&gt; [1,3..21]
+<pre><code class="bash">Prelude&gt; [1,3..21]
 [1,3,5,7,9,11,13,15,17,19,21]
 Prelude&gt; [1,3..20]
 [1,3,5,7,9,11,13,15,17,19]
@@ -77,151 +74,125 @@ Prelude&gt; ['a','c'..'k']
 "acegik"
 Prelude&gt; [20,18..0]
 [20,18,16,14,12,10,8,6,4,2,0]
-</code></p>
+</code></pre>
 
 <h2>使用集合生成新的列表</h2>
 
 <p>Haskell对List的操作还有一种神奇的方式。下面是一个数学公式，我们在初中肯定学过。</p>
 
-<p><code>console
-S = { x | x ∈ N, x &lt; 10}
-</code></p>
+<pre><code class="console">S = { x | x ∈ N, x &lt; 10}
+</code></pre>
 
 <p>S是一个目标集合，N是源集合，S中的元素是属于集合N,并且小于10的元素。</p>
 
 <p>而在Haskell中可以直接使用这种语法。</p>
 
-<p><code>bash
-Prelude&gt; let list = [1,2,3,4,5,6]
+<pre><code class="bash">Prelude&gt; let list = [1,2,3,4,5,6]
 Prelude&gt; [x | x &lt;- list, x &lt; 3]
 [1,2]
 Prelude&gt; [x | x &lt;- list, x &lt; 3, x &gt; 1]
 [2]
 Prelude&gt; [x * 2 | x &lt;- list, x &lt; 3]
 [2,4]
-</code></p>
+</code></pre>
 
 <h2>常用的列表操作函数</h2>
 
 <p>在<a href="http://huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature/">《Haskell函数式编程之特性篇》</a>中我们定义了一个map函数。它就是对列表的每个元素进行一个函数元素生成另一个列表。</p>
 
-<p>```haskell</p>
+<pre><code class="haskell">
+map' :: (a -&gt; b) -&gt; [a] -&gt; [b]
 
-<p>map' :: (a -> b) -> [a] -> [b]</p>
-
-<p>map' f [] = []
-map' f (x:xs) =f x : map' f xs</p>
-
-<p>```</p>
+map' f [] = []
+map' f (x:xs) =f x : map' f xs
+</code></pre>
 
 <p>我们可以再定义一个filter函数，用于对列表进行过滤。</p>
 
-<p>```haskell</p>
+<pre><code class="haskell">
+filter' :: (a -&gt; Bool) -&gt; [a] -&gt; [a]
 
-<p>filter' :: (a -> Bool) -> [a] -> [a]</p>
-
-<p>filter' f [] = []
-filter' f (x:xs)</p>
-
-<pre><code> | f x       = x : filter' f xs
- | otherwise = filter' f xs
+filter' f [] = []
+filter' f (x:xs)
+     | f x       = x : filter' f xs
+     | otherwise = filter' f xs
 </code></pre>
-
-<p>```</p>
 
 <p>除此之外，Haskell还有大量的库函数用于对list进行操作。我们可以自己一一实现它。</p>
 
 <p>head函数用于获取列表的第一个元素。</p>
 
-<p><code>haskell
-head' (x:xs) = x
-</code></p>
+<pre><code class="haskell">head' (x:xs) = x
+</code></pre>
 
 <p>tail函数获取列表的除第一个元素外的所有元素。</p>
 
-<p><code>haskell
-tail' (x:xs) = xs
-</code></p>
+<pre><code class="haskell">tail' (x:xs) = xs
+</code></pre>
 
 <p>last函数是获取列表的最后一个元素。</p>
 
-<p>```haskell
-last' (x:xs)</p>
-
-<pre><code> | null xs = x
- | otherwise = last' xs
+<pre><code class="haskell">last' (x:xs)
+     | null xs = x
+     | otherwise = last' xs
 </code></pre>
-
-<p>```</p>
 
 <p>init函数返回列表中除最后一个的其他元素。</p>
 
-<p>```haskell
-init' (x:xs)</p>
-
-<pre><code> | null xs = []
- | otherwise = x : init' xs
+<pre><code class="haskell">init' (x:xs)
+     | null xs = []
+     | otherwise = x : init' xs
 </code></pre>
-
-<p>```</p>
 
 <p>你看使用Haskell实现这样的函数是如此的简单。注意这些函数都没有做对空列表的处理。如果给这些函数传递一个空列表会抛出异常。使用Haskll提供的库函数也一样。</p>
 
-<p><code>haskell
-Prelude&gt; head []
+<pre><code class="haskell">Prelude&gt; head []
 *** Exception: Prelude.head: empty list
-</code></p>
+</code></pre>
 
 <h2>fold</h2>
 
 <p>对list的操作中我们经常会有这样一个情况，就是给定一个初始值，对list的每个元素进行一个操作，最后得出一个结果,这就像将列表折叠起来一样。比如求数组的最大值、最小值、求和都是这样的模式。Haskell中有相应的函数来实现这种pattern。我们可以自己实现一下。</p>
 
-<p>```haskell</p>
+<pre><code class="haskell">
+foldl' :: (a -&gt; b -&gt; a) -&gt; a -&gt; [b] -&gt; a
 
-<p>foldl' :: (a -> b -> a) -> a -> [b] -> a</p>
-
-<p>foldl' f s [] = s
-foldl' f s (x:xs) = foldl' f (f s x) xs</p>
-
-<p>```</p>
+foldl' f s [] = s
+foldl' f s (x:xs) = foldl' f (f s x) xs
+</code></pre>
 
 <p>foldl'函数接收一个函数（这个函数接收一个a类型的值，b类型的值，并返回一个a类型值），一个a类型的值，一个b类型的列表，返回值为a类型的值。 （注意其中的a，b类型并不是确定的类型，它只是代表某类型，这有点像其他编程语言中的泛型。a,b的具体类型是由调用fold'时传入的具体参数推断出来的。）</p>
 
 <p>我们可以用它来计算一个数组的和。</p>
 
-<p><code>bash
-*Main&gt; foldl' (\ s x -&gt; s + x)  0 [1,2,3]
+<pre><code class="bash">*Main&gt; foldl' (\ s x -&gt; s + x)  0 [1,2,3]
 6
-</code></p>
+</code></pre>
 
 <p>它与我们在Haskell函数式编程之2中提到的sum' 函数是等价的。
 注意这是一个左flod。即它是对列表的每个元素按照从左到右的顺序进行函数运算。</p>
 
 <p>我们也可以实现一个右fold。</p>
 
-<p>```haskell</p>
-
-<p>foldr' :: (a -> b -> a) -> a -> [b] -> a
+<pre><code class="haskell">
+foldr' :: (a -&gt; b -&gt; a) -&gt; a -&gt; [b] -&gt; a
 foldr' f s [] = s
 foldr' f s (x:xs) = f (foldr' f s xs) x
-```</p>
+</code></pre>
 
-<p><code>bash
-*Main&gt; foldr' (\ s x -&gt; s + x)  0 [1,2,3]
+<pre><code class="bash">*Main&gt; foldr' (\ s x -&gt; s + x)  0 [1,2,3]
 6
-</code></p>
+</code></pre>
 
 <p>在右fold中，对列表进行函数运算的顺序是从右到左。其实我们可以使用左fold来构造一个右fold。</p>
 
-<p><code>haskell
-foldr2 f s [] = s
+<pre><code class="haskell">foldr2 f s [] = s
 foldr2 f s (x:xs) = f s (foldl' f x xs)
-</code></p>
+</code></pre>
 
-<p><code>bash
-*Main&gt; foldr2 (\ s x -&gt; s + x)  0 [1,2,3]
+<pre><code class="bash">*Main&gt; foldr2 (\ s x -&gt; s + x)  0 [1,2,3]
 6
-</code></p>
+</code></pre>
 
 <p>只不过这个右fold有个局限性，那就是a，b两个必须是同一个类型。</p>
 
@@ -229,25 +200,23 @@ foldr2 f s (x:xs) = f s (foldl' f x xs)
 
 <p>使用左fold实现map和filter。</p>
 
-<p>```haskell
-map2 :: (a -> b) -> [a] -> [b]
-map2 f xs =foldl' (\s x -> s ++ [f x]) [] xs</p>
+<pre><code class="haskell">map2 :: (a -&gt; b) -&gt; [a] -&gt; [b]
+map2 f xs =foldl' (\s x -&gt; s ++ [f x]) [] xs
 
-<p>filter2 :: (a -> Bool) -> [a] -> [a]
+filter2 :: (a -&gt; Bool) -&gt; [a] -&gt; [a]
 filter2 f [] = []
-filter2 f (x:xs) = foldl' (\s x -> if f x then s ++ [x] else s ) [] xs
-```</p>
+filter2 f (x:xs) = foldl' (\s x -&gt; if f x then s ++ [x] else s ) [] xs
+</code></pre>
 
 <p>使用右fold来实现map和filter。</p>
 
-<p>```haskell
-map3 :: (a -> b) -> [a] -> [b
-map3 f xs =foldr' (\s x -> f x : s) [] xs</p>
+<pre><code class="haskell">map3 :: (a -&gt; b) -&gt; [a] -&gt; [b
+map3 f xs =foldr' (\s x -&gt; f x : s) [] xs
 
-<p>filter3 :: (a -> Bool) -> [a] -> [a]
+filter3 :: (a -&gt; Bool) -&gt; [a] -&gt; [a]
 filter3 f [] = []
-filter3 f (x:xs) = foldr' (\s x -> if f x then x : s else s) [] xs
-```</p>
+filter3 f (x:xs) = foldr' (\s x -&gt; if f x then x : s else s) [] xs
+</code></pre>
 
 <p>由于<code>++</code>效率没有<code>:</code>高，所以生成结果为list的时候最好使用右fold。</p>
 
@@ -273,13 +242,11 @@ filter3 f (x:xs) = foldr' (\s x -> if f x then x : s else s) [] xs
 
 <p>我们就写一个简单的对数组求和的函数。</p>
 
-<p>```haskell</p>
-
-<p>sum' :: (Num a) => [a] -> a
+<pre><code class="haskell">
+sum' :: (Num a) =&gt; [a] -&gt; a 
 sum' (x:xs) = x + sum' xs
-sum' [] = 0</p>
-
-<p>```</p>
+sum' [] = 0
+</code></pre>
 
 <!-- more -->
 
@@ -294,25 +261,23 @@ sum' [] = 0</p>
 
 <p>假设我们这样调用它：<code>sum'  [1,2,3]</code>,程序的执行过程是这样子的：</p>
 
-<p>```console</p>
+<pre><code class="console">
+sum' [1,2,3] -&gt;
 
-<p>sum' [1,2,3] -></p>
+1 + sum' [2,3] -&gt;
 
-<p>1 + sum' [2,3] -></p>
+1 + (2 + sum' [3]) -&gt;
 
-<p>1 + (2 + sum' [3]) -></p>
+1 + (2 + (3 + sum' [])) -&gt;
 
-<p>1 + (2 + (3 + sum' [])) -></p>
+1 + (2 + (3 + 0)) -&gt;
 
-<p>1 + (2 + (3 + 0)) -></p>
+1 + (2 + 3) -&gt;
 
-<p>1 + (2 + 3) -></p>
+1 + 5 -&gt;
 
-<p>1 + 5 -></p>
-
-<p>6</p>
-
-<p>```</p>
+6
+</code></pre>
 
 <p>这种递归有个问题就是我们一直到等到递归结束才进行算术运算，这样在执行过程既要保存函数调用的堆栈，还要保存中间计算结果的堆栈，如果递归过深，很容易引起stackOverFlow.</p>
 
@@ -320,33 +285,29 @@ sum' [] = 0</p>
 
 <p>针对上述问题，我们可以换种写法。</p>
 
-<p>```haskell</p>
+<pre><code class="haskell">
+sum' :: (Num a) =&gt; [a] -&gt; a -&gt; a 
 
-<p>sum' :: (Num a) => [a] -> a -> a</p>
+sum' (x:xs) temp = sum' xs x+ temp 
 
-<p>sum' (x:xs) temp = sum' xs x+ temp</p>
-
-<p>sum' [] temp = temp</p>
-
-<p>```</p>
+sum' [] temp = temp
+</code></pre>
 
 <p>我们这样调用它: <code>sum' [1,2,3] 0</code>。</p>
 
 <p>它的执行顺序是这样的:</p>
 
-<p>```console</p>
+<pre><code class="console">
+sum' [1,2,3] 0 -&gt;
 
-<p>sum' [1,2,3] 0 -></p>
+sum' [2,3] 1 -&gt;
 
-<p>sum' [2,3] 1 -></p>
+sum' [3] 3 -&gt;
 
-<p>sum' [3] 3 -></p>
+sum' []  6 -&gt;
 
-<p>sum' []  6 -></p>
-
-<p>6</p>
-
-<p>```</p>
+6
+</code></pre>
 
 <p>第二种写法其实就是尾递归。</p>
 
@@ -368,40 +329,39 @@ sum' [] = 0</p>
 
 <p>互递归就是多个递归函数之间相互调用。互递归的一个简单的例子就是判断一个自然数是偶数还是还是奇数。</p>
 
-<p>```haskell</p>
-
-<p>isOdd :: Int -> Bool
+<pre><code class="haskell">
+isOdd :: Int -&gt; Bool
 isOdd x
  | x == 0 = False
- | otherwise = isEven (x-1)</p>
+ | otherwise = isEven (x-1)
 
-<p>isEven :: Int -> Bool
+
+isEven :: Int -&gt; Bool
 isEven x
  | x == 0 = True
- | otherwise = isOdd (x-1)</p>
+ | otherwise = isOdd (x-1)
+</code></pre>
 
-<p>```
-这个实现很有意思。</p>
+<p>这个实现很有意思。</p>
 
 <p>任何一个互递归都可以被转变为<strong>直接递归</strong>(direct recursion)，即将另一个调用inline到当前递归函数中。</p>
 
 <p>下面是isOdd和isEven的<strong>直接递归</strong>版本。</p>
 
-<p>```haskell</p>
-
-<p>isOdd :: Int -> Bool
+<pre><code class="haskell">
+isOdd :: Int -&gt; Bool
 isOdd x
  | x == 0 = False
  | x == 1 = True
- | otherwise = isOdd (x-2)</p>
+ | otherwise = isOdd (x-2)
 
-<p>isEven :: Int -> Bool
+
+isEven :: Int -&gt; Bool
 isEven x
  | x == 0 = True
  | x == 1 = False
- | otherwise = isEven (x-2)</p>
-
-<p>```</p>
+ | otherwise = isEven (x-2)
+</code></pre>
 ]]></content>
   </entry>
   

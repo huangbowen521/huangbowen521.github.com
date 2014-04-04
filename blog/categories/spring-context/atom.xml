@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Spring-context | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/spring-context/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -25,70 +25,56 @@
 
 <p>比如如下的bean定义:</p>
 
-<p>```xml</p>
-
-<p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
-
-<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+<pre><code class="xml">
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
 
 
-&lt;bean id="person" class="Person"&gt;
-    &lt;property name="name" value="Tom"/&gt;
-    &lt;property name="age" value="20"/&gt;
-&lt;/bean&gt;
+    &lt;bean id="person" class="Person"&gt;
+        &lt;property name="name" value="Tom"/&gt;
+        &lt;property name="age" value="20"/&gt;
+    &lt;/bean&gt;
+
+&lt;/beans&gt;
 </code></pre>
-
-<p></beans></p>
-
-<p>```</p>
 
 <p>这样的bean有三行，通过使用p-namespace以后可以简化为一行。</p>
 
-<p>```xml</p>
+<pre><code class="xml">
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
 
-<p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
+    &lt;bean id="person" class="Person" p:name="Tom" p:age="20"/&gt;
 
-<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xmlns:p="http://www.springframework.org/schema/p"
-   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
-
-&lt;bean id="person" class="Person" p:name="Tom" p:age="20"/&gt;
+&lt;/beans&gt;
 </code></pre>
 
-<p></beans></p>
-
-<p>```</p>
-
-<p>那么什么是<code>p-namespace</code>那？它的作用就是使用xml中的元素属性取代<code>&lt;property/&gt;</code>节点来定义bean的属性。这个神奇的p是什么东西那？它其实是使用了namespace的xml扩展配置格式。beans的配置格式是定义在一个xsd格式中的（即 http://www.springframework.org/schema/beans/spring-beans.xsd），但p却没有一个xsd格式文件与其对应，但是它可以被spring内核解析处理。</p>
+<p>那么什么是<code>p-namespace</code>那？它的作用就是使用xml中的元素属性取代<code>&lt;property/&gt;</code>节点来定义bean的属性。这个神奇的p是什么东西那？它其实是使用了namespace的xml扩展配置格式。beans的配置格式是定义在一个xsd格式中的（即 <a href="http://www.springframework.org/schema/beans/spring-beans.xsd%EF%BC%89%EF%BC%8C%E4%BD%86p%E5%8D%B4%E6%B2%A1%E6%9C%89%E4%B8%80%E4%B8%AAxsd%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6%E4%B8%8E%E5%85%B6%E5%AF%B9%E5%BA%94%EF%BC%8C%E4%BD%86%E6%98%AF%E5%AE%83%E5%8F%AF%E4%BB%A5%E8%A2%ABspring%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90%E5%A4%84%E7%90%86%E3%80%82">http://www.springframework.org/schema/beans/spring-beans.xsd%EF%BC%89%EF%BC%8C%E4%BD%86p%E5%8D%B4%E6%B2%A1%E6%9C%89%E4%B8%80%E4%B8%AAxsd%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6%E4%B8%8E%E5%85%B6%E5%AF%B9%E5%BA%94%EF%BC%8C%E4%BD%86%E6%98%AF%E5%AE%83%E5%8F%AF%E4%BB%A5%E8%A2%ABspring%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90%E5%A4%84%E7%90%86%E3%80%82</a></p>
 
 <p>上面只是演示了对属性为普通值的时使用<code>p-namespace</code>的注入，如果属性为另一个bean的引用时该如何处理那？很简单。</p>
 
 <p>这是使用正常方式注入属性。</p>
 
-<p>```xml</p>
-
-<pre><code>&lt;bean id="messageService" class="SimpleMessageService"/&gt;
-&lt;bean id="messageHandler" class="MessageHandler"&gt;
-    &lt;property name="messageService"&gt;
-        &lt;ref bean="messageService" /&gt;
-    &lt;/property&gt;
-&lt;/bean&gt;
+<pre><code class="xml">
+    &lt;bean id="messageService" class="SimpleMessageService"/&gt;
+    &lt;bean id="messageHandler" class="MessageHandler"&gt;
+        &lt;property name="messageService"&gt;
+            &lt;ref bean="messageService" /&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
 </code></pre>
-
-<p>```</p>
 
 <p>使用<code>p-namespace</code>后是这样的。</p>
 
-<p>```xml</p>
-
-<pre><code>&lt;bean id="messageService" class="SimpleMessageService"/&gt;
-&lt;bean id="messageHandler" class=“MessageHandler” p:messageService-ref=“messageService”/&gt;
+<pre><code class="xml">
+    &lt;bean id="messageService" class="SimpleMessageService"/&gt;
+    &lt;bean id="messageHandler" class=“MessageHandler” p:messageService-ref=“messageService”/&gt;
 </code></pre>
-
-<p>```</p>
 
 <p>加上<code>-ref</code>后缀即表示是对一个bean的引用。</p>
 
@@ -96,76 +82,60 @@
 
 <p>使用<code>c-namespace</code>前:</p>
 
-<p>```xml</p>
-
-<p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
-
-<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xmlns:c="http://www.springframework.org/schema/c"
-   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+<pre><code class="xml">
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
 
 
-&lt;bean id="person" class="Person"&gt;
-    &lt;constructor-arg name="name"&gt;
-        &lt;value&gt;Tom&lt;/value&gt;
-    &lt;/constructor-arg&gt;
-    &lt;constructor-arg name="age" value="20"/&gt;
-&lt;/bean&gt;
+    &lt;bean id="person" class="Person"&gt;
+        &lt;constructor-arg name="name"&gt;
+            &lt;value&gt;Tom&lt;/value&gt;
+        &lt;/constructor-arg&gt;
+        &lt;constructor-arg name="age" value="20"/&gt;
+    &lt;/bean&gt;
+
+&lt;/beans&gt;
 </code></pre>
-
-<p></beans></p>
-
-<p>```</p>
 
 <p>使用<code>c-namespace</code>后:</p>
 
-<p>```xml</p>
+<pre><code class="xml">
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
 
-<p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
-
-<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xmlns:c="http://www.springframework.org/schema/c"
-   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+&lt;bean id="person"  c:name="Tom" c:age="20"/&gt;
+&lt;/beans&gt;
 </code></pre>
-
-<p><bean id="person"  c:name="Tom" c:age="20"/>
-</beans></p>
-
-<p>```</p>
 
 <p>也可以使用<code>-ref</code>后缀来表示对另一个bean的引用。</p>
 
-<p>```xml</p>
-
-<p> <bean id="messageService" class="SimpleMessageService"/></p>
-
-<pre><code>&lt;bean id="messageHandler" class="MessageHandler" c:messageService-ref="messageService"/&gt;
+<pre><code class="xml">
+ &lt;bean id="messageService" class="SimpleMessageService"/&gt;
+    &lt;bean id="messageHandler" class="MessageHandler" c:messageService-ref="messageService"/&gt;
 </code></pre>
-
-<p>```</p>
 
 <p>在前面章节讲解构造器注入时，可以使用构造参数索引来注入依赖，<code>c-namespace</code>也支持这一方式。</p>
 
-<p>```xml</p>
+<pre><code class="xml">
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
 
-<p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
+&lt;bean id="person”  c:_0="Tom" c:_1="20"/&gt;
 
-<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xmlns:c="http://www.springframework.org/schema/c"
-   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+&lt;bean id="messageService" class="SimpleMessageService"/&gt;
+&lt;bean id="messageHandler" class="MessageHandler" c:_0-ref="messageService"/&gt;
+
+&lt;/beans&gt;
 </code></pre>
-
-<p><bean id="person”  c:_0="Tom" c:_1="20"/></p>
-
-<p><bean id="messageService" class="SimpleMessageService"/>
-<bean id="messageHandler" class="MessageHandler" c:_0-ref="messageService"/></p>
-
-<p></beans></p>
-
-<p>```</p>
 
 <p>怎么样，是不是很强大啊。但是太过强大也容易伤人伤己。在项目中使用这些技巧之前最好先和项目成员达成一致。</p>
 

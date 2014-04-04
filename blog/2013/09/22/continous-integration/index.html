@@ -18,13 +18,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/09/22/continous-integration/">
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/09/22/continous-integration">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -98,7 +99,8 @@
 
 <time datetime="2013-09-22T16:49:00+10:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2013</time>
         
-         | <a href="#disqus_thread">Comments</a>
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
         
       </p>
     
@@ -116,7 +118,7 @@
 
 <p>当前软件开发一直存在两大难题：<strong>一是确定软件的需求，即确定目标。</strong>究竟软件要做成什么样子，在客户的头脑里可能是个三角形，在业务分析员的头脑中可能是个正方形，在开发者的头脑中可能是个圆形，而最终出来的产品或多或少都会给客户带来“惊喜”。</p>
 
-<p><strong>二是确定目前离目标还有好远，即确定剩余的工作量。</strong>这个问题就是项目缺少可见性的问题。当一个程序员告诉他的经理说这个功能只剩下20%的工作量时，具体指什么那？这个20%的比例是怎么得到的？是还要再花20%的时间？&#8230;&#8230;</p>
+<p><strong>二是确定目前离目标还有好远，即确定剩余的工作量。</strong>这个问题就是项目缺少可见性的问题。当一个程序员告诉他的经理说这个功能只剩下20%的工作量时，具体指什么那？这个20%的比例是怎么得到的？是还要再花20%的时间？&hellip;&hellip;</p>
 
 <p>持续集成虽然解决不了第一个问题，但是关于第二个问题，持续集成向我们介绍了一种增加项目可见性，提高开发效率，降低项目失败风险的有效实践经验。</p>
 
@@ -344,7 +346,7 @@
   <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -395,7 +397,7 @@
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>

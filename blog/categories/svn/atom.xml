@@ -4,7 +4,7 @@
   <title><![CDATA[Category: SVN | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/svn/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -29,23 +29,17 @@
 
 <p>在SVN中主干代码一般是放置在Trunk目录下的，如果要新建Branch的话则放置在Branchs目录下。(注意这是一种约定，SVN并不强制你这样做)注意Branhs和Trunk目录要平级，不能有嵌套，要不会引起混乱。</p>
 
-<p>```bash</p>
-
-<p>  myproject/</p>
-
-<pre><code>  trunk/
-  branches/
-  tags/
+<pre><code class="bash">
+  myproject/
+      trunk/
+      branches/
+      tags/
 </code></pre>
-
-<p>```</p>
 
 <p>创建一个Branch也相当简单，只需要一条命令即可。</p>
 
-<p>```bash
-svn copy http://example.com/repos/myproject/trunk http://example.com/repos/myproject/branches/releaseForAug -m 'create branch for release on August'</p>
-
-<p>```</p>
+<pre><code class="bash">svn copy http://example.com/repos/myproject/trunk http://example.com/repos/myproject/branches/releaseForAug -m 'create branch for release on August'
+</code></pre>
 
 <p>这条命令是指给myproject这个repo创建一个名为releaseForAug的branch，使用-m来加入描述。</p>
 
@@ -70,11 +64,9 @@ svn copy http://example.com/repos/myproject/trunk http://example.com/repos/mypro
 
 <p>当然在merge你也可以指定Branch上那些版本变更可以合并到Trunk中。</p>
 
-<p>```bash</p>
-
-<p>svn merge  http://example.com/repos/myproject/branches/releaseForAug -r150:HEAD</p>
-
-<p>```</p>
+<pre><code class="bash">
+svn merge  http://example.com/repos/myproject/branches/releaseForAug -r150:HEAD
+</code></pre>
 
 <p>示例中是将Branch的从版本150到当前版本的所有改动都合并到Trunk中。</p>
 
@@ -86,23 +78,16 @@ svn copy http://example.com/repos/myproject/trunk http://example.com/repos/mypro
 
 <p>查看当前Branch中已经有那些改动已经被合并到Trunk中:</p>
 
-<p>```bash</p>
-
-<h1>cd to trunk directory</h1>
-
-<p>svn mergeinfo http://example.com/repos/myproject/branches/releaseForAug</p>
-
-<p>```</p>
+<pre><code class="bash"># cd to trunk directory
+svn mergeinfo http://example.com/repos/myproject/branches/releaseForAug
+</code></pre>
 
 <p>查看Branch中那些改动还未合并。</p>
 
-<p>```bash</p>
+<pre><code class="bash">#cd to trunk directory
 
-<h1>cd to trunk directory</h1>
-
-<p>svn merginfo http://example.com/repos/myproject/branches/releaseForAug --show-revs eligible</p>
-
-<p>```</p>
+svn merginfo http://example.com/repos/myproject/branches/releaseForAug --show-revs eligible
+</code></pre>
 ]]></content>
   </entry>
   

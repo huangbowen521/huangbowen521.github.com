@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: signature | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/signature/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -23,18 +23,17 @@
 <!-- more -->
 
 
-<p><code>java
-public void methodA(){   
-  // blablabla...
+<pre><code class="java">public void methodA(){   
+  // blablabla... 
 }
-</code>
-后来由于需求变动，需要增加一个参数,姑且看做这个样子。</p>
+</code></pre>
 
-<p><code>java
-public void methodA(String param){  
-//  blablabla...
+<p>后来由于需求变动，需要增加一个参数,姑且看做这个样子。</p>
+
+<pre><code class="java">public void methodA(String param){  
+//  blablabla... 
 }
-</code></p>
+</code></pre>
 
 <p>他本来想直接修改方法签名（<a href="http://www.jetbrains.com/idea/">Intellij</a>中快捷键是Ctrl+F6）。但这样会导致所有调用此方法的地方由于缺乏对新加参数的处理，会导致单元测试甚至编译失败。他得出结论说依赖快捷键做重构是不行的。</p>
 

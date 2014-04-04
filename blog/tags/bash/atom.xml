@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: bash | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/bash/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -29,125 +29,97 @@ gtShell支持将常用的一些目录保存为bookmark，提供快速跳转功�
 
 <p>下面是主要文件gt.sh的源码。</p>
 
-<p>``` bash gt.sh https://github.com/huangbowen521/gtShell/blob/master/gt.sh gt.sh</p>
+<pre><code class="bash gt.sh https://github.com/huangbowen521/gtShell/blob/master/gt.sh gt.sh">
+#! /bin/bash
 
-<h1>! /bin/bash</h1>
-
-<p>DIRS="$HOME/.gtDirs"
+DIRS="$HOME/.gtDirs"
 if test ! -e $DIRS
-then</p>
+then
+    touch $DIRS
+fi
 
-<pre><code>touch $DIRS
-</code></pre>
-
-<p>fi</p>
-
-<p>gt () {</p>
-
-<pre><code>case $1 in
-    -d)
-        temp=`mktemp -t .gtDirs-XXXXXX`
-        sed "/^$2=/"d $DIRS &gt; $temp
-        mv $temp $DIRS
-        rm -f $temp
-        ;;
-    -a)
-        validate_bookmark_name "$@"
-        if [ -z "$result" ]; then
-            CURDIR=$PWD
-             echo "$2=$CURDIR" &gt;&gt; $DIRS
-        fi
-        ;;
-    -l)
-        cat $DIRS
-        ;;
-    -h)
-        print_usage
-        ;;
-    *)
-        if [ -z $1 ]; then
+gt () {
+    case $1 in
+        -d)
+            temp=`mktemp -t .gtDirs-XXXXXX`
+            sed "/^$2=/"d $DIRS &gt; $temp
+            mv $temp $DIRS
+            rm -f $temp
+            ;;
+        -a)
+            validate_bookmark_name "$@"
+            if [ -z "$result" ]; then
+                CURDIR=$PWD
+                 echo "$2=$CURDIR" &gt;&gt; $DIRS
+            fi
+            ;;
+        -l)
+            cat $DIRS
+            ;;
+        -h)
             print_usage
-        elif [[ ! -z `awk -F '=' '/^'"$1"'=/ {print $2 }' $DIRS` ]]; then
-            cd `awk -F '=' '/^'"$1"'=/ {print $2 }' $DIRS`
-            else
-            echo 'error: bookmark name not found'
+            ;;
+        *)
+            if [ -z $1 ]; then
+                print_usage
+            elif [[ ! -z `awk -F '=' '/^'"$1"'=/ {print $2 }' $DIRS` ]]; then
+                cd `awk -F '=' '/^'"$1"'=/ {print $2 }' $DIRS`
+                else
+                echo 'error: bookmark name not found'
 
-        fi
+            fi
 
-esac
-</code></pre>
+    esac
+}
 
-<p>}</p>
+#validate names
+function validate_bookmark_name {
+    result=""
+    if [ -z $2 ]; then
+        result='error: bookmark name required!'
+        echo $result
+    elif [ -z `echo $2 | sed 's/[^A-Za-z0-9_]//g' ` ]; then
+        result='error: bookmark name is invalid!'
+        echo $result
+    fi
 
-<h1>validate names</h1>
+}
 
-<p>function validate_bookmark_name {</p>
+function print_usage {
+        echo  'Usage:'
+        echo  '-a &lt;bookmark_name&gt; - Saves the current directory as "bookmark_name"'
+        echo  '-d &lt;bookmark_name&gt; - Deletes the bookmark'
+        echo  '-l                 - Lists all available bookmarks'
+        echo  '-h(-help,--help)   - Lists usage'
+        echo  '&lt;bookmark_name&gt;    - Jump to the bookmark'
+}
 
-<pre><code>result=""
-if [ -z $2 ]; then
-    result='error: bookmark name required!'
-    echo $result
-elif [ -z `echo $2 | sed 's/[^A-Za-z0-9_]//g' ` ]; then
-    result='error: bookmark name is invalid!'
-    echo $result
+function _l {
+    awk -F '=' ' {print $1} ' $DIRS
+}
+
+
+function _comp {
+    local curw
+    COMPREPLY=()
+    curw=${COMP_WORDS[COMP_CWORD]}
+    COMPREPLY=($(compgen -W '`_l`' -- $curw))
+    return 0
+}
+
+# ZSH completion command
+function _compzsh {
+    reply=($(_l))
+}
+
+
+if [ $ZSH_VERSION ]; then
+    compctl -K _compzsh gt
+else
+    shopt -s progcomp
+    complete -F _comp gt
 fi
 </code></pre>
-
-<p>}</p>
-
-<p>function print_usage {</p>
-
-<pre><code>    echo  'Usage:'
-    echo  '-a &lt;bookmark_name&gt; - Saves the current directory as "bookmark_name"'
-    echo  '-d &lt;bookmark_name&gt; - Deletes the bookmark'
-    echo  '-l                 - Lists all available bookmarks'
-    echo  '-h(-help,--help)   - Lists usage'
-    echo  '&lt;bookmark_name&gt;    - Jump to the bookmark'
-</code></pre>
-
-<p>}</p>
-
-<p>function _l {</p>
-
-<pre><code>awk -F '=' ' {print $1} ' $DIRS
-</code></pre>
-
-<p>}</p>
-
-<p>function _comp {</p>
-
-<pre><code>local curw
-COMPREPLY=()
-curw=${COMP_WORDS[COMP_CWORD]}
-COMPREPLY=($(compgen -W '`_l`' -- $curw))
-return 0
-</code></pre>
-
-<p>}</p>
-
-<h1>ZSH completion command</h1>
-
-<p>function _compzsh {</p>
-
-<pre><code>reply=($(_l))
-</code></pre>
-
-<p>}</p>
-
-<p>if [ $ZSH_VERSION ]; then</p>
-
-<pre><code>compctl -K _compzsh gt
-</code></pre>
-
-<p>else</p>
-
-<pre><code>shopt -s progcomp
-complete -F _comp gt
-</code></pre>
-
-<p>fi</p>
-
-<p>```</p>
 
 <p><strong>安装:</strong></p>
 
@@ -171,8 +143,7 @@ complete -F _comp gt
 
 <p><strong>例子:</strong></p>
 
-<p><code>bash
-current_user:~$ cd sourcecode/study/
+<pre><code class="bash">current_user:~$ cd sourcecode/study/
 current_user:~/sourcecode/study$ gt -a study
 current_user:~/sourcecode/study$ cd ~
 current_user:~$ gt study
@@ -181,31 +152,28 @@ goAgent=/Users/twer/sourcecode/goagent/goagent-goagent-9c1edd3/local
 octopress=/Users/twer/sourcecode/octopress
 goShell=/Users/twer/sourcecode/shell/goShell
 study=/Users/twer/sourcecode/study
-</code></p>
+</code></pre>
 
-<p><code>bash
-current_user:~/sourcecode/study$ gt -d study
+<pre><code class="bash">current_user:~/sourcecode/study$ gt -d study
 current_user:~/sourcecode/study$ gt -l
 goAgent=/Users/twer/sourcecode/goagent/goagent-goagent-9c1edd3/local
 octopress=/Users/twer/sourcecode/octopress
 goShell=/Users/twer/sourcecode/shell/goShell
-</code></p>
+</code></pre>
 
-<p><code>bash
-current_user:~/sourcecode/study$ gt -h
+<pre><code class="bash">current_user:~/sourcecode/study$ gt -h
 Usage:
 -a &lt;bookmark_name&gt; - Saves the current directory as "bookmark_name"
 -d &lt;bookmark_name&gt; - Deletes the bookmark
 -l                 - Lists all available bookmarks
 -h(-help,--help)   - Lists usage
 &lt;bookmark_name&gt;    - Jump to the bookmark
-</code></p>
+</code></pre>
 
-<p><code>bash
-current_user:~/sourcecode/study$ gt go&lt;Tab&gt;
+<pre><code class="bash">current_user:~/sourcecode/study$ gt go&lt;Tab&gt;
 goAgent  goShell
 current_user:~/sourcecode/study$ gt goShell
-</code></p>
+</code></pre>
 ]]></content>
   </entry>
   

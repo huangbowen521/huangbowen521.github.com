@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: Groovy | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/groovy/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -27,108 +27,94 @@
 
 <p>首先我们先实现一个XML的bean配置，沿用第一讲中的例子。</p>
 
-<p>```xml configuration.xml</p>
+<pre><code class="xml configuration.xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 
-<p>&lt;?xml version="1.0" encoding="UTF-8"?></p>
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
 
-<p>&lt;beans xmlns="http://www.springframework.org/schema/beans"</p>
+    &lt;bean id="movieService" class="huangbowen.net.service.DefaultMovieService"/&gt;
 
-<pre><code>   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
-
-&lt;bean id="movieService" class="huangbowen.net.service.DefaultMovieService"/&gt;
-
-&lt;bean id="cinema" class="huangbowen.net.service.Cinema"&gt;
-    &lt;property name="movieService" ref="movieService"/&gt;
-&lt;/bean&gt;
+    &lt;bean id="cinema" class="huangbowen.net.service.Cinema"&gt;
+        &lt;property name="movieService" ref="movieService"/&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;
 </code></pre>
-
-<p></beans></p>
-
-<p>```</p>
 
 <p>这个XML文件就不用我多做解释了，很清晰明了。Ok，照例写个测试来测一下。</p>
 
-<p>```java XmlConfigurationTest.java</p>
+<pre><code class="java XmlConfigurationTest.java">
+package huangbowen.net;
 
-<p>package huangbowen.net;</p>
-
-<p>import huangbowen.net.service.Cinema;
+import huangbowen.net.service.Cinema;
 import huangbowen.net.service.DefaultMovieService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</p>
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-<p>import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;</p>
+import static org.junit.Assert.assertThat;
 
-<p>@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/configuration.xml"})
-public class XmlConfigurationTest {</p>
+public class XmlConfigurationTest {
 
-<pre><code>@Autowired
-private ApplicationContext applicationContext;
+    @Autowired
+    private ApplicationContext applicationContext;
 
-@Autowired
-private Cinema cinema;
+    @Autowired
+    private Cinema cinema;
 
-@Test
-public void shouldGetCinemaInstance()  {
-    Cinema cinema = applicationContext.getBean(Cinema.class);
-    assertNotNull(cinema);
-}
+    @Test
+    public void shouldGetCinemaInstance()  {
+        Cinema cinema = applicationContext.getBean(Cinema.class);
+        assertNotNull(cinema);
+    }
 
-@Test
-public void shouldGetAutowiredCinema() {
-    assertNotNull(cinema);
-}
+    @Test
+    public void shouldGetAutowiredCinema() {
+        assertNotNull(cinema);
+    }
 
-@Test
-public void shouldGetMovieServiceInstance() {
-    assertNotNull(cinema.getMovieService());
-    assertThat(cinema.getMovieService(), instanceOf(DefaultMovieService.class));
+    @Test
+    public void shouldGetMovieServiceInstance() {
+        assertNotNull(cinema.getMovieService());
+        assertThat(cinema.getMovieService(), instanceOf(DefaultMovieService.class));
+    }
+
+
 }
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>这个测试与第二讲中的测试基本上一样，不过Spring配置的读取是从configuration.xml来的，在@ContextConfiguration中指定了该xml文件为Spring配置文件。</p>
 
 <p>如果想使用Groovy DSL的话第一步需要引入groovy依赖。</p>
 
-<p>```xml pom.xml</p>
-
-<p><dependency></p>
-
-<pre><code>&lt;groupId&gt;org.codehaus.groovy&lt;/groupId&gt;
-&lt;artifactId&gt;groovy-all&lt;/artifactId&gt;
-&lt;version&gt;2.2.2&lt;/version&gt;
+<pre><code class="xml pom.xml">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.codehaus.groovy&lt;/groupId&gt;
+    &lt;artifactId&gt;groovy-all&lt;/artifactId&gt;
+    &lt;version&gt;2.2.2&lt;/version&gt;
+&lt;/dependency&gt;
 </code></pre>
-
-<p></dependency></p>
-
-<p>```</p>
 
 <p>然后就可以新建一个groovy文件来实现配置编写。</p>
 
-<p>```groovy Configuration.groovy</p>
+<pre><code class="groovy Configuration.groovy">
+beans {
 
-<p>beans {</p>
+   movieService huangbowen.net.service.DefaultMovieService
 
-<p>   movieService huangbowen.net.service.DefaultMovieService</p>
+   cinema huangbowen.net.service.Cinema, movieService : movieService
 
-<p>   cinema huangbowen.net.service.Cinema, movieService : movieService</p>
-
-<p>}</p>
-
-<p>```</p>
+}
+</code></pre>
 
 <p>这其实体现不出来Groovy DSL的强大灵活，因为我们的例子太简单了。</p>
 
@@ -137,52 +123,40 @@ public void shouldGetMovieServiceInstance() {
 
 <p>实现同样的Bean配置有很多种写法。</p>
 
-<p>```groovy</p>
+<pre><code class="groovy">
+movieService (huangbowen.net.service.DefaultMovieService)
 
-<p>movieService (huangbowen.net.service.DefaultMovieService)</p>
-
-<p>cinema(huangbowen.net.service.Cinema, {movieService : movieService})</p>
-
-<p>```</p>
+cinema(huangbowen.net.service.Cinema, {movieService : movieService})
+</code></pre>
 
 <p>上面这种其实是Groovy语法的一个特性，在调用方法时括号是可选的，既可以加，也可以不加。</p>
 
-<p>```groovy</p>
+<pre><code class="groovy">
+movieService huangbowen.net.service.DefaultMovieService
 
-<p>movieService huangbowen.net.service.DefaultMovieService</p>
-
-<p>cinema (huangbowen.net.service.Cinema) {</p>
-
-<pre><code>movieService :ref movieService
+cinema (huangbowen.net.service.Cinema) {
+    movieService :ref movieService
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>上面这中使用了另一个设置属性的方法，通过一个闭包将属性设置进去。</p>
 
-<p>```groovy</p>
+<pre><code class="groovy">
+movieService huangbowen.net.service.DefaultMovieService
 
-<p>movieService huangbowen.net.service.DefaultMovieService</p>
-
-<p>cinema (huangbowen.net.service.Cinema) {</p>
-
-<pre><code>movieService : movieService
+cinema (huangbowen.net.service.Cinema) {
+    movieService : movieService
+}
 </code></pre>
 
-<p>}</p>
-
-<p>```
-这种更好理解了，ref方法也是可选的。</p>
+<p>这种更好理解了，ref方法也是可选的。</p>
 
 <p>来照旧写个测试来测一下。</p>
 
-<p>```java GroovyDSLConfigurationTest.java</p>
+<pre><code class="java GroovyDSLConfigurationTest.java">
+package huangbowen.net;
 
-<p>package huangbowen.net;</p>
-
-<p>import huangbowen.net.service.Cinema;
+import huangbowen.net.service.Cinema;
 import huangbowen.net.service.DefaultMovieService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -193,60 +167,59 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AbstractGenericContextLoader;</p>
+import org.springframework.test.context.support.AbstractGenericContextLoader;
 
-<p>import static huangbowen.net.GroovyDSLConfigurationTest.*;
+import static huangbowen.net.GroovyDSLConfigurationTest.*;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;</p>
+import static org.junit.Assert.assertThat;
 
-<p>@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = "classpath:Configuration.groovy", loader = GenericGroovyContextLoader.class)
-public class GroovyDSLConfigurationTest {</p>
+public class GroovyDSLConfigurationTest {
 
-<pre><code>public static class GenericGroovyContextLoader extends
-        AbstractGenericContextLoader {
+    public static class GenericGroovyContextLoader extends
+            AbstractGenericContextLoader {
 
-    @Override
-    protected BeanDefinitionReader createBeanDefinitionReader(
-            GenericApplicationContext context) {
-        return new GroovyBeanDefinitionReader(context);
+        @Override
+        protected BeanDefinitionReader createBeanDefinitionReader(
+                GenericApplicationContext context) {
+            return new GroovyBeanDefinitionReader(context);
+        }
+
+        @Override
+        protected String getResourceSuffix() {
+            return ".groovy";
+        }
+
     }
 
-    @Override
-    protected String getResourceSuffix() {
-        return ".groovy";
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    private Cinema cinema;
+
+    @Test
+    public void shouldGetCinemaInstance()  {
+        Cinema cinema = applicationContext.getBean(Cinema.class);
+        assertNotNull(cinema);
     }
 
-}
+    @Test
+    public void shouldGetAutowiredCinema() {
+        assertNotNull(cinema);
+    }
 
-@Autowired
-private ApplicationContext applicationContext;
+    @Test
+    public void shouldGetMovieServiceInstance() {
+        assertNotNull(cinema.getMovieService());
+        assertThat(cinema.getMovieService(), instanceOf(DefaultMovieService.class));
+    }
 
-@Autowired
-private Cinema cinema;
 
-@Test
-public void shouldGetCinemaInstance()  {
-    Cinema cinema = applicationContext.getBean(Cinema.class);
-    assertNotNull(cinema);
-}
-
-@Test
-public void shouldGetAutowiredCinema() {
-    assertNotNull(cinema);
-}
-
-@Test
-public void shouldGetMovieServiceInstance() {
-    assertNotNull(cinema.getMovieService());
-    assertThat(cinema.getMovieService(), instanceOf(DefaultMovieService.class));
 }
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>在集成测试中如果加载xml配置文件，Spring提供了GenericXmlContextLoader类，如果加载注解方式的配置类，Spring提供了AnnotationConfigContextLoader类。但是对于Groovy配置文件Spring testContext框架还未提供相应的Loader，所以在本测试方法中需要自己实现一个Loader，其实也简单，只要实现两个方法即可。</p>
 

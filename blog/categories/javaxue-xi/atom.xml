@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Java学习 | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/categories/javaxue-xi/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-04-05T03:18:34+10:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Java基础知识之Annotation]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/03/28/java-annotation/"/>
+    <updated>2013-03-28T01:01:00+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/03/28/java-annotation</id>
+    <content type="html"><![CDATA[<h2>什么是Annotation?</h2>
+
+<p><strong>Annotation翻译为中文即为注解，意思就是提供除了程序本身逻辑外的额外的数据信息。</strong>Annotation对于标注的代码没有直接的影响，它不可以直接与标注的代码产生交互，但其他组件可以使用这些信息。</p>
+
+<p>Annotation信息可以被编译进class文件，也可以保留在Java 虚拟机中，从而在运行时可以获取。甚至对于Annotation本身也可以加Annotation。</p>
+
+<!-- more -->
+
+
+<h2>那些对象可以加Annotation</h2>
+
+<p>类，方法，变量，参数，包都可以加Annotation。</p>
+
+<h2>内置的Annotation</h2>
+
+<p>@Override 重载父类中方法
+@Deprecated 被标注的方法或类型已不再推荐使用</p>
+
+<p>@SuppressWarnings  阻止编译时的警告信息。其需要接收一个String的数组作为参数。
+可供使用的参数有：</p>
+
+<ul>
+<li>unchecked</li>
+<li>path</li>
+<li>serial</li>
+<li>finally</li>
+<li>fallthrough</li>
+</ul>
+
+
+<h2>可以用与其他annotation上的annotation</h2>
+
+<ul>
+<li>@Retention</li>
+</ul>
+
+
+<p>确定Annotation被保存的生命周期,
+需要接收一个Enum对象RetentionPolicy作为参数。</p>
+
+<pre><code class="java">
+public enum RetentionPolicy {
+    /**
+     * Annotations are to be discarded by the compiler.
+     */
+    SOURCE,
+
+    /**
+     * Annotations are to be recorded in the class file by the compiler
+     * but need not be retained by the VM at run time.  This is the default
+     * behavior.
+     */
+    CLASS,
+
+    /**
+     * Annotations are to be recorded in the class file by the compiler and
+     * retained by the VM at run time, so they may be read reflectively.
+     *
+     * @see java.lang.reflect.AnnotatedElement
+     */
+    RUNTIME
+}
+</code></pre>
+
+<ul>
+<li><p>@Documented 文档化</p></li>
+<li><p>@Target</p></li>
+</ul>
+
+
+<p>表示该Annotation可以修饰的范围,接收一个Enum对象EnumType的数组作为参数。</p>
+
+<pre><code class="java">
+public enum ElementType {
+    /** Class, interface (including annotation type), or enum declaration */
+    TYPE,
+
+    /** Field declaration (includes enum constants) */
+    FIELD,
+
+    /** Method declaration */
+    METHOD,
+
+    /** Parameter declaration */
+    PARAMETER,
+
+    /** Constructor declaration */
+    CONSTRUCTOR,
+
+    /** Local variable declaration */
+    LOCAL_VARIABLE,
+
+    /** Annotation type declaration */
+    ANNOTATION_TYPE,
+
+    /** Package declaration */
+    PACKAGE
+}
+</code></pre>
+
+<ul>
+<li>@Inherited</li>
+</ul>
+
+
+<p>该Annotation可以影响到被标注的类的子类。</p>
+
+<h2>自定义Annotation</h2>
+
+<p>JSE5.0以后我们可以自定义Annotation。下面就是一个简单的例子。</p>
+
+<pre><code class="java">
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface MethodAnnotation {
+
+}
+</code></pre>
+
+<p>下面的Person对象使用了自定义的MethodAnnotation。</p>
+
+<pre><code class="java">
+public class Person {
+
+    public void eat() {
+        System.out.println("eating");
+    }
+
+    @MethodAnnotation
+    public void walk() {
+        System.out.print("walking");
+    }
+
+}
+</code></pre>
+
+<p>我们可以通过反射获取Annotation的信息。</p>
+
+<pre><code class="java">
+        Class&lt;Person&gt; personClass = Person.class;
+        Method[] methods = personClass.getMethods();
+        for(Method method : methods){
+            if (method.isAnnotationPresent(MethodAnnotation.class)){
+                method.invoke(personClass.newInstance());
+            }
+        }
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="console">
+walking
+</code></pre>
+
+<p>我们也可以给自定义的Annotation加方法。</p>
+
+<pre><code class="java">
+@Target(ElementType.TYPE)
+public @interface personAnnotation {
+    int id() default 1;
+    String name() default "bowen";
+}
+</code></pre>
+
+<p>下面是对personAnnotation的使用。</p>
+
+<pre><code class="java">
+@personAnnotation(id = 8, name = "john")
+public class Person {
+
+    public void eat() {
+        System.out.println("eating");
+    }
+
+    @MethodAnnotation
+    public void walk() {
+        System.out.print("walking");
+    }
+
+}
+</code></pre>
+
+<h2>Annotation是如何被处理的</h2>
+
+<p>当Java源代码被编译时，编译器的一个插件annotation处理器则会处理这些annotation。处理器可以产生报告信息，或者创建附加的Java源文件或资源。如果annotation本身被加上了RententionPolicy的运行时类，则Java编译器则会将annotation的元数据存储到class文件中。然后，Java虚拟机或其他的程序可以查找这些元数据并做相应的处理。</p>
+
+<p>当然除了annotation处理器可以处理annotation外，我们也可以使用反射自己来处理annotation。Java SE 5有一个名为AnnotatedElement的接口，Java的反射对象类Class,Constructor,Field,Method以及Package都实现了这个接口。这个接口用来表示当前运行在Java虚拟机中的被加上了annotation的程序元素。通过这个接口可以使用反射读取annotation。AnnotatedElement接口可以访问被加上RUNTIME标记的annotation，相应的方法有getAnnotation,getAnnotations,isAnnotationPresent。由于Annotation类型被编译和存储在二进制文件中就像class一样，所以可以像查询普通的Java对象一样查询这些方法返回的Annotation。</p>
+
+<h2>Annotation的广泛使用</h2>
+
+<p>Annotation被广泛用于各种框架和库中，下面就列举一些典型的应用.</p>
+
+<h3>Junit</h3>
+
+<p>Junit是非常著名的一款单元测试框架，使用Junit的时候需要接触大量的annotation。</p>
+
+<ul>
+<li><p>@Runwith 自定义测试类的Runner</p></li>
+<li><p>@ContextConfiguration 设置Spring的ApplicationContext</p></li>
+<li><p>@DirtiesContext 当执行下一个测试前重新加载ApplicationContext.</p></li>
+<li><p>@Before 调用测试方法前初始化</p></li>
+<li><p>@After 调用测试方法后处理</p></li>
+<li><p>@Test 表明该方法是测试方法</p></li>
+<li><p>@Ignore 可以加在测试类或测试方法上，忽略运行。</p></li>
+<li><p>@BeforeClass：在该测试类中的所有测试方法执行前调用，只被调用一次（被标注的方法必须是static）</p></li>
+<li><p>@AfterClass：在该测试类中的所有的测试方法执行完后调用，只被执行一次(被标注的方法必须是static)</p></li>
+</ul>
+
+
+<h3>Spring</h3>
+
+<p>Spring 号称配置地狱，Annotation也不少。</p>
+
+<ul>
+<li><p>@Service 给service类加注解</p></li>
+<li><p>@Repository 给DAO类加注解</p></li>
+<li><p>@Component 给组件类加注解</p></li>
+<li><p>@Autowired 让Spring自动装配bean</p></li>
+<li><p>@Transactional 配置事物</p></li>
+<li><p>@Scope 配置对象存活范围</p></li>
+<li><p>@Controller 给控制器类加注解</p></li>
+<li><p>@RequestMapping url路径映射</p></li>
+<li><p>@PathVariable 将方法参数映射到路径</p></li>
+<li><p>@RequestParam 将请求参数绑定到方法变量</p></li>
+<li><p>@ModelAttribute 与model绑定</p></li>
+<li><p>@SessionAttributes 设置到session属性</p></li>
+</ul>
+
+
+<h3>Hibernate</h3>
+
+<ul>
+<li><p>@Entity 修饰entity bean</p></li>
+<li><p>@Table 将entity类与数据库中的table映射起来</p></li>
+<li><p>@Column 映射列</p></li>
+<li><p>@Id 映射id</p></li>
+<li><p>@GeneratedValue 该字段是自增长的</p></li>
+<li><p>@Version 版本控制或并发性控制</p></li>
+<li><p>@OrderBy 排序规则</p></li>
+<li><p>@Lob 大对象标注</p></li>
+</ul>
+
+
+<p>Hibernate还有大量的关于联合的annotation和继承的annotation，这里就不意义列举了。</p>
+
+<h3>JSR 303 - Bean Validation</h3>
+
+<p>JSR 303 - Bean Validation是一个数据验证的规范，其对Java bean的验证主要通过Java annotation来实现。</p>
+
+<ul>
+<li><p>@Null被注释的元素必须为 null</p></li>
+<li><p>@NotNull被注释的元素必须不为 null</p></li>
+<li><p>@AssertTrue被注释的元素必须为 true@AssertFalse被注释的元素必须为 false@Min(value)被注释的元素必须是一个数字，其值必须大于等于指定的最小值</p></li>
+<li><p>@Max(value)被注释的元素必须是一个数字，其值必须小于等于指定的最大值</p></li>
+<li><p>@DecimalMin(value)被注释的元素必须是一个数字，其值必须大于等于指定的最小值</p></li>
+<li><p>@DecimalMax(value)被注释的元素必须是一个数字，其值必须小于等于指定的最大值</p></li>
+<li><p>@Size(max, min)被注释的元素的大小必须在指定的范围内</p></li>
+<li><p>@Digits (integer, fraction)被注释的元素必须是一个数字，其值必须在可接受的范围内</p></li>
+<li><p>@Past被注释的元素必须是一个过去的日期</p></li>
+<li><p>@Future被注释的元素必须是一个将来的日期</p></li>
+<li><p>@Pattern(value)被注释的元素必须符合指定的正则表达式</p></li>
+</ul>
+
+
+<p>其实还有很多使用了annotaion的framework或library,这里就不一一列举了，希望大家能举一反三，深入了解Java中的annotation。</p>
+]]></content>
+  </entry>
+  
+</feed>

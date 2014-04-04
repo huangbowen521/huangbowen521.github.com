@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: integration | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/integration/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -25,74 +25,59 @@
 
 <p>在本地启动web服务我们可以使用Gradle内置的jetty插件。jetty是一个轻量级的web容器，其执行速度快，配置简单，远程调试方便。启用jetty只需在build.gradle中加入对这个插件的引用。</p>
 
-<p>```groovy build.gradle</p>
-
-<p>apply plugin: 'jetty'</p>
-
-<p>```</p>
+<pre><code class="groovy build.gradle">
+apply plugin: 'jetty'
+</code></pre>
 
 <p>之后可以配置war包的名称，启动的端口等属性。</p>
 
-<p>```groovy build.gradle</p>
+<pre><code class="groovy build.gradle">
+apply plugin: 'jetty'
 
-<p>apply plugin: 'jetty'</p>
+httpPort = 9876
 
-<p>httpPort = 9876</p>
-
-<p>[jettyRun, jettyRunWar, jettyStop]<em>.stopPort = 9966
-[jettyRun, jettyRunWar, jettyStop]</em>.stopKey = 'stopKey'</p>
-
-<p>```</p>
+[jettyRun, jettyRunWar, jettyStop]*.stopPort = 9966
+[jettyRun, jettyRunWar, jettyStop]*.stopKey = 'stopKey'
+</code></pre>
 
 <p>我们需要将集成测试与一般的单元测试分开。因为单元测试并不需要事先启动web服务，保证其执行速度快，能够得到更快的反馈。一般做法是单元测试后缀名为Test.java，集成测试后缀名为IntegrationTest.java。</p>
 
 <p>配置单元测试执行的测试集合。</p>
 
-<p>```groovy build.gradle</p>
-
-<p>test {</p>
-
-<pre><code>include '**/*Test.class'
-exclude '**/*IntegrationTest.class'
+<pre><code class="groovy build.gradle">
+test {
+    include '**/*Test.class'
+    exclude '**/*IntegrationTest.class'
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>然后新建一个Task，用于运行集成测试。</p>
 
-<p>```groovy build.gradle</p>
+<pre><code class="groovy build.gradle">
+task intTest(type: Test, dependsOn: test) {
 
-<p>task intTest(type: Test, dependsOn: test) {</p>
+    include '**/*IntegrationTest.class'
 
-<pre><code>include '**/*IntegrationTest.class'
+    doFirst {
 
-doFirst {
+        jettyRun.daemon = true
+        jettyRun.execute()
 
-    jettyRun.daemon = true
-    jettyRun.execute()
+    }
 
-}
-
-doLast {
-    jettyStop.execute()
+    doLast {
+        jettyStop.execute()
+    }
 }
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>上述代码首先是创建一个名为intTest的task，其类型为Test,依赖于test task。该集成测试只会运行后缀名为IntegrationTest的测试类。在运行测试之前，首先采用后台模式启动jetty服务器，运行完测试后再调用jettyStop task停止jetty服务。</p>
 
 <p>为了使我们在运行<code>gradle build</code>时也会运行intTest task，可以添加对intTest的依赖。</p>
 
-<p>```groovy build.gradle</p>
-
-<p>build.dependsOn intTest</p>
-
-<p>```</p>
+<pre><code class="groovy build.gradle">
+build.dependsOn intTest
+</code></pre>
 
 <p>这样在运行<code>gradle build</code>时也会运行集成测试。并且在集成测试前后web服务会自动的启动和关闭。</p>
 ]]></content>

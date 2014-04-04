@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: Octopress | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/octopress/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -20,7 +20,7 @@
     <id>http://www.huangbowen.net/blog/2013/09/30/migrate-octopress-to-aws</id>
     <content type="html"><![CDATA[<p><img src="/images/cloudcompute.png" width="400"></p>
 
-<p><a href="http://octopress.org/">Octopress</a>已经被公认为Geeker的博客框架。它所拥有的特性都很符合Geeker的癖好:强大的命令行操作方式、简洁的MarkDown语法、灵活的插件配置、美轮美奂的theme（自带响应式设计哦）、完全可定义的部署......</p>
+<p><a href="http://octopress.org/">Octopress</a>已经被公认为Geeker的博客框架。它所拥有的特性都很符合Geeker的癖好:强大的命令行操作方式、简洁的MarkDown语法、灵活的插件配置、美轮美奂的theme（自带响应式设计哦）、完全可定义的部署&hellip;&hellip;</p>
 
 <p>一般大家都喜欢把博客部署到github pages上，免费速度快，与<a href="http://octopress.org/">Octopress</a>无缝结合。但是自己最近迷上了AWS，就捉摸着将自己的<a href="http://octopress.org/">Octopress</a>博客部署到AWS的S3上，使用CloudFront做CDN，使用Amazon Route 53做域名映射。倒腾了两天，终于搞定了，也学到了很多东西。不敢私藏，拿出来和大家分享。</p>
 
@@ -59,27 +59,22 @@
 
 <p>第六步，选择'Permissions'标签，点击’add bucket policy‘按钮，加入如下的policy.</p>
 
-<p>```javascript</p>
-
-<p>{</p>
-
-<pre><code> "Version": "2008-10-17",
- "Statement": [
-      {
-           "Sid": "AddPerm",
-           "Effect": "Allow",
-           "Principal": {
-                "AWS": "*"
-           },
-           "Action": "s3:GetObject",
-           "Resource": "arn:aws:s3:::example.com/*"
-      }
- ]
+<pre><code class="javascript">
+{
+     "Version": "2008-10-17",
+     "Statement": [
+          {
+               "Sid": "AddPerm",
+               "Effect": "Allow",
+               "Principal": {
+                    "AWS": "*"
+               },
+               "Action": "s3:GetObject",
+               "Resource": "arn:aws:s3:::example.com/*"
+          }
+     ]
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>这个policy其实是给所有匿名用户访问该bucket里面文件的权限。</p>
 
@@ -87,22 +82,17 @@
 
 <p>第七步，还是在’Permissions‘标签里，点击’Add CORS configuration‘按钮，加入如下的配置：</p>
 
-<p>```xml</p>
-
-<p>&lt;?xml version="1.0" encoding="UTF-8"?>
-<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"></p>
-
-<pre><code>&lt;CORSRule&gt;
-    &lt;AllowedOrigin&gt;*&lt;/AllowedOrigin&gt;
-    &lt;AllowedMethod&gt;GET&lt;/AllowedMethod&gt;
-    &lt;MaxAgeSeconds&gt;3000&lt;/MaxAgeSeconds&gt;
-    &lt;AllowedHeader&gt;Authorization&lt;/AllowedHeader&gt;
-&lt;/CORSRule&gt;
+<pre><code class="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"&gt;
+    &lt;CORSRule&gt;
+        &lt;AllowedOrigin&gt;*&lt;/AllowedOrigin&gt;
+        &lt;AllowedMethod&gt;GET&lt;/AllowedMethod&gt;
+        &lt;MaxAgeSeconds&gt;3000&lt;/MaxAgeSeconds&gt;
+        &lt;AllowedHeader&gt;Authorization&lt;/AllowedHeader&gt;
+    &lt;/CORSRule&gt;
+&lt;/CORSConfiguration&gt;
 </code></pre>
-
-<p></CORSConfiguration></p>
-
-<p>```</p>
 
 <p>这个是用来配置跨域访问的权限，即是否允许其他网站访问这个bucket上的资源。由于Octopress博客集成了很多插件，比如google analiycis, github等，都需要跨域加载JavaScript文件，执行JavaScript文件，所以要加入这些配置。</p>
 
@@ -110,46 +100,38 @@
 
 <p>第八步，下载安装<a href="http://s3tools.org/s3cmd">s3cmd</a>。<a href="http://s3tools.org/s3cmd">s3cmd</a>是一款操作AWS S3的命令行工具。通过它可以创建或删除bucket，上传或下载object，我们在部署octopress博客时，主要就是通过它来将博客上传到S3上去。如果是mac系统化可以通过HomeBrew直接安装。</p>
 
-<p>```bash</p>
-
-<h1>brew install s3cmd</h1>
-
-<p>```</p>
+<pre><code class="bash">
+# brew install s3cmd
+</code></pre>
 
 <p>如果是windows系统可以从<a href="http://s3tools.org/s3cmd">官网</a>下载安装包进行安装。</p>
 
 <p>第九步，配置<a href="http://s3tools.org/s3cmd">s3cmd</a>与你的S3的连接。在命令行下输入<code>s3cmd --configure</code>，按照向导来配置与S3的连接。这时候在前面保存的Access key就派上用场了。所有的配置信息其实都存在当前用户名下的.s3cfg文件中。你也可以随后修改这些信息。运行<code>s3cmd ls</code>来检测是否配置成功。</p>
 
-<p>```bash</p>
-
-<p>$ s3cmd ls #列出所有的bucket
+<pre><code class="bash">
+$ s3cmd ls #列出所有的bucket
 2013-09-27 05:05  s3://huangbowen.net
-2013-09-28 03:24  s3://www.huangbowen.net</p>
-
-<p>```</p>
+2013-09-28 03:24  s3://www.huangbowen.net
+</code></pre>
 
 <p>第十步，配置Octopress支持向S3的部署。在Octopress目录下找到Rakefile文件，修改或添加下述配置。</p>
 
-<p>```xml</p>
+<pre><code class="xml">
+deploy_default = "s3"   #部署task
+s3_bucket = "example.com" # bucket名称
 
-<p>deploy_default = "s3"   #部署task
-s3_bucket = "example.com" # bucket名称</p>
-
-<p>s3_cache_secs = 3600  # header中的cache controll属性，即缓存时间，后面CloudFront要用到</p>
-
-<p>```</p>
+s3_cache_secs = 3600  # header中的cache controll属性，即缓存时间，后面CloudFront要用到
+</code></pre>
 
 <p>然后添加一个新的task。</p>
 
-<p>```ruby</p>
-
-<p>desc "Deploy website via s3cmd"
+<pre><code class="ruby">
+desc "Deploy website via s3cmd"
 task :s3 do
   puts "## Deploying website via s3cmd"
   ok_failed system("s3cmd sync --acl-public --reduced-redundancy --add-header \"Cache-Control: max-age=#{s3_cache_secs}\"  public/* s3://#{s3_bucket}/")
-end</p>
-
-<p>```</p>
+end
+</code></pre>
 
 <p>OK，大功告成，运行<code>rake generate</code>
 及<code>&amp;&amp; rake deploy</code>就可以将生成的静态站点上传到S3中区。然后就可以通过S3的EndPoint来访问新站点了。（EndPoint可以在Amazon management console的S3 dashboard的

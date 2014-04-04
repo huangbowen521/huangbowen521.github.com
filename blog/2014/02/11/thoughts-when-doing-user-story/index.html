@@ -18,13 +18,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.huangbowen.net/blog/2014/02/11/thoughts-when-doing-user-story/">
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2014/02/11/thoughts-when-doing-user-story">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -98,7 +99,8 @@
 
 <time datetime="2014-02-11T17:36:00+10:00" pubdate data-updated="true">Feb 11<span>th</span>, 2014</time>
         
-         | <a href="#disqus_thread">Comments</a>
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
         
       </p>
     
@@ -116,7 +118,7 @@
 
 <p>这时候我就意识到我的方向错了。代码是业务逻辑的实现，应该先有业务逻辑，再有代码。我们这样反推只能会深陷细节，很难从中了解到整个业务逻辑的来龙去脉。</p>
 
-<p>咋办那？找BA（需求分析师）呗。我们把BA拉过来，让她挨个把这张故事卡中的关联模块讲清楚。为什么我们要做这样的事情？这样做对用户来说能带来什么好处？做这样事情的场景是怎样的？&#8230;..</p>
+<p>咋办那？找BA（需求分析师）呗。我们把BA拉过来，让她挨个把这张故事卡中的关联模块讲清楚。为什么我们要做这样的事情？这样做对用户来说能带来什么好处？做这样事情的场景是怎样的？&hellip;..</p>
 
 <p>解答了这些问题以后，我们逐渐明白了这个故事卡的业务逻辑，也有信心来完成这张卡了。</p>
 
@@ -238,7 +240,7 @@
   <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -289,7 +291,7 @@
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>

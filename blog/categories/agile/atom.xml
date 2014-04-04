@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Agile | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/agile/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -29,7 +29,7 @@
 
 <p>这时候我就意识到我的方向错了。代码是业务逻辑的实现，应该先有业务逻辑，再有代码。我们这样反推只能会深陷细节，很难从中了解到整个业务逻辑的来龙去脉。</p>
 
-<p>咋办那？找BA（需求分析师）呗。我们把BA拉过来，让她挨个把这张故事卡中的关联模块讲清楚。为什么我们要做这样的事情？这样做对用户来说能带来什么好处？做这样事情的场景是怎样的？.....</p>
+<p>咋办那？找BA（需求分析师）呗。我们把BA拉过来，让她挨个把这张故事卡中的关联模块讲清楚。为什么我们要做这样的事情？这样做对用户来说能带来什么好处？做这样事情的场景是怎样的？&hellip;..</p>
 
 <p>解答了这些问题以后，我们逐渐明白了这个故事卡的业务逻辑，也有信心来完成这张卡了。</p>
 
@@ -132,15 +132,13 @@
 </ol>
 
 
-<p>```yaml .travis.yml</p>
-
-<p>language: java
+<pre><code class="yaml .travis.yml">
+language: java
 jdk:
   - oraclejdk7
   - openjdk7
-  - openjdk6</p>
-
-<p>```</p>
+  - openjdk6
+</code></pre>
 
 <p>你可以使用一个travis-lint来检查你的yml文件是否是有效的。他是ruby写的一个gem，需要ruby的运行环境。安装方式是在terminal下<code>gem install travis-lint</code>。你只需要在你的repository根目录下运行<code>travis-lint</code>即可进行检查。</p>
 

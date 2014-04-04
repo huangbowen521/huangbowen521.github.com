@@ -18,13 +18,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/09/17/page-object/">
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/09/17/page-object">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -98,7 +99,8 @@
 
 <time datetime="2013-09-17T02:14:00+10:00" pubdate data-updated="true">Sep 17<span>th</span>, 2013</time>
         
-         | <a href="#disqus_thread">Comments</a>
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
         
       </p>
     
@@ -134,7 +136,7 @@
 
 <p>使用一些<a href="http://martinfowler.com/bliki/DomainSpecificLanguage.html">领域特定语言</a>来书写测试非常普遍，比如Cucumber或一门内部DSL。如果你尽量在page对象层级之上编写测试DSL，那么你可以通过一个解析器将DSL声明转换为调用page对象。</p>
 
-<blockquote><p>如果你在测试方法中使用了WebDriver API，那么你做错了 &#8211; <a href="http://blog.rocketpoweredjetpants.com/">Simon Stewart</a>.</p></blockquote>
+<blockquote><p>如果你在测试方法中使用了WebDriver API，那么你做错了 &ndash; <a href="http://blog.rocketpoweredjetpants.com/">Simon Stewart</a>.</p></blockquote>
 
 <p>对于那些将逻辑从页面元素中剥离的模式（例如 <a href="http://martinfowler.com/eaaDev/PresentationModel.html">Presentation Model</a>, <a href="http://martinfowler.com/eaaDev/SupervisingPresenter.html">Supervising Controller</a>, 及<a href="http://martinfowler.com/eaaDev/PassiveScreen.html">Passive View</a>)而言,在UI层面做测试用处不大，所以也不太需要page对象了。</p>
 
@@ -278,7 +280,7 @@
   <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -329,7 +331,7 @@
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>

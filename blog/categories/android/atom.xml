@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Android | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -28,70 +28,58 @@
 <p>配置AP的选项是属于配置wifi的一部分，所以他们都在WifiManager这个类中。
 获取当前系统的WifiManager实例的方法是:</p>
 
-<p>```java</p>
-
-<p>WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-```</p>
+<pre><code class="java">
+WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE); 
+</code></pre>
 
 <p>此类中有几个关键方法用来设置AP，但是它们都是被隐藏的，我们无法直接调用，所以只有通过反射的方式来调用。</p>
 
 <p>获取AP当前状态的方法是:</p>
 
-<p>```java
-private Boolean getApState(WifiManager wifi) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {</p>
-
-<pre><code>    Method method = wifi.getClass().getMethod("isWifiApEnabled");
-    return (Boolean) method.invoke(wifi);
-}
+<pre><code class="java">private Boolean getApState(WifiManager wifi) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Method method = wifi.getClass().getMethod("isWifiApEnabled");
+        return (Boolean) method.invoke(wifi);
+    }
 </code></pre>
 
-<p>```
-配置AP要使用到WifiConfiguration这个类，以下是设置的一个AP。</p>
+<p>配置AP要使用到WifiConfiguration这个类，以下是设置的一个AP。</p>
 
-<p>```java</p>
-
-<p>private WifiConfiguration getApConfiguration() {</p>
-
-<pre><code>    WifiConfiguration apConfig = new WifiConfiguration();
-    //配置热点的名称
-    apConfig.SSID = "yourId";
-    apConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
-    apConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-    apConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-    apConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-    //配置热点的密码
-    apConfig.preSharedKey = "yourPassword";
-    return apConfig;
-}
+<pre><code class="java">
+private WifiConfiguration getApConfiguration() {
+        WifiConfiguration apConfig = new WifiConfiguration();
+        //配置热点的名称
+        apConfig.SSID = "yourId";
+        apConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+        apConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+        apConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        apConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+        //配置热点的密码
+        apConfig.preSharedKey = "yourPassword";
+        return apConfig;
+    }
 </code></pre>
 
-<p><code>``
-应用AP配置并启用AP要使用另一个被隐藏的方法</code>setWifiApEnabled`。<strong>需要注意的是启用AP前要将当前手机的wifi关闭，否则会启动失败。</strong></p>
+<p>应用AP配置并启用AP要使用另一个被隐藏的方法<code>setWifiApEnabled</code>。<strong>需要注意的是启用AP前要将当前手机的wifi关闭，否则会启动失败。</strong></p>
 
-<p>```java</p>
-
-<pre><code>private void setWifiAp() {
+<pre><code class="java">
+    private void setWifiAp() {
 
 
-    Method method = wifi.getClass().getMethod(
-            "setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
+        Method method = wifi.getClass().getMethod(
+                "setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
 
-    wifi.setWifiEnabled(false);
-    method.invoke(wifi, null, true);
-}
+        wifi.setWifiEnabled(false);
+        method.invoke(wifi, null, true);
+    }
 </code></pre>
-
-<p>```</p>
 
 <p>最后，一定要注意要在AndroidManifest.xml文件中设置几个权限。否则在调用API时会产生<code>java.lang.SecurityException: Permission Denied</code>的异常。
 需要加入的权限如下：
-```xml</p>
-
-<pre><code>&lt;uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /&gt;
-&lt;uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /&gt;
-&lt;uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /&gt;
-&lt;uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /&gt;
-</code></pre>
+```xml
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /></p>
 
 <p>```</p>
 

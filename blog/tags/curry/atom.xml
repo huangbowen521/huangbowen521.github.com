@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: curry | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/curry/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -29,24 +29,18 @@
 
 <p>命令式函数可能会改变程序的状态，这就会对其产生<strong>副作用</strong>。在命令式编程中，在执行程序不同的状态下同一个函数的返回结果会发生改变。例如，下面是一个使用JavaScript写的函数。</p>
 
-<p>```javascript</p>
-
-<p>var state = true;
-var getVal = function () [</p>
-
-<pre><code> return state;
+<pre><code class="javascript">
+var state = true;
+var getVal = function () [
+     return state;
+}
 </code></pre>
 
-<p>}</p>
-
-<p><code>
-</code>javascript</p>
-
-<p>console.log(getVal()); //true
+<pre><code class="javascript">
+console.log(getVal()); //true
 state = false;
-console.log(getVal()); // false</p>
-
-<p>```</p>
+console.log(getVal()); // false
+</code></pre>
 
 <!-- more -->
 
@@ -70,12 +64,10 @@ console.log(getVal()); // false</p>
 
 <p>例如，我们写一个将指定参数放置到一个无限长的数组中的函数。</p>
 
-<p>```haskell</p>
-
-<p>repeat' :: a -> [a]
-repeat' x = x : repeat' x</p>
-
-<p>```</p>
+<pre><code class="haskell">
+repeat' :: a -&gt; [a]
+repeat' x = x : repeat' x
+</code></pre>
 
 <p>第一行是对repeat'参数及返回值的定义，它接收一个类型a,返回a的数组。
 第二行是repeat'函数的实现，它将x放置到一个无穷大的数组中。</p>
@@ -83,22 +75,19 @@ repeat' x = x : repeat' x</p>
 <p>在没有延迟计算特性的编程语言中，这种函数是根本无法使用的。因为一旦调用就会陷入死循环。
 即使在支持延迟计算的编程语言中，我们直接输出这个数组:<code>print $ repeat' 10</code>,也会进入死循环。那么如何使用它那？我们可以写一个take函数，其可以返回数组中前几位元素。</p>
 
-<p>```haskell
-take' :: Int -> [a] -> [a]
+<pre><code class="haskell">take' :: Int -&gt; [a] -&gt; [a]
 take' 1 (x:xs) = [x]
-take' index (x:xs) = x : (take' (index-1) xs)</p>
+take' index (x:xs) = x : (take' (index-1) xs)
+</code></pre>
 
-<p>```
-我们这样调用它，</p>
+<p>我们这样调用它，</p>
 
-<p>```bash</p>
-
-<p>Prelude> take' 3 (repeat' 5)
+<pre><code class="bash">
+Prelude&gt; take' 3 (repeat' 5) 
 [5,5,5]
-Prelude> take' 3 (repeat' 'a')
-"aaa"</p>
-
-<p>```</p>
+Prelude&gt; take' 3 (repeat' 'a') 
+"aaa"
+</code></pre>
 
 <p>Haskell对函数参数默认采取延迟计算的求值策略。所以这样在调用repeat'函数时并不是先将repeat'函数的结果数组计算出来，再进行take操作，而是take操作需要前几位元素，repeat'函数才会生成前几位元素。</p>
 
@@ -119,34 +108,28 @@ map:: (a -> b) -> [a] -> [b]
 它的作用是传入一个函数及一个数组，对该数组中的每一个元素应用此函数，从而转换为另一个数组。
 我们可以自己实现一个map函数。</p>
 
-<p>```haskell</p>
-
-<p>map' :: (a -> b) -> [a] -> [b]
+<pre><code class="haskell">
+map' :: (a -&gt; b) -&gt; [a] -&gt; [b]
 map' f [] = []
-map' f (x:xs) =f x : map' f xs</p>
-
-<p>```</p>
+map' f (x:xs) =f x : map' f xs
+</code></pre>
 
 <p>map'函数接收两个参数，第一个参数是一个函数，该函数输入值为a类型的值，输出值为b类型的值，第二个参数为源数组。
 我们调用ma p'函数时，可以直接写一个lambda表达式，对源数组进行各种操作。</p>
 
-<p>```bash</p>
-
-<p>Prelude> map' (\x -> x + 5)  [1,2,3]
+<pre><code class="bash">
+Prelude&gt; map' (\x -&gt; x + 5)  [1,2,3]
 [6,7,8]
-Prelude> map' (\x -> x * x)  [1,2,3]
-[1,4,9]</p>
-
-<p>```</p>
+Prelude&gt; map' (\x -&gt; x * x)  [1,2,3] 
+[1,4,9]
+</code></pre>
 
 <p>如果我们有这样一个需求，我们想通过map'函数对数组的每个对象都加上一个值n，这个n我不想直接定义在此lambda表达式中，能实现吗？答案是可以。</p>
 
-<p>```haskell</p>
-
-<p>outer = let n = 5 in map' (\x -> x + n) [1,2,3]
-[6,7,8]</p>
-
-<p>```</p>
+<pre><code class="haskell">
+outer = let n = 5 in map' (\x -&gt; x + n) [1,2,3] 
+[6,7,8]
+</code></pre>
 
 <p>对于匿名函数(\x -> x + n)来说，n就是<strong>non-local variable</strong>。什么是<strong>non-local variable</strong>那？如果一个函数使用了一个变量，这个变量既不属于全局变量，也不属于在此函数中定义的变量，那这个变量对于此函数来说就是<strong>non-local variable</strong>。
 所谓的闭包就是使用了non-local variable的函数。</p>
@@ -165,28 +148,24 @@ Prelude> map' (\x -> x * x)  [1,2,3]
 
 <p>举个例子。上文中我们构造了一个map'函数，它接收一个函数及一个数组。如果我们想实现一个名为doubleMe的函数，它接收一个数组，将数组中每个元素都翻一倍。这个可以这样写:</p>
 
-<p>```haskell</p>
-
-<p>doubleMe = map' (\x -> x * x)</p>
-
-<p>```</p>
+<pre><code class="haskell">
+doubleMe = map' (\x -&gt; x * x) 
+</code></pre>
 
 <p>注意看，定义doubleMe时我们使用了map'函数，但是给map'函数只传递了一个参数，并没有提供第二个参数。所以在调用doubleMe时，要给其传递一个数组。</p>
 
-<p>```bash</p>
+<pre><code class="bash">
+Prelude&gt; doubleMe [1,2,3] 
+[1,4,9] 
+</code></pre>
 
-<p>Prelude> doubleMe [1,2,3]
-[1,4,9]</p>
+<p>doubleMe的函数完全等价于:</p>
 
-<p>```
-doubleMe的函数完全等价于:</p>
+<pre><code class="haskell">
+doubleMe ary = map' (\x-&gt; x * x) ary
+</code></pre>
 
-<p>```haskell</p>
-
-<p>doubleMe ary = map' (\x-> x * x) ary</p>
-
-<p>```
-换句话说，如果一个函数接收多个参数，那么接收部分参数的该函数也是一个函数。</p>
+<p>换句话说，如果一个函数接收多个参数，那么接收部分参数的该函数也是一个函数。</p>
 ]]></content>
   </entry>
   

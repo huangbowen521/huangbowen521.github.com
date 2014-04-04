@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: xslt | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/xslt/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -43,21 +43,17 @@
 
 <p>请看XML的一个示例。</p>
 
-<p>```xml book.xml</p>
-
-<p>&lt;?xml version="1.0" encoding="ISO-8859-1"?>
-<book></p>
-
-<pre><code>&lt;name&gt;Effective JavaScript&lt;/name&gt;
-&lt;category&gt;Program Language&lt;/category&gt;
-&lt;author&gt;Bowen&lt;/author&gt;
-&lt;description&gt;This book is about JavaScript Language.&lt;/description&gt;
+<pre><code class="xml book.xml ">
+&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;book&gt;
+    &lt;name&gt;Effective JavaScript&lt;/name&gt;
+    &lt;category&gt;Program Language&lt;/category&gt;
+    &lt;author&gt;Bowen&lt;/author&gt;
+    &lt;description&gt;This book is about JavaScript Language.&lt;/description&gt;
+&lt;/book&gt;
 </code></pre>
 
-<p></book></p>
-
-<p>```
-这是一个简单的XML文件。第一行说明了xml的版本及编码类型。接下来是一个根节点book，根节点可以包含很多子节点。</p>
+<p>这是一个简单的XML文件。第一行说明了xml的版本及编码类型。接下来是一个根节点book，根节点可以包含很多子节点。</p>
 
 <h3>XML命名空间</h3>
 
@@ -65,46 +61,33 @@
 
 <p>假设这里有另一个xml文件。</p>
 
-<p>```xml anotherBook.xml</p>
-
-<p>&lt;?xml version="1.0" encoding="ISO-8859-1"?>
-<book></p>
-
-<pre><code>&lt;name&gt;Rework&lt;/name&gt;
-&lt;page&gt;120&lt;/page&gt;
-&lt;publishDate&gt;2013-10-08&lt;/publishDate&gt;
+<pre><code class="xml anotherBook.xml">
+&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;book&gt;
+    &lt;name&gt;Rework&lt;/name&gt;
+    &lt;page&gt;120&lt;/page&gt;
+    &lt;publishDate&gt;2013-10-08&lt;/publishDate&gt;
+&lt;/book&gt;
 </code></pre>
-
-<p></book></p>
-
-<p>```</p>
 
 <p>如果我们要合并这两个xml节点到同一个xml文件中时，不加namespace会发生冲突，因为含有同名的tag，其子节点的结构并不相同。接下来我们给其加上命名空间并合并。</p>
 
-<p>```xml combined.xml</p>
+<pre><code class="xml combined.xml">
+&lt;root&gt;
+&lt;ns1:book xmlns:ns1="http://www.huangbowen.net/ns1"&gt;
+    &lt;ns1:name&gt;Effective JavaScript&lt;/ns1:name&gt;
+    &lt;ns1:category&gt;Program Language&lt;/ns1:category&gt;
+    &lt;ns1:author&gt;Bowen&lt;/ns1:author&gt;
+    &lt;ns1:description&gt;This book is about JavaScript Language.&lt;/ns1:description&gt;
+&lt;/ns1:book&gt;
 
-<p><root>
-&lt;ns1:book xmlns:ns1="http://www.huangbowen.net/ns1"></p>
-
-<pre><code>&lt;ns1:name&gt;Effective JavaScript&lt;/ns1:name&gt;
-&lt;ns1:category&gt;Program Language&lt;/ns1:category&gt;
-&lt;ns1:author&gt;Bowen&lt;/ns1:author&gt;
-&lt;ns1:description&gt;This book is about JavaScript Language.&lt;/ns1:description&gt;
+&lt;ns2:book xmlns:ns2="http://www.huangbowen.net/ns2"&gt;
+     &lt;ns2:name&gt;Rework&lt;/ns2:name&gt;
+    &lt;ns2:page&gt;120&lt;/ns2:page&gt;
+    &lt;ns2:publishDate&gt;2013-10-08&lt;/ns2:publishDate&gt;
+     &lt;/ns2:book&gt;
+&lt;/root&gt;
 </code></pre>
-
-<p>&lt;/ns1:book></p>
-
-<p>&lt;ns2:book xmlns:ns2="http://www.huangbowen.net/ns2"></p>
-
-<pre><code> &lt;ns2:name&gt;Rework&lt;/ns2:name&gt;
-&lt;ns2:page&gt;120&lt;/ns2:page&gt;
-&lt;ns2:publishDate&gt;2013-10-08&lt;/ns2:publishDate&gt;
- &lt;/ns2:book&gt;
-</code></pre>
-
-<p></root></p>
-
-<p>```</p>
 
 <p>xmlns是xml namespace的缩写。引号后面是tag的前缀。这个前缀可以省略，比如<code>xmlns="http://www.huangbowen.net/ns1"</code>,相当于没有前缀的tag自动应用默认的命名空间。需要注意的是命名空间的URI只是给命名空间提供一个唯一的标识，xml解析器并不会访问这个URI来获取任何信息。很多公司习惯将这个URI一个web页面，该web页面描述了该namespace的相关信息。</p>
 
@@ -115,45 +98,35 @@
 
 <p>这是针对本文示例book.xml文件的一个XSD文件。</p>
 
-<p>```xml book.xsd</p>
-
-<p>&lt;xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"</p>
-
-<pre><code>       xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
-&lt;xs:element name="book"&gt;
-    &lt;xs:complexType&gt;
-        &lt;xs:sequence&gt;
-            &lt;xs:element type="xs:string" name="name"/&gt;
-            &lt;xs:element type="xs:string" name="category"/&gt;
-            &lt;xs:element type="xs:string" name="author"/&gt;
-            &lt;xs:element type="xs:string" name="description"/&gt;
-        &lt;/xs:sequence&gt;
-    &lt;/xs:complexType&gt;
-&lt;/xs:element&gt;
+<pre><code class="xml book.xsd">
+&lt;xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
+    &lt;xs:element name="book"&gt;
+        &lt;xs:complexType&gt;
+            &lt;xs:sequence&gt;
+                &lt;xs:element type="xs:string" name="name"/&gt;
+                &lt;xs:element type="xs:string" name="category"/&gt;
+                &lt;xs:element type="xs:string" name="author"/&gt;
+                &lt;xs:element type="xs:string" name="description"/&gt;
+            &lt;/xs:sequence&gt;
+        &lt;/xs:complexType&gt;
+    &lt;/xs:element&gt;
+&lt;/xs:schema&gt;
 </code></pre>
-
-<p>&lt;/xs:schema></p>
-
-<p>```</p>
 
 <p>从上可以看出其实XSD文件本身就是一个XML文件，它遵循XML语法，比如每个tag都需要有结束标记，必须有且只有一个根节点等。</p>
 
 <p>在一个XML文件中可以添加其Schema的引用信息。</p>
 
-<p>```xml book.xml</p>
-
-<p>&lt;?xml version="1.0" encoding="ISO-8859-1"?>
-&lt;ns1:book xmlns:ns1="http://www.huangbowen.net/ns1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:targetLocation="http://www.huangbowen.net/book.xsd"></p>
-
-<pre><code>&lt;ns1:name&gt;Effective JavaScript&lt;/ns1:name&gt;
-&lt;ns1:category&gt;Program Language&lt;/ns1:category&gt;
-&lt;ns1:author&gt;Bowen&lt;/ns1:author&gt;
-&lt;ns1:description&gt;This book is about JavaScript Language.&lt;/ns1:description&gt;
+<pre><code class="xml book.xml">
+&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;ns1:book xmlns:ns1="http://www.huangbowen.net/ns1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:targetLocation="http://www.huangbowen.net/book.xsd"&gt;
+    &lt;ns1:name&gt;Effective JavaScript&lt;/ns1:name&gt;
+    &lt;ns1:category&gt;Program Language&lt;/ns1:category&gt;
+    &lt;ns1:author&gt;Bowen&lt;/ns1:author&gt;
+    &lt;ns1:description&gt;This book is about JavaScript Language.&lt;/ns1:description&gt;
+&lt;/ns1:book&gt;
 </code></pre>
-
-<p>&lt;/ns1:book></p>
-
-<p>```</p>
 
 <p>在IDE中，如果你的XML节点没有遵守你引用的Schema中的定义，就会给出错误提醒。</p>
 
@@ -182,62 +155,52 @@
 
 <p>现在我们创建一个XSLT文件将其转换为一个HTML文件。</p>
 
-<p>```html book.xsl</p>
-
-<p>&lt;?xml version="1.0" encoding="ISO-8859-1"?>
+<pre><code class="html book.xsl">
+&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
 &lt;xsl:stylesheet version="1.0"
-xmlns:xsl="http://www.w3.org/1999/XSL/Transform"></p>
+xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 
-<p>&lt;xsl:template match="/">
-  <html>
-  <body>
-  <h2>My Book</h2>
-  <table border="1"></p>
+&lt;xsl:template match="/"&gt;
+  &lt;html&gt;
+  &lt;body&gt;
+  &lt;h2&gt;My Book&lt;/h2&gt;
+  &lt;table border="1"&gt;
+    &lt;tr&gt;
+      &lt;td&gt;name&lt;/td&gt;
+      &lt;td&gt;&lt;xsl:value-of select="book/name" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;category&lt;/td&gt;
+      &lt;td&gt;&lt;xsl:value-of select="book/category" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;author&lt;/td&gt;
+      &lt;td&gt;&lt;xsl:value-of select="book/author" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;description&lt;/td&gt;
+      &lt;td&gt;&lt;xsl:value-of select="book/description" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+  &lt;/body&gt;
+  &lt;/html&gt;
+&lt;/xsl:template&gt;
 
-<pre><code>&lt;tr&gt;
-  &lt;td&gt;name&lt;/td&gt;
-  &lt;td&gt;&lt;xsl:value-of select="book/name" /&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-  &lt;td&gt;category&lt;/td&gt;
-  &lt;td&gt;&lt;xsl:value-of select="book/category" /&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-  &lt;td&gt;author&lt;/td&gt;
-  &lt;td&gt;&lt;xsl:value-of select="book/author" /&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-  &lt;td&gt;description&lt;/td&gt;
-  &lt;td&gt;&lt;xsl:value-of select="book/description" /&gt;&lt;/td&gt;
-&lt;/tr&gt;
+&lt;/xsl:stylesheet&gt;
 </code></pre>
-
-<p>  </table>
-  </body>
-  </html>
-&lt;/xsl:template></p>
-
-<p>&lt;/xsl:stylesheet></p>
-
-<p>```</p>
 
 <p>然后我们在book.xml文件中加入对这个XSLT文件的引用。</p>
 
-<p>```xml book.xml</p>
-
-<p>&lt;?xml version="1.0" encoding="ISO-8859-1"?>
-&lt;?xml-stylesheet type="text/xsl" href="book.xsl"?>
-<book></p>
-
-<pre><code>&lt;name&gt;Effective JavaScript&lt;/name&gt;
-&lt;category&gt;Program Language&lt;/category&gt;
-&lt;author&gt;Bowen&lt;/author&gt;
-&lt;description&gt;This book is about JavaScript Language.&lt;/description&gt;
+<pre><code class="xml book.xml">
+&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;?xml-stylesheet type="text/xsl" href="book.xsl"?&gt;
+&lt;book&gt;
+    &lt;name&gt;Effective JavaScript&lt;/name&gt;
+    &lt;category&gt;Program Language&lt;/category&gt;
+    &lt;author&gt;Bowen&lt;/author&gt;
+    &lt;description&gt;This book is about JavaScript Language.&lt;/description&gt;
+&lt;/book&gt;
 </code></pre>
-
-<p></book></p>
-
-<p>```</p>
 
 <p>接下来我们再用浏览器打开book.xml文件，发现显示变成了这样。是不是很神奇？</p>
 

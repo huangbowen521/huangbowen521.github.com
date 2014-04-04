@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: recursion | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/recursion/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -29,13 +29,11 @@
 
 <p>我们就写一个简单的对数组求和的函数。</p>
 
-<p>```haskell</p>
-
-<p>sum' :: (Num a) => [a] -> a
+<pre><code class="haskell">
+sum' :: (Num a) =&gt; [a] -&gt; a 
 sum' (x:xs) = x + sum' xs
-sum' [] = 0</p>
-
-<p>```</p>
+sum' [] = 0
+</code></pre>
 
 <!-- more -->
 
@@ -50,25 +48,23 @@ sum' [] = 0</p>
 
 <p>假设我们这样调用它：<code>sum'  [1,2,3]</code>,程序的执行过程是这样子的：</p>
 
-<p>```console</p>
+<pre><code class="console">
+sum' [1,2,3] -&gt;
 
-<p>sum' [1,2,3] -></p>
+1 + sum' [2,3] -&gt;
 
-<p>1 + sum' [2,3] -></p>
+1 + (2 + sum' [3]) -&gt;
 
-<p>1 + (2 + sum' [3]) -></p>
+1 + (2 + (3 + sum' [])) -&gt;
 
-<p>1 + (2 + (3 + sum' [])) -></p>
+1 + (2 + (3 + 0)) -&gt;
 
-<p>1 + (2 + (3 + 0)) -></p>
+1 + (2 + 3) -&gt;
 
-<p>1 + (2 + 3) -></p>
+1 + 5 -&gt;
 
-<p>1 + 5 -></p>
-
-<p>6</p>
-
-<p>```</p>
+6
+</code></pre>
 
 <p>这种递归有个问题就是我们一直到等到递归结束才进行算术运算，这样在执行过程既要保存函数调用的堆栈，还要保存中间计算结果的堆栈，如果递归过深，很容易引起stackOverFlow.</p>
 
@@ -76,33 +72,29 @@ sum' [] = 0</p>
 
 <p>针对上述问题，我们可以换种写法。</p>
 
-<p>```haskell</p>
+<pre><code class="haskell">
+sum' :: (Num a) =&gt; [a] -&gt; a -&gt; a 
 
-<p>sum' :: (Num a) => [a] -> a -> a</p>
+sum' (x:xs) temp = sum' xs x+ temp 
 
-<p>sum' (x:xs) temp = sum' xs x+ temp</p>
-
-<p>sum' [] temp = temp</p>
-
-<p>```</p>
+sum' [] temp = temp
+</code></pre>
 
 <p>我们这样调用它: <code>sum' [1,2,3] 0</code>。</p>
 
 <p>它的执行顺序是这样的:</p>
 
-<p>```console</p>
+<pre><code class="console">
+sum' [1,2,3] 0 -&gt;
 
-<p>sum' [1,2,3] 0 -></p>
+sum' [2,3] 1 -&gt;
 
-<p>sum' [2,3] 1 -></p>
+sum' [3] 3 -&gt;
 
-<p>sum' [3] 3 -></p>
+sum' []  6 -&gt;
 
-<p>sum' []  6 -></p>
-
-<p>6</p>
-
-<p>```</p>
+6
+</code></pre>
 
 <p>第二种写法其实就是尾递归。</p>
 
@@ -124,40 +116,39 @@ sum' [] = 0</p>
 
 <p>互递归就是多个递归函数之间相互调用。互递归的一个简单的例子就是判断一个自然数是偶数还是还是奇数。</p>
 
-<p>```haskell</p>
-
-<p>isOdd :: Int -> Bool
+<pre><code class="haskell">
+isOdd :: Int -&gt; Bool
 isOdd x
  | x == 0 = False
- | otherwise = isEven (x-1)</p>
+ | otherwise = isEven (x-1)
 
-<p>isEven :: Int -> Bool
+
+isEven :: Int -&gt; Bool
 isEven x
  | x == 0 = True
- | otherwise = isOdd (x-1)</p>
+ | otherwise = isOdd (x-1)
+</code></pre>
 
-<p>```
-这个实现很有意思。</p>
+<p>这个实现很有意思。</p>
 
 <p>任何一个互递归都可以被转变为<strong>直接递归</strong>(direct recursion)，即将另一个调用inline到当前递归函数中。</p>
 
 <p>下面是isOdd和isEven的<strong>直接递归</strong>版本。</p>
 
-<p>```haskell</p>
-
-<p>isOdd :: Int -> Bool
+<pre><code class="haskell">
+isOdd :: Int -&gt; Bool
 isOdd x
  | x == 0 = False
  | x == 1 = True
- | otherwise = isOdd (x-2)</p>
+ | otherwise = isOdd (x-2)
 
-<p>isEven :: Int -> Bool
+
+isEven :: Int -&gt; Bool
 isEven x
  | x == 0 = True
  | x == 1 = False
- | otherwise = isEven (x-2)</p>
-
-<p>```</p>
+ | otherwise = isEven (x-2)
+</code></pre>
 ]]></content>
   </entry>
   

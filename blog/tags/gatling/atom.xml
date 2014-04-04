@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: Gatling | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/gatling/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -31,9 +31,8 @@
 
 <p>其实Gatling是款绿色软件，可以直接从<a href="https://github.com/excilys/gatling/wiki/Downloads">https://github.com/excilys/gatling/wiki/Downloads</a>下载指定的版本。下载下来解压缩以后，我们可以看到其目录结构。</p>
 
-<p>```bash</p>
-
-<p>twer@bowen-huang:~/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2$ tree -L 2
+<pre><code class="bash">
+twer@bowen-huang:~/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2$ tree -L 2
 .
 ├── bin                             //可执行文件目录
 │   ├── gatling.bat
@@ -89,34 +88,27 @@
 │   └── zinc-0.2.5.jar
 ├── results            //性能测试结果存放目录
 │   └── blogsimulation-20131218210445
-├── target             //性能测试脚本编译结果  <br/>
+├── target             //性能测试脚本编译结果    
 │   ├── cache
 │   ├── classes
 │   └── zincCache
-└── user-files     //性能测试脚本源文件</p>
-
-<pre><code>├── data
-├── request-bodies
-└── simulations 
+└── user-files     //性能测试脚本源文件
+    ├── data
+    ├── request-bodies
+    └── simulations 
 </code></pre>
-
-<p>```</p>
 
 <p>Gatling在user-files目录中提供了几个性能测试脚本的示例。不过由于脚本中被测试的网站已经无法访问，所以我自己写了几个简单的测试脚本，已经放置到了Github上，可以通过<a href="https://github.com/huangbowen521/GatlingWorkShop">https://github.com/huangbowen521/GatlingWorkShop</a>下载。</p>
 
-<p>```bash</p>
-
-<p>twer@bowen-huang:~/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2/user-files$ tree simulations
+<pre><code class="bash">
+twer@bowen-huang:~/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2/user-files$ tree simulations
 simulations
-└── blog</p>
+└── blog
+    ├── blog.scala
+    └── github.scala
 
-<pre><code>├── blog.scala
-└── github.scala
+1 directory, 2 files 
 </code></pre>
-
-<p>1 directory, 2 files</p>
-
-<p>```</p>
 
 <p>可以看到在simulations目录下有两个文件，一个是我给自己的博客写的性能测试脚本，一个是给github写的一个性能测试脚本。</p>
 
@@ -124,35 +116,30 @@ simulations
 
 <p>在命令行下运行bin目录下的Gatling.sh(如果是windows用户，请运行Gatling.bat)。Gatling会自动列出当前所有的测试脚本供自己选择，然后会让填写simulation id(模拟Id)以及run description（运行描述）。输入完毕后按回车键测试即可启动。</p>
 
-<p>```bash</p>
-
-<p>twer@bowen-huang:~/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2$ ./bin/gatling.sh
+<pre><code class="bash">
+twer@bowen-huang:~/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2$ ./bin/gatling.sh
 GATLING_HOME is set to /Users/twer/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2
-Choose a simulation number:</p>
-
-<pre><code> [0] blog.BlogSimulation
- [1] blog.GithubSimulation
-</code></pre>
-
-<p>1
+Choose a simulation number:
+     [0] blog.BlogSimulation
+     [1] blog.GithubSimulation
+1
 Select simulation id (default is 'githubsimulation'). Accepted characters are a-z, A-Z, 0-9, - and _
 github
 Select run description (optional)
-testing github</p>
+testing github 
 
-<p>Simulation blog.GithubSimulation started…</p>
+Simulation blog.GithubSimulation started…
 
-<p>……
 ……
-……</p>
+……
+……
 
-<p>Simulation finished.
+Simulation finished.
 Simulation successful.
 Generating reports...
 Reports generated in 0s.
-Please open the following file : /Users/twer/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2/results/github-20131223214957/index.html</p>
-
-<p>```</p>
+Please open the following file : /Users/twer/sourcecode/GatlingWorkShop/gatling-charts-highcharts-1.5.2/results/github-20131223214957/index.html 
+</code></pre>
 
 <p>可以看到命令行中最后一行中标示了性能测试报表的存放路径。</p>
 
@@ -170,78 +157,64 @@ Please open the following file : /Users/twer/sourcecode/GatlingWorkShop/gatling-
 
 <p>这是GithubSimulation的性能测试脚本。其实它就是Scala的一个类，继承自Simulation。</p>
 
-<p>```scala</p>
+<pre><code class="scala">
+package blog
 
-<p>package blog</p>
+import com.excilys.ebi.gatling.core.Predef._
+import com.excilys.ebi.gatling.http.Predef._
+import com.excilys.ebi.gatling.jdbc.Predef._
+import com.excilys.ebi.gatling.http.Headers.Names._
+import akka.util.duration._
+import bootstrap._
 
-<p>import com.excilys.ebi.gatling.core.Predef.<em>
-import com.excilys.ebi.gatling.http.Predef.</em>
-import com.excilys.ebi.gatling.jdbc.Predef.<em>
-import com.excilys.ebi.gatling.http.Headers.Names.</em>
-import akka.util.duration.<em>
-import bootstrap.</em></p>
+class GithubSimulation extends Simulation {
+     var httpConf = httpConfig.
+     baseURL("https://github.com")
 
-<p>class GithubSimulation extends Simulation {</p>
+     var scn = scenario("search in github.com")
+     .exec(
+          http("home page")
+          .get("/")
+          .check(status.is(200)))
+     .pause(0, 12)
+     .exec(
+          http("do search")
+          .get("/search")
+          .queryParam("q", "gatling")
+          .check(status.is(200)))
 
-<pre><code> var httpConf = httpConfig.
- baseURL("https://github.com")
-
- var scn = scenario("search in github.com")
- .exec(
-      http("home page")
-      .get("/")
-      .check(status.is(200)))
- .pause(0, 12)
- .exec(
-      http("do search")
-      .get("/search")
-      .queryParam("q", "gatling")
-      .check(status.is(200)))
-
- setUp(scn.users(500).ramp(10).protocolConfig(httpConf))
+     setUp(scn.users(500).ramp(10).protocolConfig(httpConf))
+} 
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>在这个类中定义了一个httpConf，指定了被测网站的根目录。</p>
 
-<p>```scala</p>
-
-<pre><code> var httpConf = httpConfig.
- baseURL("https://github.com") 
+<pre><code class="scala">
+     var httpConf = httpConfig.
+     baseURL("https://github.com") 
 </code></pre>
-
-<p>```</p>
 
 <p>然后定义了一个测试场景，用户先访问Github首页，检查http返回状态码是否为200，然后暂停一段时间后再执行一个查询操作，查询关键字是gatling，检查http返回状态码是否为200。</p>
 
-<p>```scala</p>
-
-<pre><code> var scn = scenario("search in github.com")
- .exec(
-      http("home page")
-      .get("/")
-      .check(status.is(200)))
- .pause(0, 12)
- .exec(
-      http("do search")
-      .get("/search")
-      .queryParam("q", "gatling")
-      .check(status.is(200))) 
+<pre><code class="scala">
+     var scn = scenario("search in github.com")
+     .exec(
+          http("home page")
+          .get("/")
+          .check(status.is(200)))
+     .pause(0, 12)
+     .exec(
+          http("do search")
+          .get("/search")
+          .queryParam("q", "gatling")
+          .check(status.is(200))) 
 </code></pre>
-
-<p>```</p>
 
 <p>最后指定500个用户模拟该测试场景。500个用户以每秒50个递增，持续10秒。</p>
 
-<p>```scala</p>
-
-<pre><code> setUp(scn.users(500).ramp(10).protocolConfig(httpConf)) 
+<pre><code class="scala">
+     setUp(scn.users(500).ramp(10).protocolConfig(httpConf)) 
 </code></pre>
-
-<p>```</p>
 
 <h2>技术栈</h2>
 

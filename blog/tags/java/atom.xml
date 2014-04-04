@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: Java | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/java/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -58,34 +58,29 @@
 <p>确定Annotation被保存的生命周期,
 需要接收一个Enum对象RetentionPolicy作为参数。</p>
 
-<p>```java</p>
+<pre><code class="java">
+public enum RetentionPolicy {
+    /**
+     * Annotations are to be discarded by the compiler.
+     */
+    SOURCE,
 
-<p>public enum RetentionPolicy {</p>
+    /**
+     * Annotations are to be recorded in the class file by the compiler
+     * but need not be retained by the VM at run time.  This is the default
+     * behavior.
+     */
+    CLASS,
 
-<pre><code>/**
- * Annotations are to be discarded by the compiler.
- */
-SOURCE,
-
-/**
- * Annotations are to be recorded in the class file by the compiler
- * but need not be retained by the VM at run time.  This is the default
- * behavior.
- */
-CLASS,
-
-/**
- * Annotations are to be recorded in the class file by the compiler and
- * retained by the VM at run time, so they may be read reflectively.
- *
- * @see java.lang.reflect.AnnotatedElement
- */
-RUNTIME
+    /**
+     * Annotations are to be recorded in the class file by the compiler and
+     * retained by the VM at run time, so they may be read reflectively.
+     *
+     * @see java.lang.reflect.AnnotatedElement
+     */
+    RUNTIME
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <ul>
 <li><p>@Documented 文档化</p></li>
@@ -95,38 +90,33 @@ RUNTIME
 
 <p>表示该Annotation可以修饰的范围,接收一个Enum对象EnumType的数组作为参数。</p>
 
-<p>```java</p>
+<pre><code class="java">
+public enum ElementType {
+    /** Class, interface (including annotation type), or enum declaration */
+    TYPE,
 
-<p>public enum ElementType {</p>
+    /** Field declaration (includes enum constants) */
+    FIELD,
 
-<pre><code>/** Class, interface (including annotation type), or enum declaration */
-TYPE,
+    /** Method declaration */
+    METHOD,
 
-/** Field declaration (includes enum constants) */
-FIELD,
+    /** Parameter declaration */
+    PARAMETER,
 
-/** Method declaration */
-METHOD,
+    /** Constructor declaration */
+    CONSTRUCTOR,
 
-/** Parameter declaration */
-PARAMETER,
+    /** Local variable declaration */
+    LOCAL_VARIABLE,
 
-/** Constructor declaration */
-CONSTRUCTOR,
+    /** Annotation type declaration */
+    ANNOTATION_TYPE,
 
-/** Local variable declaration */
-LOCAL_VARIABLE,
-
-/** Annotation type declaration */
-ANNOTATION_TYPE,
-
-/** Package declaration */
-PACKAGE
+    /** Package declaration */
+    PACKAGE
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <ul>
 <li>@Inherited</li>
@@ -139,94 +129,76 @@ PACKAGE
 
 <p>JSE5.0以后我们可以自定义Annotation。下面就是一个简单的例子。</p>
 
-<p>```java</p>
-
-<p>@Retention(RetentionPolicy.RUNTIME)
+<pre><code class="java">
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface MethodAnnotation {</p>
+public @interface MethodAnnotation {
 
-<p>}</p>
-
-<p>```</p>
+}
+</code></pre>
 
 <p>下面的Person对象使用了自定义的MethodAnnotation。</p>
 
-<p>```java</p>
+<pre><code class="java">
+public class Person {
 
-<p>public class Person {</p>
+    public void eat() {
+        System.out.println("eating");
+    }
 
-<pre><code>public void eat() {
-    System.out.println("eating");
-}
+    @MethodAnnotation
+    public void walk() {
+        System.out.print("walking");
+    }
 
-@MethodAnnotation
-public void walk() {
-    System.out.print("walking");
 }
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>我们可以通过反射获取Annotation的信息。</p>
 
-<p>```java</p>
-
-<pre><code>    Class&lt;Person&gt; personClass = Person.class;
-    Method[] methods = personClass.getMethods();
-    for(Method method : methods){
-        if (method.isAnnotationPresent(MethodAnnotation.class)){
-            method.invoke(personClass.newInstance());
+<pre><code class="java">
+        Class&lt;Person&gt; personClass = Person.class;
+        Method[] methods = personClass.getMethods();
+        for(Method method : methods){
+            if (method.isAnnotationPresent(MethodAnnotation.class)){
+                method.invoke(personClass.newInstance());
+            }
         }
-    }
 </code></pre>
-
-<p>```</p>
 
 <p>输出：</p>
 
-<p>```console</p>
-
-<p>walking</p>
-
-<p>```</p>
+<pre><code class="console">
+walking
+</code></pre>
 
 <p>我们也可以给自定义的Annotation加方法。</p>
 
-<p>```java</p>
-
-<p>@Target(ElementType.TYPE)
-public @interface personAnnotation {</p>
-
-<pre><code>int id() default 1;
-String name() default "bowen";
+<pre><code class="java">
+@Target(ElementType.TYPE)
+public @interface personAnnotation {
+    int id() default 1;
+    String name() default "bowen";
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>下面是对personAnnotation的使用。</p>
 
-<p>```java</p>
+<pre><code class="java">
+@personAnnotation(id = 8, name = "john")
+public class Person {
 
-<p>@personAnnotation(id = 8, name = "john")
-public class Person {</p>
+    public void eat() {
+        System.out.println("eating");
+    }
 
-<pre><code>public void eat() {
-    System.out.println("eating");
-}
+    @MethodAnnotation
+    public void walk() {
+        System.out.print("walking");
+    }
 
-@MethodAnnotation
-public void walk() {
-    System.out.print("walking");
 }
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <h2>Annotation是如何被处理的</h2>
 

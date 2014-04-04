@@ -18,13 +18,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/02/17/2007nian-de-pian-zong-jie-wen-zhang/">
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/02/17/2007nian-de-pian-zong-jie-wen-zhang">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -98,7 +99,8 @@
 
 <time datetime="2013-02-17T00:48:00+10:00" pubdate data-updated="true">Feb 17<span>th</span>, 2013</time>
         
-         | <a href="#disqus_thread">Comments</a>
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
         
       </p>
     
@@ -109,7 +111,7 @@
 
 <p>如今六年过去了，看到六年前自己的感悟，百般滋味涌上心头。六年的时间，从一个意气奋发的少年成长为孩子眼中的叔叔，不变的是对技术的从一而终的热爱。</p>
 
-<p>看着当初稚嫩的自己进行的总结，某些条款至今让我受用，某些甚至自己至今还没做好。看来进步的pattern就是一个实践+总结+实践&#8230; 没有总结光有实践是万万不行的，这就像驴拉一辈子磨也不知道想办法用机器代替一样。</p>
+<p>看着当初稚嫩的自己进行的总结，某些条款至今让我受用，某些甚至自己至今还没做好。看来进步的pattern就是一个实践+总结+实践&hellip; 没有总结光有实践是万万不行的，这就像驴拉一辈子磨也不知道想办法用机器代替一样。</p>
 
 <p>现在将演讲稿的内容贴出来，以后可以继续回味与总结。</p>
 
@@ -203,7 +205,7 @@
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/生活感悟/'>生活感悟</a>
+    <a class='category' href='/blog/categories/sheng-huo-gan-wu/'>生活感悟</a>
   
 </span>
 
@@ -293,7 +295,7 @@
   <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -344,7 +346,7 @@
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>

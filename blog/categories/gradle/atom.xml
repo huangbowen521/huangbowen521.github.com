@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gradle | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/gradle/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -25,74 +25,59 @@
 
 <p>在本地启动web服务我们可以使用Gradle内置的jetty插件。jetty是一个轻量级的web容器，其执行速度快，配置简单，远程调试方便。启用jetty只需在build.gradle中加入对这个插件的引用。</p>
 
-<p>```groovy build.gradle</p>
-
-<p>apply plugin: 'jetty'</p>
-
-<p>```</p>
+<pre><code class="groovy build.gradle">
+apply plugin: 'jetty'
+</code></pre>
 
 <p>之后可以配置war包的名称，启动的端口等属性。</p>
 
-<p>```groovy build.gradle</p>
+<pre><code class="groovy build.gradle">
+apply plugin: 'jetty'
 
-<p>apply plugin: 'jetty'</p>
+httpPort = 9876
 
-<p>httpPort = 9876</p>
-
-<p>[jettyRun, jettyRunWar, jettyStop]<em>.stopPort = 9966
-[jettyRun, jettyRunWar, jettyStop]</em>.stopKey = 'stopKey'</p>
-
-<p>```</p>
+[jettyRun, jettyRunWar, jettyStop]*.stopPort = 9966
+[jettyRun, jettyRunWar, jettyStop]*.stopKey = 'stopKey'
+</code></pre>
 
 <p>我们需要将集成测试与一般的单元测试分开。因为单元测试并不需要事先启动web服务，保证其执行速度快，能够得到更快的反馈。一般做法是单元测试后缀名为Test.java，集成测试后缀名为IntegrationTest.java。</p>
 
 <p>配置单元测试执行的测试集合。</p>
 
-<p>```groovy build.gradle</p>
-
-<p>test {</p>
-
-<pre><code>include '**/*Test.class'
-exclude '**/*IntegrationTest.class'
+<pre><code class="groovy build.gradle">
+test {
+    include '**/*Test.class'
+    exclude '**/*IntegrationTest.class'
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>然后新建一个Task，用于运行集成测试。</p>
 
-<p>```groovy build.gradle</p>
+<pre><code class="groovy build.gradle">
+task intTest(type: Test, dependsOn: test) {
 
-<p>task intTest(type: Test, dependsOn: test) {</p>
+    include '**/*IntegrationTest.class'
 
-<pre><code>include '**/*IntegrationTest.class'
+    doFirst {
 
-doFirst {
+        jettyRun.daemon = true
+        jettyRun.execute()
 
-    jettyRun.daemon = true
-    jettyRun.execute()
+    }
 
-}
-
-doLast {
-    jettyStop.execute()
+    doLast {
+        jettyStop.execute()
+    }
 }
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>上述代码首先是创建一个名为intTest的task，其类型为Test,依赖于test task。该集成测试只会运行后缀名为IntegrationTest的测试类。在运行测试之前，首先采用后台模式启动jetty服务器，运行完测试后再调用jettyStop task停止jetty服务。</p>
 
 <p>为了使我们在运行<code>gradle build</code>时也会运行intTest task，可以添加对intTest的依赖。</p>
 
-<p>```groovy build.gradle</p>
-
-<p>build.dependsOn intTest</p>
-
-<p>```</p>
+<pre><code class="groovy build.gradle">
+build.dependsOn intTest
+</code></pre>
 
 <p>这样在运行<code>gradle build</code>时也会运行集成测试。并且在集成测试前后web服务会自动的启动和关闭。</p>
 ]]></content>
@@ -110,21 +95,17 @@ doLast {
 
 <p>如果你使用的是eclipse，可以在build.gradle中加入这么一行.</p>
 
-<p>```groovy</p>
-
-<p>apply plugin: 'eclipse'</p>
-
-<p>```</p>
+<pre><code class="groovy">
+apply plugin: 'eclipse'
+</code></pre>
 
 <p>然后在命令行中输入<code>gradle eclipse</code>就可以生成eclipse的项目文件，直接使用eclipse打开生成的项目文件即可。</p>
 
 <p>当然作为Java程序开发者，最好使的IDE还是Intellij,昨天听闻Intellij 13已经发布了，增加了不少新功能，看来又要掏腰包了。如果要让Gradle自动生成Intellij的项目文件，需要使用idea插件。</p>
 
-<p>```groovy</p>
-
-<p>apply plugin: 'idea'</p>
-
-<p>```</p>
+<pre><code class="groovy">
+apply plugin: 'idea'
+</code></pre>
 
 <p>命令行下输入<code>gradle idea</code>，就会生成Intellij的项目文件，真是省时省力。如果在已经存在Intellij的项目文件情况下，想根据build.gradle中的配置来更新项目文件，可以输入<code>gradle cleanIdea idea</code>。<code>cleanIdea</code>可以清除已有的Intellij项目文件。</p>
 
@@ -139,37 +120,30 @@ doLast {
 
 <p>如果只简单的使用<code>gradle idea</code>生成Intellij的工程文件，其实在使用Intellij打开项目以后，我们还要做一些手工配置，比如指定JDK的版本，指定源代码管理工具等。Gradle的idea命令本质上就是生成这三个xml文件,所以Gradle提供了生成文件时的hook(钩子)，让我们可以方便的做定制化，实现最大程度的自动化。这就需要自定义idea这个任务了。</p>
 
-<p>```groovy</p>
-
-<p>idea.project {</p>
-
-<pre><code> jdkName = '1.6'
- languageLevel = '1.6' 
+<pre><code class="groovy">
+idea.project {
+     jdkName = '1.6'
+     languageLevel = '1.6' 
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>这个用来配置项目的jdk及languageLevel。</p>
 
 <p>如果要指定源代码管理工具类型，就需要调用hook修改生成的ipr文件。</p>
 
-<p>```groovy</p>
+<pre><code class="groovy">
+idea.project {
 
-<p>idea.project {</p>
-
-<pre><code>ipr {
-    withXml { provider -&gt;
-        provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
+    ipr {
+        withXml { provider -&gt;
+            provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
+        }
     }
+
 }
 </code></pre>
 
-<p>}</p>
-
-<p>```
-通过这种方式可以最大限度的实现对Intellij项目文件的定制化。</p>
+<p>通过这种方式可以最大限度的实现对Intellij项目文件的定制化。</p>
 ]]></content>
   </entry>
   
@@ -187,70 +161,51 @@ doLast {
 
 <p><strong>在项目根目录下建立名为gradle.properties文件，在该文件中定义需要的属性。这些属性在Gradle构建Gradle领域对象（即project对象实例）时会被自动加到project对象实例中作为其属性被直接调用。</strong></p>
 
-<p>```xml gradle.properties</p>
-
-<p>guestName= Bowen</p>
-
-<p>```</p>
-
-<p>```groovy build.gradle</p>
-
-<p>task hello &lt;&lt; {</p>
-
-<pre><code> println $guestName
- println "hello, $guestName"
+<pre><code class="xml gradle.properties">
+guestName= Bowen 
 </code></pre>
 
-<p>}</p>
+<pre><code class="groovy build.gradle">
+task hello &lt;&lt; {
+     println $guestName
+     println "hello, $guestName"
+}
+</code></pre>
 
-<p>```</p>
-
-<p>```bash</p>
-
-<p>$ gradle hello -q
+<pre><code class="bash">
+$ gradle hello -q
 Bowen
-hello, Bowen</p>
+hello, Bowen
 
-<p>$ gradle properties | grep guestName
-guestName: Bowen</p>
-
-<p>```</p>
+$ gradle properties | grep guestName
+guestName: Bowen
+</code></pre>
 
 <hr />
 
 <p><strong>定义在build.gradle中的ext块中。ext准确的说是Gradle领域对象的一个属性，我们可以将自定义的属性添加到ext对象上，Build.gradle中的其它代码片段可以使用。</strong></p>
 
-<p>```groovy build.gradle</p>
+<pre><code class="groovy build.gradle">
+ext {
+     guestName='Bowen'
+}
 
-<p>ext {</p>
-
-<pre><code> guestName='Bowen'
+task hello &lt;&lt; {
+     println guestName
+     println "hello, $guestName"
+}
 </code></pre>
 
-<p>}</p>
-
-<p>task hello &lt;&lt; {</p>
-
-<pre><code> println guestName
- println "hello, $guestName"
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>```bash</p>
-
-<p>$ gradle hello -q
+<pre><code class="bash">
+$ gradle hello -q
 Bowen
-hello, Bowen</p>
+hello, Bowen
 
-<p>$ gradle properties | grep guestName
+$ gradle properties | grep guestName
 guestName: Bowen
 $ gradle properties | grep ext
-ext: org.gradle.api.internal.plugins.DefaultExtraPropertiesExtension@10ef5fa0</p>
-
-<p>```</p>
+ext: org.gradle.api.internal.plugins.DefaultExtraPropertiesExtension@10ef5fa0
+</code></pre>
 
 <p>从上述可以看到ext对象其实是DefaultExtraPropertiesExtension对象的一个实例。</p>
 
@@ -259,68 +214,48 @@ ext: org.gradle.api.internal.plugins.DefaultExtraPropertiesExtension@10ef5fa0</p
 <p><strong>在命令行中通过<code>-D</code>或者<code>-P</code>给Gradle实时创建属性。</strong>
 <code>-D</code>属性会被传送给启动Gradle的jvm，作为一个系统属性被jvm使用。</p>
 
-<p>```groovy build.gradle</p>
-
-<p>task hello &lt;&lt; {</p>
-
-<pre><code> println System.properties['guestName']
+<pre><code class="groovy build.gradle">
+task hello &lt;&lt; {
+     println System.properties['guestName']
+}
 </code></pre>
 
-<p>}</p>
-
-<p><code>
-</code>bash</p>
-
-<p>$ gradle hello -DguestName='Bowen' -q
-Bowen</p>
-
-<p>```</p>
+<pre><code class="bash">
+$ gradle hello -DguestName='Bowen' -q
+Bowen
+</code></pre>
 
 <p><code>-P</code>属性则会被直接加载到Gradle领域对象上。</p>
 
-<p>```groovy build.gradle</p>
-
-<p>task hello &lt;&lt; {</p>
-
-<pre><code>  println "hello, $guestName"
+<pre><code class="groovy build.gradle">
+task hello &lt;&lt; {
+      println "hello, $guestName"
+}
 </code></pre>
 
-<p>}</p>
-
-<p><code>
-</code>bash</p>
-
-<p>$ gradle hello -PguestName='Bowen' -q
-hello, Bowen</p>
-
-<p>```</p>
+<pre><code class="bash">
+$ gradle hello -PguestName='Bowen' -q
+hello, Bowen
+</code></pre>
 
 <hr />
 
 <p><strong>在Gradle配置文件中创建系统属性。刚讲过在gradle.properties文件可以创建属性，同时我们也可以创建系统属性。如果有<code>systemProp.</code>前缀的属性会被识别为系统属性。</strong></p>
 
-<p>```xml gradle.properties</p>
-
-<p>systemProp.guestName = 'Bowen'</p>
-
-<p><code>
-</code>groovy build.gradle</p>
-
-<p>task hello &lt;&lt; {</p>
-
-<pre><code>  println "hello, " + System.properties['guestName']
+<pre><code class="xml gradle.properties">
+systemProp.guestName = 'Bowen' 
 </code></pre>
 
-<p>}</p>
+<pre><code class="groovy build.gradle">
+task hello &lt;&lt; {
+      println "hello, " + System.properties['guestName']
+}
+</code></pre>
 
-<p>```</p>
-
-<p>```bash</p>
-
-<p>$ gradle hello -q
-hello, Bowen</p>
-
-<p>```</p>
+<pre><code class="bash">
+$ gradle hello -q
+hello, Bowen
+</code></pre>
 
 <hr />
 
@@ -328,27 +263,20 @@ hello, Bowen</p>
 
 <p>如果有环境变量以<code>ORG_GRADLE_PROJECT.</code>为前缀，那么该变量会被自动添加到Gradle领域对象中。同样，如果有系统属性以<code>org.gradle.project.</code>为前缀，那么也会被自动加入到Gradl领域对象中。这一特性的目的之一是为了隐藏一些敏感的信息。比如在执行Gradle脚本时需要传入密码信息，如果以<code>-P</code>的方式传送会被别人看到。而把该属性保存为环境变量，只有系统管理员才有权访问和修改。在运行Gralde的时候该环境变量会被自动加入到Gradle对象中被使用，隔离了明暗数据，又不行影响其他用户使用。（其他用户可以通过<code>-P</code>方式是设置该属性）。</p>
 
-<p>```groovy build.gradle</p>
-
-<p>task hello &lt;&lt; {</p>
-
-<pre><code>  println "hello, " + guestName 
+<pre><code class="groovy build.gradle">
+task hello &lt;&lt; {
+      println "hello, " + guestName 
+}
 </code></pre>
 
-<p>}</p>
+<pre><code class="bash">
+$ gradle hello -Dorg.gradle.project.guestName=Bowen -q
+hello, Bowen
 
-<p>```</p>
-
-<p>```bash</p>
-
-<p>$ gradle hello -Dorg.gradle.project.guestName=Bowen -q
-hello, Bowen</p>
-
-<p>$ export ORG_GRADLE_PROJECT_guestName=Bob
+$ export ORG_GRADLE_PROJECT_guestName=Bob
 $ gradle hello -q
-hello, Bob</p>
-
-<p>```</p>
+hello, Bob
+</code></pre>
 ]]></content>
   </entry>
   
@@ -380,44 +308,32 @@ hello, Bob</p>
 <p>设置方法有两种，一种是修改webdefault.xml文件中的useFileMappdBuffer标志位。webdefault.xml文件是jetty启动服务的配置文件，其先于项目中的WEB-INF/web.xml文件被加载。
 jetty包中默认有这个文件，可以将其提取出来，保存在项目根目录下，并修改useFileMappedBuffer节点。</p>
 
-<p>```xml</p>
-
-<p><param-name>useFileMappedBuffer</param-name>
-<param-value>false</param-value></p>
-
-<p>```</p>
+<pre><code class="xml">
+&lt;param-name&gt;useFileMappedBuffer&lt;/param-name&gt; 
+&lt;param-value&gt;false&lt;/param-value&gt;
+</code></pre>
 
 <p>然后在build.gradle加入对此文件的引用。</p>
 
-<p>```groovy</p>
-
-<p>[jettyRun, jettyRunWar,jettyStop]*.with {</p>
-
-<pre><code>webDefaultXml = file("${rootDir}/webdefault.xml") 
+<pre><code class="groovy">
+[jettyRun, jettyRunWar,jettyStop]*.with {    
+    webDefaultXml = file("${rootDir}/webdefault.xml") 
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>第二种方法是修改项目中的<code>WEB-INF/web.xml</code>文件，在其中加入这个节点。</p>
 
-<p>```xml</p>
-
-<p><servlet></p>
-
-<pre><code>&lt;!-- Override init parameter to avoid nasty --&gt;
-&lt;!-- file locking issue on windows.         --&gt; 
-&lt;servlet-name&gt;default&lt;/servlet-name&gt; 
-    &lt;init-param&gt;    
-        &lt;param-name&gt;useFileMappedBuffer&lt;/param-name&gt;  
-        &lt;param-value&gt;false&lt;/param-value&gt; 
-    &lt;/init-param&gt; 
+<pre><code class="xml">
+&lt;servlet&gt;
+    &lt;!-- Override init parameter to avoid nasty --&gt;
+    &lt;!-- file locking issue on windows.         --&gt; 
+    &lt;servlet-name&gt;default&lt;/servlet-name&gt; 
+        &lt;init-param&gt;    
+            &lt;param-name&gt;useFileMappedBuffer&lt;/param-name&gt;  
+            &lt;param-value&gt;false&lt;/param-value&gt; 
+        &lt;/init-param&gt; 
+&lt;/servlet&gt;
 </code></pre>
-
-<p></servlet></p>
-
-<p>```</p>
 
 <ul>
 <li><strong>解决jetty的hot deploy的问题。</strong></li>
@@ -428,17 +344,12 @@ jetty包中默认有这个文件，可以将其提取出来，保存在项目根
 scanIntervalSeconds，这是指定jetty扫描文件改变的时间间隔，默认为0，单位是秒。
 在build.gradle中加入设置。</p>
 
-<p>```groovy</p>
-
-<p>jettyRun {</p>
-
-<pre><code>reload ="automatic"    
-scanIntervalSeconds = 1 
+<pre><code class="groovy">
+jettyRun {    
+    reload ="automatic"    
+    scanIntervalSeconds = 1 
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>齐活。接下来运行<code>gradle jettyRun</code>，待服务启动起来以后，如果修改了静态资源，只需要按<code>Ctrl</code>+<code>R</code>刷新页面即可重新加载资源。</p>
 ]]></content>
@@ -471,32 +382,25 @@ scanIntervalSeconds = 1
 
 <p>比如一个build.gradle有这样一个task。</p>
 
-<p>```groovy</p>
-
-<p>task hello &lt;&lt; {</p>
-
-<pre><code> println 'hello world!'
+<pre><code class="groovy">
+task hello &lt;&lt; {
+     println 'hello world!'
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>加入<code>-q</code>与不加<code>-q</code>的输出结果不同。</p>
 
-<p>```bash</p>
-
-<p>$ gradle hello
+<pre><code class="bash">
+$ gradle hello
 :hello
-hello world!</p>
+hello world!
 
-<p>BUILD SUCCESSFUL</p>
+BUILD SUCCESSFUL
 
-<p>Total time: 3.546 secs
+Total time: 3.546 secs
 $ gradle -q hello
-hello world!</p>
-
-<p>```</p>
+hello world!
+</code></pre>
 
 <ul>
 <li><p><strong>堆栈跟踪。</strong>如果执行gradle task失败时，如果想得到更详细的错误信息，那么就可以使用<code>-s</code>(或<code>--stacktrace</code>)来输出详细的错误堆栈。你还可以使用<code>-S</code>(或<code>--full-stacktrace</code>)来输出全部堆栈信息，不过一般不推荐这样做，因为gradle是基于groovy语言，而groovy作为一门动态语言可能会输出与你的错误代码毫不相关的信息。</p></li>
@@ -504,22 +408,20 @@ hello world!</p>
 </ul>
 
 
-<p>```bash</p>
-
-<p>$ gradle build -x test
+<pre><code class="bash">
+$ gradle build -x test
 :compileJava UP-TO-DATE
 :processResources UP-TO-DATE
 :classes UP-TO-DATE
 :jar UP-TO-DATE
 :assemble UP-TO-DATE
 :check
-:build</p>
+:build
 
-<p>BUILD SUCCESSFUL</p>
+BUILD SUCCESSFUL
 
-<p>Total time: 3.529 secs</p>
-
-<p>```</p>
+Total time: 3.529 secs
+</code></pre>
 
 <ul>
 <li><p><strong>继续执行task而忽略前面失败的task。</strong>默认情况下，如果有某个task失败，后续的task就不会继续执行。但是有时候我们想运行所有的task来一次性得到所有的构建错误，那么我们可以使用<code>--continue</code>命令。使用<code>--continue</code>命令后即使遇到某些task失败也不会停止后续task的执行。但是需要注意的是如果某个task失败了，那么依赖于这个task的其他task依旧不会执行，因为这会带来不安全的因素。</p></li>
@@ -527,27 +429,21 @@ hello world!</p>
 </ul>
 
 
-<p>```groovy</p>
-
-<p>task helloWorld &lt;&lt; {</p>
-
-<pre><code> println 'hello world!'
+<pre><code class="groovy">
+task helloWorld &lt;&lt; {
+     println 'hello world!'
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>比如调用helloWorld可以通过全名调用、前缀调用或首字母调用。</p>
 
-<p><code>bash
-$ gradle -q helloWorld
+<pre><code class="bash">$ gradle -q helloWorld
 hello world!
 $ gradle -q hell
 hello world!
 $ gradle -q hW
 hello world!
-</code></p>
+</code></pre>
 
 <ul>
 <li><strong>使用指定的gradle文件调用task。</strong>默认情况下，如果你调用gradle task，那么首先会寻找当前目录下的build.gradle文件,以及根据settings.gradle中的配置寻找子项目的build.gradle。但是有时候我们想指定使用某个gradle文件，那么可以使用<code>-b</code>命令。
@@ -555,40 +451,31 @@ hello world!
 </ul>
 
 
-<p>```groovy subproject1/hello.gradle</p>
-
-<p>task helloWorld &lt;&lt; {</p>
-
-<pre><code> println 'hello world!'
+<pre><code class="groovy subproject1/hello.gradle">
+task helloWorld &lt;&lt; {
+     println 'hello world!'
+}
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>那么在当前目录可以使用以下命令调用这个task。</p>
 
-<p>```bash
-$ gradle -b subproject1/hello.gradle  helloWorld
+<pre><code class="bash">$ gradle -b subproject1/hello.gradle  helloWorld
 :helloWorld
-hello world!</p>
+hello world!
 
-<p>BUILD SUCCESSFUL</p>
+BUILD SUCCESSFUL
 
-<p>Total time: 3.752 secs</p>
-
-<p>```</p>
+Total time: 3.752 secs
+</code></pre>
 
 <ul>
 <li><strong>使用指定的项目目录调用task。</strong>前面已经说过，执行gradle的task默认会在当前目录寻找build.gradle及settings.gradle文件。如果我们想在任何地方执行某个项目的task，那么可以使用<code>-p</code>来指定使用的项目。</li>
 </ul>
 
 
-<p>```groovy</p>
-
-<p>gradle -q -p learnGradle helloWorld</p>
-
-<p>```</p>
+<pre><code class="groovy">
+gradle -q -p learnGradle helloWorld
+</code></pre>
 
 <p>这条命令是调用learnGradle这个项目下的helloWorld task。</p>
 
@@ -598,23 +485,19 @@ task的依赖关系。</li>
 </ul>
 
 
-<p>```bash</p>
+<pre><code class="bash">
+$ gradle tasks --all
+………………
 
-<p>$ gradle tasks --all
-………………</p>
+Other tasks
+-----------
+task0
+    task1
+    task2
+    task3
 
-<h2>Other tasks</h2>
-
-<p>task0</p>
-
-<pre><code>task1
-task2
-task3
+…………
 </code></pre>
-
-<p>…………</p>
-
-<p>```</p>
 
 <pre><code>从上面可以看出task0依赖task1、task2及task3。
 </code></pre>
@@ -624,56 +507,46 @@ task3
 </ul>
 
 
-<p>```groovy</p>
+<pre><code class="groovy">
+$ gradle -q dependencies
 
-<p>$ gradle -q dependencies</p>
+------------------------------------------------------------
+Root project
+------------------------------------------------------------
 
-<hr />
+archives - Configuration for archive artifacts.
+No dependencies
 
-<h2>Root project</h2>
+compile - Compile classpath for source set 'main'.
+No dependencies
 
-<p>archives - Configuration for archive artifacts.
-No dependencies</p>
+default - Configuration for default artifacts.
+No dependencies
 
-<p>compile - Compile classpath for source set 'main'.
-No dependencies</p>
+runtime - Runtime classpath for source set 'main'.
+No dependencies
 
-<p>default - Configuration for default artifacts.
-No dependencies</p>
+testCompile - Compile classpath for source set 'test'.
+\--- junit:junit:4.11
+     \--- org.hamcrest:hamcrest-core:1.3
 
-<p>runtime - Runtime classpath for source set 'main'.
-No dependencies</p>
-
-<p>testCompile - Compile classpath for source set 'test'.
---- junit:junit:4.11</p>
-
-<pre><code> \--- org.hamcrest:hamcrest-core:1.3
+testRuntime - Runtime classpath for source set 'test'.
+\--- junit:junit:4.11
+     \--- org.hamcrest:hamcrest-core:1.3
 </code></pre>
-
-<p>testRuntime - Runtime classpath for source set 'test'.
---- junit:junit:4.11</p>
-
-<pre><code> \--- org.hamcrest:hamcrest-core:1.3
-</code></pre>
-
-<p>```</p>
 
 <p>使用<code>gradle -q dependencies --configuration testCompile</code>可以只查看testComiple的依赖。</p>
 
-<p>```
-$ gradle -q dependencies --configuration testCompile</p>
+<pre><code>$ gradle -q dependencies --configuration testCompile
 
-<hr />
+------------------------------------------------------------
+Root project
+------------------------------------------------------------
 
-<h2>Root project</h2>
-
-<p>testCompile - Compile classpath for source set 'test'.
---- junit:junit:4.11</p>
-
-<pre><code> \--- org.hamcrest:hamcrest-core:1.3
+testCompile - Compile classpath for source set 'test'.
+\--- junit:junit:4.11
+     \--- org.hamcrest:hamcrest-core:1.3
 </code></pre>
-
-<p>```</p>
 
 <ul>
 <li><strong>查看指定dependency的依赖情况。</strong>
@@ -681,14 +554,12 @@ $ gradle -q dependencies --configuration testCompile</p>
 </ul>
 
 
-<p>```bash</p>
-
-<p>$ gradle dependencyInsight --dependency junit --configuration testCompile
+<pre><code class="bash">
+$ gradle dependencyInsight --dependency junit --configuration testCompile
 :dependencyInsight
 junit:junit:4.11
---- testCompile</p>
-
-<p>```</p>
+\--- testCompile
+</code></pre>
 
 <p>注意<code>dependencyInsight</code>默认只会查看compile阶段的依赖，如果要查看其他阶段可以使用<code>--configuration</code>来指定。</p>
 
@@ -697,8 +568,7 @@ junit:junit:4.11
 </ul>
 
 
-<p>```bash
-$ gradle build --profile
+<pre><code class="bash">$ gradle build --profile
 :compileJava UP-TO-DATE
 :processResources UP-TO-DATE
 :classes UP-TO-DATE
@@ -709,13 +579,12 @@ $ gradle build --profile
 :testClasses UP-TO-DATE
 :test UP-TO-DATE
 :check UP-TO-DATE
-:build UP-TO-DATE</p>
+:build UP-TO-DATE
 
-<p>BUILD SUCCESSFUL</p>
+BUILD SUCCESSFUL
 
-<p>Total time: 3.726 secs</p>
-
-<p>```</p>
+Total time: 3.726 secs
+</code></pre>
 
 <p>然后在build/report/profile目录下可以看到build的report。</p>
 
@@ -728,9 +597,8 @@ $ gradle build --profile
 </ul>
 
 
-<p>```bash</p>
-
-<p>$ gradle -m build
+<pre><code class="bash">
+$ gradle -m build
 :compileJava SKIPPED
 :processResources SKIPPED
 :classes SKIPPED
@@ -741,13 +609,12 @@ $ gradle build --profile
 :testClasses SKIPPED
 :test SKIPPED
 :check SKIPPED
-:build SKIPPED</p>
+:build SKIPPED
 
-<p>BUILD SUCCESSFUL</p>
+BUILD SUCCESSFUL
 
-<p>Total time: 3.53 secs</p>
-
-<p>```</p>
+Total time: 3.53 secs
+</code></pre>
 
 <p>这样我们可以一目了然的看到那些task被执行了，又不需要花太多的时间。</p>
 
@@ -758,11 +625,9 @@ $ gradle build --profile
 
 <p>其实Gradle自带一个图形界面来让习惯gui操作的人来操作Gradle。打开方式很简单。</p>
 
-<p>```bash</p>
-
-<p>$ gradle --gui</p>
-
-<p>```</p>
+<pre><code class="bash">
+$ gradle --gui
+</code></pre>
 
 <p>这样就会弹出一个gui界面。</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: plugin | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/plugin/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -18,7 +18,7 @@
     <link href="http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post/"/>
     <updated>2013-04-14T22:05:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post</id>
-    <content type="html"><![CDATA[<p>即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易......）</p>
+    <content type="html"><![CDATA[<p>即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易&hellip;&hellip;）</p>
 
 <p>这款插件源码被host在github上，地址是<a href="https://github.com/huangbowen521/octopress-syncPost">https://github.com/huangbowen521/octopress-syncPost</a>。</p>
 
@@ -35,11 +35,11 @@
 </ul>
 
 
-<p><code>ruby
-  gem 'metaweblog', '~&gt; 0.1.0'
+<pre><code class="ruby">  gem 'metaweblog', '~&gt; 0.1.0'
   gem 'nokogiri', '~&gt; 1.5.9'
-</code>
-(The first gem is used to send post with MetaWeblog API.
+</code></pre>
+
+<p>(The first gem is used to send post with MetaWeblog API.
 The second gem is used to parse html.)</p>
 
 <p>然后在终端下运行<code>bundle install</code> 安装这两个Gem.</p>
@@ -49,44 +49,36 @@ The second gem is used to parse html.)</p>
 </ul>
 
 
-<p>```yaml</p>
-
-<h1>MetaWeblog</h1>
-
-<p>MetaWeblog_username: <em>YOURUSERNAME</em>
-MetaWeblog_password: <em>YOURPASSWORD</em>
-MetaWeblog_url: <em>YOURBLOGMETAWEBLOGURL</em>
-MetaWeblog_blogid: <em>BlogID</em>  //can be any number</p>
-
-<p>```</p>
+<pre><code class="yaml">
+# MetaWeblog
+MetaWeblog_username: *YOURUSERNAME*
+MetaWeblog_password: *YOURPASSWORD*
+MetaWeblog_url: *YOURBLOGMETAWEBLOGURL*
+MetaWeblog_blogid: *BlogID*  //can be any number
+</code></pre>
 
 <p>下面是配置<a href="http://www.cnblogs.com/">cnblogs</a>的一个示例。</p>
 
-<p>```yaml</p>
-
-<h1>MetaWeblog</h1>
-
-<p>MetaWeblog_username: huang0925
+<pre><code class="yaml">
+# MetaWeblog
+MetaWeblog_username: huang0925
 MetaWeblog_password: XXXXXXXXXX
 MetaWeblog_url: http://www.cnblogs.com/huang0925/services/metaweblog.aspx
-MetaWeblog_blogid: 145005</p>
-
-<p>```</p>
+MetaWeblog_blogid: 145005
+</code></pre>
 
 <ul>
 <li>在Rakefile加入这个task。</li>
 </ul>
 
 
-<p>```ruby</p>
-
-<p>desc "sync post to MetaWeblog site"
+<pre><code class="ruby">
+desc "sync post to MetaWeblog site"
 task :sync_post do
   puts "Sync the latest post to MetaWeblog site"
   system "ruby _custom/sync_post.rb"
-end</p>
-
-<p>```</p>
+end
+</code></pre>
 
 <h2>如何使用</h2>
 
@@ -119,25 +111,25 @@ end</p>
 <ul>
 <li><p>Wordpress</p>
 
-<p>  If your WordPress root is http://example.com/wordpress/, then you have:
-  Server: http://example.com/ (some tools need just the 'example.com' hostname part)
+<p>  If your WordPress root is <a href="http://example.com/wordpress/,">http://example.com/wordpress/,</a> then you have:
+  Server: <a href="http://example.com/">http://example.com/</a> (some tools need just the &lsquo;example.com&rsquo; hostname part)
   Path: /wordpress/xmlrpc.php
-  complete URL (just in case): http://example.com/wordpress/xmlrpc.php</p></li>
+  complete URL (just in case): <a href="http://example.com/wordpress/xmlrpc.php">http://example.com/wordpress/xmlrpc.php</a></p></li>
 <li><p>51CTO.com</p>
 
-<p>  URL：http://<yourBlogUrl>/xmlrpc.php（example: http://magong.blog.51cto.com/xmlrpc.php）</p></li>
+<p>  URL：<a href="http://">http://</a><yourBlogUrl>/xmlrpc.php（example: <a href="http://magong.blog.51cto.com/xmlrpc.php%EF%BC%89">http://magong.blog.51cto.com/xmlrpc.php%EF%BC%89</a></p></li>
 <li><p>博客大巴</p>
 
-<p>  URL：http://www.blogbus.com/<accountName>/app.php（example: http://www.blogbus.com/holly0801/app.php</p></li>
+<p>  URL：<a href="http://www.blogbus.com/">http://www.blogbus.com/</a><accountName>/app.php（example: <a href="http://www.blogbus.com/holly0801/app.php">http://www.blogbus.com/holly0801/app.php</a></p></li>
 <li><p>CSDN</p>
 
-<p>  URL：http://hi.csdn.net/<accountName>/services/metablogapi.aspx（example: http://hi.csdn.net/bvbook/services/metablogapi.aspx）</p></li>
+<p>  URL：<a href="http://hi.csdn.net/">http://hi.csdn.net/</a><accountName>/services/metablogapi.aspx（example: <a href="http://hi.csdn.net/bvbook/services/metablogapi.aspx%EF%BC%89">http://hi.csdn.net/bvbook/services/metablogapi.aspx%EF%BC%89</a></p></li>
 <li><p>博客园</p>
 
-<p>  URL：http://www.cnblogs.com/<accountName>/services/metaweblog.aspx（example: http://www.cnblogs.com/bvbook/services/metaweblog.aspx）</p></li>
+<p>  URL：<a href="http://www.cnblogs.com/">http://www.cnblogs.com/</a><accountName>/services/metaweblog.aspx（example: <a href="http://www.cnblogs.com/bvbook/services/metaweblog.aspx%EF%BC%89">http://www.cnblogs.com/bvbook/services/metaweblog.aspx%EF%BC%89</a></p></li>
 <li><p>网易</p>
 
-<p>  URL: http://<accountName>.blog.163.com/ (example: http://huang0925.blog.163.com/).</p></li>
+<p>  URL: <a href="http://">http://</a><accountName>.blog.163.com/ (example: <a href="http://huang0925.blog.163.com/">http://huang0925.blog.163.com/</a>).</p></li>
 </ul>
 
 ]]></content>

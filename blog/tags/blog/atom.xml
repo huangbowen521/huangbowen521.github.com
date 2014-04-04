@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: blog | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/blog/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -20,7 +20,7 @@
     <id>http://www.huangbowen.net/blog/2013/04/01/min-jie-de-xie-bo-ke</id>
     <content type="html"><![CDATA[<h2>为什么写博客</h2>
 
-<p>写技术博客对于程序员的提升是不可估量的。只要你坚持一段时间，你就会发现它给你带来的各种积极的变化。思考问题更加深入了，更容易关注细节了，表达能力也增强了......</p>
+<p>写技术博客对于程序员的提升是不可估量的。只要你坚持一段时间，你就会发现它给你带来的各种积极的变化。思考问题更加深入了，更容易关注细节了，表达能力也增强了&hellip;&hellip;</p>
 
 <!-- more -->
 
@@ -85,13 +85,11 @@
 </ul>
 
 
-<p>```bash</p>
-
-<p>:~/sourcecode/octopress$ rake new_post['敏捷的写博客']
-mkdir -p source/<em>posts
-Creating new post: source/</em>posts/2013-04-01-min-jie-de-xie-bo-ke.markdown</p>
-
-<p>```</p>
+<pre><code class="bash">
+:~/sourcecode/octopress$ rake new_post['敏捷的写博客']
+mkdir -p source/_posts
+Creating new post: source/_posts/2013-04-01-min-jie-de-xie-bo-ke.markdown
+</code></pre>
 
 <ul>
 <li><p>编辑博客。</p>
@@ -101,11 +99,9 @@ Creating new post: source/</em>posts/2013-04-01-min-jie-de-xie-bo-ke.markdown</p
 </ul>
 
 
-<p>```bash
-:~/sourcecode/octopress$ rake generate
-:~/sourcecode/octopress$ rake deploy</p>
-
-<p>```</p>
+<pre><code class="bash">:~/sourcecode/octopress$ rake generate
+:~/sourcecode/octopress$ rake deploy
+</code></pre>
 
 <p>不过毕竟将博客host在<a href="https://github.com">github</a>或<a href="http://www.heroku.com/">heroku</a>人气没有<a href="www.cnblogs.com">博客园</a>这么旺。我们可以通过同步的方式将博客同步到<a href="www.cnblogs.com">博客园</a>中。只要将screen.css文件引入到博客园中，就可以共用生成的html元素。我最喜欢的是<a href="https://github.com">github</a>显示代码的效果。</p>
 
@@ -117,7 +113,7 @@ Creating new post: source/</em>posts/2013-04-01-min-jie-de-xie-bo-ke.markdown</p
 <li><p><a href="http://gigix.thoughtworkers.org">透明思考</a></p></li>
 <li><p><a href="http://agiledon.github.com/">捷道</a></p></li>
 <li><p><a href="http://www.iamhukai.com">I am Hu Kai</a></p></li>
-<li><p><a href="http://michael.nona.name/">Michel Chen's Blog</a></p></li>
+<li><p><a href="http://michael.nona.name/">Michel Chen&rsquo;s Blog</a></p></li>
 </ul>
 
 ]]></content>

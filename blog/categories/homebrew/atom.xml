@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Homebrew | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/homebrew/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -22,7 +22,7 @@
 
 <p>包管理器是神马东西?让我们看看<a href="http://en.wikipedia.org/wiki/Package_management_system">wikipedia</a>上的介绍。</p>
 
-<blockquote><p>In software, a package management system, also called package manager, is a collection of software tools to automate the process of installing, upgrading, configuring, and removing software packages for a computer's operating system in a consistent manner.</p></blockquote>
+<blockquote><p>In software, a package management system, also called package manager, is a collection of software tools to automate the process of installing, upgrading, configuring, and removing software packages for a computer&rsquo;s operating system in a consistent manner.</p></blockquote>
 
 <p>简单的来说，包管理器就是一个提供对一系列软件包的安装、卸载、升级的自动化工具。
 包管理器大体分为两种，一种是管理预编译好的软件（Binary installation/Precomplied packages)，如MAC上的App Store，Windows下的Windows installer。另一种是基于源码的安装包，通过编译脚本来安装软件（Sourcecode-based installation/installing using compile scripts），如MAC上的<a href="http://mxcl.github.io/homebrew/">Homebrew</a>，Linux上的apt-build。</p>
@@ -51,11 +51,9 @@
 
 <p>只需要在terminal下敲这样一行代码就行。</p>
 
-<p>```bash</p>
-
-<p>ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"</p>
-
-<p>```</p>
+<pre><code class="bash">
+ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+</code></pre>
 
 <p>brew会被默认安装到/usr/local文件夹中。从上述命令可以看出homebrew是基于ruby的一款包管理器，并且host在github上。</p>
 
@@ -77,48 +75,36 @@
 
 <p><a href="http://mxcl.github.io/homebrew/">Homebrew</a>对于Formula的管理是基于git的。你可以在<code>/usr/local/</code>下发现有一个<code>.git</code>的文件夹。通过查看<code>.git</code>目录下的<code>config</code>文件，可以知道其实目录是被链接到github上的一个repository。</p>
 
-<p>```xml config</p>
-
-<p>[core]</p>
-
-<pre><code>    repositoryformatversion = 0
-    filemode = true
-    bare = false
-    logallrefupdates = true
-    ignorecase = true
-    autocrlf = false
+<pre><code class="xml config">
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+        ignorecase = true
+        autocrlf = false
+[remote "origin"]
+        url = https://github.com/mxcl/homebrew.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
 </code></pre>
-
-<p>[remote "origin"]</p>
-
-<pre><code>    url = https://github.com/mxcl/homebrew.git
-    fetch = +refs/heads/*:refs/remotes/origin/*
-</code></pre>
-
-<p>```</p>
 
 <p>你也可以为自己的软件加入到<a href="http://mxcl.github.io/homebrew/">Homebrew</a>的支持列表中。只需要写一个ruby脚本check in到其<a href="https://github.com/mxcl/homebrew">github</a>中。
 下面是一个脚本示例。</p>
 
-<p>```ruby</p>
+<pre><code class="ruby">
+require 'formula'
 
-<p>require 'formula'</p>
-
-<p>class Wget &lt; Formula
+class Wget &lt; Formula
   homepage 'http://www.gnu.org/wget/'
   url 'http://ftp.gnu.org/wget-1.12.tar.gz'
-  md5 '308a5476fc096a8a525d07279a6f6aa3'</p>
+  md5 '308a5476fc096a8a525d07279a6f6aa3'
 
-<p>  def install</p>
-
-<pre><code>system "./configure --prefix=#{prefix}"
-system 'make install'
+  def install
+    system "./configure --prefix=#{prefix}"
+    system 'make install'
+  end
+end
 </code></pre>
-
-<p>  end
-end</p>
-
-<p>```</p>
 
 <p>当然<a href="http://mxcl.github.io/homebrew/">Homebrew</a>接收这些软件也是有一定条件的，可以看<a href="https://github.com/mxcl/homebrew/wiki/Acceptable-Formulae">这个文档</a>。</p>
 ]]></content>

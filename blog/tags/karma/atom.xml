@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: Karma | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/karma/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -67,9 +67,9 @@
 
 <ul>
 <li><p>Name: 名称标示符。</p></li>
-<li><p>URL to open:  http://localhost:9876/debug.html。默认是这个，要根据你Karma server配置的真实地址而定。</p></li>
+<li><p>URL to open:  <a href="http://localhost:9876/debug.html%E3%80%82%E9%BB%98%E8%AE%A4%E6%98%AF%E8%BF%99%E4%B8%AA%EF%BC%8C%E8%A6%81%E6%A0%B9%E6%8D%AE%E4%BD%A0Karma">http://localhost:9876/debug.html%E3%80%82%E9%BB%98%E8%AE%A4%E6%98%AF%E8%BF%99%E4%B8%AA%EF%BC%8C%E8%A6%81%E6%A0%B9%E6%8D%AE%E4%BD%A0Karma</a> server配置的真实地址而定。</p></li>
 <li><p>Browser: 要运行的浏览器。</p></li>
-<li><p>Remote URL； http://localhost:9876/base。</p></li>
+<li><p>Remote URL； <a href="http://localhost:9876/base%E3%80%82">http://localhost:9876/base%E3%80%82</a></p></li>
 </ul>
 </li>
 <li><p>点击确定，又搞定了。</p></li>

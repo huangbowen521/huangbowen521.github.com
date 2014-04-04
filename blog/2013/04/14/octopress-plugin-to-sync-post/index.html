@@ -9,7 +9,7 @@
   <meta name="author" content="黄博文">
 
   
-  <meta name="description" content="即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易&#8230;&#8230;） &hellip;">
+  <meta name="description" content="即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易&hellip;&hellip &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,13 +18,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post/">
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -98,14 +99,15 @@
 
 <time datetime="2013-04-14T22:05:00+10:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time>
         
-         | <a href="#disqus_thread">Comments</a>
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易&#8230;&#8230;）</p>
+<div class="entry-content"><p>即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易&hellip;&hellip;）</p>
 
 <p>这款插件源码被host在github上，地址是<a href="https://github.com/huangbowen521/octopress-syncPost">https://github.com/huangbowen521/octopress-syncPost</a>。</p>
 
@@ -216,25 +218,25 @@ The second gem is used to parse html.)</p>
 <ul>
 <li><p>Wordpress</p>
 
-<p>  If your WordPress root is http://example.com/wordpress/, then you have:
-  Server: http://example.com/ (some tools need just the &#8216;example.com&#8217; hostname part)
+<p>  If your WordPress root is <a href="http://example.com/wordpress/,">http://example.com/wordpress/,</a> then you have:
+  Server: <a href="http://example.com/">http://example.com/</a> (some tools need just the &lsquo;example.com&rsquo; hostname part)
   Path: /wordpress/xmlrpc.php
-  complete URL (just in case): http://example.com/wordpress/xmlrpc.php</p></li>
+  complete URL (just in case): <a href="http://example.com/wordpress/xmlrpc.php">http://example.com/wordpress/xmlrpc.php</a></p></li>
 <li><p>51CTO.com</p>
 
-<p>  URL：http://<yourBlogUrl>/xmlrpc.php（example: http://magong.blog.51cto.com/xmlrpc.php）</p></li>
+<p>  URL：<a href="http://">http://</a><yourBlogUrl>/xmlrpc.php（example: <a href="http://magong.blog.51cto.com/xmlrpc.php%EF%BC%89">http://magong.blog.51cto.com/xmlrpc.php%EF%BC%89</a></p></li>
 <li><p>博客大巴</p>
 
-<p>  URL：http://www.blogbus.com/<accountName>/app.php（example: http://www.blogbus.com/holly0801/app.php</p></li>
+<p>  URL：<a href="http://www.blogbus.com/">http://www.blogbus.com/</a><accountName>/app.php（example: <a href="http://www.blogbus.com/holly0801/app.php">http://www.blogbus.com/holly0801/app.php</a></p></li>
 <li><p>CSDN</p>
 
-<p>  URL：http://hi.csdn.net/<accountName>/services/metablogapi.aspx（example: http://hi.csdn.net/bvbook/services/metablogapi.aspx）</p></li>
+<p>  URL：<a href="http://hi.csdn.net/">http://hi.csdn.net/</a><accountName>/services/metablogapi.aspx（example: <a href="http://hi.csdn.net/bvbook/services/metablogapi.aspx%EF%BC%89">http://hi.csdn.net/bvbook/services/metablogapi.aspx%EF%BC%89</a></p></li>
 <li><p>博客园</p>
 
-<p>  URL：http://www.cnblogs.com/<accountName>/services/metaweblog.aspx（example: http://www.cnblogs.com/bvbook/services/metaweblog.aspx）</p></li>
+<p>  URL：<a href="http://www.cnblogs.com/">http://www.cnblogs.com/</a><accountName>/services/metaweblog.aspx（example: <a href="http://www.cnblogs.com/bvbook/services/metaweblog.aspx%EF%BC%89">http://www.cnblogs.com/bvbook/services/metaweblog.aspx%EF%BC%89</a></p></li>
 <li><p>网易</p>
 
-<p>  URL: http://<accountName>.blog.163.com/ (example: http://huang0925.blog.163.com/).</p></li>
+<p>  URL: <a href="http://">http://</a><accountName>.blog.163.com/ (example: <a href="http://huang0925.blog.163.com/">http://huang0925.blog.163.com/</a>).</p></li>
 </ul>
 
 </div>
@@ -354,7 +356,7 @@ The second gem is used to parse html.)</p>
   <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -405,7 +407,7 @@ The second gem is used to parse html.)</p>
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>

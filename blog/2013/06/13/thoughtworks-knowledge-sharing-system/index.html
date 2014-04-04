@@ -18,13 +18,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/06/13/thoughtworks-knowledge-sharing-system/">
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/06/13/thoughtworks-knowledge-sharing-system">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -98,7 +99,8 @@
 
 <time datetime="2013-06-13T13:44:00+10:00" pubdate data-updated="true">Jun 13<span>th</span>, 2013</time>
         
-         | <a href="#disqus_thread">Comments</a>
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
         
       </p>
     
@@ -134,7 +136,7 @@
 
 <p><strong>Session</strong></p>
 
-<p>形形色色的Session可是ThoughtWorks中很重要的一个活动。无论是中国区甚至是global的技术专家，还是刚参加工作不久的毕业生，都可以随意book一个会议室，给大家带来一场精彩的演讲。Session的时间一般是每天中午的12点半到1点半，以及下午的5点到6点，所以经常看到大家捧着盒饭来参加session。Session的内容也五花八门，有老成都讲成都历史的，也有军迷讲中国航母发展史的，也有Geek达人教你如何写博客。当然更多的还是技术session。从JavaScript到敏捷实践、从正则表达式到大数据应用&#8230;&#8230;总有一款适合你的。</p>
+<p>形形色色的Session可是ThoughtWorks中很重要的一个活动。无论是中国区甚至是global的技术专家，还是刚参加工作不久的毕业生，都可以随意book一个会议室，给大家带来一场精彩的演讲。Session的时间一般是每天中午的12点半到1点半，以及下午的5点到6点，所以经常看到大家捧着盒饭来参加session。Session的内容也五花八门，有老成都讲成都历史的，也有军迷讲中国航母发展史的，也有Geek达人教你如何写博客。当然更多的还是技术session。从JavaScript到敏捷实践、从正则表达式到大数据应用&hellip;&hellip;总有一款适合你的。</p>
 
 <p><strong>Code Kata</strong></p>
 
@@ -146,7 +148,7 @@
 
 <p>郑大夜校有两个版本。一个是专门针对还未入职的毕业生的。每两周举行一次。</p>
 
-<p>另一个版本是针对所有在职员工的，为每周四晚的6点到7点。郑大夜校上的课程更有针对性和连续性，通过一些列的课程能够强化你对某一方面知识的深入了解。比如LiYan同学以haskell语言为依托，给大家讲了函数式编程，9堂课涵盖了函数式编程大部分要点。还有XiaoPeng同学的重构手法课程，实战演练如何结合IDE快捷键对代码展开重构…&#8230;这样的系列课程数不胜数，已经成为培训新人技术能力的不可或缺的手段之一。</p>
+<p>另一个版本是针对所有在职员工的，为每周四晚的6点到7点。郑大夜校上的课程更有针对性和连续性，通过一些列的课程能够强化你对某一方面知识的深入了解。比如LiYan同学以haskell语言为依托，给大家讲了函数式编程，9堂课涵盖了函数式编程大部分要点。还有XiaoPeng同学的重构手法课程，实战演练如何结合IDE快捷键对代码展开重构…&hellip;这样的系列课程数不胜数，已经成为培训新人技术能力的不可或缺的手段之一。</p>
 
 <p><strong>Reading Club</strong></p>
 
@@ -300,7 +302,7 @@
   <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -351,7 +353,7 @@
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>

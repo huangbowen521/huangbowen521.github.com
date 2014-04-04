@@ -20,13 +20,14 @@ SaaS: Software as a service, &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/10/23/aws-cloudformation/">
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/10/23/aws-cloudformation">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -100,7 +101,8 @@ SaaS: Software as a service, &hellip;">
 
 <time datetime="2013-10-23T16:07:00+10:00" pubdate data-updated="true">Oct 23<span>rd</span>, 2013</time>
         
-         | <a href="#disqus_thread">Comments</a>
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
         
       </p>
     
@@ -203,7 +205,7 @@ SaaS: Software as a service, &hellip;">
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>AWS官方提供了很多Template的资源，我们可以直接使用，当然也可以按需修改，甚至自己手动编写自己的Template。&lt;http://aws.amazon.com/cloudformation/aws-cloudformation-templates/ >列出了一系列可供使用的Template。</p>
+<p>AWS官方提供了很多Template的资源，我们可以直接使用，当然也可以按需修改，甚至自己手动编写自己的Template。&lt;<a href="http://aws.amazon.com/cloudformation/aws-cloudformation-templates/">http://aws.amazon.com/cloudformation/aws-cloudformation-templates/</a> >列出了一系列可供使用的Template。</p>
 
 <h3>Stack - 堆</h3>
 
@@ -391,7 +393,7 @@ SaaS: Software as a service, &hellip;">
   <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -442,7 +444,7 @@ SaaS: Software as a service, &hellip;">
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>

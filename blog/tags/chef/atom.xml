@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: Chef | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/chef/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -54,9 +54,8 @@
 
 <p>在Workstation上主要通过knife这个命令行工具来创建和管理这些资源。</p>
 
-<p>```bash</p>
-
-<p>$ knife help list
+<pre><code class="bash ">
+$ knife help list
 Available help topics are:
   bootstrap
   chef-shell
@@ -75,37 +74,32 @@ Available help topics are:
   shef
   ssh
   status
-  tag</p>
+  tag
+</code></pre>
 
-<p>```
-knife是由ruby写的一个gem。它的API很有表现力。</p>
+<p>knife是由ruby写的一个gem。它的API很有表现力。</p>
 
-<p>```bash</p>
+<pre><code class="bash ">
+# 创建一个recipe
+$ knife cookbook create myRecipe
+** Creating cookbook myRecipe
+** Creating README for cookbook: myRecipe
+** Creating CHANGELOG for cookbook: myRecipe
+** Creating metadata for cookbook: myRecipe
 
-<h1>创建一个recipe</h1>
+#从cookbook server上下载recipe
+$ knife cookbook site install apache2
 
-<p>$ knife cookbook create myRecipe
-<strong> Creating cookbook myRecipe
-</strong> Creating README for cookbook: myRecipe
-<strong> Creating CHANGELOG for cookbook: myRecipe
-</strong> Creating metadata for cookbook: myRecipe</p>
+#将本地的recipe上传到服务器上
+$ knife cookbook upload myRecipe
 
-<h1>从cookbook server上下载recipe</h1>
 
-<p>$ knife cookbook site install apache2</p>
+#查看服务上当前注册的所有的node
+$ knife node list
+bowenhuang-starter 
 
-<h1>将本地的recipe上传到服务器上</h1>
-
-<p>$ knife cookbook upload myRecipe</p>
-
-<h1>查看服务上当前注册的所有的node</h1>
-
-<p>$ knife node list
-bowenhuang-starter</p>
-
-<h1>查看bowenhuang-starter node的详细信息</h1>
-
-<p>$ knife node show bowenhuang-starter
+#查看bowenhuang-starter node的详细信息
+$ knife node show bowenhuang-starter
 Node Name:   bowenhuang-starter
 Environment: _default
 FQDN:        bowenhuang-starter
@@ -114,17 +108,15 @@ Run List:    recipe[apt], recipe[apache2]
 Roles:
 Recipes:     apt, apache2
 Platform:    ubuntu 12.04
-Tags:</p>
+Tags:
 
-<h1>将指定IP或主机名的机器注册到服务器上</h1>
-
-<p>$ knife bootstrap IP \
+#将指定IP或主机名的机器注册到服务器上
+$ knife bootstrap IP \
   --ssh-user USERNAME \
   --ssh-password PASSWORD \
   --ssh-port PORT \
-  --sudo</p>
-
-<p>```</p>
+  --sudo
+</code></pre>
 
 <p>在cehf-repo下需要建立一个隐藏的文件夹.chef，该文件夹中包含三个重要的文件：USER.pem, ORGANIZATION-validator.pem, knife.rb。USER.pem是一个私钥，用于workstation与chef server通讯。ORGANIZATION-validator.pem是另一个私钥，用于bootstrap一个新node时该node第一次与服务器通讯。knife.rb则是knife的配置的文件，比如客户端key文件路径，chef server的api地址，cookbook的路径等。</p>
 

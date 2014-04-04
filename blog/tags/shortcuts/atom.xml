@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: shortcuts | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/shortcuts/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -27,39 +27,34 @@
 
 <p>大家先看一个简单的类。</p>
 
-<p>```java</p>
+<pre><code class="java">
+public class BeanConfig {
+    private String name;
 
-<p>public class BeanConfig {</p>
+    private String className;
 
-<pre><code>private String name;
+    public BeanConfig(String name, String className) {
+        this.name = name;
+        this.className = className;
+    }
 
-private String className;
+    public String getName() {
+        return name;
+    }
 
-public BeanConfig(String name, String className) {
-    this.name = name;
-    this.className = className;
-}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-public String getName() {
-    return name;
-}
+    public String getClassName() {
+        return className;
+    }
 
-public void setName(String name) {
-    this.name = name;
-}
-
-public String getClassName() {
-    return className;
-}
-
-public void setClassName(String className) {
-    this.className = className;
+    public void setClassName(String className) {
+        this.className = className;
+    }
 }
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>这是一个很普通的Value Object。创建这个类并写完这些代码需要多长时间那？不同人会给出不同的答案。使用快捷键与不使用快捷键有天壤之别。</p>
 
@@ -81,12 +76,10 @@ public void setClassName(String className) {
 </ul>
 
 
-<p>```java</p>
-
-<p>public class BeanConfig {
-}</p>
-
-<p>```</p>
+<pre><code class="java">
+public class BeanConfig {
+}
+</code></pre>
 
 <ul>
 <li>按esc键将光标移动到editor中，按下<code>alt+Insert</code>键调出<code>Generate</code>对话框，选择<code>Constructor</code>项并回车。这样会生成一个无参数的构造函数。</li>
@@ -97,17 +90,12 @@ public void setClassName(String className) {
 
 <p>这是生成的代码。</p>
 
-<p>```java</p>
-
-<p>public class BeanConfig {</p>
-
-<pre><code>public BeanConfig() {
+<pre><code class="java">
+public class BeanConfig {
+    public BeanConfig() {
+    }
 }
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <ul>
 <li>光标移动到构造函数名后的小括号内，敲入这样的代码<code>String name, String className</code>。</li>
@@ -116,17 +104,12 @@ public void setClassName(String className) {
 
 <p>此时代码如下。</p>
 
-<p>```java</p>
-
-<p>public class BeanConfig {</p>
-
-<pre><code>public BeanConfig(String name, String className) {
+<pre><code class="java">
+public class BeanConfig {
+    public BeanConfig(String name, String className) {
+    }
 }
 </code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <ul>
 <li>光标保持在构造函数的参数列表中，使用<code>alt+Enter</code>快捷键，选择<code>Create Fields For Constructor Parameters</code>条目，然后回车。</li>
@@ -141,20 +124,16 @@ public void setClassName(String className) {
 
 <p>生成的代码如下。</p>
 
-<p>```java
-public class BeanConfig {</p>
+<pre><code class="java">public class BeanConfig {
+    private final String name;
+    private final String className;
 
-<pre><code>private final String name;
-private final String className;
-
-public BeanConfig(String name, String className) {
-    this.name = name;
-    this.className = className;
+    public BeanConfig(String name, String className) {
+        this.name = name;
+        this.className = className;
+    }
 }
 </code></pre>
-
-<p>}
-```</p>
 
 <ul>
 <li>删除<code>name</code>和<code>className</code>的<code>final</code>修饰符。最快捷的方法是光标移动到<code>final</code>处，按<code>Ctrl+W</code>键选中整个字符，然后按<code>Delete</code>键。</li>
@@ -163,21 +142,17 @@ public BeanConfig(String name, String className) {
 
 <p>此时代码如下。</p>
 
-<p>```java</p>
+<pre><code class="java">
+public class BeanConfig {
+    private String name;
+    private String className;
 
-<p>public class BeanConfig {</p>
-
-<pre><code>private String name;
-private String className;
-
-public BeanConfig(String name, String className) {
-    this.name = name;
-    this.className = className;
+    public BeanConfig(String name, String className) {
+        this.name = name;
+        this.className = className;
+    }
 }
 </code></pre>
-
-<p>}
-```</p>
 
 <ul>
 <li>光标移动到任意一个field处，使用<code>alt+Insert</code>弹出Generate对话框，选择<code>Getter and Setter</code>条目按回车。</li>
@@ -192,37 +167,33 @@ public BeanConfig(String name, String className) {
 
 <p>最终代码生成。</p>
 
-<p>```java
-public class BeanConfig {</p>
+<pre><code class="java">public class BeanConfig {
+    private String name;
 
-<pre><code>private String name;
+    public String getName() {
+        return name;
+    }
 
-public String getName() {
-    return name;
-}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-public void setName(String name) {
-    this.name = name;
-}
+    public String getClassName() {
+        return className;
+    }
 
-public String getClassName() {
-    return className;
-}
+    public void setClassName(String className) {
+        this.className = className;
+    }
 
-public void setClassName(String className) {
-    this.className = className;
-}
+    private String className;
 
-private String className;
-
-public BeanConfig(String name, String className) {
-    this.name = name;
-    this.className = className;
+    public BeanConfig(String name, String className) {
+        this.name = name;
+        this.className = className;
+    }
 }
 </code></pre>
-
-<p>}
-```</p>
 
 <p>整个过程中不需要动一下鼠标，这意味着你的双手根本不需要离开键盘。使用快捷键比不使用快捷键效率至少提高5倍，而且还不会出错。最重要的一点是它能让我们的大脑从这些繁琐的体力劳动中解脱出来，从而集中到更需要发挥脑力劳动的地方。</p>
 

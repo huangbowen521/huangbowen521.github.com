@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: HermesJMS | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/hermesjms/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -39,11 +39,9 @@
 
 <p>然后启动一个ActiveMQ broker。</p>
 
-<p>```bash</p>
-
-<p>$:/usr/local/Cellar/activemq/5.8.0/libexec$ activemq console xbean:./conf/activemq-demo.xml</p>
-
-<p>```</p>
+<pre><code class="bash">
+$:/usr/local/Cellar/activemq/5.8.0/libexec$ activemq console xbean:./conf/activemq-demo.xml 
+</code></pre>
 
 <p>这样就可以通过hermesJMS和其进行交互了。双击左侧菜单树中的msgQueue节点，可以查看该Queue中的信息。右键点击该节点选择<code>send message</code>向Queue中发送信息。</p>
 

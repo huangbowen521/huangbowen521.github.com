@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -812,7 +812,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>那么什么是<code>p-namespace</code>那？它的作用就是使用xml中的元素属性取代<code>&lt;property/&gt;</code>节点来定义bean的属性。这个神奇的p是什么东西那？它其实是使用了namespace的xml扩展配置格式。beans的配置格式是定义在一个xsd格式中的（即 http://www.springframework.org/schema/beans/spring-beans.xsd），但p却没有一个xsd格式文件与其对应，但是它可以被spring内核解析处理。</p>
+<p>那么什么是<code>p-namespace</code>那？它的作用就是使用xml中的元素属性取代<code>&lt;property/&gt;</code>节点来定义bean的属性。这个神奇的p是什么东西那？它其实是使用了namespace的xml扩展配置格式。beans的配置格式是定义在一个xsd格式中的（即 <a href="http://www.springframework.org/schema/beans/spring-beans.xsd%EF%BC%89%EF%BC%8C%E4%BD%86p%E5%8D%B4%E6%B2%A1%E6%9C%89%E4%B8%80%E4%B8%AAxsd%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6%E4%B8%8E%E5%85%B6%E5%AF%B9%E5%BA%94%EF%BC%8C%E4%BD%86%E6%98%AF%E5%AE%83%E5%8F%AF%E4%BB%A5%E8%A2%ABspring%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90%E5%A4%84%E7%90%86%E3%80%82">http://www.springframework.org/schema/beans/spring-beans.xsd%EF%BC%89%EF%BC%8C%E4%BD%86p%E5%8D%B4%E6%B2%A1%E6%9C%89%E4%B8%80%E4%B8%AAxsd%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6%E4%B8%8E%E5%85%B6%E5%AF%B9%E5%BA%94%EF%BC%8C%E4%BD%86%E6%98%AF%E5%AE%83%E5%8F%AF%E4%BB%A5%E8%A2%ABspring%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90%E5%A4%84%E7%90%86%E3%80%82</a></p>
 
 <p>上面只是演示了对属性为普通值的时使用<code>p-namespace</code>的注入，如果属性为另一个bean的引用时该如何处理那？很简单。</p>
 
@@ -2641,7 +2641,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[ActiveMQ第四弹:在HermesJMS中创建ActiveMQ session]]></title>
+    <title type="html"><![CDATA[ActiveMQ第四弹:在HermesJMS中创建ActiveMQ Session]]></title>
     <link href="http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms/"/>
     <updated>2014-02-23T15:03:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms</id>
@@ -3304,7 +3304,7 @@
 
 <p>然后运行SenderApp中的Main方法，就可以在控制台中输入消息发送到ActiveMQ的Message Queue中了。运行ReceiverApp中的Main方法，则会从Queue中将消息读出来，打印到控制台。</p>
 
-<p>这就是使用Spring JMS与ActiveMQ交互的一个简单例子了。完整代码可从https://github.com/huangbowen521/SpringJMSSample下载。</p>
+<p>这就是使用Spring JMS与ActiveMQ交互的一个简单例子了。完整代码可从<a href="https://github.com/huangbowen521/SpringJMSSample%E4%B8%8B%E8%BD%BD%E3%80%82">https://github.com/huangbowen521/SpringJMSSample%E4%B8%8B%E8%BD%BD%E3%80%82</a></p>
 ]]></content>
   </entry>
   
@@ -3528,10 +3528,10 @@
 <li><p>使用TDD，提高单元测试覆盖率。以前的系统中没有任何单元测试，一段简单的代码都需要启动程序手工验证。这样的反馈太耗时，并且不具备重复性。测试驱动开发能够保证代码简洁、正确，并且能快速得到反馈，保证测试覆盖率。遇到遗留代码时，也可以先添加单元测试，建立保护网，使重构更有信心。</p></li>
 <li><p>使用webdriver进行自动化功能性测试。曾经在给客户演示前，我改了一段代码，没想到这段代码恰好破坏了给客户演示的一个重要功能。如果有自动化的功能性测试那么就可以避免这一切。自动化功能测试能增强对产品的信心，每次改动都在可控范围之内。</p></li>
 <li><p>编写构建脚本，实现持续集成。即使只有一个人工作在这个项目中，也应当编写构建脚本，应用持续集成。这样才能保证你的每一次提交都是安全的；并且将一些重复的工作自动化起来，可以解放你的大脑关注到更重要的地方去。</p></li>
-<li><p>自动化部署。每次部署项目到服务器上是一个痛苦的经历，需要手动的替换项目中的某些文件，将文件复制到服务器上，终止当前服务器服务&#8230;..哪一个环节出错都是一个致命的打击。手动不仅效率低，而且极易出错。通过编写脚本实现自动化部署可以一劳永逸，和繁琐的手动操作说拜拜吧。</p></li>
+<li><p>自动化部署。每次部署项目到服务器上是一个痛苦的经历，需要手动的替换项目中的某些文件，将文件复制到服务器上，终止当前服务器服务&hellip;..哪一个环节出错都是一个致命的打击。手动不仅效率低，而且极易出错。通过编写脚本实现自动化部署可以一劳永逸，和繁琐的手动操作说拜拜吧。</p></li>
 <li><p>使用Nuget作为依赖项管理工具。如果你想要引用一个第三方依赖项，还需要手动从网上下载并添加到项目中的话，那你就out了。作为一个Java程序员，maven,gradle等构建工具已是标配，它们都提供了对依赖项的自动化管理。你只需要添加一行字符串来说明你想要使用那个类库，下载、引用就全交给管理工具来实现了。在c#世界中当然也有相应的产品，那就是Nuget，从此依赖项管理再也不是一件头痛的事情了。</p></li>
-<li><p>多使用c#自身的特性，如LINQ，委托，函数式编程等。比起不思进取的java语言，c#不知道强多少倍。java在java 8版本才正式引入Lambda,而c#的LINQ早都出来多少年了。如果在进行列表操作时，你还只使用foreach，那么你太老土了。列表操作无非是filter,map,sort&#8230;而c#早为我们提供了一系列扩展方法，如Where,Select,Sort&#8230;.可怜Java中只能使用Guava这种不伦不类的第三方类库来实现相应的效果，而且远没有c#的原生功能漂亮。c#既然每年都会引用那么多的特性，那么就要学习、掌握和使用。很多人一边使用着c#的老土语法，一边说自己精通c#,真让人无语。放着那么多好特性不用，让我们这些java程序员真是羡慕嫉妒恨。</p></li>
-<li><p>使用一些前端框架和JavaScript框架。对于我这种前端小白，想让我设计出漂亮的页面还真是力不从心。不用怕，设计者已经考虑到了前端无能者的感受，譬如bootstrap之类的前端UI框架简直为我们而生。这些不但使用简单，效果明显，还自带响应式设计，实在是前端小白的利器，实现自己精美的web站点不再是梦。JavaScript就不多说了，什么jQuery，AngularJs，ExtJs&#8230;..各种框架类库层出不穷，涵盖了前端开发的方方面面。无论你是想画图，操作DOM元素，创建单页应用,使用MVC架构&#8230;..在JavaScript的世界里你总有多种选择。想当年我为了在web页面中展现一张统计图，采用了使用.net在后台实时绘制成图片加载到前台显示，都是泪啊。现在好了，只需要将数据模型绑定给图表控件，分分钟搞定。</p></li>
+<li><p>多使用c#自身的特性，如LINQ，委托，函数式编程等。比起不思进取的java语言，c#不知道强多少倍。java在java 8版本才正式引入Lambda,而c#的LINQ早都出来多少年了。如果在进行列表操作时，你还只使用foreach，那么你太老土了。列表操作无非是filter,map,sort&hellip;而c#早为我们提供了一系列扩展方法，如Where,Select,Sort&hellip;.可怜Java中只能使用Guava这种不伦不类的第三方类库来实现相应的效果，而且远没有c#的原生功能漂亮。c#既然每年都会引用那么多的特性，那么就要学习、掌握和使用。很多人一边使用着c#的老土语法，一边说自己精通c#,真让人无语。放着那么多好特性不用，让我们这些java程序员真是羡慕嫉妒恨。</p></li>
+<li><p>使用一些前端框架和JavaScript框架。对于我这种前端小白，想让我设计出漂亮的页面还真是力不从心。不用怕，设计者已经考虑到了前端无能者的感受，譬如bootstrap之类的前端UI框架简直为我们而生。这些不但使用简单，效果明显，还自带响应式设计，实在是前端小白的利器，实现自己精美的web站点不再是梦。JavaScript就不多说了，什么jQuery，AngularJs，ExtJs&hellip;..各种框架类库层出不穷，涵盖了前端开发的方方面面。无论你是想画图，操作DOM元素，创建单页应用,使用MVC架构&hellip;..在JavaScript的世界里你总有多种选择。想当年我为了在web页面中展现一张统计图，采用了使用.net在后台实时绘制成图片加载到前台显示，都是泪啊。现在好了，只需要将数据模型绑定给图表控件，分分钟搞定。</p></li>
 </ol>
 
 
@@ -3557,7 +3557,7 @@
 
 <p>这时候我就意识到我的方向错了。代码是业务逻辑的实现，应该先有业务逻辑，再有代码。我们这样反推只能会深陷细节，很难从中了解到整个业务逻辑的来龙去脉。</p>
 
-<p>咋办那？找BA（需求分析师）呗。我们把BA拉过来，让她挨个把这张故事卡中的关联模块讲清楚。为什么我们要做这样的事情？这样做对用户来说能带来什么好处？做这样事情的场景是怎样的？&#8230;..</p>
+<p>咋办那？找BA（需求分析师）呗。我们把BA拉过来，让她挨个把这张故事卡中的关联模块讲清楚。为什么我们要做这样的事情？这样做对用户来说能带来什么好处？做这样事情的场景是怎样的？&hellip;..</p>
 
 <p>解答了这些问题以后，我们逐渐明白了这个故事卡的业务逻辑，也有信心来完成这张卡了。</p>
 

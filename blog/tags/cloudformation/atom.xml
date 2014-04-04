@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: CloudFormation | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/cloudformation/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -50,59 +50,43 @@
 
 <p>一个Template文件至少包含一下几个属性:</p>
 
-<p>```json</p>
+<pre><code class="json">
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",  //Template版本
 
-<p>{</p>
+    "Description" : "描述该Template的用途",
 
-<pre><code>"AWSTemplateFormatVersion" : "2010-09-09",  //Template版本
+    "Parameters": {        // 应用该Template需要配置的参数
+    },
 
-"Description" : "描述该Template的用途",
+    "Resources" : {        // 使用到的AWS的资源及它们之间的关系
+    },
 
-"Parameters": {        // 应用该Template需要配置的参数
-},
-
-"Resources" : {        // 使用到的AWS的资源及它们之间的关系
-},
-
-"Outputs" : {        // stack创建完毕后的一系列返回值
+    "Outputs" : {        // stack创建完毕后的一系列返回值
+    }
 }
 </code></pre>
 
-<p>}</p>
-
-<p>```</p>
-
 <p>这个Template就是用来创建一个EC2的虚拟机。</p>
 
-<p>```json</p>
-
-<p>{ "AWSTemplateFormatVersion" : "2010-09-09",
+<pre><code class="json">
+{ "AWSTemplateFormatVersion" : "2010-09-09",
   "Description" : "Create an EC2 instance running the Amazon Linux 32 bit AMI.",
-  "Outputs" : { "InstanceId" : { "Description" : "The InstanceId of the newly created EC2 instance",</p>
-
-<pre><code>      "Value" : { "Ref" : "Ec2Instance" }
-    } },
+  "Outputs" : { "InstanceId" : { "Description" : "The InstanceId of the newly created EC2 instance",
+          "Value" : { "Ref" : "Ec2Instance" }
+        } },
+  "Parameters" : { "KeyPair" : { "Description" : "The EC2 Key Pair to allow SSH access to the instance",
+          "Type" : "String"
+        } },
+  "Resources" : { "Ec2Instance" : { "Properties" : { "ImageId" : "ami-3b355a52",
+              "KeyName" : { "Ref" : "KeyPair" }
+            },
+          "Type" : "AWS::EC2::Instance"
+        } }
+}
 </code></pre>
 
-<p>  "Parameters" : { "KeyPair" : { "Description" : "The EC2 Key Pair to allow SSH access to the instance",</p>
-
-<pre><code>      "Type" : "String"
-    } },
-</code></pre>
-
-<p>  "Resources" : { "Ec2Instance" : { "Properties" : { "ImageId" : "ami-3b355a52",</p>
-
-<pre><code>          "KeyName" : { "Ref" : "KeyPair" }
-        },
-      "Type" : "AWS::EC2::Instance"
-    } }
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>AWS官方提供了很多Template的资源，我们可以直接使用，当然也可以按需修改，甚至自己手动编写自己的Template。&lt;http://aws.amazon.com/cloudformation/aws-cloudformation-templates/ >列出了一系列可供使用的Template。</p>
+<p>AWS官方提供了很多Template的资源，我们可以直接使用，当然也可以按需修改，甚至自己手动编写自己的Template。&lt;<a href="http://aws.amazon.com/cloudformation/aws-cloudformation-templates/">http://aws.amazon.com/cloudformation/aws-cloudformation-templates/</a> >列出了一系列可供使用的Template。</p>
 
 <h3>Stack - 堆</h3>
 

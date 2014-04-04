@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: page | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/page/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -47,7 +47,7 @@
 
 <p>使用一些<a href="http://martinfowler.com/bliki/DomainSpecificLanguage.html">领域特定语言</a>来书写测试非常普遍，比如Cucumber或一门内部DSL。如果你尽量在page对象层级之上编写测试DSL，那么你可以通过一个解析器将DSL声明转换为调用page对象。</p>
 
-<blockquote><p>如果你在测试方法中使用了WebDriver API，那么你做错了 -- <a href="http://blog.rocketpoweredjetpants.com/">Simon Stewart</a>.</p></blockquote>
+<blockquote><p>如果你在测试方法中使用了WebDriver API，那么你做错了 &ndash; <a href="http://blog.rocketpoweredjetpants.com/">Simon Stewart</a>.</p></blockquote>
 
 <p>对于那些将逻辑从页面元素中剥离的模式（例如 <a href="http://martinfowler.com/eaaDev/PresentationModel.html">Presentation Model</a>, <a href="http://martinfowler.com/eaaDev/SupervisingPresenter.html">Supervising Controller</a>, 及<a href="http://martinfowler.com/eaaDev/PassiveScreen.html">Passive View</a>)而言,在UI层面做测试用处不大，所以也不太需要page对象了。</p>
 

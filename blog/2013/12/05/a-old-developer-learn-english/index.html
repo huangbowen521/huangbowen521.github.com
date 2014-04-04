@@ -18,13 +18,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/12/05/a-old-developer-learn-english/">
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/12/05/a-old-developer-learn-english">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -98,7 +99,8 @@
 
 <time datetime="2013-12-05T22:08:00+10:00" pubdate data-updated="true">Dec 5<span>th</span>, 2013</time>
         
-         | <a href="#disqus_thread">Comments</a>
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
         
       </p>
     
@@ -130,7 +132,7 @@
 
 <p>当时其实还是收到不少offer的，但是基本都是一些私企，也有外企，不过这个外企对英文要求不高。在2013年3月时，我已经离职有1个多月了，我接触到了ThoughtWorks这家公司，第一轮是HR电话面，包含口语面。第一个问题就是英文自我介绍，我早都背的滚瓜乱熟了，张口就来。可是后来HR针对我的自我介绍问了很多问题，我基本一个没听懂，甚至What is your major？都没听懂(我根本不知道major是什么意思)。但是那时候我也不知道我怎么想的，不管她的问题是什么了，就自己不停的说，将自己预先准备的英文面的答案挨个往外说，什么我家里父母是干嘛的，我为什么选择本公司，我的长处是什么。唯一听懂的一个问题是why you love coding?我巴拉巴拉说了一大堆。</p>
 
-<p>就这样我竟奇迹般的通过了电话面。对ThoughtWorks有所了解的同事肯定知道ThoughtWorks的面试流程是比较长的。其中有一面是给你三道编程题，让你任选一道实现，三天内做完。妈呀都是英文的，题目看懂都花了老半天。看着最后一道题貌似英文简单点，就用词典把最后一道题弄懂了，吭哧吭哧做完了。还有一面是考逻辑题和英文测试题，全英文。我看了题目就傻眼了，好多单词不认识。那时候我不知道哪里来的勇气，挨个问监考的HR这个单词是什么意思，那个单词是什么意思，最后超常发挥通过了。最后office面的终面都是全中文的，快结束时我心情还比较放松。但是没想到当时的面试官Jeff突然问我英文怎么样，我说还可以。然后他就用英文问了我一个问题，我压根没听懂。但是我并没有慌张，而是说了句，“I think my english is good, but others don&#8217;t think so.”。几个面试官都笑了。</p>
+<p>就这样我竟奇迹般的通过了电话面。对ThoughtWorks有所了解的同事肯定知道ThoughtWorks的面试流程是比较长的。其中有一面是给你三道编程题，让你任选一道实现，三天内做完。妈呀都是英文的，题目看懂都花了老半天。看着最后一道题貌似英文简单点，就用词典把最后一道题弄懂了，吭哧吭哧做完了。还有一面是考逻辑题和英文测试题，全英文。我看了题目就傻眼了，好多单词不认识。那时候我不知道哪里来的勇气，挨个问监考的HR这个单词是什么意思，那个单词是什么意思，最后超常发挥通过了。最后office面的终面都是全中文的，快结束时我心情还比较放松。但是没想到当时的面试官Jeff突然问我英文怎么样，我说还可以。然后他就用英文问了我一个问题，我压根没听懂。但是我并没有慌张，而是说了句，“I think my english is good, but others don&rsquo;t think so.”。几个面试官都笑了。</p>
 
 <p>当我走出办公室的时候，心情还是比较轻松了，不是因为我觉的我有戏，而是我觉的我竟然坚持走完了这些面试流程。在ThoughtWorks的整个面试流程中我有多次萌生退意，觉得就自己这水平面上希望渺茫。但是每次我都又自己给自己打气，凭着那种不服输的精神坚持了下来。</p>
 
@@ -269,7 +271,7 @@
   <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -320,7 +322,7 @@
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>

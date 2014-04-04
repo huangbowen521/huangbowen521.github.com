@@ -4,7 +4,7 @@
   <title><![CDATA[Category: AWS | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -50,59 +50,43 @@
 
 <p>一个Template文件至少包含一下几个属性:</p>
 
-<p>```json</p>
+<pre><code class="json">
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",  //Template版本
 
-<p>{</p>
+    "Description" : "描述该Template的用途",
 
-<pre><code>"AWSTemplateFormatVersion" : "2010-09-09",  //Template版本
+    "Parameters": {        // 应用该Template需要配置的参数
+    },
 
-"Description" : "描述该Template的用途",
+    "Resources" : {        // 使用到的AWS的资源及它们之间的关系
+    },
 
-"Parameters": {        // 应用该Template需要配置的参数
-},
-
-"Resources" : {        // 使用到的AWS的资源及它们之间的关系
-},
-
-"Outputs" : {        // stack创建完毕后的一系列返回值
+    "Outputs" : {        // stack创建完毕后的一系列返回值
+    }
 }
 </code></pre>
 
-<p>}</p>
-
-<p>```</p>
-
 <p>这个Template就是用来创建一个EC2的虚拟机。</p>
 
-<p>```json</p>
-
-<p>{ "AWSTemplateFormatVersion" : "2010-09-09",
+<pre><code class="json">
+{ "AWSTemplateFormatVersion" : "2010-09-09",
   "Description" : "Create an EC2 instance running the Amazon Linux 32 bit AMI.",
-  "Outputs" : { "InstanceId" : { "Description" : "The InstanceId of the newly created EC2 instance",</p>
-
-<pre><code>      "Value" : { "Ref" : "Ec2Instance" }
-    } },
+  "Outputs" : { "InstanceId" : { "Description" : "The InstanceId of the newly created EC2 instance",
+          "Value" : { "Ref" : "Ec2Instance" }
+        } },
+  "Parameters" : { "KeyPair" : { "Description" : "The EC2 Key Pair to allow SSH access to the instance",
+          "Type" : "String"
+        } },
+  "Resources" : { "Ec2Instance" : { "Properties" : { "ImageId" : "ami-3b355a52",
+              "KeyName" : { "Ref" : "KeyPair" }
+            },
+          "Type" : "AWS::EC2::Instance"
+        } }
+}
 </code></pre>
 
-<p>  "Parameters" : { "KeyPair" : { "Description" : "The EC2 Key Pair to allow SSH access to the instance",</p>
-
-<pre><code>      "Type" : "String"
-    } },
-</code></pre>
-
-<p>  "Resources" : { "Ec2Instance" : { "Properties" : { "ImageId" : "ami-3b355a52",</p>
-
-<pre><code>          "KeyName" : { "Ref" : "KeyPair" }
-        },
-      "Type" : "AWS::EC2::Instance"
-    } }
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>AWS官方提供了很多Template的资源，我们可以直接使用，当然也可以按需修改，甚至自己手动编写自己的Template。&lt;http://aws.amazon.com/cloudformation/aws-cloudformation-templates/ >列出了一系列可供使用的Template。</p>
+<p>AWS官方提供了很多Template的资源，我们可以直接使用，当然也可以按需修改，甚至自己手动编写自己的Template。&lt;<a href="http://aws.amazon.com/cloudformation/aws-cloudformation-templates/">http://aws.amazon.com/cloudformation/aws-cloudformation-templates/</a> >列出了一系列可供使用的Template。</p>
 
 <h3>Stack - 堆</h3>
 
@@ -192,7 +176,7 @@
 
 <p><img src="/images/accountblocked.png" width="780"></p>
 
-<p>这个问题很奇怪，CloudFront明明已经在' Services You're Signed Up For' list中了，但是咋个无法使用那？我只好使用gmail给Amazon客服中心发了邮件询问，结果客服中心告诉我需要使用一个business email(商业邮箱)来发送激活申请。我只好使用公司邮箱发送了申请，过了几个小时就收到了回信，告诉我已经可以使用了。</p>
+<p>这个问题很奇怪，CloudFront明明已经在' Services You&rsquo;re Signed Up For' list中了，但是咋个无法使用那？我只好使用gmail给Amazon客服中心发了邮件询问，结果客服中心告诉我需要使用一个business email(商业邮箱)来发送激活申请。我只好使用公司邮箱发送了申请，过了几个小时就收到了回信，告诉我已经可以使用了。</p>
 
 <p>登陆'AWS Management Console'后，点击'Services'中的‘CloudFront’，就可以看到控制界面了。</p>
 
@@ -222,15 +206,14 @@
 
 <p>另外要专门提一下CloudFront的cache机制。CloudFront主要通过检测Origin中的http header中的cache-control属性。根据cache-control的值来设置cache时间。但是CloudFront最长只保留24小时的cache，过后就会清空并重新cache。对于我的小博客来说24小时太长了，那如何给Octopress注入cache-control这个http header那？其实在上篇文章已经提过了。S3支持给每个object设置 http header，我们可以通过s3cmd来自动设置，这就是为什么在S3 task中要加入这个参数。</p>
 
-<p>```ruby</p>
+<pre><code class="ruby">
 
-<p>desc "Deploy website via s3cmd"
+desc "Deploy website via s3cmd"
 task :s3 do
   puts "## Deploying website via s3cmd"
   ok_failed system("s3cmd sync --acl-public --reduced-redundancy --add-header \"Cache-Control: max-age=#{s3_cache_secs}\"  public/* s3://#{s3_bucket}/")
-end</p>
-
-<p>```</p>
+end
+</code></pre>
 
 <p>其中S3_cache_secs就是设置cache时间，我把它设置为3600,也就是一个小时。</p>
 

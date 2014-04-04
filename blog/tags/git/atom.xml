@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: git | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/git/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -18,7 +18,7 @@
     <link href="http://www.huangbowen.net/blog/2012/08/08/zai-ben-di-an-zhuang-gitde-htmlbang-zhu-wen-dang/"/>
     <updated>2012-08-08T00:48:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2012/08/08/zai-ben-di-an-zhuang-gitde-htmlbang-zhu-wen-dang</id>
-    <content type="html"><![CDATA[<p>当我们想查询git某条指令如何使用时，<a href="http://git-scm.com/documentation">git</a>官网有详尽的文档供我们查看。在命令行下我们也可以随时通过 git --help的方法查看某条命令的详细帮助。</p>
+    <content type="html"><![CDATA[<p>当我们想查询git某条指令如何使用时，<a href="http://git-scm.com/documentation">git</a>官网有详尽的文档供我们查看。在命令行下我们也可以随时通过 git &ndash;help的方法查看某条命令的详细帮助。</p>
 
 <p>相对于在Terminal中内置的帮助文档，HTML格式更清晰，更详尽。</p>
 
@@ -31,44 +31,33 @@
 
 <p><strong>一，运行git help –-web commit查看git默认的保存html文件的路径。</strong></p>
 
-<p>```bash
-$ git help --web commit</p>
+<pre><code class="bash">$ git help --web commit
 
-<h1>Attempt to open the html help for the commit command</h1>
+#Attempt to open the html help for the commit command
 
-<h1>fatal: '/usr/local/git/share/doc/git-doc': not a documentationdirectory.</h1>
-
-<p>```</p>
+#fatal: '/usr/local/git/share/doc/git-doc': not a documentationdirectory.
+</code></pre>
 
 <p>我们得到了git默认的存放html文件的路径是<code>/usr/local/git/share/doc/git-doc</code>。当然你得到的路径有可能和这个不一样。</p>
 
 <p><strong>二，切换到这个路径下，迁出存放在git repo中的html文件。</strong></p>
 
-<p>```bash
-$ sudo mkdir -p /usr/local/git/share/doc</p>
-
-<h1>Create the path for the docs to be installed to cd #/usr/local/git/share/doc</h1>
-
-<p>$ sudo git clone git://git.kernel.org/pub/scm/git/git-htmldocs.git git-doc</p>
-
-<h1>Clone the git repo and check out the html documents branch</h1>
-
-<p>```</p>
+<pre><code class="bash">$ sudo mkdir -p /usr/local/git/share/doc
+# Create the path for the docs to be installed to cd #/usr/local/git/share/doc
+$ sudo git clone git://git.kernel.org/pub/scm/git/git-htmldocs.git git-doc
+# Clone the git repo and check out the html documents branch
+</code></pre>
 
 <p><strong>三，运行 vim ~/.gitconfig 命令，在.gitconfig文件中加入如下配置。</strong></p>
 
-<p>```xml
-[help]</p>
+<pre><code class="xml">[help]
 
-<pre><code>    format = web
+        format = web
+
+[web]
+
+        browser = open
 </code></pre>
-
-<p>[web]</p>
-
-<pre><code>    browser = open
-</code></pre>
-
-<p>```</p>
 
 <p>当然也可以使用其他的编辑器来编辑.gitconfig文件。</p>
 
@@ -76,16 +65,14 @@ $ sudo mkdir -p /usr/local/git/share/doc</p>
 
 <p>如果git的帮助文档更新了，如何同步到本地那？很简单，运行<code>git pull</code>命令就行。</p>
 
-<p><code>bash
-$ cd /usr/local/git/share/doc/git-doc
+<pre><code class="bash">$ cd /usr/local/git/share/doc/git-doc
 $ sudo git pull
-</code></p>
+</code></pre>
 
 <p>如何查看这些帮助文档那？更简单了，例如：</p>
 
-<p><code>bash
-$ git remote --help
-</code></p>
+<pre><code class="bash">$ git remote --help
+</code></pre>
 
 <p>就会自动在浏览器中打开针对remote的帮助文档。</p>
 ]]></content>

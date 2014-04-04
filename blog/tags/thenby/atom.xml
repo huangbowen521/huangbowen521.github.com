@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: ThenBy | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/thenby/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-04T01:00:33+10:00</updated>
+  <updated>2014-04-05T03:18:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -25,165 +25,132 @@
 
 <p>如果有这样的一个Team类，里面有三个属性。</p>
 
-<p>```csharp Team.cs</p>
-
-<p>public class Team
-{</p>
-
-<pre><code>public Team (string name, int timeCost, int score)
+<pre><code class="csharp Team.cs">
+public class Team
 {
-    this.Name = name;
-    this.TimeCost = timeCost;
-    this.Score = score; 
-}
+    public Team (string name, int timeCost, int score)
+    {
+        this.Name = name;
+        this.TimeCost = timeCost;
+        this.Score = score; 
+    }
 
-public string Name {
-    get;
-    private set;
-}
+    public string Name {
+        get;
+        private set;
+    }
 
-public int TimeCost {
-    get;
-    private set;
-}
+    public int TimeCost {
+        get;
+        private set;
+    }
 
-public int Score {
-    get;
-    private set;
+    public int Score {
+        get;
+        private set;
+    }
+
 }
 </code></pre>
 
-<p>}</p>
-
-<p>```</p>
-
 <p>然后我们有一个Team的List。</p>
 
-<p>```csharp</p>
-
-<p>List<Team> teams = new List<Team> ();
+<pre><code class="csharp">
+List&lt;Team&gt; teams = new List&lt;Team&gt; ();
 teams.Add (new Team ("teamA", 10, 22));
-teams.Add (new Team ("teamB", 12, 20));</p>
+teams.Add (new Team ("teamB", 12, 20));
 
-<p>teams.Add (new Team ("teamC", 8, 18));</p>
-
-<p>```</p>
+teams.Add (new Team ("teamC", 8, 18));
+</code></pre>
 
 <p>那么如何求出teams中得分最高的那个队伍那？这个很简单，只需要一句话即可。</p>
 
-<p>```csharp</p>
-
-<p>var result = teams.OrderByDescending (team => team.Score).First ();
-Console.WriteLine (result.Name); // teamA</p>
-
-<p>```</p>
+<pre><code class="csharp">
+var result = teams.OrderByDescending (team =&gt; team.Score).First ();
+Console.WriteLine (result.Name); // teamA
+</code></pre>
 
 <p>由于List实现了IEnumerable接口，而System.Linq中的Enumerable类中有针对IEnumerable接口的名为OrderByDescending的扩展方法，所以我们直接调用这个扩展方法可以对List按照指定的key进行降序排列，再调用First这个扩展方法来获取列表中的第一个元素。</p>
 
 <p>如果我的List变成这个样子。</p>
 
-<p>```csharp</p>
-
-<p>List<Team> teams = new List<Team> ();
+<pre><code class="csharp">
+List&lt;Team&gt; teams = new List&lt;Team&gt; ();
 teams.Add (new Team ("teamA", 10, 18));
 teams.Add (new Team ("teamB", 12, 16));
-teams.Add (new Team ("teamC", 8, 18));</p>
-
-<p>```</p>
+teams.Add (new Team ("teamC", 8, 18));
+</code></pre>
 
 <p>由于有可能两组以上的队伍都可能拿到最高分，那么在这些最高分的队伍中，我们选取用时最少的作为最终优胜者。有人说那可以这样写。</p>
 
-<p>```csharp</p>
-
-<p>var result = teams.OrderByDescending (team => team.Score).OrderBy(team => team.TimeCost).First ();</p>
-
-<p>```</p>
+<pre><code class="csharp">
+var result = teams.OrderByDescending (team =&gt; team.Score).OrderBy(team =&gt; team.TimeCost).First ();
+</code></pre>
 
 <p>先对列表按Score降序排列，再对列表按TimeCost升序排列，然后取结果中的第一个元素。看来貌似是正确的，但其实是错误的。因为第一次调用OrderByDescending方法后返回了一个排序后的数组，再调用OrderBy是另外一次排序了，它会丢弃上一次排序，这与我们定的先看积分，如果积分相同再看耗时的规则违背。</p>
 
 <p>那么应该如何实现那？C#给我们提供了一个叫做ThenBy的方法，可以满足我们的要求。</p>
 
-<p>```csharp</p>
+<pre><code class="csharp">
+var result = teams.OrderByDescending (team =&gt; team.Score).ThenBy(team =&gt; team.TimeCost).First ();
 
-<p>var result = teams.OrderByDescending (team => team.Score).ThenBy(team => team.TimeCost).First ();</p>
-
-<p>Console.WriteLine (result.Name); // teamC</p>
-
-<p>```</p>
+Console.WriteLine (result.Name); // teamC
+</code></pre>
 
 <p>新的问题又来了。第一次调用OrderByDescending方法时返回的是一个新对象，再对这个新对象调用ThenBy时，它只有记录了上一次排序规则，才能达到我们想要的效果。那么C#是如何记录上次排序使用的key那？</p>
 
 <p>这就先要看OrderByDescending方法是如何实现了的。查看源码发现OrderByDescending有两个重载，实现如下。</p>
 
-<p>```csharp</p>
+<pre><code class="csharp">
+public static IOrderedEnumerable&lt;TSource&gt; OrderByDescending&lt;TSource, TKey&gt; (this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelector)
+{
+    return source.OrderByDescending (keySelector, null);
+}
 
-<p>public static IOrderedEnumerable<TSource> OrderByDescending&lt;TSource, TKey> (this IEnumerable<TSource> source, Func&lt;TSource, TKey> keySelector)
-{</p>
+public static IOrderedEnumerable&lt;TSource&gt; OrderByDescending&lt;TSource, TKey&gt; (this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelector, IComparer&lt;TKey&gt; comparer)
+{
+    Check.SourceAndKeySelector (source, keySelector);
+    return new OrderedSequence&lt;TSource, TKey&gt; (source, keySelector, comparer, SortDirection.Descending);
 
-<pre><code>return source.OrderByDescending (keySelector, null);
+}
 </code></pre>
-
-<p>}</p>
-
-<p>public static IOrderedEnumerable<TSource> OrderByDescending&lt;TSource, TKey> (this IEnumerable<TSource> source, Func&lt;TSource, TKey> keySelector, IComparer<TKey> comparer)
-{</p>
-
-<pre><code>Check.SourceAndKeySelector (source, keySelector);
-return new OrderedSequence&lt;TSource, TKey&gt; (source, keySelector, comparer, SortDirection.Descending);
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
 
 <p>在第二个重载中我们看到OrderByDescending方法返回时的是一个继承了IOrderedEnumerable接口的对象OrderedSequence。这个对象记录了我们的排序规则。</p>
 
 <p>而我们再查看下ThenBy方法的定义。</p>
 
-<p>```csharp</p>
-
-<p>public static IOrderedEnumerable<TSource> ThenBy&lt;TSource, TKey> (this IOrderedEnumerable<TSource> source, Func&lt;TSource, TKey> keySelector, IComparer<TKey> comparer)
-{</p>
-
-<pre><code>Check.SourceAndKeySelector (source, keySelector);
-return source.CreateOrderedEnumerable&lt;TKey&gt; (keySelector, comparer, false);
-</code></pre>
-
-<p>}</p>
-
-<p>public static IOrderedEnumerable<TSource> ThenBy&lt;TSource, TKey> (this IOrderedEnumerable<TSource> source, Func&lt;TSource, TKey> keySelector)
-{</p>
-
-<pre><code>return source.ThenBy (keySelector, null);
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>我们可以看到ThenBy这个扩展方法追加到的对象类型要实现IOrderedEnumerable接口，而OrderBy方法恰好返回的就是这个类型接口对象。那我们再看看IOrderedEnumerable接口的定义。</p>
-
-<p>```csharp</p>
-
-<p>using System;
-using System.Collections;
-using System.Collections.Generic;</p>
-
-<p>namespace System.Linq
-{</p>
-
-<pre><code>public interface IOrderedEnumerable&lt;TElement&gt; : IEnumerable&lt;TElement&gt;, IEnumerable
+<pre><code class="csharp">
+public static IOrderedEnumerable&lt;TSource&gt; ThenBy&lt;TSource, TKey&gt; (this IOrderedEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelector, IComparer&lt;TKey&gt; comparer)
 {
-    //
-    // Methods
-    //
-    IOrderedEnumerable&lt;TElement&gt; CreateOrderedEnumerable&lt;TKey&gt; (Func&lt;TElement, TKey&gt; keySelector, IComparer&lt;TKey&gt; comparer, bool descending);
+    Check.SourceAndKeySelector (source, keySelector);
+    return source.CreateOrderedEnumerable&lt;TKey&gt; (keySelector, comparer, false);
+}
+
+public static IOrderedEnumerable&lt;TSource&gt; ThenBy&lt;TSource, TKey&gt; (this IOrderedEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelector)
+{
+    return source.ThenBy (keySelector, null);
 }
 </code></pre>
 
-<p>}</p>
+<p>我们可以看到ThenBy这个扩展方法追加到的对象类型要实现IOrderedEnumerable接口，而OrderBy方法恰好返回的就是这个类型接口对象。那我们再看看IOrderedEnumerable接口的定义。</p>
 
-<p>```</p>
+<pre><code class="csharp">
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace System.Linq
+{
+    public interface IOrderedEnumerable&lt;TElement&gt; : IEnumerable&lt;TElement&gt;, IEnumerable
+    {
+        //
+        // Methods
+        //
+        IOrderedEnumerable&lt;TElement&gt; CreateOrderedEnumerable&lt;TKey&gt; (Func&lt;TElement, TKey&gt; keySelector, IComparer&lt;TKey&gt; comparer, bool descending);
+    }
+
+}
+</code></pre>
 
 <p>其继承自IEnumerable接口，并且要实现一个名为CreateOrderedEnumerable的方法，正是ThenBy方法实现中调用的这个方法。</p>
 
