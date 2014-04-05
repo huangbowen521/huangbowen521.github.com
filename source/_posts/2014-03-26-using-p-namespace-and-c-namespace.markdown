@@ -46,7 +46,7 @@ categories: Spring-context
 
 ```
 
-那么什么是`p-namespace`那？它的作用就是使用xml中的元素属性取代`<property/>`节点来定义bean的属性。这个神奇的p是什么东西那？它其实是使用了namespace的xml扩展配置格式。beans的配置格式是定义在一个xsd格式中的（即 http://www.springframework.org/schema/beans/spring-beans.xsd），但p却没有一个xsd格式文件与其对应，但是它可以被spring内核解析处理。
+那么什么是`p-namespace`那？它的作用就是使用xml中的元素属性取代`<property/>`节点来定义bean的属性。这个神奇的p是什么东西那？它其实是使用了namespace的xml扩展配置格式。beans的配置格式是定义在一个xsd格式中的（即[http://www.springframework.org/schema/beans/spring-beans.xsd](http://www.springframework.org/schema/beans/spring-beans.xsd)），但p却没有一个xsd格式文件与其对应，但是它可以被spring内核解析处理。
 
 上面只是演示了对属性为普通值的时使用`p-namespace`的注入，如果属性为另一个bean的引用时该如何处理那？很简单。
 

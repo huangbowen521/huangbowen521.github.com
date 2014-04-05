@@ -228,7 +228,6 @@ task :deploy do
   Rake::Task[:copydot].invoke(source_dir, public_dir)
   Rake::Task["#{deploy_default}"].execute
   Rake::Task[:push].execute
-  Rake::Task[:weibo].execute
 end
 
 desc "Deploy website via s3cmd"
