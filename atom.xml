@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-08T01:20:06+10:00</updated>
+  <updated>2014-04-14T01:37:34+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,287 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Java中测试异常的多种方式]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/04/14/testing-exceptions-in-java/"/>
+    <updated>2014-04-14T01:32:48+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/04/14/testing-exceptions-in-java</id>
+    <content type="html"><![CDATA[<p>使用JUnit来测试Java代码中的异常有很多种方式，你知道几种？</p>
+
+<!-- more -->
+
+
+<p>给定这样一个class。</p>
+
+<figure class='code'><figcaption><span>Person.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">age</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">(</span><span class="s">&quot;age is invalid&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们来测试setAge方法。</p>
+
+<h2>Try-catch 方式</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Test</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetExceptionWhenAgeLessThan0</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">person</span><span class="o">.</span><span class="na">setAge</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">fail</span><span class="o">(</span><span class="s">&quot;should get IllegalArgumentException&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalArgumentException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">assertThat</span><span class="o">(</span><span class="n">ex</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span><span class="n">containsString</span><span class="o">(</span><span class="s">&quot;age is invalid&quot;</span><span class="o">));</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这是最容易想到的一种方式，但是太啰嗦。</p>
+
+<h2>JUnit annotation方式</h2>
+
+<p>JUnit中提供了一个<code>expected</code>的annotation来检查异常。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Test</span><span class="o">(</span><span class="n">expected</span> <span class="o">=</span> <span class="n">IllegalArgumentException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetExceptionWhenAgeLessThan0</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">person</span><span class="o">.</span><span class="na">setAge</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种方式看起来要简洁多了，但是无法检查异常中的消息。</p>
+
+<h2>ExpectedException rule</h2>
+
+<p>JUnit7以后提供了一个叫做<code>ExpectedException</code>的Rule来实现对异常的测试。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Rule</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">ExpectedException</span> <span class="n">exception</span> <span class="o">=</span> <span class="n">ExpectedException</span><span class="o">.</span><span class="na">none</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Test</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetExceptionWhenAgeLessThan0</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">exception</span><span class="o">.</span><span class="na">expect</span><span class="o">(</span><span class="n">IllegalArgumentException</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">exception</span><span class="o">.</span><span class="na">expectMessage</span><span class="o">(</span><span class="n">containsString</span><span class="o">(</span><span class="s">&quot;age is invalid&quot;</span><span class="o">));</span>
+</span><span class='line'>        <span class="n">person</span><span class="o">.</span><span class="na">setAge</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种方式既可以检查异常类型，也可以验证异常中的消息。</p>
+
+<h2>使用catch-exception库</h2>
+
+<p>有个catch-exception库也可以实现对异常的测试。</p>
+
+<p>首先引用该库。</p>
+
+<figure class='code'><figcaption><span>pom.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>com.googlecode.catch-exception<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>catch-exception<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>1.2.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span> <span class="c">&lt;!-- test scope to use it only in tests --&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后这样书写测试。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Test</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetExceptionWhenAgeLessThan0</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">catchException</span><span class="o">(</span><span class="n">person</span><span class="o">).</span><span class="na">setAge</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">caughtException</span><span class="o">(),</span><span class="n">instanceOf</span><span class="o">(</span><span class="n">IllegalArgumentException</span><span class="o">.</span><span class="na">class</span><span class="o">));</span>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">caughtException</span><span class="o">().</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">containsString</span><span class="o">(</span><span class="s">&quot;age is invalid&quot;</span><span class="o">));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样的好处是可以精准的验证异常是被测方法抛出来的，而不是其它方法抛出来的。</p>
+
+<p>catch-exception库还提供了多种API来进行测试。</p>
+
+<p>先加载fest-assertion库。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>org.easytesting<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>fest-assert-core<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>2.0M10<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后可以书写BDD风格的测试。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Test</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetExceptionWhenAgeLessThan0</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="c1">// given</span>
+</span><span class='line'>        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// when</span>
+</span><span class='line'>        <span class="n">when</span><span class="o">(</span><span class="n">person</span><span class="o">).</span><span class="na">setAge</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// then</span>
+</span><span class='line'>        <span class="n">then</span><span class="o">(</span><span class="n">caughtException</span><span class="o">())</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">isInstanceOf</span><span class="o">(</span><span class="n">IllegalArgumentException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">hasMessage</span><span class="o">(</span><span class="s">&quot;age is invalid&quot;</span><span class="o">)</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">hasNoCause</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果喜欢Hamcrest风格的验证风格的话，catch-exception也提供了相应的Matcher API。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Test</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetExceptionWhenAgeLessThan0</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="c1">// given</span>
+</span><span class='line'>        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// when</span>
+</span><span class='line'>        <span class="n">when</span><span class="o">(</span><span class="n">person</span><span class="o">).</span><span class="na">setAge</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// then</span>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">caughtException</span><span class="o">(),</span> <span class="n">allOf</span><span class="o">(</span>
+</span><span class='line'>                <span class="n">instanceOf</span><span class="o">(</span><span class="n">IllegalArgumentException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>                <span class="o">,</span> <span class="n">hasMessage</span><span class="o">(</span><span class="s">&quot;age is invalid&quot;</span><span class="o">)</span>
+</span><span class='line'>                <span class="o">,</span><span class="n">hasNoCause</span><span class="o">()));</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第一种最土鳖，第二种最简洁，第四种最靠谱。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[跑在路上的程序员随想]]></title>
@@ -3438,204 +3719,6 @@
 <p>然后运行SenderApp中的Main方法，就可以在控制台中输入消息发送到ActiveMQ的Message Queue中了。运行ReceiverApp中的Main方法，则会从Queue中将消息读出来，打印到控制台。</p>
 
 <p>这就是使用Spring JMS与ActiveMQ交互的一个简单例子了。完整代码可从<a href="https://github.com/huangbowen521/SpringJMSSample%E4%B8%8B%E8%BD%BD%E3%80%82">https://github.com/huangbowen521/SpringJMSSample%E4%B8%8B%E8%BD%BD%E3%80%82</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ActiveMQ第一弹:安装与运行]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq/"/>
-    <updated>2014-02-20T00:12:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq</id>
-    <content type="html"><![CDATA[<p>ActiveMQ使用java写的，所以天然跨平台，windows，各种类Unix系统都可运行，只需要下载对应的分发包即可。当前AciveMQ的最新版本是5.9.0。我目前在自己机子上安装的版本是5.8.0。</p>
-
-<!-- more -->
-
-
-<p>安装ActivceMQ需要先设置好系统环境。</p>
-
-<ol>
-<li><p>空间剩余磁盘大于60M。（这个肯定没问题）</p></li>
-<li><p>需要预装JDK，版本为1.6.x及其以上。（ActiveMQ就是用java写的，肯定要装java环境的嘛）</p></li>
-</ol>
-
-
-<p>接下来就可以安装ActiveMQ了。</p>
-
-<p>一种是直接下载分发包，地址是<a href="http://activemq.apache.org/">http://activemq.apache.org/</a>。找到想要安装的版本后解压缩即可。</p>
-
-<p>另一种是通过源代码安装，地址是<a href="http://activemq.apache.org/download.html">http://activemq.apache.org/download.html</a>。该源代码是使用maven作为构建工具的，所以需要先安装maven，如何安装可参见<a href="http://maven.apache.org/">maven官网</a>（MAC用户如果安装了homebrew的话，直接运行<code>brew install maven</code>即可）。    然后使用<code>mvn clean install -Dmaven.test.skip=true</code>来构建源代码。如果构建成功的话在target目录下可以看到生成的activemq-x.x-SNAPSHOT.zip文件，解压缩以后就可以使用了。</p>
-
-<p>当然MAC用户的话安装就简单了，直接使用<code>brew install activemq</code>就行（不知道homebrew为何物的参见我写的文章：
-<a href="http://www.huangbowen.net/blog/2013/07/01/homebrew-in-mac/">Homebrew- MAC上的包管理利器</a>）。ActiveMQ会被默认安装到/usr/local/Cellar/activemq。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq<span class="nv">$ </span>ls
-</span><span class='line'>5.7.0 5.8.0
-</span><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq<span class="nv">$ </span><span class="nb">cd </span>5.8.0
-</span><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>ls
-</span><span class='line'>INSTALL_RECEIPT.json NOTICE               bin
-</span><span class='line'>LICENSE              README.txt           libexec
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>HomeBrew会自动将activemq加入到系统路径中。</p>
-
-<p>下表列出了与ActiveMQ有关的一些重要的环境变量。</p>
-
-<ul>
-<li><p>ACTIVEMQ_HOME: /usr/local/Cellar/activemq/5.8.0/libexec</p></li>
-<li><p>ACTIVEMQ_BASE: /usr/local/Cellar/activemq/5.8.0/libexec</p></li>
-<li><p>ACTIVEMQ_CONF: /usr/local/Cellar/activemq/5.8.0/libexec/conf</p></li>
-<li><p>ACTIVEMQ_DATA: /usr/local/Cellar/activemq/5.8.0/libexec/data</p></li>
-</ul>
-
-
-<p><strong>注意一下所有命令有时基于ActiveMQ 5.8.0版本，不同版本命令稍有不同。</strong></p>
-
-<p>先运行<code>activemq setup ~/.activemqrc</code>来指定activemq的环境配置文件。在这个文件中可以自定义activemq使用的JDK路径，jvm参数等信息。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>activemq setup ~/.activemqrc
-</span><span class='line'>INFO: Loading <span class="s1">&#39;/Users/twer/.activemqrc&#39;</span>
-</span><span class='line'>INFO: Creating configuration file: /Users/twer/.activemqrc
-</span><span class='line'>INFO: It<span class="s1">&#39;s recommend to limit access to &#39;</span>/Users/twer/.activemqrc<span class="s1">&#39; to the priviledged user</span>
-</span><span class='line'><span class="s1">INFO: (recommended: chown &#39;</span>twer<span class="s1">&#39;:nogroup &#39;</span>/Users/twer/.activemqrc<span class="s1">&#39;; chmod 600 &#39;</span>/Users/twer/.activemqrc’<span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>运行<code>activemq</code>可以显示activemq相应的配置信息及可用的命令。（注意低版本中此命令是启动ActiveMQ）</p>
-
-<p>运行<code>activemq start</code>可以在一个独立进程中启动activemq。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>activemq start
-</span><span class='line'>INFO: Loading <span class="s1">&#39;/Users/twer/.activemqrc&#39;</span>
-</span><span class='line'>INFO: Using java <span class="s1">&#39;/System/Library/Frameworks/JavaVM.framework/Home/bin/java&#39;</span>
-</span><span class='line'>INFO: Starting - inspect logfiles specified in logging.properties and log4j.properties to get details
-</span><span class='line'>INFO: pidfile created : <span class="s1">&#39;/usr/local/Cellar/activemq/5.8.0/libexec/data/activemq-bowen-huang.local.pid&#39;</span> <span class="o">(</span>pid <span class="s1">&#39;50873&#39;</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>可以看到进程id是50873.</p>
-
-<p>终止ActiveMQ的运行有两种方式。一种是使用<code>activemq stop</code>。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>activemq stop
-</span><span class='line'>INFO: Loading <span class="s1">&#39;/Users/twer/.activemqrc&#39;</span>
-</span><span class='line'>INFO: Using java <span class="s1">&#39;/System/Library/Frameworks/JavaVM.framework/Home/bin/java&#39;</span>
-</span><span class='line'>INFO: Waiting at least 30 seconds <span class="k">for </span>regular process termination of pid <span class="s1">&#39;50873&#39;</span> :
-</span><span class='line'>Java Runtime: Apple Inc. 1.6.0_65 /System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
-</span><span class='line'>  Heap sizes: <span class="nv">current</span><span class="o">=</span>1035520k  <span class="nv">free</span><span class="o">=</span>1033420k  <span class="nv">max</span><span class="o">=</span>1035520k
-</span><span class='line'>    JVM args: -Xms1G -Xmx1G -Djava.util.logging.config.file<span class="o">=</span>logging.properties -Dactivemq.classpath<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec/conf; -Dactivemq.home<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec -Dactivemq.base<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec -Dactivemq.conf<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec/conf -Dactivemq.data<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec/data
-</span><span class='line'>Extensions classpath:
-</span><span class='line'>  <span class="o">[</span>/usr/local/Cellar/activemq/5.8.0/libexec/lib,/usr/local/Cellar/activemq/5.8.0/libexec/lib/camel,/usr/local/Cellar/activemq/5.8.0/libexec/lib/optional,/usr/local/Cellar/activemq/5.8.0/libexec/lib/web,/usr/local/Cellar/activemq/5.8.0/libexec/lib/extra<span class="o">]</span>
-</span><span class='line'>ACTIVEMQ_HOME: /usr/local/Cellar/activemq/5.8.0/libexec
-</span><span class='line'>ACTIVEMQ_BASE: /usr/local/Cellar/activemq/5.8.0/libexec
-</span><span class='line'>ACTIVEMQ_CONF: /usr/local/Cellar/activemq/5.8.0/libexec/conf
-</span><span class='line'>ACTIVEMQ_DATA: /usr/local/Cellar/activemq/5.8.0/libexec/data
-</span><span class='line'>Connecting to pid: 50873
-</span><span class='line'>.Stopping broker: localhost
-</span><span class='line'>… FINISHED
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>另一种则是暴力的杀死进程,即<code>kill 50873</code>。</p>
-
-<p>运行<code>activemq console</code>则会在当前console中启动activemq。这种好处是不用多开一个进程，而且可以直接从console中看到log。关闭activemq也很简单，直接按<code>ctrl</code>+<code>C</code>终止终端运行。</p>
-
-<p>ActiveMQ的默认端口是61616，可以检测这端口来判断ActiveMQ是否启动成功。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>netstat -an|grep 61616
-</span><span class='line'>tcp46      0      0  *.61616                *.*                    LISTEN
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>也可以访问web终端<a href="http://localhost:8161/admin">http://localhost:8161/admin</a>来查看和管理ActiveMQ。（默认用户名密码是admin/admin，你也可以修改配置，其在ActiveMQ安装目录下的libexec/conf/jetty-real.properties文件中）。</p>
-
-<p>ActiveMQ支持xml文件格式对其进行配置。其实我们运行<code>activemq start</code>时，ActiveMQ就是默认使用了其安装目录下的libexec/conf/activemq.xml文件。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0/libexec/conf<span class="nv">$ </span>ls
-</span><span class='line'>activemq-command.xml                 broker.ks
-</span><span class='line'>activemq-demo.xml                    broker.ts
-</span><span class='line'>activemq-dynamic-network-broker1.xml camel.xml
-</span><span class='line'>activemq-dynamic-network-broker2.xml client.ks
-</span><span class='line'>activemq-jdbc.xml                    client.ts
-</span><span class='line'>activemq-scalability.xml             credentials-enc.properties
-</span><span class='line'>activemq-security.xml                credentials.properties
-</span><span class='line'>activemq-specjms.xml                 jetty-demo.xml
-</span><span class='line'>activemq-static-network-broker1.xml  jetty-realm.properties
-</span><span class='line'>activemq-static-network-broker2.xml  jetty.xml
-</span><span class='line'>activemq-stomp.xml                   jmx.access
-</span><span class='line'>activemq-throughput.xml              jmx.password
-</span><span class='line'>activemq.xml                         log4j.properties
-</span><span class='line'>broker-localhost.cert                logging.properties
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们当然可以使用自定义的配置文件，比如我们改用activemq-demo.xml。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0/libexec<span class="nv">$ </span>activemq start xbean:./conf/activemq-demo.xml
-</span><span class='line'>INFO: Loading <span class="s1">&#39;/Users/twer/.activemqrc&#39;</span>
-</span><span class='line'>INFO: Using java <span class="s1">&#39;/System/Library/Frameworks/JavaVM.framework/Home/bin/java&#39;</span>
-</span><span class='line'>INFO: Starting - inspect logfiles specified in logging.properties and log4j.properties to get details
-</span><span class='line'>INFO: pidfile created : <span class="s1">&#39;/usr/local/Cellar/activemq/5.8.0/libexec/data/activemq-bowen-huang.local.pid&#39;</span> <span class="o">(</span>pid <span class="err">&#39;</span>51375’<span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ActiveMQ在5.8.0版本及之后在安装包中包含了一些demo来演示对ActiveMQ的使用。使用方式很简单，首先采用activemq-demo.xml配置文件来启动ActiveMQ，然后访问<a href="http://localhost:8161/demo/">http://localhost:8161/demo/</a>尽情探索把。</p>
-
-<p>这些demo的源码都在ActiveMQ安装目录下的libexec目录中，里面有个<code>user-guide.html</code>，可以用浏览器直接打开，它详细描述了该如何使用这些demo。</p>
 ]]></content>
   </entry>
   
