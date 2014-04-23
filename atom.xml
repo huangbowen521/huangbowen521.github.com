@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-20T21:49:36+10:00</updated>
+  <updated>2014-04-24T01:52:25+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,48 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[使用亚马逊的Route53服务]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/04/24/use-aws-route53/"/>
+    <updated>2014-04-24T01:36:22+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/04/24/use-aws-route53</id>
+    <content type="html"><![CDATA[<p>自从自己的博客从github迁移到AWS以上，再也不用担心Github被墙了。再加上CloudFront的CDN功能，那访问速度真是杠杆的，无论是在中国内陆，还是澳洲海边，秒开无压力。</p>
+
+<!-- more -->
+
+
+<p>但是这几天突然发现博客打不开了。这可是切换到AWS上这么久以来的头一次。仔细研究了一下发现是自己的独立域名解析不到地址。我的独立域名买的是国内某公司的，使用的DNS服务器也是他们默认提供的。给他们技术人员反映以后，发现问题更有意思了。我在澳洲无法访问，而他在国内访问一切正常。这真是奇葩啊。</p>
+
+<p>痛定思痛，决定将自己的域名解析服务迁移到AWS上来，使用Route53服务。</p>
+
+<p>进入AWS Management Console以后，选择Route 53.</p>
+
+<p><img src="http://www.huangbowen.net/images/route53.png" width="700"></p>
+
+<p>在主界面点击<code>Create Hosted Zone</code>，输入Domain name和comments。Domain name是你的域名，comments是描述。</p>
+
+<p><img src="http://www.huangbowen.net/images/create_hosted_zone.png" width="800"></p>
+
+<p>完成以后就会看到有一个条目显示在表格中。双击这条记录。可以看到AWS已经为你创建了NS和SOA两种类型的Record Set。NS类型中的4个地址以后会用到，需要将你的域名提供商的DNS服务器换为这里列出的四个。</p>
+
+<p><img src="http://www.huangbowen.net/images/hosted_zone_list.png" width="800"></p>
+
+<p>我们先为WWW创建一个Rcord Set。点击<code>Create Record Set</code>按钮，在在右侧输入相应的信息。</p>
+
+<p><img src="http://www.huangbowen.net/images/create_record_set.png" width="800"></p>
+
+<p>AWS支持多种类型，由于我想让www.huangbowen.net指向我cloudfront的endpoint，所以选择CNAME，Value为我cloud front中的endpoint。最后点击<code>create</code>按钮。</p>
+
+<p>这样在AWS这边就配置完成了。最后是需要登录到域名提供商的后台中，将域名解析服务器给换掉。</p>
+
+<p><img src="http://www.huangbowen.net/images/change_DNS.png" width="800"></p>
+
+<p>在这里，将DNS换为之前AWS自动生成的NS地址。</p>
+
+<p>这样就大功告成了，要等待2小时到1天来让新的解析方式生效。这下可以达到全年99.99%可访问率了吧。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Java中测试异常的多种方式]]></title>
@@ -3329,396 +3371,6 @@
 <p>客户端连接时候可以直接使用broker名称连接，比如使用”vm://broker1”来使用第一个broker。</p>
 
 <p>本章中的完整源码可从完整代码可从<a href="https://github.com/huangbowen521/SpringJMSSample">https://github.com/huangbowen521/SpringJMSSample</a>下载。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ActiveMQ第二弹:使用Spring JMS与ActiveMQ通讯]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/02/20/spring-jms-and-activemq-sample/"/>
-    <updated>2014-02-20T23:18:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/02/20/spring-jms-and-activemq-sample</id>
-    <content type="html"><![CDATA[<p>本文章的完整代码可从我的github中下载：<a href="https://github.com/huangbowen521/SpringJMSSample.git">https://github.com/huangbowen521/SpringJMSSample.git</a></p>
-
-<p>上一篇文章中介绍了如何安装和运行ActiveMQ。这一章主要讲述如何使用Spring JMS向ActiveMQ的Message Queue中发消息和读消息。</p>
-
-<!-- more -->
-
-
-<p>首先需要在项目中引入依赖库。</p>
-
-<ul>
-<li><p>spring-core: 用于启动Spring容器，加载bean。</p></li>
-<li><p>spring-jms:使用Spring JMS提供的API。</p></li>
-<li><p>activemq-all:使用ActiveMQ提供的API。</p></li>
-</ul>
-
-
-<p>在本示例中我使用maven来导入相应的依赖库。</p>
-
-<figure class='code'><figcaption><span>pom.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;dependencies&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;dependency&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;groupId&gt;</span>junit<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;artifactId&gt;</span>junit<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;version&gt;</span>4.11<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/dependency&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;dependency&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;groupId&gt;</span>org.apache.activemq<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;artifactId&gt;</span>activemq-all<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;version&gt;</span>5.9.0<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/dependency&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;dependency&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;artifactId&gt;</span>spring-jms<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;version&gt;</span>4.0.2.RELEASE<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/dependency&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;dependency&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;artifactId&gt;</span>spring-core<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;version&gt;</span>4.0.2.RELEASE<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/dependency&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/dependencies&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>接下来配置与ActiveMQ的连接，以及一个自定义的MessageSender。</p>
-
-<figure class='code'><figcaption><span>springJMSConfiguration.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.springframework.org/schema/beans&quot;</span>
-</span><span class='line'>       <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-</span><span class='line'>       <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://www.springframework.org/schema/beans</span>
-</span><span class='line'><span class="s"> http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">&quot;org.springframework.beans.factory.config.PropertyPlaceholderConfigurer&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;location&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;value&gt;</span>application.properties<span class="nt">&lt;/value&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/property&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">&lt;!-- Activemq connection factory --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;amqConnectionFactory&quot;</span> <span class="na">class=</span><span class="s">&quot;org.apache.activemq.ActiveMQConnectionFactory&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">&quot;0&quot;</span> <span class="na">value=</span><span class="s">&quot;${jms.broker.url}&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">&lt;!-- ConnectionFactory Definition --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;connectionFactory&quot;</span> <span class="na">class=</span><span class="s">&quot;org.springframework.jms.connection.CachingConnectionFactory&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;constructor-arg</span> <span class="na">ref=</span><span class="s">&quot;amqConnectionFactory&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">&lt;!--  Default Destination Queue Definition--&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;defaultDestination&quot;</span> <span class="na">class=</span><span class="s">&quot;org.apache.activemq.command.ActiveMQQueue&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">&quot;0&quot;</span> <span class="na">value=</span><span class="s">&quot;${jms.queue.name}&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">&lt;!-- JmsTemplate Definition --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;jmsTemplate&quot;</span> <span class="na">class=</span><span class="s">&quot;org.springframework.jms.core.JmsTemplate&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;connectionFactory&quot;</span> <span class="na">ref=</span><span class="s">&quot;connectionFactory&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;defaultDestination&quot;</span> <span class="na">ref=</span><span class="s">&quot;defaultDestination&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">&lt;!-- Message Sender Definition --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageSender&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.jms.MessageSender&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">&quot;0&quot;</span> <span class="na">ref=</span><span class="s">&quot;jmsTemplate&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span><span class='line'><span class="nt">&lt;/beans&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在此配置文件中，我们配置了一个ActiveMQ的connection factory,使用的是ActiveMQ提供的ActiveMQConnectionFactory类。然后又配置了一个Spring JMS提供的CachingConnectionFactory。我们定义了一个ActiveMQQueue作为消息的接收Queue。并创建了一个JmsTemplate，使用了之前创建的ConnectionFactory和Message Queue作为参数。最后自定义了一个MessageSender，使用该JmsTemplate进行消息发送。</p>
-
-<p>以下MessageSender的实现。</p>
-
-<figure class='code'><figcaption><span>MessageSender.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">huangbowen</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">jms</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.jms.core.JmsTemplate</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MessageSender</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">JmsTemplate</span> <span class="n">jmsTemplate</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">MessageSender</span><span class="o">(</span><span class="kd">final</span> <span class="n">JmsTemplate</span> <span class="n">jmsTemplate</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">jmsTemplate</span> <span class="o">=</span> <span class="n">jmsTemplate</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">send</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">text</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">jmsTemplate</span><span class="o">.</span><span class="na">convertAndSend</span><span class="o">(</span><span class="n">text</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个MessageSender很简单，就是通过jmsTemplate发送一个字符串信息。</p>
-
-<p>我们还需要配置一个Listener来监听和处理当前的Message Queue。</p>
-
-<figure class='code'><figcaption><span>springJMSReceiver.xml </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.springframework.org/schema/beans&quot;</span>
-</span><span class='line'>       <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-</span><span class='line'>       <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://www.springframework.org/schema/beans</span>
-</span><span class='line'><span class="s"> http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">&lt;!-- Message Receiver Definition --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;messageReceiver&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.jms.MessageReceiver&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">&quot;org.springframework.jms.listener.SimpleMessageListenerContainer&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;connectionFactory&quot;</span> <span class="na">ref=</span><span class="s">&quot;connectionFactory&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;destinationName&quot;</span> <span class="na">value=</span><span class="s">&quot;${jms.queue.name}&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;messageListener&quot;</span> <span class="na">ref=</span><span class="s">&quot;messageReceiver&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;/beans&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>在上述xml文件中,我们自定义了一个MessageListener，并且使用Spring提供的SimpleMessageListenerContainer作为Container。</p>
-
-<p>以下是MessageLinser的具体实现。</p>
-
-<figure class='code'><figcaption><span>MessageReceiver.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">huangbowen</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">jms</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">javax.jms.*</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MessageReceiver</span> <span class="kd">implements</span> <span class="n">MessageListener</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onMessage</span><span class="o">(</span><span class="n">Message</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">if</span><span class="o">(</span><span class="n">message</span> <span class="k">instanceof</span> <span class="n">TextMessage</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">TextMessage</span> <span class="n">textMessage</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextMessage</span><span class="o">)</span> <span class="n">message</span><span class="o">;</span>
-</span><span class='line'>            <span class="k">try</span> <span class="o">{</span>
-</span><span class='line'>                <span class="n">String</span> <span class="n">text</span> <span class="o">=</span> <span class="n">textMessage</span><span class="o">.</span><span class="na">getText</span><span class="o">();</span>
-</span><span class='line'>                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;Received: %s&quot;</span><span class="o">,</span><span class="n">text</span><span class="o">));</span>
-</span><span class='line'>            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">JMSException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个MessageListener也相当的简单，就是从Queue中读取出消息以后输出到当前控制台中。</p>
-
-<p>另外有关ActiveMQ的url和所使用的Message Queue的配置在application.properties文件中。</p>
-
-<figure class='code'><figcaption><span>application.properties</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>jms.broker.url=tcp://localhost:61616
-</span><span class='line'>jms.queue.name=bar
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>好了，配置大功告成。如何演示那？我创建了两个Main方法，一个用于发送消息到ActiveMQ的MessageQueue中，一个用于从MessageQueue中读取消息。</p>
-
-<figure class='code'><figcaption><span>SenderApp</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">huangbowen</span><span class="o">.</span><span class="na">net</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">huangbowen.net.jms.MessageSender</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.context.ApplicationContext</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.context.support.ClassPathXmlApplicationContext</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.util.StringUtils</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">java.io.InputStreamReader</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SenderApp</span>
-</span><span class='line'><span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="n">String</span><span class="o">[]</span> <span class="n">args</span> <span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">MessageSender</span> <span class="n">sender</span> <span class="o">=</span> <span class="n">getMessageSender</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">in</span><span class="o">));</span>
-</span><span class='line'>        <span class="n">String</span> <span class="n">text</span> <span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">while</span> <span class="o">(!</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">text</span><span class="o">))</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;send message: %s&quot;</span><span class="o">,</span> <span class="n">text</span><span class="o">));</span>
-</span><span class='line'>            <span class="n">sender</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">text</span><span class="o">);</span>
-</span><span class='line'>            <span class="n">text</span> <span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">MessageSender</span> <span class="nf">getMessageSender</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">ApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">&quot;springJMSConfiguration.xml&quot;</span><span class="o">);</span>
-</span><span class='line'>       <span class="k">return</span> <span class="o">(</span><span class="n">MessageSender</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">&quot;messageSender&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>ReceiverApp.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">huangbowen</span><span class="o">.</span><span class="na">net</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.context.support.ClassPathXmlApplicationContext</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ReceiverApp</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="n">String</span><span class="o">[]</span> <span class="n">args</span> <span class="o">)</span>
-</span><span class='line'>    <span class="o">{</span>
-</span><span class='line'>        <span class="k">new</span> <span class="nf">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">&quot;springJMSConfiguration.xml&quot;</span><span class="o">,</span> <span class="s">&quot;springJMSReceiver.xml&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>OK，如果运行的话要先将ActiveMQ服务启动起来（更多启动方式参见我上篇文章）。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0/libexec<span class="nv">$ </span>activemq start xbean:./conf/activemq-demo.xml
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后运行SenderApp中的Main方法，就可以在控制台中输入消息发送到ActiveMQ的Message Queue中了。运行ReceiverApp中的Main方法，则会从Queue中将消息读出来，打印到控制台。</p>
-
-<p>这就是使用Spring JMS与ActiveMQ交互的一个简单例子了。完整代码可从<a href="https://github.com/huangbowen521/SpringJMSSample%E4%B8%8B%E8%BD%BD%E3%80%82">https://github.com/huangbowen521/SpringJMSSample%E4%B8%8B%E8%BD%BD%E3%80%82</a></p>
 ]]></content>
   </entry>
   
