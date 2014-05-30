@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: Gatling | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/gatling/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-04-24T01:52:25+10:00</updated>
+  <updated>2014-05-30T23:32:34+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Gatling->次时代性能测试利器]]></title>
     <link href="http://www.huangbowen.net/blog/2013/12/23/the-power-of-gatling/"/>
-    <updated>2013-12-23T23:07:00+10:00</updated>
+    <updated>2013-12-23T23:07:00+08:00</updated>
     <id>http://www.huangbowen.net/blog/2013/12/23/the-power-of-gatling</id>
     <content type="html"><![CDATA[<p>Gatling作为一款开源免费的性能测试工具越来越受到广大程序员的欢迎。免费当然是好的，最缺钱的就是程序员了;开源更好啊，缺啥功能、想做定制化的可以自己动手，丰衣足食。其实我最喜欢的原因是其提供了简洁强大的API，原生支持命令行运行，不像JMeter那样需要在界面上点来点去。另外其出色的扩展API和轻量级的HTML报表都值得让人称道。</p>
 
