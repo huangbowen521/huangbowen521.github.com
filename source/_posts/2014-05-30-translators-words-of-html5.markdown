@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <HTML5和CSS3响应式WEB设计指南>译者序
+title: HTML5和CSS3响应式WEB设计指南 译者序
 date: 2014-05-30 23:30:32 +0800
 comments: true
 categories: 翻译
