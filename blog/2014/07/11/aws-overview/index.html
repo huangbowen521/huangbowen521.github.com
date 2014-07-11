@@ -1,0 +1,395 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>AWS系列之一 亚马逊云服务概述 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="云计算经过这几年的发展，已经不再是是一个高大上的名词，而是已经应用到寻常百姓家的技术。每天如果你和互联网打交道，那么或多或少都会和云扯上关系。gmail、github、各种网盘、GAE、heroku等各种服务都属于云服务的范畴。那么云计算的定义到底是什么？这里有摘自wiki的定义。 Cloud &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2014/07/11/aws-overview">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<style>#forkongithub a{background:#060;color:#fff;text-decoration:none;font-family:arial, sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#A853B2;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:absolute;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}</style><span id="forkongithub"><a href="https://github.com/huangbowen521">Fork me on GitHub</a></span>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">AWS系列之一 亚马逊云服务概述</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-11T15:50:26+08:00" pubdate data-updated="true">Jul 11<span>th</span>, 2014</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>云计算经过这几年的发展，已经不再是是一个高大上的名词，而是已经应用到寻常百姓家的技术。每天如果你和互联网打交道，那么或多或少都会和云扯上关系。gmail、github、各种网盘、GAE、heroku等各种服务都属于云服务的范畴。那么云计算的定义到底是什么？这里有摘自wiki的定义。</p>
+
+<!-- more -->
+
+
+<blockquote><blockquote><p>Cloud computing in general can be defined as a computer network which includes, computing hardware machine or group of computing hardware machines commonly referred as a server or servers connected through a communication network such as the Internet, an intranet, a local area network(LAN) or wide area network(WAN).</p></blockquote></blockquote>
+
+<p>从上面的定义可以看出，云计算可以看做一个计算网络，其由一组硬件主机作为服务器，然后通过通讯网络连接，从而给其他用户提供各种各样的服务。</p>
+
+<p>以下是云计算的一个概念图。</p>
+
+<p><img src="/images/cloudComputer.png" width="800"></p>
+
+<p>从该图中可以看出，云计算提供的服务可以分为三层，第一层是基础设施（Infrastructure）,第二层是平台（Platform）,第三层是应用软件（Application）。基础设置的服务包括虚拟或实体计算机、块级存储、网络设施（如负载均衡，内容交付网络，DNS解析）等，平台的服务包括对象存储、认证服务和访问服务、各种程序的运行时、队列服务、数据库服务等，而应用软件的服务则包括的多了，比如邮件服务、代码托管服务等等。用户可以通过台式电脑、手提电脑、手机、平板等各种互联网终端设备访问和使用这些服务。</p>
+
+<p>其实这三层就是我们常说的IaaS（Infrastructure as a Service）、PaaS（Platform as a Service）、SaaS(Software as a Service)。</p>
+
+<p><img src="/images/cloudService.png" width="800"></p>
+
+<p>亚马逊的云服务提供了多达几十种服务，涵盖了IaaS、PaaS、SaaS这三层。既然是亚马逊云服务，那么为什么通常都叫做Amazon Web Service（AWS）那，为什么不叫Amazon Cloud Service之类的那？这个就不得而知了，估计当时AWS第一个服务出来的时候是2006年，那时候云的概念还没有这么火，而web service则如日中天，所以起了个这个名字。好了不八卦了，先看看亚马逊云计算的架构图。</p>
+
+<p><img src="/images/awsstructure.png" width="800"></p>
+
+<p>从该架构图可以看出，亚马逊云服务由7部分组成。接下来对这7部分的主要服务做一个简要的介绍。</p>
+
+<h2>AWS Global Infrastructure(AWS 全局基础设施)</h2>
+
+<p>在全局基础设施中有3个很重要的概念。第一个是Region（区域），每个Region是相互独立的，自成一套云服务体系，分布在全球各地。目前全球有10个Region，北京的Region已经在内测当中，不久就会开放使用。</p>
+
+<p>第二个是Availability Zone(可用区)，每个Region又由数个可用区组成，每个可用区可以看做一个数据中心，相互之间通过光纤连接。</p>
+
+<p>第三个是Edge Locations（边缘节点）。全球目前有50多个边缘节点，是一个内容分发网络（CDN，Content Distrubtion Network），可以降低内容分发的延迟，保证终端用户获取资源的速度。它是实现全局DNS基础设施（Route53）和CloudFront CDN的基石。</p>
+
+<h2>Networking（网络）</h2>
+
+<p>AWS提供的网络服务主要有：</p>
+
+<ul>
+<li><p>Direct Connect： 支持企业自身的数据中心直接与AWS的数据中心直连，充分利用企业现有的资源。</p></li>
+<li><p>VPN Connection：通过VPN连接AWS，保证数据的安全性。</p></li>
+<li><p>Virtual Private Cloud： 私有云，从AWS云资源中分一块给你使用，进一步提高安全性。</p></li>
+<li><p>Route 53：亚马逊提供的高可用的可伸缩的域名解析系统。</p></li>
+</ul>
+
+
+<h2>Compute（计算）</h2>
+
+<p>这可是亚马逊的计算核心，包括了众多的服务。</p>
+
+<ul>
+<li><p>EC2： Elastic Computer service,亚马逊的虚拟机，支持Windows和Linux的多个版本，支持API创建和销毁，有多种型号可供选择，按需使用。并且有auto scaling功能，有效解决应用程序性能问题。</p></li>
+<li><p>ELB： Elastic Load Balancing， 亚马逊提供的负载均衡器，可以和EC2无缝配合使用，横跨多个可用区，可以自动检查实例的健康状况，自动剔除有问题的实例，保证应用程序的高可用性。</p></li>
+</ul>
+
+
+<h2>Storage（存储）</h2>
+
+<ul>
+<li><p>S3： Simple Storage Service，简单存储服务，是亚马逊对外提供的对象存储服务。不限容量，单个对象大小可达5TB，支持静态网站。其高达99.999999999%的可用性让其它竞争对手胆寒。</p></li>
+<li><p>EBS： Elastic Block Storage，块级存储服务，支持普通硬盘和SSD硬盘，加载方便快速，备份非常简单。</p></li>
+<li><p>Glacier：主要用于较少使用的存储存档文件和备份文件，价格便宜量又足，安全性高。</p></li>
+</ul>
+
+
+<h2>Database（数据库）</h2>
+
+<p>亚马逊提供关系性数据库和no sql数据库，以及一些cache等数据库服务。</p>
+
+<ul>
+<li><p>DynamoDB： DynamoDB是亚马逊自主研发的no sql型数据库，性能高，容错性强，支持分布式，并且与Cloud Watch、EMR等其它云服务高度集成。</p></li>
+<li><p>RDS： Relational Database Service，关系型数据库服务。支持MySql，SQL Server和Oracle等数据库，具有自动备份功能，IO吞吐量可按需调整。</p></li>
+<li><p>Amazon ElastiCache： 数据库缓存服务。</p></li>
+</ul>
+
+
+<h2>Application Service（应用程序服务）</h2>
+
+<p>这里的服务可就多了。</p>
+
+<ul>
+<li><p>Cloud Search: 一个弹性的搜索引擎，可用于企业级搜索。</p></li>
+<li><p>Amazon SQS： 队列服务，存储和分发消息。</p></li>
+<li><p>Simple Workflow：一个工作流框架。</p></li>
+<li><p>CloudFront：世界范围的内容分发网络。</p></li>
+<li><p>EMR： Elastic MapReduce，一个hadoop框架的实例，可用于大数据处理。</p></li>
+</ul>
+
+
+<h2>Deployment &amp; Admin (部署和管理)</h2>
+
+<ul>
+<li><p>Elastic BeanStalk: 一键式创建各种开发环境和运行时。</p></li>
+<li><p>CloudFormation：采用jason格式的模板文件来创建和管理一系列亚马逊云资源。</p></li>
+<li><p>OpsWorks： OpsWorks允许用户将应用程序的部署模块化，可以实现对数据库、运行时、服务器软件等自动化设置和安装。</p></li>
+<li><p>IAM： Identity &amp; Access Management，认证和访问管理服务。用户使用云服务最担心的事情之一就是安全问题。亚马逊通过IAM提供了立体化的安全策略，保证用户在云上的资源绝对的安全。用户通过IAM可以管理对AWS资源的访问。通过IAM可以创建group和role来授权或禁止对各种云资源的访问。</p></li>
+</ul>
+
+
+<p>如果想获取更多知识可以访问亚马逊AWS的官网<a href="http://aws.amazon.com/">http://aws.amazon.com/</a>。如果想查看每个服务的详细信息，可以查看它们的官方文档<a href="https://aws.amazon.com/documentation/?nc1=h_su_dm">https://aws.amazon.com/documentation/?nc1=h_su_dm</a>。还有亚马逊的所有云服务都提供了API接口进行调用，并且提供了命令行工具Amazon CLI（Command Line Interface）来使用，详细信息请参见<a href="http://docs.aws.amazon.com/cli/latest/index.html">http://docs.aws.amazon.com/cli/latest/index.html</a>。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-11T15:50:26+08:00" pubdate data-updated="true">Jul 11<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/cloud/'>Cloud</a>
+  
+</span>
+
+
+      
+
+<span class="tags">
+  
+    <a class='tag' href='/blog/tags/aws/'>aws</a>, <a class='tag' href='/blog/tags/cloud/'>cloud</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/07/awsome-day-memo/" title="Previous Post: 成都亚马逊AWSome Day回顾">&laquo; 成都亚马逊AWSome Day回顾</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>攻城狮，程序猿。目前就职于ThoughtWorks。</p>
+</section>
+
+<section>
+  <h1>Tag Cloud</h1>
+    <span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#f2f2f2' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x333333&amp;tcolor2=0x333333&amp;hicolor=0x000000&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Factivemq%27+style%3D%27font-size%3A+40.0%25%27%3EActiveMQ%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+15.0%25%27%3Eagile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+25.0%25%27%3EAgile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fandroid%27+style%3D%27font-size%3A+15.0%25%27%3EAndroid%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Faws%27+style%3D%27font-size%3A+25.0%25%27%3EAWS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fc-%27+style%3D%27font-size%3A+15.0%25%27%3EC%23%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fci%27+style%3D%27font-size%3A+25.0%25%27%3ECI%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fcloud%27+style%3D%27font-size%3A+30.0%25%27%3ECloud%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdatabase%27+style%3D%27font-size%3A+15.0%25%27%3EDataBase%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdesign%27+style%3D%27font-size%3A+15.0%25%27%3Edesign%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fefficient%27+style%3D%27font-size%3A+15.0%25%27%3Eefficient%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fenglish%27+style%3D%27font-size%3A+15.0%25%27%3EEnglish%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffp%27+style%3D%27font-size%3A+15.0%25%27%3EFP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgradle%27+style%3D%27font-size%3A+35.0%25%27%3EGradle%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhaskell%27+style%3D%27font-size%3A+15.0%25%27%3EHaskell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhomebrew%27+style%3D%27font-size%3A+15.0%25%27%3EHomebrew%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+15.0%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+20.0%25%27%3EJava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjavascript%27+style%3D%27font-size%3A+15.0%25%27%3EJavaScript%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%E5%AD%A6%E4%B9%A0%27+style%3D%27font-size%3A+15.0%25%27%3EJava%E5%AD%A6%E4%B9%A0%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flearning%27+style%3D%27font-size%3A+15.0%25%27%3Elearning%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flife%27+style%3D%27font-size%3A+25.0%25%27%3ELife%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fmicroservice%27+style%3D%27font-size%3A+15.0%25%27%3Emicroservice%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fplugin%27+style%3D%27font-size%3A+15.0%25%27%3Eplugin%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fpractise%27+style%3D%27font-size%3A+15.0%25%27%3Epractise%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Freading%27+style%3D%27font-size%3A+15.0%25%27%3Ereading%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frefactor%27+style%3D%27font-size%3A+15.0%25%27%3Erefactor%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fruby%27+style%3D%27font-size%3A+15.0%25%27%3Eruby%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fshell%27+style%3D%27font-size%3A+15.0%25%27%3Eshell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring%27+style%3D%27font-size%3A+15.0%25%27%3ESpring%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring-context%27+style%3D%27font-size%3A+15.0%25%27%3ESpring-context%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring-context%27+style%3D%27font-size%3A+50.0%25%27%3ESpring-Context%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fstudy%27+style%3D%27font-size%3A+15.0%25%27%3Estudy%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fsvn%27+style%3D%27font-size%3A+15.0%25%27%3ESVN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+20.0%25%27%3ETesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+15.0%25%27%3Etesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxml%27+style%3D%27font-size%3A+15.0%25%27%3EXML%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxp%27+style%3D%27font-size%3A+15.0%25%27%3EXP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fzsh%27+style%3D%27font-size%3A+15.0%25%27%3EZSH%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+15.0%25%27%3E%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%B7%A5%E5%85%B7%27+style%3D%27font-size%3A+15.0%25%27%3E%E5%B7%A5%E5%85%B7%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%27+style%3D%27font-size%3A+15.0%25%27%3E%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%27+style%3D%27font-size%3A+15.0%25%27%3E%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%80%BB%E7%BB%93%27+style%3D%27font-size%3A+20.0%25%27%3E%E6%80%BB%E7%BB%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%27+style%3D%27font-size%3A+15.0%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%27+style%3D%27font-size%3A+15.0%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%27+style%3D%27font-size%3A+15.0%25%27%3E%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%27+style%3D%27font-size%3A+15.0%25%27%3E%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+30.0%25%27%3E%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%27+style%3D%27font-size%3A+15.0%25%27%3E%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%27+style%3D%27font-size%3A+45.0%25%27%3E%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BF%BB%E8%AF%91%27+style%3D%27font-size%3A+20.0%25%27%3E%E7%BF%BB%E8%AF%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%27+style%3D%27font-size%3A+15.0%25%27%3E%E8%AF%BB%E4%B9%A6%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%27+style%3D%27font-size%3A+20.0%25%27%3E%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/11/aws-overview/">AWS系列之一 亚马逊云服务概述</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/07/awsome-day-memo/">成都亚马逊AWSome Day回顾</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/08/microservice/">微服务-分解应用程序从而实现更好的部署特性及可伸缩性</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/30/translators-words-of-html5/">HTML5和CSS3响应式WEB设计指南 译者序</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/23/use-aws-route53/">使用亚马逊的Route53服务</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2014/07/11/aws-overview/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2014/07/11/aws-overview/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
