@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: cloud | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/cloud/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-07-11T16:11:31+08:00</updated>
+  <updated>2014-07-11T16:28:59+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -117,6 +117,8 @@
 
 
 <p>如果想获取更多知识可以访问亚马逊AWS的官网<a href="http://aws.amazon.com/">http://aws.amazon.com/</a>。如果想查看每个服务的详细信息，可以查看它们的官方文档<a href="https://aws.amazon.com/documentation/?nc1=h_su_dm">https://aws.amazon.com/documentation/?nc1=h_su_dm</a>。还有亚马逊的所有云服务都提供了API接口进行调用，并且提供了命令行工具Amazon CLI（Command Line Interface）来使用，详细信息请参见<a href="http://docs.aws.amazon.com/cli/latest/index.html">http://docs.aws.amazon.com/cli/latest/index.html</a>。</p>
+
+<p>另外，亚马逊提供了一个网址用于练习对AWS服务的使用。地址是<a href="https://run.qwiklabs.com">https://run.qwiklabs.com</a>,还没有申请AWS账号的同学有福了，里面有6节免费的课程，可以根据提示一步步操作AWS资源，并且消耗的资源都是免费的。</p>
 ]]></content>
   </entry>
   
