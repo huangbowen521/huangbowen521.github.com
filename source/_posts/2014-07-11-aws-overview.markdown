@@ -114,6 +114,8 @@ AWS提供的网络服务主要有：
 
 如果想获取更多知识可以访问亚马逊AWS的官网[http://aws.amazon.com/](http://aws.amazon.com/)。如果想查看每个服务的详细信息，可以查看它们的官方文档[https://aws.amazon.com/documentation/?nc1=h_su_dm](https://aws.amazon.com/documentation/?nc1=h_su_dm)。还有亚马逊的所有云服务都提供了API接口进行调用，并且提供了命令行工具Amazon CLI（Command Line Interface）来使用，详细信息请参见[http://docs.aws.amazon.com/cli/latest/index.html](http://docs.aws.amazon.com/cli/latest/index.html)。
 
+另外，亚马逊提供了一个网址用于练习对AWS服务的使用。地址是[https://run.qwiklabs.com](https://run.qwiklabs.com),还没有申请AWS账号的同学有福了，里面有6节免费的课程，可以根据提示一步步操作AWS资源，并且消耗的资源都是免费的。
+
 
 
 
