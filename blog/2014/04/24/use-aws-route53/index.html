@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>使用亚马逊的Route53服务 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="自从自己的博客从github迁移到AWS以上，再也不用担心Github被墙了。再加上CloudFront的CDN功能，那访问速度真是杠杆的，无论是在中国内陆，还是澳洲海边，秒开无压力。 但是这几天突然发现博客打不开了。这可是切换到AWS上这么久以来的头一次。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2014/04/24/use-aws-route53">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<style>#forkongithub a{background:#060;color:#fff;text-decoration:none;font-family:arial, sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#A853B2;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:absolute;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}</style><span id="forkongithub"><a href="https://github.com/huangbowen521">Fork me on GitHub</a></span>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">使用亚马逊的Route53服务</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-24T01:36:22+10:00" pubdate data-updated="true">Apr 24<span>th</span>, 2014</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>自从自己的博客从github迁移到AWS以上，再也不用担心Github被墙了。再加上CloudFront的CDN功能，那访问速度真是杠杆的，无论是在中国内陆，还是澳洲海边，秒开无压力。</p>
+
+<!-- more -->
+
+
+<p>但是这几天突然发现博客打不开了。这可是切换到AWS上这么久以来的头一次。仔细研究了一下发现是自己的独立域名解析不到地址。我的独立域名买的是国内某公司的，使用的DNS服务器也是他们默认提供的。给他们技术人员反映以后，发现问题更有意思了。我在澳洲无法访问，而他在国内访问一切正常。这真是奇葩啊。</p>
+
+<p>痛定思痛，决定将自己的域名解析服务迁移到AWS上来，使用Route53服务。</p>
+
+<p>进入AWS Management Console以后，选择Route 53.</p>
+
+<p><img src="/images/route53.png" width="700"></p>
+
+<p>在主界面点击<code>Create Hosted Zone</code>，输入Domain name和comments。Domain name是你的域名，comments是描述。</p>
+
+<p><img src="/images/create_hosted_zone.png" width="800"></p>
+
+<p>完成以后就会看到有一个条目显示在表格中。双击这条记录。可以看到AWS已经为你创建了NS和SOA两种类型的Record Set。NS类型中的4个地址以后会用到，需要将你的域名提供商的DNS服务器换为这里列出的四个。</p>
+
+<p><img src="/images/hosted_zone_list.png" width="800"></p>
+
+<p>我们先为WWW创建一个Rcord Set。点击<code>Create Record Set</code>按钮，在在右侧输入相应的信息。</p>
+
+<p><img src="/images/create_record_set.png" width="800"></p>
+
+<p>AWS支持多种类型，由于我想让www.huangbowen.net指向我cloudfront的endpoint，所以选择CNAME，Value为我cloud front中的endpoint。最后点击<code>create</code>按钮。</p>
+
+<p>这样在AWS这边就配置完成了。最后是需要登录到域名提供商的后台中，将域名解析服务器给换掉。</p>
+
+<p><img src="/images/change_DNS.png" width="800"></p>
+
+<p>在这里，将DNS换为之前AWS自动生成的NS地址。</p>
+
+<p>这样就大功告成了，要等待2小时到1天来让新的解析方式生效。这下可以达到全年99.99%可访问率了吧。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-24T01:36:22+10:00" pubdate data-updated="true">Apr 24<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>AWS</a>
+  
+</span>
+
+
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/04/14/testing-exceptions-in-java/" title="Previous Post: Java中测试异常的多种方式">&laquo; Java中测试异常的多种方式</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/05/31/translators-words-of-html5/" title="Next Post: HTML5和CSS3响应式WEB设计指南 译者序">HTML5和CSS3响应式WEB设计指南 译者序 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>攻城狮，程序猿。目前就职于ThoughtWorks。</p>
+</section>
+
+<section>
+  <h1>Tag Cloud</h1>
+    <span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#f2f2f2' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x333333&amp;tcolor2=0x333333&amp;hicolor=0x000000&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Factivemq%27+style%3D%27font-size%3A+40.0%25%27%3EActiveMQ%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+15.0%25%27%3Eagile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+25.0%25%27%3EAgile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fandroid%27+style%3D%27font-size%3A+15.0%25%27%3EAndroid%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Faws%27+style%3D%27font-size%3A+25.0%25%27%3EAWS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fc-%27+style%3D%27font-size%3A+15.0%25%27%3EC%23%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fci%27+style%3D%27font-size%3A+25.0%25%27%3ECI%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fcloud%27+style%3D%27font-size%3A+30.0%25%27%3ECloud%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdatabase%27+style%3D%27font-size%3A+15.0%25%27%3EDataBase%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdesign%27+style%3D%27font-size%3A+15.0%25%27%3Edesign%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fefficient%27+style%3D%27font-size%3A+15.0%25%27%3Eefficient%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fenglish%27+style%3D%27font-size%3A+15.0%25%27%3EEnglish%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffp%27+style%3D%27font-size%3A+15.0%25%27%3EFP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgatling%27+style%3D%27font-size%3A+15.0%25%27%3EGatling%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgradle%27+style%3D%27font-size%3A+35.0%25%27%3EGradle%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhaskell%27+style%3D%27font-size%3A+15.0%25%27%3EHaskell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhomebrew%27+style%3D%27font-size%3A+15.0%25%27%3EHomebrew%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+20.0%25%27%3EJava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+15.0%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjavascript%27+style%3D%27font-size%3A+15.0%25%27%3EJavaScript%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%E5%AD%A6%E4%B9%A0%27+style%3D%27font-size%3A+15.0%25%27%3EJava%E5%AD%A6%E4%B9%A0%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flearning%27+style%3D%27font-size%3A+15.0%25%27%3Elearning%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flife%27+style%3D%27font-size%3A+25.0%25%27%3ELife%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fmicroservice%27+style%3D%27font-size%3A+15.0%25%27%3Emicroservice%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fplugin%27+style%3D%27font-size%3A+15.0%25%27%3Eplugin%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fpractise%27+style%3D%27font-size%3A+15.0%25%27%3Epractise%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Freading%27+style%3D%27font-size%3A+15.0%25%27%3Ereading%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frefactor%27+style%3D%27font-size%3A+15.0%25%27%3Erefactor%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fruby%27+style%3D%27font-size%3A+15.0%25%27%3Eruby%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fshell%27+style%3D%27font-size%3A+15.0%25%27%3Eshell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring%27+style%3D%27font-size%3A+15.0%25%27%3ESpring%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring-context%27+style%3D%27font-size%3A+50.0%25%27%3ESpring-Context%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring-context%27+style%3D%27font-size%3A+15.0%25%27%3ESpring-context%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fstudy%27+style%3D%27font-size%3A+15.0%25%27%3Estudy%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fsvn%27+style%3D%27font-size%3A+15.0%25%27%3ESVN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+15.0%25%27%3Etesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+20.0%25%27%3ETesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxml%27+style%3D%27font-size%3A+15.0%25%27%3EXML%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxp%27+style%3D%27font-size%3A+15.0%25%27%3EXP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fzsh%27+style%3D%27font-size%3A+15.0%25%27%3EZSH%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+15.0%25%27%3E%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%B7%A5%E5%85%B7%27+style%3D%27font-size%3A+15.0%25%27%3E%E5%B7%A5%E5%85%B7%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%27+style%3D%27font-size%3A+15.0%25%27%3E%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%27+style%3D%27font-size%3A+15.0%25%27%3E%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%80%BB%E7%BB%93%27+style%3D%27font-size%3A+20.0%25%27%3E%E6%80%BB%E7%BB%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%27+style%3D%27font-size%3A+15.0%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%27+style%3D%27font-size%3A+15.0%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%27+style%3D%27font-size%3A+15.0%25%27%3E%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%27+style%3D%27font-size%3A+15.0%25%27%3E%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+30.0%25%27%3E%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%27+style%3D%27font-size%3A+15.0%25%27%3E%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%27+style%3D%27font-size%3A+45.0%25%27%3E%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BF%BB%E8%AF%91%27+style%3D%27font-size%3A+20.0%25%27%3E%E7%BF%BB%E8%AF%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%27+style%3D%27font-size%3A+15.0%25%27%3E%E8%AF%BB%E4%B9%A6%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%27+style%3D%27font-size%3A+20.0%25%27%3E%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/23/integrate-gatling-with-gradle/">Gradle与Gatling脚本集成</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/11/aws-overview/">AWS系列之一 亚马逊云服务概述</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/07/awsome-day-memo/">成都亚马逊AWSome Day回顾</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/08/microservice/">微服务-分解应用程序从而实现更好的部署特性及可伸缩性</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/31/translators-words-of-html5/">HTML5和CSS3响应式WEB设计指南 译者序</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2014/04/24/use-aws-route53/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2014/04/24/use-aws-route53/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

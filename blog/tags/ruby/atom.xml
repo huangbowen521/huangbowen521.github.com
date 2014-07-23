@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: Ruby | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/ruby/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-07-11T16:28:59+08:00</updated>
+  <updated>2014-07-23T16:22:42+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[升级ruby版本那"不堪回首的经历"]]></title>
     <link href="http://www.huangbowen.net/blog/2013/09/23/not-easy-to-install-ruby/"/>
-    <updated>2013-09-23T13:53:00+08:00</updated>
+    <updated>2013-09-23T13:53:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/09/23/not-easy-to-install-ruby</id>
     <content type="html"><![CDATA[<p>前段时间在玩Chef-一个IT基础设施自动化工具。由于Chef是由Ruby写的一个gem，那么就需要安装Ruby。当然Ruby我早就安装了，并且使用rvm来管理Ruby及Gem。本来一切看似正常，但是不会预料后面会遇到那么多的坑。</p>
 
