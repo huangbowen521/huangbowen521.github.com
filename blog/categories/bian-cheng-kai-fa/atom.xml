@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 编程开发 | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/bian-cheng-kai-fa/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-07-26T18:43:29+10:00</updated>
+  <updated>2014-07-26T18:56:59+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -142,7 +142,7 @@ Try `brew tap --repair` and make sure `brew doctor` looks reasonable.
 
 <p>通过一番查资料后，找到了解决办法。那就是将Xcode升级到最新版本，然后在Preference里选择Downloads标签，然后安装Command Line Tools。</p>
 
-<p><img src="/images/developerTools.png" width="600"></p>
+<p>{% img /images/developerTools.png 600 %}</p>
 
 <p>安装完毕后再用Homebrew安装gcc49。</p>
 
