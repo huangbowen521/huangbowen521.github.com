@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-07-23T16:22:42+10:00</updated>
+  <updated>2014-07-26T18:43:29+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,142 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS系列之二 使用EC2]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/07/26/using-ec2/"/>
+    <updated>2014-07-26T18:27:22+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/07/26/using-ec2</id>
+    <content type="html"><![CDATA[<p>在本文中我们有三个任务。
+第一：使用Amazon management console创建一个EC2实例。
+第二：使用本地的命令行工具远程登陆到该EC2实例。
+第三：在该EC2实例上创建一个web服务，并通过公共域名来访问该web服务。</p>
+
+<!-- more -->
+
+
+<p>如果你还没有AWS的账号的话，可以使用qwiklabs提供的免费实验来进行该练习。地址是<a href="https://run.qwiklabs.com">https://run.qwiklabs.com</a>。</p>
+
+<p>登陆到亚马逊的AWS服务的management console后选择EC2服务。</p>
+
+<p><img src="http://www.huangbowen.net/images/awsdashboard.png" width="700"></p>
+
+<p>然后你就可以到EC2的控制面板了。</p>
+
+<p><img src="http://www.huangbowen.net/images/ec2dashboard.png" width="700"></p>
+
+<p>点击上面大大的<code>Launch Instance</code>按钮来开始创建一个新的EC2实例。</p>
+
+<p><img src="http://www.huangbowen.net/images/imagetype.png" width="700"></p>
+
+<p>首先要选择机器的镜像文件AMI（Amazon Machine Image）,有各种Linux的发行版，也有Windows系统。在本次实验中我们选取第一个，即Amazon Linux AMI，亚马逊自己的一个Linux发行版。</p>
+
+<p>然后是选择机器类型，不同类型机器性能不同，收费标准也不一样，一切都是根据你的需求来决定。就选第一个吧，最便宜。</p>
+
+<p><img src="http://www.huangbowen.net/images/instancetype.png" width="700"></p>
+
+<p>然后你有两个选择，一个是点击<code>Review and Launch</code>直接启动新机器，其余参数都采用默认值，另一个是点击<code>Next:Configure Instance Details</code>自定义其它配置。在这里我们选择第二个按钮，然后直到step6：Configure Security Group。</p>
+
+<p><img src="http://www.huangbowen.net/images/scrole.png" width="700"></p>
+
+<p>这里是配置安全组的，你可以使用已有的安全组，也可以创建一个全新的安全组。在安全组里可以设置一系列策略来管理该实例与外界的访问情况。</p>
+
+<p>由于我们需要远程登录到该实例，并且需要该实例提供http服务，所以我们需要开放22和80端口。22端口默认是开放的，80端口则需要手动开放。方法是点击<code>Add Role</code>按钮并新加一个role。</p>
+
+<p><img src="http://www.huangbowen.net/images/httprole.png" width="700"></p>
+
+<p>配置完成后点击<code>Launch</code>按钮，会弹出一个页面让你设置key pair。</p>
+
+<p><img src="http://www.huangbowen.net/images/keypairconfiguration.png" width="700"></p>
+
+<p>这个key pair是用来与该实例建立安全连接。亚马逊会存一个公钥，自己在本地存放一个私钥，当想要连接该实例时，需要提供私钥。这里我们选择新建一个key pair，并取名为awsworkshop，选择保存到本地。稍后会使用它来ssh到该实例。</p>
+
+<p>点击<code>Launch Instances</code>按钮，实例就会被初始化了。</p>
+
+<p><img src="http://www.huangbowen.net/images/launchstatus.png" width="700"></p>
+
+<p>点击<code>View Instances</code>来查看新创建的实例。</p>
+
+<p><img src="http://www.huangbowen.net/images/ec2information.png" width="700"></p>
+
+<p>一般需要等待3到5分钟来完成对新实例的初始化。在上图中可以查看该实例的相关信息。亚马逊给该实例分配了一个公共IP和公共DNS域名，稍后需要使用它们。</p>
+
+<p>等到该实例的<code>Instance Status</code>为<code>running</code>后，我们就可以进行第二个任务了，就是远程连接到该实例。</p>
+
+<p>打开你心爱的终端，然后先提升刚保存的pem文件的权限。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span> chmod 600 ~/Downloads/awsworkshop.pem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后在AWS的控制面板上找到该实例的公共IP，使用ec2-user用户名来ssh到该实例。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span> ssh ec2-user@54.191.210.210 -i ~/Downloads/awsworkshop.pem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>稍微等待以后就可以连接到远程实例了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">[</span>ec2-user@ip-172-31-46-246 ~<span class="o">]</span><span class="nv">$ </span>who
+</span><span class='line'>ec2-user pts/0        2014-07-26 06:38 <span class="o">(</span>123-243-183-184.static.tpgi.com.au<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>怎么样？一切都非常简单吧？</p>
+
+<p>下面就进行这个实验的最后一个任务了，在该远程实例上搭建一个web服务器。</p>
+
+<p>ssh到该实例后，执行下面命令。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span> sudo yum install httpd
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这句命令是安装Apache的httpd服务器。</p>
+
+<p>然后跳转到<code>/var/www/html</code>目录下，并新建一个名为<code>index.html</code>的文件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span> <span class="nb">cd</span> /var/www/html
+</span><span class='line'><span class="nv">$:</span> sudo touch index.html
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用你习惯的编辑器在该文件中输入一个html格式的文档并保存。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;html&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;body&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;h1&gt;</span>Hello World!<span class="nt">&lt;/h1&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/body&gt;</span>
+</span><span class='line'><span class="nt">&lt;html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>接下来启动web服务器。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span> sudo service httpd start
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>大功告成，从该EC2实例的控制面板中找到其公共DNS，然后粘贴到浏览器中，就可以访问其提供的web服务了。</p>
+
+<p><img src="http://www.huangbowen.net/images/website.png" width="700"></p>
+
+<p>好了，这三个任务也就都完成了。希望大家喜欢这次EC2之旅。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Gradle与Gatling脚本集成]]></title>
@@ -2927,152 +3063,6 @@ Gatling can be started with several options listed below:</p></blockquote>
 <p>在集成测试中如果加载xml配置文件，Spring提供了GenericXmlContextLoader类，如果加载注解方式的配置类，Spring提供了AnnotationConfigContextLoader类。但是对于Groovy配置文件Spring testContext框架还未提供相应的Loader，所以在本测试方法中需要自己实现一个Loader，其实也简单，只要实现两个方法即可。</p>
 
 <p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Spring-Context之二:使用Spring提供的测试框架进行测试]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/03/12/use-spring-test/"/>
-    <updated>2014-03-12T01:01:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/03/12/use-spring-test</id>
-    <content type="html"><![CDATA[<p>Spring框架是无侵入性的，所以你的代码可以完全是POJO（plain old java object），直接使用Junit就可以完成大部分的单元测试。但是在集成测试方面就比较吃力了。单元测试层面你可以mock一些依赖对象，但是集成测试时需要真实的依赖对象，而这些对象都是在Spring容器的控制之下。那么如何在引入了Spring的情况下进行集成测试那？别着急，Spring框架早为我们想到了这点，本身提供了集成测试的功能。</p>
-
-<!-- more -->
-
-
-<p>就拿上一次那个简单的例子来做实验吧。</p>
-
-<p>首先引入对junit以及spring-test库的依赖。</p>
-
-<figure class='code'><figcaption><span>pom.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>   <span class="nt">&lt;dependencies&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>junit<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>junit<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;version&gt;</span>4.11<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>spring-test<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;version&gt;</span>4.0.2.RELEASE<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/dependencies&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>spring-test模块是专门为使用了spring框架的项目进行集成测试的辅助类库。其有以下几个目的。</p>
-
-<ul>
-<li><p>提供在运行测试时对Spring IOC容器的缓存，提高集成测试速度。</p></li>
-<li><p>对测试实例提供依赖注入功能。</p></li>
-<li><p>集成测试中提供事务管理。</p></li>
-<li><p>提供一些辅助类库帮助开发者更好的编写集成测试。</p></li>
-</ul>
-
-
-<p>然后新建一个ApplicationTest.java类，代码如下所示。</p>
-
-<figure class='code'><figcaption><span>ApplicationTest.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">huangbowen</span><span class="o">.</span><span class="na">net</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">huangbowen.net.service.Cinema</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.junit.Test</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.junit.runner.RunWith</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.context.ApplicationContext</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.test.context.ContextConfiguration</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.test.context.junit4.SpringJUnit4ClassRunner</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">Assert</span><span class="o">.</span><span class="na">assertNotNull</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nd">@RunWith</span><span class="o">(</span><span class="n">SpringJUnit4ClassRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-</span><span class='line'><span class="nd">@ContextConfiguration</span><span class="o">(</span><span class="n">classes</span> <span class="o">=</span> <span class="o">{</span><span class="n">Application</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApplicationTest</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nd">@Autowired</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">ApplicationContext</span> <span class="n">applicationContext</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nd">@Autowired</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">Cinema</span> <span class="n">cinema</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nd">@Test</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetCinemaInstance</span><span class="o">()</span>  <span class="o">{</span>
-</span><span class='line'>        <span class="n">Cinema</span> <span class="n">cinema</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">Cinema</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">assertNotNull</span><span class="o">(</span><span class="n">cinema</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nd">@Test</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetAutowiredCinema</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">assertNotNull</span><span class="o">(</span><span class="n">cinema</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nd">@Test</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetMovieServiceInstance</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">assertNotNull</span><span class="o">(</span><span class="n">cinema</span><span class="o">.</span><span class="na">getMovieService</span><span class="o">());</span>
-</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">cinema</span><span class="o">.</span><span class="na">getMovieService</span><span class="o">(),</span> <span class="n">instanceOf</span><span class="o">(</span><span class="n">DefaultMovieService</span><span class="o">.</span><span class="na">class</span><span class="o">));</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在本例中ApplicationTest有两个注解。@RunWith(SpringJUnit4ClassRunner.class).是Spring TestContext 框架提供的一个自定义的JUnit runner，这样在测试类中就可以获取ApplicationContext，甚至直接进行依赖注入，使用事务控制测试方法执行等。声明了@RunWith(SpringJUnit4ClassRunner.class)以后一般还要声明@ContextConfiguration注解。这个注解是用于告诉测试类本项目中的Spring配置。这里我们传入Application.class类，因为这个类中配置了Spring的bean。</p>
-
-<p>然后就可以在测试类中使用强大的@Autowired功能了。我们写了三个测试方法，第一个是通过Autowired功能拿到ApplicationContext，第二个是通过Autowired功能直接拿到cinema，第三个则是验证Cinema中的MovieService是被正确注入了的。</p>
-
-<p>Ok,今天就到这里。本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
 ]]></content>
   </entry>
   
