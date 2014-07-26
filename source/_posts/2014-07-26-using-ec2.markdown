@@ -1,0 +1,188 @@
+---
+layout: post
+title: AWS系列之二  使用EC2
+date: 2014-07-26 18:27:22 +1000
+comments: true
+categories: Cloud
+tags: [AWS, Cloud, EC2]
+---
+
+在本文中我们有三个任务。
+第一：使用Amazon management console创建一个EC2实例。
+第二：使用本地的命令行工具远程登陆到该EC2实例。
+第三：在该EC2实例上创建一个web服务，并通过公共域名来访问该web服务。
+
+
+<!-- more -->
+
+如果你还没有AWS的账号的话，可以使用qwiklabs提供的免费实验来进行该练习。地址是[https://run.qwiklabs.com](https://run.qwiklabs.com)。
+
+登陆到亚马逊的AWS服务的management console后选择EC2服务。
+
+{% img /images/awsdashboard.png 700 %}
+
+然后你就可以到EC2的控制面板了。
+
+{% img /images/ec2dashboard.png 700 %}
+
+点击上面大大的`Launch Instance`按钮来开始创建一个新的EC2实例。
+
+{%img /images/imagetype.png 700 %}
+
+首先要选择机器的镜像文件AMI（Amazon Machine Image）,有各种Linux的发行版，也有Windows系统。在本次实验中我们选取第一个，即Amazon Linux AMI，亚马逊自己的一个Linux发行版。
+
+然后是选择机器类型，不同类型机器性能不同，收费标准也不一样，一切都是根据你的需求来决定。就选第一个吧，最便宜。
+
+
+{%img /images/instancetype.png 700 %}
+
+
+然后你有两个选择，一个是点击`Review and Launch`直接启动新机器，其余参数都采用默认值，另一个是点击`Next:Configure Instance Details`自定义其它配置。在这里我们选择第二个按钮，然后直到step6：Configure Security Group。
+
+
+{% img /images/scrole.png 700 %}
+
+
+这里是配置安全组的，你可以使用已有的安全组，也可以创建一个全新的安全组。在安全组里可以设置一系列策略来管理该实例与外界的访问情况。
+
+
+由于我们需要远程登录到该实例，并且需要该实例提供http服务，所以我们需要开放22和80端口。22端口默认是开放的，80端口则需要手动开放。方法是点击`Add Role`按钮并新加一个role。
+
+
+{% img /images/httprole.png 700 %}
+
+
+配置完成后点击`Launch`按钮，会弹出一个页面让你设置key pair。
+
+
+{% img /images/keypairconfiguration.png 700 %}
+
+
+这个key pair是用来与该实例建立安全连接。亚马逊会存一个公钥，自己在本地存放一个私钥，当想要连接该实例时，需要提供私钥。这里我们选择新建一个key pair，并取名为awsworkshop，选择保存到本地。稍后会使用它来ssh到该实例。
+
+
+点击`Launch Instances`按钮，实例就会被初始化了。
+
+
+{% img /images/launchstatus.png 700 %}
+
+
+点击`View Instances`来查看新创建的实例。
+
+
+{% img /images/ec2information.png 700 %}
+
+
+一般需要等待3到5分钟来完成对新实例的初始化。在上图中可以查看该实例的相关信息。亚马逊给该实例分配了一个公共IP和公共DNS域名，稍后需要使用它们。
+
+
+
+
+等到该实例的`Instance Status`为`running`后，我们就可以进行第二个任务了，就是远程连接到该实例。
+
+
+打开你心爱的终端，然后先提升刚保存的pem文件的权限。
+
+
+```bash
+
+
+$: chmod 600 ~/Downloads/awsworkshop.pem
+
+
+```
+
+
+然后在AWS的控制面板上找到该实例的公共IP，使用ec2-user用户名来ssh到该实例。
+
+
+```bash
+
+
+$: ssh ec2-user@54.191.210.210 -i ~/Downloads/awsworkshop.pem
+
+
+```
+
+
+稍微等待以后就可以连接到远程实例了。
+
+
+```bash
+
+
+[ec2-user@ip-172-31-46-246 ~]$ who
+ec2-user pts/0        2014-07-26 06:38 (123-243-183-184.static.tpgi.com.au) 
+
+
+```
+
+
+怎么样？一切都非常简单吧？
+
+
+下面就进行这个实验的最后一个任务了，在该远程实例上搭建一个web服务器。
+
+ssh到该实例后，执行下面命令。
+
+
+```bash
+
+
+$: sudo yum install httpd
+
+
+```
+
+
+这句命令是安装Apache的httpd服务器。
+
+
+然后跳转到`/var/www/html`目录下，并新建一个名为`index.html`的文件。
+
+```bash
+
+$: cd /var/www/html
+$: sudo touch index.html
+
+```
+
+使用你习惯的编辑器在该文件中输入一个html格式的文档并保存。
+
+```html
+
+<html>
+    <body>
+        <h1>Hello World!</h1>
+    </body>
+<html>
+
+```
+
+接下来启动web服务器。
+
+```bash
+
+$: sudo service httpd start
+
+```
+
+大功告成，从该EC2实例的控制面板中找到其公共DNS，然后粘贴到浏览器中，就可以访问其提供的web服务了。
+
+{%img /images/website.png 700 %}
+
+
+好了，这三个任务也就都完成了。希望大家喜欢这次EC2之旅。
+
+
+
+
+
+
+
+
+
+
+
+
+
