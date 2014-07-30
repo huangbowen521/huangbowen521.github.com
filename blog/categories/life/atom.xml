@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Life | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/life/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-07-26T18:56:59+10:00</updated>
+  <updated>2014-07-31T01:20:47+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -48,7 +48,7 @@
     <link href="http://www.huangbowen.net/blog/2013/08/03/impression-of-brisbane-in-two-weeks/"/>
     <updated>2013-08-03T23:56:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/08/03/impression-of-brisbane-in-two-weeks</id>
-    <content type="html"><![CDATA[<p>{% img /images/brisbane2.jpg %}</p>
+    <content type="html"><![CDATA[<p><img src="/images/brisbane2.jpg"></p>
 
 <p>不知不觉，到达布里斯班已经两周了，感觉还不错。再谈谈自己的感受。</p>
 
@@ -72,7 +72,7 @@
     <link href="http://www.huangbowen.net/blog/2013/07/22/life-in-brisbane/"/>
     <updated>2013-07-22T21:58:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/07/22/life-in-brisbane</id>
-    <content type="html"><![CDATA[<p>{% img /images/brisbane.jpg %}</p>
+    <content type="html"><![CDATA[<p><img src="/images/brisbane.jpg"></p>
 
 <p>周一接到通知需要到布里斯班出差一个月，周五就踏上飞机。第一次出国，终于有机会近距离接触“万恶的资本主义”了。虽然在ThoughtWorks出差、出国是家常便饭，但是这是自己第一次出国，还跑这么远，难免有些兴奋。</p>
 

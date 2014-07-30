@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gradle | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/gradle/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-07-26T18:56:59+10:00</updated>
+  <updated>2014-07-31T01:20:47+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -360,7 +360,7 @@ jettyRun {
     <link href="http://www.huangbowen.net/blog/2013/09/01/command-line-of-gradle/"/>
     <updated>2013-09-01T22:25:00+10:00</updated>
     <id>http://www.huangbowen.net/blog/2013/09/01/command-line-of-gradle</id>
-    <content type="html"><![CDATA[<p>{% img /images/building.jpg %}</p>
+    <content type="html"><![CDATA[<p><img src="/images/building.jpg"></p>
 
 <p>毫无疑问，现在Gradle已经成为java世界最火的构建工具，风头已经盖过了冗余的ant，落后的maven。Gradle是以Groovy语言编写的一套构建脚本的DSL，由于Groovy语法的优雅，所以导致Gradle天生就有简洁、可读性强、灵活等特性。</p>
 
@@ -588,7 +588,7 @@ Total time: 3.726 secs
 
 <p>然后在build/report/profile目录下可以看到build的report。</p>
 
-<p>{% img /images/gradle_profile.png 600 %}</p>
+<p><img src="/images/gradle_profile.png" width="600"></p>
 
 <p>这个报表非常有用，尤其是在在缩短build时间时可以快速定位那些耗时长的task。</p>
 
@@ -631,7 +631,7 @@ $ gradle --gui
 
 <p>这样就会弹出一个gui界面。</p>
 
-<p>{% img /images/gradle_gui.png 600 %}</p>
+<p><img src="/images/gradle_gui.png" width="600"></p>
 
 <p>通过这个gui界面可以很方面的执行gradle的各种命令，还可以将常用的命令保存为favorites。该gui的配置信息默认被存储在当前项目的gradle-app.setting文件中。</p>
 

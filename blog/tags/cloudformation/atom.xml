@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: CloudFormation | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/cloudformation/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-07-26T18:56:59+10:00</updated>
+  <updated>2014-07-31T01:20:47+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -32,7 +32,7 @@
 <!-- more -->
 
 
-<p>{% img /images/cloudformation1.png 680 %}</p>
+<p><img src="/images/cloudformation1.png" width="680"></p>
 
 <p>以上的图中S3、EC2等就属于IaaS，RDS、DynamoDB等就属于PaaS。</p>
 
@@ -46,7 +46,7 @@
 
 <p>Template是CloudFormation的一个重要概念。Template本质上是一个json格式的文件。该文件定义了你需要使用那些AWS的资源，并且如何初始化这些资源。CloudFormation支持的资源如下图所示。</p>
 
-<p>{% img /images/cloudformation2.png 680 %}</p>
+<p><img src="/images/cloudformation2.png" width="680"></p>
 
 <p>一个Template文件至少包含一下几个属性:</p>
 
@@ -98,37 +98,37 @@
 
 <p>首先，需要登录到AWS Management Console，选择EC2服务，点击左侧菜单的Key Pair,创建一个Key Pair。这个Key Pair将在接下来被使用，主要使AWS能够ssh到创建的EC2机器上。当然你也可以使用已有的Key Pair。</p>
 
-<p>{% img /images/cloudformation3.png 680 %}</p>
+<p><img src="/images/cloudformation3.png" width="680"></p>
 
 <p>然后选择CloudFormation服务，点击<code>Create Stack</code>按钮。</p>
 
 <p>然后输入Stack名称，并选择一个Template。由于我们要创建一个WordPress的站点，可以选择<code>use a sample temple</code>,并选择WordPress这个模板。</p>
 
-<p>{% img /images/cloudformation4.png 680 %}</p>
+<p><img src="/images/cloudformation4.png" width="680"></p>
 
-<p>{% img /images/cloudformation5.png 680 %}</p>
+<p><img src="/images/cloudformation5.png" width="680"></p>
 
 <p>然后点击<code>continue</code>按钮，配置相关的参数。注意在KeyName一项中输入我们第一步创建的Key Pair。</p>
 
-<p>{% img /images/cloudformation6.png 680 %}</p>
+<p><img src="/images/cloudformation6.png" width="680"></p>
 
 <p>然后点击<code>continue</code>按钮，配置此Stack的标签，这个是可选项，可以跳过。再点一下<code>continue</code>，将会再次确认想要的创建的资源信息，继续后就可以看到资源正在创建了。</p>
 
-<p>{% img /images/cloudformation7.png 680 %}</p>
+<p><img src="/images/cloudformation7.png" width="680"></p>
 
 <p>页面下半部分有很多标签，你可以随时查看该Stack的描述、资源、事件、参数、输出等各项信息。</p>
 
 <p>等待大约20分钟，Stack就会执行完毕，在Outputs标签中你会看到有一个url。</p>
 
-<p>{% img /images/cloudformation8.png 680 %}</p>
+<p><img src="/images/cloudformation8.png" width="680"></p>
 
 <p>这个就是我们创建的WordPress的入口地址，访问该链接会进入WordPress的初始化设置页面。</p>
 
-<p>{% img /images/cloudformation9.png 680 %}</p>
+<p><img src="/images/cloudformation9.png" width="680"></p>
 
 <p>配置完以后，一个新的WordPress就诞生了，重新访问URL，你会看到你的博客首页。</p>
 
-<p>{% img /images/cloudformation10.png 680 %}</p>
+<p><img src="/images/cloudformation10.png" width="680"></p>
 
 <h2>CloudFormer</h2>
 
@@ -138,19 +138,19 @@
 
 <p>首先创建Stack,Template选择use a sample template,并选择CloudFormer。</p>
 
-<p>{% img /images/cloudformation11.png 680 %}</p>
+<p><img src="/images/cloudformation11.png" width="680"></p>
 
 <p>然后点击<code>continue</code>，配置其他参数，直到走完创建Stack这个流程。</p>
 
-<p>{% img /images/cloudformation12.png 680 %}</p>
+<p><img src="/images/cloudformation12.png" width="680"></p>
 
 <p>等待这个Stack创建完毕后，就可以从Outputs标签得到一个URL。这个URL是执行CloudFormer工具的入口地址。</p>
 
-<p>{% img /images/cloudformation13.png 680 %}</p>
+<p><img src="/images/cloudformation13.png" width="680"></p>
 
 <p>点击此URL,即可按照配置一步步配置自己的Template。</p>
 
-<p>{% img /images/cloudformation14.png 680 %}</p>
+<p><img src="/images/cloudformation14.png" width="680"></p>
 
 <p>流程走完后，生成的Template会存放到你的S3 bucket中。</p>
 
