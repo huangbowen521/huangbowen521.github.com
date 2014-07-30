@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-07-31T01:38:39+10:00</updated>
+  <updated>2014-07-31T01:43:17+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -81,7 +81,7 @@
 
 <p>点击<code>Action</code>按钮并选择<code>Attach Volume</code>命令，可以将该硬盘附加到EC2实例上。</p>
 
-<p><img src="http://www.huangbowen.net/images/attachVolume01.png" width="700"></p>
+<p><img src="http://www.huangbowen.net/images/attachvolume01.png" width="700"></p>
 
 <p>在该界面中选择实例名及映射的设备地址，然后附加。</p>
 
