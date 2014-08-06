@@ -68,7 +68,7 @@ tmpfs           499M     0  499M   0% /dev/shm
 
 点击`Action`按钮并选择`Attach Volume`命令，可以将该硬盘附加到EC2实例上。
 
-{% img /images/attachVolume01.png 700 %}
+{% img /images/attachvolume01.png 700 %}
 
 在该界面中选择实例名及映射的设备地址，然后附加。
 
