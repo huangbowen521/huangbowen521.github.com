@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gradle | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/gradle/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-08-23T16:24:32+10:00</updated>
+  <updated>2014-08-28T00:56:01+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,108 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Gradle中的buildScript代码块]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/08/28/buildscript-in-gradle/"/>
+    <updated>2014-08-28T00:12:45+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/08/28/buildscript-in-gradle</id>
+    <content type="html"><![CDATA[<p>在编写Gradle脚本的时候，在build.gradle文件中经常看到这样的代码：</p>
+
+<!-- more -->
+
+
+<pre><code class="groovy build.gradle">
+
+buildScript {
+     repositories {
+         mavenCentral()
+}
+}
+
+repositories {
+     mavenCentral()
+}
+</code></pre>
+
+<p>这样子很容易让人奇怪，为什么repositories要声明两次哪？buildscript代码块中的声明与下半部分声明有什么不同？</p>
+
+<p>其实答案非常简单。buildscript中的声明是gradle脚本自身需要使用的资源。可以声明的资源包括依赖项、第三方插件、maven仓库地址等。而在build.gradle文件中直接声明的依赖项、仓库地址等信息是项目自身需要的资源。</p>
+
+<p>gradle是由groovy语言编写的，支持groovy语法，可以灵活的使用已有的各种ant插件、基于jvm的类库，这也是它比maven、ant等构建脚本强大的原因。虽然gradle支持开箱即用，但是如果你想在脚本中使用一些第三方的插件、类库等，就需要自己手动添加对这些插件、类库的引用。而这些插件、类库又不是直接服务于项目的，而是支持其它build脚本的运行。所以你应当将这部分的引用放置在buildscript代码块中。gradle在执行脚本时，会优先执行buildscript代码块中的内容，然后才会执行剩余的build脚本。</p>
+
+<p>举个例子，假设我们要编写一个task，用于解析csv文件并输出其内容。虽然我们可以使用gradle编写解析csv文件的代码，但其实apache有个库已经实现了一个解析csv文件的库供我们直接使用。我们如果想要使用这个库，需要在gradle.build文件中加入对该库的引用。</p>
+
+<pre><code class="groovy build.gradle">
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.apache.commons:commons-csv:1.0'
+    }
+}
+
+import org.apache.commons.csv.*
+
+task printCSV() {
+    doLast {
+        def records = CSVFormat.EXCEL.parse(new FileReader('config/sample.csv'))
+        for (item in records) {
+            print item.get(0) + ' '
+            println item.get(1)
+        }
+
+    }
+}
+</code></pre>
+
+<p>buildscript代码块中的repositories和dependencies的使用方式与直接在build.gradle文件中的使用方式几乎完全一样。唯一不同之处是在buildscript代码块中你可以对dependencies使用classpath声明。该classpath声明说明了在执行其余的build脚本时，class loader可以使用这些你提供的依赖项。这也正是我们使用buildscript代码块的目的。</p>
+
+<p>而如果你的项目中需要使用该类库的话，就需要定义在buildscript代码块之外的dependencies代码块中。所以有可能会看到在build.gradle中出现以下代码：</p>
+
+<pre><code class="groovy build.gradle">
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.springframework.ws:spring-ws-core:2.2.0.RELEASE',
+            'org.apache.commons:commons-csv:1.0'
+}
+
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.apache.commons:commons-csv:1.0'
+    }
+}
+
+import org.apache.commons.csv.*
+
+task printCSV() {
+    doLast {
+        def records = CSVFormat.EXCEL.parse(new FileReader('config/sample.csv'))
+        for (item in records) {
+            print item.get(0) + ' '
+            println item.get(1)
+        }
+
+    }
+}
+</code></pre>
+
+<p>官方具体解释请参见：<a href="http://chimera.labs.oreilly.com/books/1234000001741/ch04.html#_buildscript_dependencies">http://chimera.labs.oreilly.com/books/1234000001741/ch04.html#_buildscript_dependencies</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用Gradle运行集成测试]]></title>
@@ -352,295 +454,6 @@ jettyRun {
 </code></pre>
 
 <p>齐活。接下来运行<code>gradle jettyRun</code>，待服务启动起来以后，如果修改了静态资源，只需要按<code>Ctrl</code>+<code>R</code>刷新页面即可重新加载资源。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Gradle命令行黑魔法]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/09/01/command-line-of-gradle/"/>
-    <updated>2013-09-01T22:25:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/09/01/command-line-of-gradle</id>
-    <content type="html"><![CDATA[<p><img src="/images/building.jpg"></p>
-
-<p>毫无疑问，现在Gradle已经成为java世界最火的构建工具，风头已经盖过了冗余的ant，落后的maven。Gradle是以Groovy语言编写的一套构建脚本的DSL，由于Groovy语法的优雅，所以导致Gradle天生就有简洁、可读性强、灵活等特性。</p>
-
-<p>Gradle的命令行功能也非常强大。本人从maven转到Gradle，深深被gradle强大的命令行功能折服。通过命令行来实现Gradle的各种特性，就像魔法师在表演魔法一样。</p>
-
-<!-- more -->
-
-
-<ul>
-<li><strong>日志输出。</strong> Gradle中的日志有6个层级。从高到低分别是 ERROR（错误信息）、QUIET（重要信息）、WARNGING（警告信息）、LIFECYCLE（进程信息）、INFO（一般信息）、DEBUG（调试信息）。在执行gradle task时可以适时的调整信息输出等级，以便更方便的观看执行结果。</li>
-</ul>
-
-
-<p><code>-q</code>(或<code>--quiet</code>)是启用重要信息级别，该级别下只会输出自己在命令行下打印的信息及错误信息。</p>
-
-<p><code>-i</code>(或<code>--info</code>)则会输出除debug以外的所有信息。</p>
-
-<p><code>-d</code>（或<code>--debug</code>)会输出所有日志信息。</p>
-
-<p>比如一个build.gradle有这样一个task。</p>
-
-<pre><code class="groovy">
-task hello &lt;&lt; {
-     println 'hello world!'
-}
-</code></pre>
-
-<p>加入<code>-q</code>与不加<code>-q</code>的输出结果不同。</p>
-
-<pre><code class="bash">
-$ gradle hello
-:hello
-hello world!
-
-BUILD SUCCESSFUL
-
-Total time: 3.546 secs
-$ gradle -q hello
-hello world!
-</code></pre>
-
-<ul>
-<li><p><strong>堆栈跟踪。</strong>如果执行gradle task失败时，如果想得到更详细的错误信息，那么就可以使用<code>-s</code>(或<code>--stacktrace</code>)来输出详细的错误堆栈。你还可以使用<code>-S</code>(或<code>--full-stacktrace</code>)来输出全部堆栈信息，不过一般不推荐这样做，因为gradle是基于groovy语言，而groovy作为一门动态语言可能会输出与你的错误代码毫不相关的信息。</p></li>
-<li><p><strong>跳过指定的测试。</strong>如果你在执行build的时候想跳过test task，那么可以使用<code>-x</code>命令。</p></li>
-</ul>
-
-
-<pre><code class="bash">
-$ gradle build -x test
-:compileJava UP-TO-DATE
-:processResources UP-TO-DATE
-:classes UP-TO-DATE
-:jar UP-TO-DATE
-:assemble UP-TO-DATE
-:check
-:build
-
-BUILD SUCCESSFUL
-
-Total time: 3.529 secs
-</code></pre>
-
-<ul>
-<li><p><strong>继续执行task而忽略前面失败的task。</strong>默认情况下，如果有某个task失败，后续的task就不会继续执行。但是有时候我们想运行所有的task来一次性得到所有的构建错误，那么我们可以使用<code>--continue</code>命令。使用<code>--continue</code>命令后即使遇到某些task失败也不会停止后续task的执行。但是需要注意的是如果某个task失败了，那么依赖于这个task的其他task依旧不会执行，因为这会带来不安全的因素。</p></li>
-<li><p><strong>调用task时使用短名或缩写。</strong>如果一个task的名称过长，那么调用时可以只输入部分名称即可调用，无需输入全名。</p></li>
-</ul>
-
-
-<pre><code class="groovy">
-task helloWorld &lt;&lt; {
-     println 'hello world!'
-}
-</code></pre>
-
-<p>比如调用helloWorld可以通过全名调用、前缀调用或首字母调用。</p>
-
-<pre><code class="bash">$ gradle -q helloWorld
-hello world!
-$ gradle -q hell
-hello world!
-$ gradle -q hW
-hello world!
-</code></pre>
-
-<ul>
-<li><strong>使用指定的gradle文件调用task。</strong>默认情况下，如果你调用gradle task，那么首先会寻找当前目录下的build.gradle文件,以及根据settings.gradle中的配置寻找子项目的build.gradle。但是有时候我们想指定使用某个gradle文件，那么可以使用<code>-b</code>命令。
-比如当前目录有个子目录subproject1,里面有个叫hello.gradle。</li>
-</ul>
-
-
-<pre><code class="groovy subproject1/hello.gradle">
-task helloWorld &lt;&lt; {
-     println 'hello world!'
-}
-</code></pre>
-
-<p>那么在当前目录可以使用以下命令调用这个task。</p>
-
-<pre><code class="bash">$ gradle -b subproject1/hello.gradle  helloWorld
-:helloWorld
-hello world!
-
-BUILD SUCCESSFUL
-
-Total time: 3.752 secs
-</code></pre>
-
-<ul>
-<li><strong>使用指定的项目目录调用task。</strong>前面已经说过，执行gradle的task默认会在当前目录寻找build.gradle及settings.gradle文件。如果我们想在任何地方执行某个项目的task，那么可以使用<code>-p</code>来指定使用的项目。</li>
-</ul>
-
-
-<pre><code class="groovy">
-gradle -q -p learnGradle helloWorld
-</code></pre>
-
-<p>这条命令是调用learnGradle这个项目下的helloWorld task。</p>
-
-<ul>
-<li><strong>显示task之间的依赖关系。</strong>众所周知，使用<code>gradle tasks</code>可以列出当前所有可被使用的task，但是并没有显示task之间的依赖关系。我们可以加上<code>--all</code>来显示
-task的依赖关系。</li>
-</ul>
-
-
-<pre><code class="bash">
-$ gradle tasks --all
-………………
-
-Other tasks
------------
-task0
-    task1
-    task2
-    task3
-
-…………
-</code></pre>
-
-<pre><code>从上面可以看出task0依赖task1、task2及task3。
-</code></pre>
-
-<ul>
-<li><strong>查看指定阶段的依赖关系。</strong>使用<code>gradle dependencies</code> 可以查看项目中包的依赖关系。不过是列出了所有阶段的依赖，如果项目中依赖复杂的话看起来有点头痛。那么可以使用<code>--configuration</code>来查看指定阶段的依赖情况。</li>
-</ul>
-
-
-<pre><code class="groovy">
-$ gradle -q dependencies
-
-------------------------------------------------------------
-Root project
-------------------------------------------------------------
-
-archives - Configuration for archive artifacts.
-No dependencies
-
-compile - Compile classpath for source set 'main'.
-No dependencies
-
-default - Configuration for default artifacts.
-No dependencies
-
-runtime - Runtime classpath for source set 'main'.
-No dependencies
-
-testCompile - Compile classpath for source set 'test'.
-\--- junit:junit:4.11
-     \--- org.hamcrest:hamcrest-core:1.3
-
-testRuntime - Runtime classpath for source set 'test'.
-\--- junit:junit:4.11
-     \--- org.hamcrest:hamcrest-core:1.3
-</code></pre>
-
-<p>使用<code>gradle -q dependencies --configuration testCompile</code>可以只查看testComiple的依赖。</p>
-
-<pre><code>$ gradle -q dependencies --configuration testCompile
-
-------------------------------------------------------------
-Root project
-------------------------------------------------------------
-
-testCompile - Compile classpath for source set 'test'.
-\--- junit:junit:4.11
-     \--- org.hamcrest:hamcrest-core:1.3
-</code></pre>
-
-<ul>
-<li><strong>查看指定dependency的依赖情况。</strong>
-假如我想查看项目中有没有引入junit，那些阶段引入了junit，那么可以使用<code>dependecyInsight</code>来查看。</li>
-</ul>
-
-
-<pre><code class="bash">
-$ gradle dependencyInsight --dependency junit --configuration testCompile
-:dependencyInsight
-junit:junit:4.11
-\--- testCompile
-</code></pre>
-
-<p>注意<code>dependencyInsight</code>默认只会查看compile阶段的依赖，如果要查看其他阶段可以使用<code>--configuration</code>来指定。</p>
-
-<ul>
-<li><strong>使用<code>--profile</code>命令行可以产生build运行时间的报告。</strong>该报告存储在build/report/profile目录，名称为build运行的时间。</li>
-</ul>
-
-
-<pre><code class="bash">$ gradle build --profile
-:compileJava UP-TO-DATE
-:processResources UP-TO-DATE
-:classes UP-TO-DATE
-:jar UP-TO-DATE
-:assemble UP-TO-DATE
-:compileTestJava UP-TO-DATE
-:processTestResources UP-TO-DATE
-:testClasses UP-TO-DATE
-:test UP-TO-DATE
-:check UP-TO-DATE
-:build UP-TO-DATE
-
-BUILD SUCCESSFUL
-
-Total time: 3.726 secs
-</code></pre>
-
-<p>然后在build/report/profile目录下可以看到build的report。</p>
-
-<p><img src="/images/gradle_profile.png" width="600"></p>
-
-<p>这个报表非常有用，尤其是在在缩短build时间时可以快速定位那些耗时长的task。</p>
-
-<ul>
-<li><strong>试运行build。</strong>如果你想知道某个task执行时那些task会被一起执行，但是你又不想真正的执行这些task，可以使用<code>-m</code>来试运行。</li>
-</ul>
-
-
-<pre><code class="bash">
-$ gradle -m build
-:compileJava SKIPPED
-:processResources SKIPPED
-:classes SKIPPED
-:jar SKIPPED
-:assemble SKIPPED
-:compileTestJava SKIPPED
-:processTestResources SKIPPED
-:testClasses SKIPPED
-:test SKIPPED
-:check SKIPPED
-:build SKIPPED
-
-BUILD SUCCESSFUL
-
-Total time: 3.53 secs
-</code></pre>
-
-<p>这样我们可以一目了然的看到那些task被执行了，又不需要花太多的时间。</p>
-
-<ul>
-<li><strong>Gradle的图形界面。</strong></li>
-</ul>
-
-
-<p>其实Gradle自带一个图形界面来让习惯gui操作的人来操作Gradle。打开方式很简单。</p>
-
-<pre><code class="bash">
-$ gradle --gui
-</code></pre>
-
-<p>这样就会弹出一个gui界面。</p>
-
-<p><img src="/images/gradle_gui.png" width="600"></p>
-
-<p>通过这个gui界面可以很方面的执行gradle的各种命令，还可以将常用的命令保存为favorites。该gui的配置信息默认被存储在当前项目的gradle-app.setting文件中。</p>
-
-<p>注意使用<code>gradle --gui</code>会阻塞当前终端，可以使用<code>gradle --gui&amp;</code>来实现后台运行。</p>
-
-<ul>
-<li><strong>重新编译Gradle脚本。</strong>第一次运行Gradle命令，会在项目更目录下生成一个.gradle目录来存放编译后的脚本。只有当构建脚本发生修改时采用重新编译。我们可以使用<code>--recompile-scripts</code>来强行重新编译。</li>
-</ul>
-
 ]]></content>
   </entry>
   
