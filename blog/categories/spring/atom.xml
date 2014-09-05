@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Spring | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/spring/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-09-05T19:59:35+10:00</updated>
+  <updated>2014-09-05T20:13:13+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -23,6 +23,9 @@
 <h2>生成SOAP web service</h2>
 
 <p>该指南将带领你使用Spring创建一个基于SOAP的web service的整个过程。</p>
+
+<!-- more -->
+
 
 <h3>指南内容</h3>
 
