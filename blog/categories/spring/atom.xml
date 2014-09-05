@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Spring | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/spring/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-08-30T22:29:45+10:00</updated>
+  <updated>2014-09-05T19:59:35+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,651 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[翻译-使用Spring WebService生成SOAP web service]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/09/05/producing-web-service-using-spring/"/>
+    <updated>2014-09-05T19:50:02+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/09/05/producing-web-service-using-spring</id>
+    <content type="html"><![CDATA[<p>原文链接：<a href="http://spring.io/guides/gs/producing-web-service/">http://spring.io/guides/gs/producing-web-service/</a></p>
+
+<h2>生成SOAP web service</h2>
+
+<p>该指南将带领你使用Spring创建一个基于SOAP的web service的整个过程。</p>
+
+<h3>指南内容</h3>
+
+<p>你将创建一个服务，该服务通过一个基于WSDL的SOAP web service向外暴露欧洲国家的数据。</p>
+
+<blockquote><p>　注意：为了简化该示例，你将使用硬编码方式嵌入英国，西班牙及波兰。</p></blockquote>
+
+<h3>准备事项</h3>
+
+<ul>
+<li><p>15分钟</p></li>
+<li><p>喜爱的编辑器或IDE</p></li>
+<li><p>JDK1.6或更高版本</p></li>
+<li><p>Gradle 1.11+或Maven 3.0+</p></li>
+<li><p>你也可以直接通过该指南导入代码，或通过Spring工具集（Spring Tool Suite，简称STS)通过网页浏览代码，从而帮助你学习该章节内容。源码下载地址： <a href="https://github.com/spring-guides/gs-producing-web-service.git">https://github.com/spring-guides/gs-producing-web-service.git</a>。</p></li>
+</ul>
+
+
+<h3>如何完成该指南</h3>
+
+<p>如同大多数的<a href="http://spring.io/guides">示例教程</a>一样，你可以从头开始并完成每个步骤，或者你也可以跳过已经熟悉的基础章节。无论怎样，最终你要得到可以工作的代码。</p>
+
+<p>想<em>从头开始</em>，请移动到<a href="#scratch">使用Gradle构建</a>章节。</p>
+
+<p>想<em>跳过基础部分</em>，请做以下事情：</p>
+
+<ul>
+<li><p><a href="https://github.com/spring-guides/gs-soap-service/archive/master.zip">下载</a>并解压该向导的源代码，或者使用<a href="http://spring.io/understanding/Git">Git</a>复制一份： <code>git clone https://github.com/spring-guides/gs-soap-service.git</code></p></li>
+<li><p>切换到<code>gs-soap-service/initial</code></p></li>
+<li><p>跳到<a href="#initial">添加Spring-WS依赖</a>章节。</p></li>
+</ul>
+
+
+<p>当完成后，你可以使用<code>gs-soap-service/complete</code>目录中的代码检查你的结果。</p>
+
+<h3><a name="#scratch">使用Gradle构建</a></h3>
+
+<p>首先你要设置一个基本的build脚本。当构建Spring应用程序时，你可以使用任何构建系统，但是这里只包括了使用<a href="https://maven.apache.org">Maven</a>和<a href="gradle.org">Gradle</a>的代码。如果你两者都不熟悉，请访问<a href="http://spring.io/guides/gs/gradle">使用Gradle构建Java项目</a>或<a href="http://spring.io/guides/gs/maven">使用Maven构建Java项目</a>。</p>
+
+<h4>创建目录结构</h4>
+
+<p>在你选择的存放项目的目录中，创建如下的子目录结构。例如，在*nix系统中使用<code>mkdir -p src/main/java/hello</code>。</p>
+
+<pre><code class="text">
+└── src
+    └── main
+        └── java
+            └── hello
+</code></pre>
+
+<h4>创建Gradle 构建文件</h4>
+
+<p>下面是一个<a href="https://github.com/spring-guides/gs-soap-service/blob/master/initial/build.gradle">初始的Gradle build文件</a>。</p>
+
+<pre><code class="groovy build.gradle">
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://repo.spring.io/libs-release" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.5.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+jar {
+    baseName = 'gs-producing-web-service'
+    version =  '0.1.0'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "http://repo.spring.io/libs-release" }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
+</code></pre>
+
+<p><a href="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-tools/spring-boot-gradle-plugin">Spring Boot gradle插件</a>提供了很多便利的特性：</p>
+
+<ul>
+<li><p>将classpath中的所有jar包构建单个可运行的jar包，从而更容易执行和传播服务。</p></li>
+<li><p>搜索<code>public static void main（）</code>方法并标记为可运行的类。</p></li>
+<li><p>提供了一个内置的依赖管理器，设置依赖版本以匹配<a href="https://github.com/spring-projects/spring-boot/blob/master/spring-boot-dependencies/pom.xml">Spring Boot依赖</a>。你可以覆盖为任何你希望的版本，但默认会使用Boot选择的版本。</p></li>
+</ul>
+
+
+<h3>使用Maven构建</h3>
+
+<p>首先你需要设置一个基本的构建脚本。你可以使用任何构建系统来构建Spring应用程序，但这里包含了<a href="https://maven.apache.org/">Maven</a>的代码。如果你对Maven不熟，请访问<a href="http://spring.io/guides/gs/maven">使用Maven构建Java项目</a>。</p>
+
+<h4>创建目录结构</h4>
+
+<p>在你选择的存放项目的目录中，创建如下的子目录结构。例如，在*nix系统中使用<code>mkdir -p src/main/java/hello</code>。</p>
+
+<pre><code class="text">
+└── src
+    └── main
+        └── java
+            └── hello
+</code></pre>
+
+<pre><code class="xml pom.xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;gs-producting-web-service&lt;/artifactId&gt;
+    &lt;version&gt;0.1.0&lt;/version&gt;
+
+    &lt;parent&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+        &lt;version&gt;1.1.5.RELEASE&lt;/version&gt;
+    &lt;/parent&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;properties&gt;
+        &lt;!-- use UTF-8 for everything --&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;
+        &lt;start-class&gt;hello.Application&lt;/start-class&gt;
+    &lt;/properties&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+
+&lt;/project&gt;
+</code></pre>
+
+<blockquote><p>注意：你可能注意到我们指定了<em>maven-complier-plugin</em>的版本。通常并<em>不推荐</em>这样做。这里主要是为了解决我们的CI系统默认运行在该插件的早期版本（java5之前）的一个问题。</p></blockquote>
+
+<p><a href="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-tools/spring-boot-maven-plugin">Spring Boot Maven插件</a>提供了很多便利的特性：</p>
+
+<ul>
+<li><p>将classpath中的所有jar包构建单个可运行的jar包，从而更容易执行和传播服务。</p></li>
+<li><p>搜索<code>public static void main（）</code>方法并标记为可运行的类。</p></li>
+<li><p>提供了一个内置的依赖管理器，设置依赖版本以匹配<a href="https://github.com/spring-projects/spring-boot/blob/master/spring-boot-dependencies/pom.xml">Spring Boot依赖</a>。你可以覆盖为任何你希望的版本，但默认会使用Boot选择的版本。</p></li>
+</ul>
+
+
+<h3>使用Spring工具集构建</h3>
+
+<p>如果你拥有Spring工具集，只需简单的<a href="http://spring.io/guides/gs/sts/">直接导入该指南</a>。</p>
+
+<h3><a name="#initial">添加Spring-ws依赖</a></h3>
+
+<p>你创建的项目需要添加<code>spring-ws-core</code>和wsdl4j依赖到构建文件中。</p>
+
+<p>maven代码:</p>
+
+<pre><code class="xml ">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-ws&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;wsdl4j&lt;/groupId&gt;
+    &lt;artifactId&gt;wsdl4j&lt;/artifactId&gt;
+    &lt;version&gt;1.6.1&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<p>gradle代码：</p>
+
+<pre><code class="groovy">
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-ws")
+    compile("wsdl4j:wsdl4j:1.6.1")
+    jaxb("com.sun.xml.bind:jaxb-xjc:2.2.4-1")
+    compile(files(genJaxb.classesDir).builtBy(genJaxb))
+}
+</code></pre>
+
+<h3>创建XML格式来定义领域对象</h3>
+
+<p>该web service领域对象被定义在一个XML格式文件中（XSD），Spring-WS将自动导出为一个WSDL文件。</p>
+
+<p>创建一个XSD文件，包含一个操作来返回一个国家的<em>名称</em>，<em>人口</em>，<em>首都</em>和<em>货币</em>。</p>
+
+<pre><code class="xml src/main/resources/countries.xsd">
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://spring.io/guides/gs-producing-web-service"
+           targetNamespace="http://spring.io/guides/gs-producing-web-service" elementFormDefault="qualified"&gt;
+
+    &lt;xs:element name="getCountryRequest"&gt;
+        &lt;xs:complexType&gt;
+            &lt;xs:sequence&gt;
+                &lt;xs:element name="name" type="xs:string"/&gt;
+            &lt;/xs:sequence&gt;
+        &lt;/xs:complexType&gt;
+    &lt;/xs:element&gt;
+
+    &lt;xs:element name="getCountryResponse"&gt;
+        &lt;xs:complexType&gt;
+            &lt;xs:sequence&gt;
+                &lt;xs:element name="country" type="tns:country"/&gt;
+            &lt;/xs:sequence&gt;
+        &lt;/xs:complexType&gt;
+    &lt;/xs:element&gt;
+
+    &lt;xs:complexType name="country"&gt;
+        &lt;xs:sequence&gt;
+            &lt;xs:element name="name" type="xs:string"/&gt;
+            &lt;xs:element name="population" type="xs:int"/&gt;
+            &lt;xs:element name="capital" type="xs:string"/&gt;
+            &lt;xs:element name="currency" type="tns:currency"/&gt;
+        &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+
+    &lt;xs:simpleType name="currency"&gt;
+        &lt;xs:restriction base="xs:string"&gt;
+            &lt;xs:enumeration value="GBP"/&gt;
+            &lt;xs:enumeration value="EUR"/&gt;
+            &lt;xs:enumeration value="PLN"/&gt;
+        &lt;/xs:restriction&gt;
+    &lt;/xs:simpleType&gt;
+&lt;/xs:schema&gt;
+</code></pre>
+
+<h3>　基于XML格式创建领域类</h3>
+
+<p>接下来的步骤是根据XSD文件来创建java类。正确的方式是使用maven或gradle插件在构建时间自动创建。</p>
+
+<p>maven插件配置;</p>
+
+<pre><code class="xml">
+&lt;plugin&gt;
+    &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+    &lt;artifactId&gt;jaxb2-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;1.6&lt;/version&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;id&gt;xjc&lt;/id&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;xjc&lt;/goal&gt;
+            &lt;/goals&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+    &lt;configuration&gt;
+        &lt;schemaDirectory&gt;${project.basedir}/src/main/resources/&lt;/schemaDirectory&gt;
+        &lt;outputDirectory&gt;${project.basedir}/src/main/java&lt;/outputDirectory&gt;
+        &lt;clearOutputDir&gt;false&lt;/clearOutputDir&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>生成的类放置在<code>target/generated-sources/jaxb</code>目录。</p>
+
+<p>gradle插件配置如下，首先需要在构建文件中配置JAXB：</p>
+
+<pre><code class="groovy">
+configurations {
+    jaxb
+}
+
+jar {
+    baseName = 'gs-producing-web-service'
+    version =  '0.1.0'
+    from genJaxb.classesDir
+}
+
+// tag::dependencies[]
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-ws")
+    compile("wsdl4j:wsdl4j:1.6.1")
+    jaxb("com.sun.xml.bind:jaxb-xjc:2.2.4-1")
+    compile(files(genJaxb.classesDir).builtBy(genJaxb))
+}
+// end::dependencies[]
+</code></pre>
+
+<blockquote><p>注意：上面的构建文件拥有tag及end注释。目的是为了能够在本指南中更容易抽取出来并做进一步解释。在你的构建文件中无需这些注释。</p></blockquote>
+
+<p>接下来的步骤是添加任务<code>genJaxb</code>,该任务会生成java类：</p>
+
+<pre><code class="groovy">
+task genJaxb {
+    ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
+    ext.classesDir = "${buildDir}/classes/jaxb"
+    ext.schema = "src/main/resources/countries.xsd"
+
+    outputs.dir classesDir
+
+    doLast() {
+        project.ant {
+            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
+                    classpath: configurations.jaxb.asPath
+            mkdir(dir: sourcesDir)
+            mkdir(dir: classesDir)
+
+            xjc(destdir: sourcesDir, schema: schema) {
+                arg(value: "-wsdl")
+                produces(dir: sourcesDir, includes: "**/*.java")
+            }
+
+            javac(destdir: classesDir, source: 1.6, target: 1.6, debug: true,
+                    debugLevel: "lines,vars,source",
+                    classpath: configurations.jaxb.asPath) {
+                src(path: sourcesDir)
+                include(name: "**/*.java")
+                include(name: "*.java")
+            }
+
+            copy(todir: classesDir) {
+                fileset(dir: sourcesDir, erroronmissingdir: false) {
+                    exclude(name: "**/*.java")
+                }
+            }
+        }
+    }
+}
+</code></pre>
+
+<p>由于gradle还没有jaxb插件，所以它调用了一个ant任务，代码看起来比maven稍显复杂。</p>
+
+<p>在maven和gradle两个示例中，JAXB领域对象生成过程被包括在构建工具的生命周期中，所以无需额外步骤来运行。</p>
+
+<h3>创建国家仓库</h3>
+
+<p>为了给web service提供数据，需要创建一个国家仓库，在本指南中创建了一个硬编码的伪造的国家仓库实现。</p>
+
+<pre><code class="java">
+package hello;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+
+import io.spring.guides.gs_producing_web_service.Country;
+import io.spring.guides.gs_producing_web_service.Currency;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+
+@Component
+public class CountryRepository {
+    private static final List&lt;Country&gt; countries = new ArrayList&lt;Country&gt;();
+
+    @PostConstruct
+    public void initData() {
+        Country spain = new Country();
+        spain.setName("Spain");
+        spain.setCapital("Madrid");
+        spain.setCurrency(Currency.EUR);
+        spain.setPopulation(46704314);
+
+        countries.add(spain);
+
+        Country poland = new Country();
+        poland.setName("Poland");
+        poland.setCapital("Warsaw");
+        poland.setCurrency(Currency.PLN);
+        poland.setPopulation(38186860);
+
+        countries.add(poland);
+
+        Country uk = new Country();
+        uk.setName("United Kingdom");
+        uk.setCapital("London");
+        uk.setCurrency(Currency.GBP);
+        uk.setPopulation(63705000);
+
+        countries.add(uk);
+    }
+
+    public Country findCountry(String name) {
+        Assert.notNull(name);
+
+        Country result = null;
+
+        for (Country country : countries) {
+            if (name.equals(country.getName())) {
+                result = country;
+            }
+        }
+
+        return result;
+    }
+}
+</code></pre>
+
+<h3>创建国家服务终端</h3>
+
+<p>为了创建一个service endpoint，x需要一个pojo对象，以及一些Spring WS注解来处理SOAP请求：</p>
+
+<pre><code class="java">
+package hello;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+
+import io.spring.guides.gs_producing_web_service.GetCountryRequest;
+import io.spring.guides.gs_producing_web_service.GetCountryResponse;
+
+@Endpoint
+public class CountryEndpoint {
+    private static final String NAMESPACE_URI = "http://spring.io/guides/gs-producing-web-service";
+
+    private CountryRepository countryRepository;
+
+    @Autowired
+    public CountryEndpoint(CountryRepository countryRepository) {
+        this.countryRepository = countryRepository;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getCountryRequest")
+    @ResponsePayload
+    public GetCountryResponse getCountry(@RequestPayload GetCountryRequest request) {
+        GetCountryResponse response = new GetCountryResponse();
+        response.setCountry(countryRepository.findCountry(request.getName()));
+
+        return response;
+    }
+}
+</code></pre>
+
+<p><code>@Endpoint</code>向Spring WS注册了该类为一个处理来临的SOAP消息的潜在对象。</p>
+
+<p><code>@PayloadRoot</code> 被Spring WS用来根据消息的<em>命名空间</em>及<em>localPart</em>来选择处理该请求的方法。</p>
+
+<p><code>@RequestPayload</code> 指明来临的消息将被映射到该方法的request参数。</p>
+
+<p><code>@ResponsePayload</code>注解将使得Spring WS将返回值与响应负载映射起来。</p>
+
+<blockquote><p>注意：在以上代码中，如果你没有运行任务来根据WSDL生成领域对象，那么在你的IDE中io.spring.guides类将会报告编译时错误。</p></blockquote>
+
+<h3>配置web service bean</h3>
+
+<p>使用Spring WS相关的bean配置选项创建一个新的类：</p>
+
+<pre><code class="java">
+package hello;
+
+import org.springframework.boot.context.embedded.ServletRegistrationBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.ws.config.annotation.EnableWs;
+import org.springframework.ws.config.annotation.WsConfigurerAdapter;
+import org.springframework.ws.transport.http.MessageDispatcherServlet;
+import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
+import org.springframework.xml.xsd.SimpleXsdSchema;
+import org.springframework.xml.xsd.XsdSchema;
+
+@EnableWs
+@Configuration
+public class WebServiceConfig extends WsConfigurerAdapter {
+    @Bean
+    public ServletRegistrationBean dispatcherServlet(ApplicationContext applicationContext) {
+        MessageDispatcherServlet servlet = new MessageDispatcherServlet();
+        servlet.setApplicationContext(applicationContext);
+        servlet.setTransformWsdlLocations(true);
+        return new ServletRegistrationBean(servlet, "/ws/*");
+    }
+
+    @Bean(name = "countries")
+    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema countriesSchema) {
+        DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
+        wsdl11Definition.setPortTypeName("CountriesPort");
+        wsdl11Definition.setLocationUri("/ws");
+        wsdl11Definition.setTargetNamespace("http://spring.io/guides/gs-producing-web-service");
+        wsdl11Definition.setSchema(countriesSchema);
+        return wsdl11Definition;
+    }
+
+    @Bean
+    public XsdSchema countriesSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("countries.xsd"));
+    }
+}
+</code></pre>
+
+<ul>
+<li><p>这里Spring WS使用了不同的servlet类型来处理SOAP消息：<code>MessageDispatcherServlet</code>。注入及设置<code>MessageDispatcherServlet</code>给<code>ApplicationContext</code>是非常重要的。如果不这样做，Spring WS无法自动检测到Spring bean。</p></li>
+<li><p>通过给<code>dispatcherServlet</code> bean命名，<a href="http://docs.spring.io/spring-boot/docs/1.1.5.RELEASE/reference/htmlsingle/#howto-switch-off-the-spring-mvc-dispatcherservlet">替代</a>了Spring Boot中默认的<code>DispatcherServlet bean</code>。</p></li>
+<li><p><code>DefaultMethodEndpointAdapter</code>配置了注解驱动的Spring WS编程模型。这使得使用前面提过的诸如<code>@Endpoint</code>等各种各样的注解成为可能。</p></li>
+<li><p><code>DefaultWsdl11Defination</code>使用<code>XsdSchema</code>暴露了一个标准的WSDL 1.1。</p></li>
+</ul>
+
+
+<p>请注意你需要为<code>MessageDispatcherServlet</code>及<code>DefaultWsdl11Definition</code>制定bean名称，这是非常重要的。Bean名称决定了生成的WSDL文件在哪个web service是可用的。在本例中，WSDL可通过<code>http://&lt;host&gt;:&lt;port&gt;/ws/countries.wsdl</code>来访问。</p>
+
+<p>该配置也使用了WSDL位置servlet转化<code>servlet.setTransformWsdlLocations(true)</code>。如果你访问<a href="http://localhost:8080/ws/countries.wsdl">http://localhost:8080/ws/countries.wsdl</a>，<code>soap：address</code>将拥有正确的值。如果你使用本机的公共IP来访问该WSDL，你将看到的是IP。</p>
+
+<h3>创建该程序的可执行文件</h3>
+
+<p>尽管我们可以将该程序打包成一个传统的<a href="http://spring.io/understanding/WAR">war包</a>并部署到一个外部的应用程序服务器中，但是最简单的方式还是下面所演示的，创建一个能独立运行的应用程序。你可以通过老但好用的java <code>main()</code>方法，将所有文件打包到单个可执行的jar包中。同时，可以借助于Spring的支持内置<a href="http://spring.io/understanding/Tomcat">Tomcat</a> servlet容器作为HTTP运行时，从而无需部署到外部的实例中。</p>
+
+<pre><code class="java src/main/java/hello/Application.java">
+package hello;
+
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.annotation.ComponentScan;
+
+@ComponentScan
+@EnableAutoConfiguration
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+</code></pre>
+
+<p><code>main()</code>方法使用了<code>SpringApplication</code>辅助方法，将<code>Application.class</code>作为参数传递给其自身的<code>run（）</code>方法。这告诉Spring读取<code>Application</code>中的注解元数据，并将其作为<a href="http://spring.io/understanding/application-context">Spring 应用程序上下文</a>的组件。</p>
+
+<p><code>@ComponentScan</code>注解告诉Spring递归搜索<code>hello</code>包及其子包中找到被直接或者间接使用了Spring的<code>@Component</code>注解的类。该指令确保了Spring发现并注册<code>CountryRepository</code>及<code>CountriesEndpoint</code>，因为他们被标记为<code>@Component</code>及<code>@Endpoint</code>，这是一种<code>@Component</code>注解。</p>
+
+<p><code>@EnableAutoConfiguration</code>注解会基于classpath内容切换到默认的合理的行为。例如，由于应用程序依赖Tomcat的内置版本（tomcat-embed-core.jar），Spring会替你设置并配置一个默认的合理的Tomcat服务器。并且该程序还依赖Spring MVC（spring-webmvc.jar），Spring会配置并注册以恶搞Spring MVC <code>DispatcherServlet</code>，根本无需<code>web.xml</code>文件！自动配置是强大的，弹性的机制。请查看<a href="http://docs.spring.io/spring-boot/docs/1.1.5.RELEASE/api/org/springframework/boot/autoconfigure/EnableAutoConfiguration.html">API文档</a>获取更多细节。</p>
+
+<h4>构建可执行的jar包</h4>
+
+<p>你可以创建一个包含所有必须的依赖，类，及资源的可执行的JAR文件。这很方便传输，版本管理以及独立于部署生命周期来部署服务，跨不同的环境，诸如此类。</p>
+
+<pre><code class="bash">
+./gradlew build
+</code></pre>
+
+<p>然后你可以运行WAR文件：</p>
+
+<pre><code class="bash">
+java -jar build/libs/gs-soap-service-0.1.0.jar
+</code></pre>
+
+<p>如果你使用的是maven，你可以使用<code>mvn spring-boot:run</code>来运行程序，或者你可以使用<code>mvn clean package</code>构建JAR文件，并使用下面命令来运行：</p>
+
+<pre><code class="bash">
+java -jar target/gs-soap-service-0.1.0.jar
+</code></pre>
+
+<blockquote><p>注意：上面的产出物是以恶搞可运行JAR文件。你也可以<a href="http://spring.io/guides/gs/convert-jar-to-war/">创建一个经典的WAR文件</a>。</p></blockquote>
+
+<h3>　运行服务</h3>
+
+<p>如果使用的是Gradle，可以使用以下命令来运行服务：</p>
+
+<pre><code class="bash">
+./gradlew clean build &amp;&amp; java -jar build/libs/gs-soap-service-0.1.0.jar
+</code></pre>
+
+<p>注意：如果你使用的是Maven，可以使用以下命令来运行服务：<code>mvn clean package &amp;&amp; java -jar target/gs-soap-service-0.1.0.jar</code>。</p>
+
+<p>你也可以通过Gradle直接运行该程序：</p>
+
+<pre><code class="bash">
+./gradlew bootRun
+</code></pre>
+
+<blockquote><p>注意：使用mvn的话，命令是<code>mvn spring-boot:run</code>。</p></blockquote>
+
+<p>可以看到日志输出。该服务应该在几秒钟内启动并运行起来。</p>
+
+<h3>　测试该程序</h3>
+
+<p>现在该程序正在运行，你可以测试它。创建一个名为<code>request.xml</code>文件，包含以下的SOAP请求；</p>
+
+<pre><code class="xml">
+&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:gs="http://spring.io/guides/gs-producing-web-service"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;gs:getCountryRequest&gt;
+         &lt;gs:name&gt;Spain&lt;/gs:name&gt;
+      &lt;/gs:getCountryRequest&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;
+</code></pre>
+
+<p>有很多方式来测试该SOAP接口。你可以使用<a href="http://www.soapui.org/">SoapUI</a>等工具，或者如果你使用的是*nix/Mac系统的话，直接可以使用命令行，如下所示：</p>
+
+<pre><code class="bash">
+$ curl --header "content-type: text/xml" -d @request.xml http://localhost:8080/ws
+</code></pre>
+
+<p>你将看到如下的响应结果：</p>
+
+<pre><code class="xml">
+&lt;?xml version="1.0"?&gt;
+&lt;SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"&gt;
+  &lt;SOAP-ENV:Header/&gt;
+  &lt;SOAP-ENV:Body&gt;
+    &lt;ns2:getCountryResponse xmlns:ns2="http://spring.io/guides/gs-producing-web-service"&gt;
+      &lt;ns2:country&gt;
+        &lt;ns2:name&gt;Spain&lt;/ns2:name&gt;
+        &lt;ns2:population&gt;46704314&lt;/ns2:population&gt;
+        &lt;ns2:capital&gt;Madrid&lt;/ns2:capital&gt;
+        &lt;ns2:currency&gt;EUR&lt;/ns2:currency&gt;
+      &lt;/ns2:country&gt;
+    &lt;/ns2:getCountryResponse&gt;
+  &lt;/SOAP-ENV:Body&gt;
+&lt;/SOAP-ENV:Envelope&gt;
+</code></pre>
+
+<blockquote><p>注意：输出可能是一个紧凑的XML文档，而不是上面显示的格式友好的文档。如果系统中安装了xmllib2，可以使用<code>curl &lt;args above&gt; &gt; output.xml | xmllint --format output.xml</code>来查看格式友好的结果。</p></blockquote>
+
+<h3>　总结</h3>
+
+<p>恭喜你！你使用Spring Web Service开发完成了一个基于SOAP的服务。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用自定义的MessageSource实现对properties的复用]]></title>
