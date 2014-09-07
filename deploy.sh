@@ -3,6 +3,7 @@ rake generate
 rake sync_post
 rake deploy
 rake weibo
+rake linkedin
 git add -A
 
 git ci -m "$1"
