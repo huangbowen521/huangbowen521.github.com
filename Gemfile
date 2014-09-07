@@ -18,6 +18,7 @@ group :development do
   gem 'metaweblog', '~> 0.1.0'
   gem 'nokogiri', '~> 1.5.9'
   gem 'directory_watcher', '1.4.1'
+  gem 'oauth'
 end
 
 gem 'sinatra', '~> 1.4.2'

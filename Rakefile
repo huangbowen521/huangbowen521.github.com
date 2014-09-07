@@ -402,6 +402,12 @@ task :weibo do
   system "ruby _custom/post_weibo.rb"
 end
 
+desc "Post the title and url of latest blog to LinkedIn"
+task :linkedin do
+  puts "Post the title and url of latest blog to LinkedIn"
+  system "ruby _custom/post_linkedin.rb"
+end
+
 desc "sync post to MetaWeblog site"
 task :sync_post do
   puts "Sync the latest post to MetaWeblog site"

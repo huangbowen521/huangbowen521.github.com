@@ -28,6 +28,7 @@ GEM
     metaweblog (0.1.0)
     multipart-post (1.2.0)
     nokogiri (1.5.11)
+    oauth (0.4.7)
     posix-spawn (0.3.8)
     pygments.rb (0.3.7)
       posix-spawn (~> 0.3.6)
@@ -63,6 +64,7 @@ DEPENDENCIES
   liquid (~> 2.3.0)
   metaweblog (~> 0.1.0)
   nokogiri (~> 1.5.9)
+  oauth
   pygments.rb (~> 0.3.4)
   rake (~> 0.9)
   rb-fsevent (~> 0.9)
