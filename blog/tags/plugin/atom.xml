@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Tag: plugin | 黄博文的地盘]]></title>
+  <title><![CDATA[Tag: Plugin | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/plugin/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-09-05T20:13:13+10:00</updated>
+  <updated>2014-09-07T19:18:45+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,124 +14,51 @@
 
   
   <entry>
-    <title type="html"><![CDATA[一款Octopress插件用于同步博客到其他站点]]></title>
-    <link href="http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post/"/>
-    <updated>2013-04-14T22:05:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post</id>
-    <content type="html"><![CDATA[<p>即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易&hellip;&hellip;）</p>
-
-<p>这款插件源码被host在github上，地址是<a href="https://github.com/huangbowen521/octopress-syncPost">https://github.com/huangbowen521/octopress-syncPost</a>。</p>
+    <title type="html"><![CDATA[分享最新的博客到LinkedIn Timeline]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/09/07/share-latest-post-to-linkedin/"/>
+    <updated>2014-09-07T18:14:16+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/09/07/share-latest-post-to-linkedin</id>
+    <content type="html"><![CDATA[<p>使用Octopress作为我的博客框架有两年了。使用起来一直很顺手，这个工具真正的把博客跟写代码等同起来，非常酷炫。再加上各种各样的定制化，简直是随心所欲。我针对自己的需求对Octopress框架进行了一些定制化，比如编写了一些插件自动将博客同步到博客园，以及部署时将博客部署到亚马逊云的S3上等。这个周末闲着无事，写了一个插件将最新的博客信息推送到LinkedIn的timeline上去。</p>
 
 <!-- more -->
 
 
-<p>下面介绍下如何配置和使用。</p>
+<p>代码已经放置到了Github上了，地址是<a href="https://github.com/huangbowen521/octopress-linkedin">https://github.com/huangbowen521/octopress-linkedin</a>。</p>
 
-<h2>配置</h2>
+<p>先给一张图看看效果：</p>
 
-<ul>
-<li><p>迁出源码，将源码里的_custom文件夹及其里面的文件拷贝到你的octopress根目录中。</p></li>
-<li><p>在Gemfile中加入这两个依赖.</p></li>
-</ul>
+<p><img src="/images/sharesample.png"></p>
 
+<p>使用这个插件也挺简单。要做这么几步。</p>
 
-<pre><code class="ruby">  gem 'metaweblog', '~&gt; 0.1.0'
-  gem 'nokogiri', '~&gt; 1.5.9'
+<p>首先clone该repo，并复制repo里的_custom目录到你的Octopress根目录。</p>
+
+<p>然后在<a href="https://developer.linkedin.com/">LinkedIn Developer Network</a>上<a href="https://www.linkedin.com/secure/developer?newapp=">注册一个应用程序</a>，注册完毕后在应用程序页面可以得到生成的api_key, api_secret, user_token, user_secret信息，把这些信息填到<code>_custom\linkedin_config.yml</code>文件中。</p>
+
+<pre><code class="text _custom\linkedin_config.yml">
+api_key: YOUR_API_KEY
+api_secret: YOUR_API_SECRET
+user_token: YOUR_USER_TOKEN
+user_secret: YOUR_USER_SECRET
 </code></pre>
 
-<p>(The first gem is used to send post with MetaWeblog API.
-The second gem is used to parse html.)</p>
+<p><strong>注意:不要把linkedin_config.yml文件迁入到源代码管理工具中，因为这里面的数据不能泄露。</strong></p>
 
-<p>然后在终端下运行<code>bundle install</code> 安装这两个Gem.</p>
-
-<ul>
-<li>在_config.yml文件中加入MetaWeblog的配置。</li>
-</ul>
-
-
-<pre><code class="yaml">
-# MetaWeblog
-MetaWeblog_username: *YOURUSERNAME*
-MetaWeblog_password: *YOURPASSWORD*
-MetaWeblog_url: *YOURBLOGMETAWEBLOGURL*
-MetaWeblog_blogid: *BlogID*  //can be any number
-</code></pre>
-
-<p>下面是配置<a href="http://www.cnblogs.com/">cnblogs</a>的一个示例。</p>
-
-<pre><code class="yaml">
-# MetaWeblog
-MetaWeblog_username: huang0925
-MetaWeblog_password: XXXXXXXXXX
-MetaWeblog_url: http://www.cnblogs.com/huang0925/services/metaweblog.aspx
-MetaWeblog_blogid: 145005
-</code></pre>
-
-<ul>
-<li>在Rakefile加入这个task。</li>
-</ul>
-
+<p>在<code>Rakefile</code>文件中加入一个新的task。</p>
 
 <pre><code class="ruby">
-desc "sync post to MetaWeblog site"
-task :sync_post do
-  puts "Sync the latest post to MetaWeblog site"
-  system "ruby _custom/sync_post.rb"
+desc "Post the title and url of latest blog to LinkedIn"
+task :linkedin do
+  puts "Post the title and url of latest blog to LinkedIn"
+  system "ruby _custom/post_linkedin.rb"
 end
 </code></pre>
 
-<h2>如何使用</h2>
+<p>在<code>Gemfile</code>文件中添加一个新依赖: <code>gem oauth</code>，然后运行<code>bundle install</code>。</p>
 
-<ol>
-<li><p>运行 <code>rake generate</code> 生成最新的站点文件。</p></li>
-<li><p>运行 <code>rake sync_post</code> 将最新的一篇博客同步到你的站点。</p></li>
-</ol>
+<p>OK，大功告成，只需运行<code>rake linkedin</code>命名可以把最新的博客信息分享到你的LinkedIn中去。</p>
 
-
-<p><strong>请注意:</strong></p>
-
-<ol>
-<li><p>发布完后请检查image的链接是否正确（如果原博客使用的image链接是相对路径则需要进行修正）。</p></li>
-<li><p>一些站点需要你启用MetaWeblog功能。（如<a href="http://www.cnblogs.com/">cnblogs</a>的管理页面有这个设置选项。）</p></li>
-</ol>
-
-
-<h2>如何保持相应的样式。</h2>
-
-<p>使用<a href="http://www.cnblogs.com/">cnblogs</a>作为一个例子.</p>
-
-<ol>
-<li><p>将你的octopress中的screen.css通过博客园提供的文件管理上传到博客园中.</p></li>
-<li><p>在博客设置中的'页首html代码'中加入对screen.css文件的使用.</p></li>
-</ol>
-
-
-<h2>一些支持MetaWeblog API的站点.</h2>
-
-<ul>
-<li><p>Wordpress</p>
-
-<p>  If your WordPress root is <a href="http://example.com/wordpress/,">http://example.com/wordpress/,</a> then you have:
-  Server: <a href="http://example.com/">http://example.com/</a> (some tools need just the &lsquo;example.com&rsquo; hostname part)
-  Path: /wordpress/xmlrpc.php
-  complete URL (just in case): <a href="http://example.com/wordpress/xmlrpc.php">http://example.com/wordpress/xmlrpc.php</a></p></li>
-<li><p>51CTO.com</p>
-
-<p>  URL：<a href="http://">http://</a><yourBlogUrl>/xmlrpc.php（example: <a href="http://magong.blog.51cto.com/xmlrpc.php%EF%BC%89">http://magong.blog.51cto.com/xmlrpc.php%EF%BC%89</a></p></li>
-<li><p>博客大巴</p>
-
-<p>  URL：<a href="http://www.blogbus.com/">http://www.blogbus.com/</a><accountName>/app.php（example: <a href="http://www.blogbus.com/holly0801/app.php">http://www.blogbus.com/holly0801/app.php</a></p></li>
-<li><p>CSDN</p>
-
-<p>  URL：<a href="http://hi.csdn.net/">http://hi.csdn.net/</a><accountName>/services/metablogapi.aspx（example: <a href="http://hi.csdn.net/bvbook/services/metablogapi.aspx%EF%BC%89">http://hi.csdn.net/bvbook/services/metablogapi.aspx%EF%BC%89</a></p></li>
-<li><p>博客园</p>
-
-<p>  URL：<a href="http://www.cnblogs.com/">http://www.cnblogs.com/</a><accountName>/services/metaweblog.aspx（example: <a href="http://www.cnblogs.com/bvbook/services/metaweblog.aspx%EF%BC%89">http://www.cnblogs.com/bvbook/services/metaweblog.aspx%EF%BC%89</a></p></li>
-<li><p>网易</p>
-
-<p>  URL: <a href="http://">http://</a><accountName>.blog.163.com/ (example: <a href="http://huang0925.blog.163.com/">http://huang0925.blog.163.com/</a>).</p></li>
-</ul>
-
+<p>你也可以定制化显示在LinkedIn上的信息，只需修改<code>_custom\linkedin.xml</code>文件即可。该文件的进一步解释可以参见<a href="https://developer.linkedin.com/documents/share-api#toggleview:id=xml">LinkedIn Share API文档</a>。</p>
 ]]></content>
   </entry>
   

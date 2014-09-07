@@ -4,7 +4,7 @@
   <title><![CDATA[Tag: Octopress | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/tags/octopress/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-09-05T20:13:13+10:00</updated>
+  <updated>2014-09-07T19:18:45+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,55 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[分享最新的博客到LinkedIn Timeline]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/09/07/share-latest-post-to-linkedin/"/>
+    <updated>2014-09-07T18:14:16+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/09/07/share-latest-post-to-linkedin</id>
+    <content type="html"><![CDATA[<p>使用Octopress作为我的博客框架有两年了。使用起来一直很顺手，这个工具真正的把博客跟写代码等同起来，非常酷炫。再加上各种各样的定制化，简直是随心所欲。我针对自己的需求对Octopress框架进行了一些定制化，比如编写了一些插件自动将博客同步到博客园，以及部署时将博客部署到亚马逊云的S3上等。这个周末闲着无事，写了一个插件将最新的博客信息推送到LinkedIn的timeline上去。</p>
+
+<!-- more -->
+
+
+<p>代码已经放置到了Github上了，地址是<a href="https://github.com/huangbowen521/octopress-linkedin">https://github.com/huangbowen521/octopress-linkedin</a>。</p>
+
+<p>先给一张图看看效果：</p>
+
+<p><img src="/images/sharesample.png"></p>
+
+<p>使用这个插件也挺简单。要做这么几步。</p>
+
+<p>首先clone该repo，并复制repo里的_custom目录到你的Octopress根目录。</p>
+
+<p>然后在<a href="https://developer.linkedin.com/">LinkedIn Developer Network</a>上<a href="https://www.linkedin.com/secure/developer?newapp=">注册一个应用程序</a>，注册完毕后在应用程序页面可以得到生成的api_key, api_secret, user_token, user_secret信息，把这些信息填到<code>_custom\linkedin_config.yml</code>文件中。</p>
+
+<pre><code class="text _custom\linkedin_config.yml">
+api_key: YOUR_API_KEY
+api_secret: YOUR_API_SECRET
+user_token: YOUR_USER_TOKEN
+user_secret: YOUR_USER_SECRET
+</code></pre>
+
+<p><strong>注意:不要把linkedin_config.yml文件迁入到源代码管理工具中，因为这里面的数据不能泄露。</strong></p>
+
+<p>在<code>Rakefile</code>文件中加入一个新的task。</p>
+
+<pre><code class="ruby">
+desc "Post the title and url of latest blog to LinkedIn"
+task :linkedin do
+  puts "Post the title and url of latest blog to LinkedIn"
+  system "ruby _custom/post_linkedin.rb"
+end
+</code></pre>
+
+<p>在<code>Gemfile</code>文件中添加一个新依赖: <code>gem oauth</code>，然后运行<code>bundle install</code>。</p>
+
+<p>OK，大功告成，只需运行<code>rake linkedin</code>命名可以把最新的博客信息分享到你的LinkedIn中去。</p>
+
+<p>你也可以定制化显示在LinkedIn上的信息，只需修改<code>_custom\linkedin.xml</code>文件即可。该文件的进一步解释可以参见<a href="https://developer.linkedin.com/documents/share-api#toggleview:id=xml">LinkedIn Share API文档</a>。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[将我的博客迁移到亚马逊云端(1)]]></title>
