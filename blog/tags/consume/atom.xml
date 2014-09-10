@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tag: Consume | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/consume/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-09-10T23:37:51+10:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[翻译-使用Spring调用SOAP web service]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/09/10/consuming-web-service/"/>
+    <updated>2014-09-10T23:02:41+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/09/10/consuming-web-service</id>
+    <content type="html"><![CDATA[<p>原文链接: <a href="http://spring.io/guides/gs/consuming-web-service/">http://spring.io/guides/gs/consuming-web-service/</a></p>
+
+<h2>调用SOAP web service</h2>
+
+<p>本指南将指导你使用Spring调用一个基于SOAP的web service的整个过程。</p>
+
+<!-- more -->
+
+
+<h3>指南内容</h3>
+
+<p>你将构建一个客户端，使用SOAP用来从远端的基于WSDL的web service获取天气数据。请访问<a href="http://wiki.cdyne.com/index.php/CDYNE_Weather">http://wiki.cdyne.com/index.php/CDYNE_Weather</a>进一步获取该天气服务的信息。</p>
+
+<p>该服务根据邮编返回天气预测。你可以使用自己的邮编。</p>
+
+<h3>准备事项</h3>
+
+<ul>
+<li><p>大约15分钟</p></li>
+<li><p>钟爱的编辑器或IDE</p></li>
+<li><p>JDK1.6或更高版本</p></li>
+<li><p>Gradle 1.11+ 或 Maven 3.0+</p></li>
+<li><p>你也可以直接参阅该指南导入代码，或通过Spring工具集（Spring Tool Suite，简称STS)通过网页浏览代码，从而帮助你学习该章节内容。源码下载地址:<a href="https://github.com/spring-guides/gs-consuming-web-service.git">https://github.com/spring-guides/gs-consuming-web-service.git</a>。</p></li>
+</ul>
+
+
+<h3>如何完成该指南</h3>
+
+<p>如同大多数的<a href="http://spring.io/guides">示例教程</a>一样，你可以从头开始并完成每个步骤，或者你也可以跳过已经熟悉的基础章节。无论怎样，最终你要得到可以工作的代码。</p>
+
+<p>想<em>从头开始</em>，请移动到<a href="#scratch">使用Gradle构建</a>章节。</p>
+
+<p>想<em>跳过基础部分</em>，请做以下事情：</p>
+
+<ul>
+<li><p><a href="">下载</a>并解压该向导的源代码，或者使用<a href="ttp://spring.io/understanding/Git">Git</a>复制一份： <code>git clone https://github.com/spring-guides/gs-consuming-web-service.git</code></p></li>
+<li><p>切换到<code>gs-consuming-web-service/initial</code></p></li>
+<li><p>跳到基于WSDL生成领域对象章节。</p></li>
+</ul>
+
+
+<p>当完成后，你可以使用<code>gs-consuming-web-service/complete</code>目录中的代码检查你的结果。</p>
+
+<h3><a name="#scratch">使用Gradle构建</a></h3>
+
+<p>首先你要设置一个基本的build脚本。当构建Spring应用程序时，你可以使用任何构建系统，但是这里只包括了使用<a href="https://maven.apache.org">Maven</a>和<a href="gradle.org">Gradle</a>的代码。如果你两者都不熟悉，请访问<a href="http://spring.io/guides/gs/gradle">使用Gradle构建Java项目</a>或<a href="http://spring.io/guides/gs/maven">使用Maven构建Java项目</a>。</p>
+
+<h4>创建目录结构</h4>
+
+<p>在你选择的存放项目的目录中，创建如下的子目录结构。例如，在*nix系统中使用<code>mkdir -p src/main/java/hello</code>。</p>
+
+<pre><code class="text">
+└── src
+    └── main
+        └── java
+            └── hello
+</code></pre>
+
+<h4>创建Gradle 构建文件</h4>
+
+<p>下面是一个<a href="https://github.com/spring-guides/gs-consuming-web-service/blob/master/initial/build.gradle">初始的Gradle build文件</a>。</p>
+
+<pre><code class="groovy build.gradle">
+configurations {
+    jaxb
+}
+
+buildscript {
+    repositories {
+        maven { url "http://repo.spring.io/libs-release" }
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.6.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url 'http://repo.spring.io/libs-release' }
+}
+
+// tag::wsdl[]
+task genJaxb {
+    ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
+    ext.classesDir = "${buildDir}/classes/jaxb"
+    ext.schema = "http://wsf.cdyne.com/WeatherWS/Weather.asmx?wsdl"
+
+    outputs.dir classesDir
+
+    doLast() {
+        project.ant {
+            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
+                    classpath: configurations.jaxb.asPath
+            mkdir(dir: sourcesDir)
+            mkdir(dir: classesDir)
+
+            xjc(destdir: sourcesDir, schema: schema,
+                    package: "hello.wsdl") {
+                arg(value: "-wsdl")
+                produces(dir: sourcesDir, includes: "**/*.java")
+            }
+
+            javac(destdir: classesDir, source: 1.6, target: 1.6, debug: true,
+                    debugLevel: "lines,vars,source",
+                    classpath: configurations.jaxb.asPath) {
+                src(path: sourcesDir)
+                include(name: "**/*.java")
+                include(name: "*.java")
+            }
+
+            copy(todir: classesDir) {
+                fileset(dir: sourcesDir, erroronmissingdir: false) {
+                    exclude(name: "**/*.java")
+                }
+            }
+        }
+    }
+}
+// end::wsdl[]
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter")
+    compile("org.springframework.ws:spring-ws-core")
+    compile(files(genJaxb.classesDir).builtBy(genJaxb))
+
+    jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
+}
+
+jar {
+    from genJaxb.classesDir
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
+
+task afterEclipseImport {
+    dependsOn genJaxb
+}
+</code></pre>
+
+<p><a href="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-tools/spring-boot-gradle-plugin">Spring Boot gradle插件</a>提供了很多便利的特性：</p>
+
+<ul>
+<li><p>将classpath中的所有jar包构建单个可运行的jar包，从而更容易执行和传播服务。</p></li>
+<li><p>搜索<code>public static void main（）</code>方法并标记为可运行的类。</p></li>
+<li><p>提供了一个内置的依赖管理器，设置依赖版本以匹配<a href="https://github.com/spring-projects/spring-boot/blob/master/spring-boot-dependencies/pom.xml">Spring Boot依赖</a>。你可以覆盖为任何你希望的版本，但默认会使用Boot选择的版本。</p></li>
+</ul>
+
+
+<h3>使用Maven构建</h3>
+
+<p>首先你需要设置一个基本的构建脚本。你可以使用任何构建系统来构建Spring应用程序，但这里包含了<a href="https://maven.apache.org/">Maven</a>的代码。如果你对Maven不熟，请访问<a href="http://spring.io/guides/gs/maven">使用Maven构建Java项目</a>。</p>
+
+<h4>创建目录结构</h4>
+
+<p>在你选择的存放项目的目录中，创建如下的子目录结构。例如，在*nix系统中使用<code>mkdir -p src/main/java/hello</code>。</p>
+
+<pre><code class="text">
+└── src
+    └── main
+        └── java
+            └── hello
+</code></pre>
+
+<pre><code class="xml pom.xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;gs-consuming-web-service&lt;/artifactId&gt;
+    &lt;version&gt;0.1.0&lt;/version&gt;
+
+    &lt;parent&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+        &lt;version&gt;1.1.6.RELEASE&lt;/version&gt;
+    &lt;/parent&gt;
+
+    &lt;properties&gt;
+        &lt;!-- use UTF-8 for everything --&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;
+    &lt;/properties&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.ws&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-ws-core&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;version&gt;2.3.2&lt;/version&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+            &lt;!-- tag::wsdl[] --&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.jvnet.jaxb2.maven2&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-jaxb2-plugin&lt;/artifactId&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;generate&lt;/goal&gt;
+                        &lt;/goals&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+                &lt;configuration&gt;
+                    &lt;schemaLanguage&gt;WSDL&lt;/schemaLanguage&gt;
+                    &lt;generatePackage&gt;hello.wsdl&lt;/generatePackage&gt;
+                    &lt;forceRegenerate&gt;true&lt;/forceRegenerate&gt;
+                    &lt;schemas&gt;
+                        &lt;schema&gt;
+                            &lt;url&gt;http://wsf.cdyne.com/WeatherWS/Weather.asmx?wsdl&lt;/url&gt;
+                        &lt;/schema&gt;
+                    &lt;/schemas&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+            &lt;!-- end::wsdl[] --&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+
+    &lt;repositories&gt;
+        &lt;repository&gt;
+            &lt;id&gt;spring-releases&lt;/id&gt;
+            &lt;name&gt;Spring Releases&lt;/name&gt;
+            &lt;url&gt;http://repo.spring.io/libs-release&lt;/url&gt;
+        &lt;/repository&gt;
+    &lt;/repositories&gt;
+    &lt;pluginRepositories&gt;
+        &lt;pluginRepository&gt;
+            &lt;id&gt;spring-releases&lt;/id&gt;
+            &lt;url&gt;http://repo.spring.io/libs-release&lt;/url&gt;
+        &lt;/pluginRepository&gt;
+    &lt;/pluginRepositories&gt;
+
+&lt;/project&gt;
+</code></pre>
+
+<blockquote><p>注意：你可能注意到我们指定了<em>maven-complier-plugin</em>的版本。通常并<em>不推荐</em>这样做。这里主要是为了解决我们的CI系统默认运行在该插件的早期版本（java5之前）的一个问题。</p></blockquote>
+
+<p><a href="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-tools/spring-boot-maven-plugin">Spring Boot Maven插件</a>提供了很多便利的特性：</p>
+
+<ul>
+<li><p>将classpath中的所有jar包构建单个可运行的jar包，从而更容易执行和传播服务。</p></li>
+<li><p>搜索<code>public static void main（）</code>方法并标记为可运行的类。</p></li>
+<li><p>提供了一个内置的依赖管理器，设置依赖版本以匹配<a href="https://github.com/spring-projects/spring-boot/blob/master/spring-boot-dependencies/pom.xml">Spring Boot依赖</a>。你可以覆盖为任何你希望的版本，但默认会使用Boot选择的版本。</p></li>
+</ul>
+
+
+<h3>使用Spring工具集构建</h3>
+
+<p>如果你拥有Spring工具集，只需简单的<a href="http://spring.io/guides/gs/sts/">直接导入该指南</a>。</p>
+
+<blockquote><p>注意:如果你阅读过生成SOAP web service,你可能会疑惑为什么该指南没有使用<strong>spring-boot-starter-ws</strong>?这是因为Spring Boot Starter只用于服务器端程序。Starter提供了诸如嵌入式Tomcat等功能，而服务调用则不需要这些。</p></blockquote>
+
+<h3>基于WSDL生成领域对象</h3>
+
+<p>SOAP web service的接口描述在<a href="http://en.wikipedia.org/wiki/Web_Services_Description_Language">WSDL</a>文件中。JAXB提供了一个简单的方式来从WSDL（或者WSDL中包含在<code>&lt;Types/&gt;</code>节点中的XSD）生成Java类。可以访问<a href="http://wsf.cdyne.com/WeatherWS/Weather.asmx?wsdl">http://wsf.cdyne.com/WeatherWS/Weather.asmx?wsdl</a>获取该天气服务的WSDL。</p>
+
+<p>你需要下列插件来使用maven从WSDL生成Java类：</p>
+
+<pre><code class="xml">
+&lt;plugin&gt;
+    &lt;groupId&gt;org.jvnet.jaxb2.maven2&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-jaxb2-plugin&lt;/artifactId&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;generate&lt;/goal&gt;
+            &lt;/goals&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+    &lt;configuration&gt;
+        &lt;schemaLanguage&gt;WSDL&lt;/schemaLanguage&gt;
+        &lt;generatePackage&gt;hello.wsdl&lt;/generatePackage&gt;
+        &lt;forceRegenerate&gt;true&lt;/forceRegenerate&gt;
+        &lt;schemas&gt;
+            &lt;schema&gt;
+                &lt;url&gt;http://wsf.cdyne.com/WeatherWS/Weather.asmx?wsdl&lt;/url&gt;
+            &lt;/schema&gt;
+        &lt;/schemas&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>该代码将通过指定的WSDL的URL生成类，并放置在<code>hello.wsdl</code>包中。</p>
+
+<p>你也可以使用下列代码在Gradle中完成同样的事：</p>
+
+<pre><code class="groovy">
+task genJaxb {
+    ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
+    ext.classesDir = "${buildDir}/classes/jaxb"
+    ext.schema = "http://wsf.cdyne.com/WeatherWS/Weather.asmx?wsdl"
+
+    outputs.dir classesDir
+
+    doLast() {
+        project.ant {
+            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
+                    classpath: configurations.jaxb.asPath
+            mkdir(dir: sourcesDir)
+            mkdir(dir: classesDir)
+
+            xjc(destdir: sourcesDir, schema: schema,
+                    package: "hello.wsdl") {
+                arg(value: "-wsdl")
+                produces(dir: sourcesDir, includes: "**/*.java")
+            }
+
+            javac(destdir: classesDir, source: 1.6, target: 1.6, debug: true,
+                    debugLevel: "lines,vars,source",
+                    classpath: configurations.jaxb.asPath) {
+                src(path: sourcesDir)
+                include(name: "**/*.java")
+                include(name: "*.java")
+            }
+
+            copy(todir: classesDir) {
+                fileset(dir: sourcesDir, erroronmissingdir: false) {
+                    exclude(name: "**/*.java")
+                }
+            }
+        }
+    }
+}
+</code></pre>
+
+<p>由于gradle还没有jaxb插件，所以它调用了一个ant任务，代码看起来比maven稍显复杂。
+在maven和gradle两个示例中，JAXB领域对象生成过程被包括在构建工具的生命周期中，所以无需额外步骤来运行。</p>
+
+<h3>创建天气服务客户端</h3>
+
+<p>创建一个web service客户端，你只需要扩展<code>WebServiceGatewaySupport</code>类并编写操作代码：</p>
+
+<pre><code class="java src/main/java/hello/WeatherClient.java">
+
+package hello;
+
+import java.text.SimpleDateFormat;
+
+import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.client.core.SoapActionCallback;
+
+import hello.wsdl.Forecast;
+import hello.wsdl.ForecastReturn;
+import hello.wsdl.GetCityForecastByZIP;
+import hello.wsdl.GetCityForecastByZIPResponse;
+import hello.wsdl.Temp;
+
+public class WeatherClient extends WebServiceGatewaySupport {
+
+    public GetCityForecastByZIPResponse getCityForecastByZip(String zipCode) {
+        GetCityForecastByZIP request = new GetCityForecastByZIP();
+        request.setZIP(zipCode);
+
+        System.out.println();
+        System.out.println("Requesting forecast for " + zipCode);
+
+        GetCityForecastByZIPResponse response = (GetCityForecastByZIPResponse) getWebServiceTemplate().marshalSendAndReceive(
+                request,
+                new SoapActionCallback(
+                        "http://ws.cdyne.com/WeatherWS/GetCityForecastByZIP"));
+
+        return response;
+    }
+
+    public void printResponse(GetCityForecastByZIPResponse response) {
+        ForecastReturn forecastReturn = response.getGetCityForecastByZIPResult();
+
+        if (forecastReturn.isSuccess()) {
+            System.out.println();
+            System.out.println("Forecast for " + forecastReturn.getCity() + ", "
+                    + forecastReturn.getState());
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            for (Forecast forecast : forecastReturn.getForecastResult().getForecast()) {
+                System.out.print(format.format(forecast.getDate().toGregorianCalendar().getTime()));
+                System.out.print(" ");
+                System.out.print(forecast.getDesciption());
+                System.out.print(" ");
+                Temp temperature = forecast.getTemperatures();
+                System.out.print(temperature.getMorningLow() + "\u00b0-"
+                        + temperature.getDaytimeHigh() + "\u00b0 ");
+                System.out.println();
+            }
+        } else {
+            System.out.println("No forecast received");
+        }
+    }
+
+}
+</code></pre>
+
+<p>该客户端包含了两个方法。<code>getCityForecastByZip</code>用于实际的SOAP交换;<code>printResponse</code>打印收到的响应结果。我们重点关注第一个方法。</p>
+
+<p>在该方法中，<code>GetCityForecastByZIP</code>及<code>GetCityForecastByZIPResponse</code>类衍生于WSDL中，被前一个步骤描述过的JAXB生成。该方法创建了<code>GetCityForecastByZIP</code>请求对象并设置了<code>zipCode</code>参数。打印出邮编后，使用WebServiceGatewaySupport基类提供的<a href="http://docs.spring.io/spring-ws/sites/2.0/apidocs/org/springframework/ws/client/core/WebServiceTemplate.html">WebServiceTemplate</a>来进行实际的SOAP交换。它传入<code>GetCityForecastByZIP</code>请求对象，以及一个<code>SoapActionCallback</code>来传入<a href="http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383528">SOAPAction</a>头，因为WSDL说明其需要在<code>&lt;soap:operation/&gt;</code>元素中使用该头。该方法将返回值转换为<code>GetCityForecastByZIPResponse</code>对象，然后返回该对象。</p>
+
+<h3>配置web service组件</h3>
+
+<p>Spring WS使用了Spring框架的OXM模块。该模块拥有<code>Jaxb2Marshaller</code>类来序列化和反序列化XML请求。</p>
+
+<pre><code class="java src/main/java/hello/WeatherConfiguration.java">
+package hello;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+
+@Configuration
+public class WeatherConfiguration {
+
+    @Bean
+    public Jaxb2Marshaller marshaller() {
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setContextPath("hello.wsdl");
+        return marshaller;
+    }
+
+    @Bean
+    public WeatherClient weatherClient(Jaxb2Marshaller marshaller) {
+        WeatherClient client = new WeatherClient();
+        client.setDefaultUri("http://wsf.cdyne.com/WeatherWS/Weather.asmx");
+        client.setMarshaller(marshaller);
+        client.setUnmarshaller(marshaller);
+        return client;
+    }
+
+}
+</code></pre>
+
+<p><code>marshaller</code>被指向了生成的领域对象集合，将使用这些对象来实现XML和POJO之间的序列化和反序列化。</p>
+
+<p>我们使用了上面显示的天气服务URI创建和配置了<code>weatherClient</code>。他也被配置使用JAXB marshaller。</p>
+
+<h3>生成可执行的应用程序</h3>
+
+<p>该应用程序被打包后可运行与命令行，传入一个邮编则会得到一个天气预报。</p>
+
+<pre><code class="java src/main/java/hello/Application.java">
+package hello;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+
+import hello.wsdl.GetCityForecastByZIPResponse;
+
+public class Application {
+
+    public static void main(String[] args) {
+        ApplicationContext ctx = SpringApplication.run(WeatherConfiguration.class, args);
+
+        WeatherClient weatherClient = ctx.getBean(WeatherClient.class);
+
+        String zipCode = "94304";
+        if (args.length &gt; 0) {
+            zipCode = args[0];
+        }
+        GetCityForecastByZIPResponse response = weatherClient.getCityForecastByZip(zipCode);
+        weatherClient.printResponse(response);
+    }
+
+}
+</code></pre>
+
+<p><code>main()</code>方法调用了<code>SpringApplication</code>辅助方法，并向其<code>run()</code>方法传入了<code>WeatherConfiguration.class</code>参数。这会使<code>Spring从WeatherConfiguration</code>中读取注解元数据，并作为<a href="http://spring.io/understanding/application-context">Spring应用程序上下文中</a>的一个组件进行管理。</p>
+
+<blockquote><p>注意:该应用程序硬编码了邮编94304，Palo Alto, CA。在该指南的最后，你可以看到如何添加不同的邮编而不用修改代码。</p></blockquote>
+
+<h3>构建可执行的jar包</h3>
+
+<p>你可以创建一个包含所有必须的依赖，类，及资源的可执行的JAR文件。这很方便传输，版本管理以及独立于部署生命周期来部署服务，跨不同的环境，诸如此类。</p>
+
+<pre><code class="bash">
+gradlew build
+</code></pre>
+
+<p>然后你可以运行WAR文件：</p>
+
+<pre><code class="bash">
+java -jar build/libs/gs-consuming-web-service-0.1.0.jar
+</code></pre>
+
+<p>如果你使用的是maven，你可以使用<code>mvn spring-boot:run</code>来运行程序，或者你可以使用<code>mvn clean package</code>构建JAR文件，并使用下面命令来运行：</p>
+
+<pre><code class="bash">
+java -jar target/gs-consuming-web-service-0.1.0.jar
+</code></pre>
+
+<blockquote><p>注意：上面的产出物是一个可运行JAR文件。你也可以<a href="http://spring.io/guides/gs/convert-jar-to-war/">创建一个经典的WAR文件</a>。　</p></blockquote>
+
+<h3>运行服务</h3>
+
+<p>如果使用的是Gradle，可以使用以下命令来运行服务：</p>
+
+<pre><code class="bash">
+gradlew clean build &amp;&amp; java -jar build/libs/gs-consuming-web-service-0.1.0.jar
+</code></pre>
+
+<blockquote><p>注意：如果你使用的是Maven，可以使用以下命令来运行服务：<code>mvn clean package &amp;&amp; java -jar target/gs-consuming-web-service-0.1.0.jar</code>。</p></blockquote>
+
+<p>你也可以通过Gradle直接运行该程序：</p>
+
+<pre><code class="bash">
+gradlew bootRun
+</code></pre>
+
+<blockquote><p>注意：使用mvn的话，命令是<code>mvn spring-boot:run</code>。</p></blockquote>
+
+<p>可以看到日志输出。该服务应该在几秒钟内启动并运行起来。</p>
+
+<pre><code class="text">
+Requesting forecast for94304ForecastforPaloAlto, CA2013-01-03PartlyCloudy°-57°2013-01-04PartlyCloudy41°-58°2013-01-05PartlyCloudy41°-59°2013-01-06PartlyCloudy44°-56°2013-01-07PartlyCloudy41°-60°2013-01-08PartlyCloudy42°-60°2013-01-09PartlyCloudy43°-58°
+</code></pre>
+
+<p>你也可以使用不同的邮编：<code>java -jar build/libs/gs-consuming-web-service-0.1.0.jar 34769</code></p>
+
+<pre><code class="text">
+Requesting forecast for34769ForecastforSaintCloud, FL2014-02-18Sunny51°-79°2014-02-19Sunny55°-81°2014-02-20Sunny59°-84°2014-02-21PartlyCloudy63°-85°2014-02-22PartlyCloudy63°-84°2014-02-23PartlyCloudy63°-82°2014-02-24PartlyCloudy62°-80°
+</code></pre>
+
+<h3>总结</h3>
+
+<p>恭喜你！你开发了一个客户端来使用Spring调用一个基于SOAP的web service。</p>
+]]></content>
+  </entry>
+  
+</feed>
