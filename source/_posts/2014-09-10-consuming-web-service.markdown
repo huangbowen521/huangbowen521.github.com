@@ -568,8 +568,16 @@ gradlew bootRun
 
 ```text
 
-Requesting forecast for94304ForecastforPaloAlto, CA2013-01-03PartlyCloudy°-57°2013-01-04PartlyCloudy41°-58°2013-01-05PartlyCloudy41°-59°2013-01-06PartlyCloudy44°-56°2013-01-07PartlyCloudy41°-60°2013-01-08PartlyCloudy42°-60°2013-01-09PartlyCloudy43°-58°
+Requesting forecast for 94304
 
+Forecast for Palo Alto, CA
+2013-01-03 Partly Cloudy °-57°
+2013-01-04 Partly Cloudy 41°-58°
+2013-01-05 Partly Cloudy 41°-59°
+2013-01-06 Partly Cloudy 44°-56°
+2013-01-07 Partly Cloudy 41°-60°
+2013-01-08 Partly Cloudy 42°-60°
+2013-01-09 Partly Cloudy 43°-58°
 
 ```
 
@@ -577,7 +585,16 @@ Requesting forecast for94304ForecastforPaloAlto, CA2013-01-03PartlyCloudy°-57°
 
 ```text
 
-Requesting forecast for34769ForecastforSaintCloud, FL2014-02-18Sunny51°-79°2014-02-19Sunny55°-81°2014-02-20Sunny59°-84°2014-02-21PartlyCloudy63°-85°2014-02-22PartlyCloudy63°-84°2014-02-23PartlyCloudy63°-82°2014-02-24PartlyCloudy62°-80°
+Requesting forecast for 34769
+
+Forecast for Saint Cloud, FL
+2014-02-18 Sunny 51°-79°
+2014-02-19 Sunny 55°-81°
+2014-02-20 Sunny 59°-84°
+2014-02-21 Partly Cloudy 63°-85°
+2014-02-22 Partly Cloudy 63°-84°
+2014-02-23 Partly Cloudy 63°-82°
+2014-02-24 Partly Cloudy 62°-80°
 
 
 ```
