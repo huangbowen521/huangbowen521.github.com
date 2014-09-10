@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-09-10T23:37:51+10:00</updated>
+  <updated>2014-09-11T00:06:39+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -893,14 +893,50 @@
 <p>可以看到日志输出。该服务应该在几秒钟内启动并运行起来。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>Requesting forecast for94304ForecastforPaloAlto, CA2013-01-03PartlyCloudy°-57°2013-01-04PartlyCloudy41°-58°2013-01-05PartlyCloudy41°-59°2013-01-06PartlyCloudy44°-56°2013-01-07PartlyCloudy41°-60°2013-01-08PartlyCloudy42°-60°2013-01-09PartlyCloudy43°-58°
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>Requesting forecast for 94304
+</span><span class='line'>
+</span><span class='line'>Forecast for Palo Alto, CA
+</span><span class='line'>2013-01-03 Partly Cloudy °-57°
+</span><span class='line'>2013-01-04 Partly Cloudy 41°-58°
+</span><span class='line'>2013-01-05 Partly Cloudy 41°-59°
+</span><span class='line'>2013-01-06 Partly Cloudy 44°-56°
+</span><span class='line'>2013-01-07 Partly Cloudy 41°-60°
+</span><span class='line'>2013-01-08 Partly Cloudy 42°-60°
+</span><span class='line'>2013-01-09 Partly Cloudy 43°-58°
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>你也可以使用不同的邮编：<code>java -jar build/libs/gs-consuming-web-service-0.1.0.jar 34769</code></p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>Requesting forecast for34769ForecastforSaintCloud, FL2014-02-18Sunny51°-79°2014-02-19Sunny55°-81°2014-02-20Sunny59°-84°2014-02-21PartlyCloudy63°-85°2014-02-22PartlyCloudy63°-84°2014-02-23PartlyCloudy63°-82°2014-02-24PartlyCloudy62°-80°
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>Requesting forecast for 34769
+</span><span class='line'>
+</span><span class='line'>Forecast for Saint Cloud, FL
+</span><span class='line'>2014-02-18 Sunny 51°-79°
+</span><span class='line'>2014-02-19 Sunny 55°-81°
+</span><span class='line'>2014-02-20 Sunny 59°-84°
+</span><span class='line'>2014-02-21 Partly Cloudy 63°-85°
+</span><span class='line'>2014-02-22 Partly Cloudy 63°-84°
+</span><span class='line'>2014-02-23 Partly Cloudy 63°-82°
+</span><span class='line'>2014-02-24 Partly Cloudy 62°-80°
 </span></code></pre></td></tr></table></div></figure>
 
 
