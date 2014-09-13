@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-09-11T00:06:39+10:00</updated>
+  <updated>2014-09-13T20:29:25+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,31 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[一句话解释c#中的特性]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/09/11/jieshi/"/>
+    <updated>2014-09-11T02:12:19+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/09/11/jieshi</id>
+    <content type="html"><![CDATA[<p>自己闲着无聊写的，当然有些描述不是十分准确，毕竟一句话不能表达太多意思。</p>
+
+<ul>
+<li><p>委托:把方法当做参数进行传递。</p></li>
+<li><p>泛型:在类、方法中对使用的类型参数化。</p></li>
+<li><p>匿名方法:委托及调用委托的简化版。</p></li>
+<li><p>Lambda表达式:匿名方法的进一步进化。</p></li>
+<li><p>扩展方法:给现有类添加新的方法。</p></li>
+<li><p>LINQ: 将SQL方式的查询从数据库扩展到其它方面（集合对象，XML等）。</p></li>
+<li><p>反射:获取运行时类型信息。</p></li>
+<li><p>部分类: 把一个类的声明分散到多个文件中。</p></li>
+<li><p>类型推断:编译时自动推断类型。</p></li>
+<li><p>匿名类型:封装只读属性的对象。</p></li>
+<li><p>自动属性:编译器帮你自动生成一个私有变量。</p></li>
+<li><p>动态绑定:将类型从编译时推迟到运行时绑定。</p></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[翻译-使用Spring调用SOAP Web Service]]></title>
@@ -4500,299 +4525,6 @@ Gatling can be started with several options listed below:</p></blockquote>
 <p>在子bean中使用的map元素上使用merge=“true”就可以和父bean中的map条目进行合并。如果指定为false则不会合并，只会使用子bean中定义的map条目。</p>
 
 <p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Spring-Context之八:一些依赖注入的小技巧]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/03/30/some-injection-way/"/>
-    <updated>2014-03-30T18:31:00+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/03/30/some-injection-way</id>
-    <content type="html"><![CDATA[<p>Spring框架在依赖注入方面是非常灵活和强大的，多了解点一些注入的方式、方法，绝对能优化配置。</p>
-
-<!-- more -->
-
-
-<h2>idref</h2>
-
-<p>idref属性可以传入一个bean的名称，虽然它是指向一个bean的引用，但是得到的是该bean的id名。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;beans&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;movieService&quot;</span> <span class="na">class=</span><span class="s">&quot;DefaultMovieService&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;cinema&quot;</span> <span class="na">class=</span><span class="s">“Cinema&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;serviceRef&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;idref</span> <span class="na">bean=</span><span class="s">&quot;movieService&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/property&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;/beans&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>它和直接设置serviceRef属性的value为movieService的区别是前者是能够保证必须有一个名movieService的bean存在于当前的spring容器中，如果没有则Spring容器会在初始化阶段就会报错;而后者仅仅是一个字符串，spring容器在初始化不会做任何检查，很可能将异常推后到运行时抛出。</p>
-
-<h2>内部bean</h2>
-
-<p>bean的定义是可以嵌套的。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;beans&gt;</span>
-</span><span class='line'>     <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">“movieService&quot;</span> <span class="na">class=</span><span class="s">&quot;DefaultMovieService&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>     <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;cinema&quot;</span> <span class="na">class=</span><span class="s">“Cinema&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;movieService&quot;</span> <span class="na">ref=</span><span class="s">“movieService&quot;/</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span><span class='line'><span class="nt">&lt;/beans&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>可以改为这种方式。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;cinema&quot;</span> <span class="na">class=</span><span class="s">&quot;Cinema&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;movieService&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">&quot;DefaultMovieService&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/property&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样内部bean就不需要一个名字的，当然这也意味着它无法被其他bean引用了。当然即使你给它起了名字，Spring容器也会忽略这个名字，其他bean也无法引用它。neibubean的scope始终和waibubean的scope保持一致。</p>
-
-<h2>对集合的注入</h2>
-
-<p>Java的集合框架中包含很多集合元素，比如List、Map、Set等。Spring支持对这些集合元素的注入。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;accountService&quot;</span> <span class="na">class=</span><span class="s">&quot;AccountService&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;accounts&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;map&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;entry</span> <span class="na">key=</span><span class="s">&quot;bowen&quot;</span> <span class="na">value=</span><span class="s">&quot;1234&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;entry</span> <span class="na">key=</span><span class="s">&quot;tom&quot;</span> <span class="na">value=</span><span class="s">&quot;3456&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/map&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/property&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;cookbook&quot;</span> <span class="na">class=</span><span class="s">&quot;Cookbook&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;recipe&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;list&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;value&gt;</span>noodle<span class="nt">&lt;/value&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;value&gt;</span>rice<span class="nt">&lt;/value&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;value&gt;</span>meat<span class="nt">&lt;/value&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/list&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/property&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>还可以直接配置java的Properties。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;databaseSource&quot;</span> <span class="na">class=</span><span class="s">&quot;DatabaseSource&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;source&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;props&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">&quot;port&quot;</span><span class="nt">&gt;</span>2012<span class="nt">&lt;/prop&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">&quot;host&quot;</span><span class="nt">&gt;</span>localhost<span class="nt">&lt;/prop&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">&quot;schema&quot;</span><span class="nt">&gt;</span>db1<span class="nt">&lt;/prop&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/props&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/property&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>嵌套属性名注入</h2>
-
-<p>Spring支持使用嵌套属性注入值。</p>
-
-<figure class='code'><figcaption><span>Restaurant.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Restaurant</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">Person</span> <span class="n">manager</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">Person</span> <span class="nf">getManager</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">manager</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setManager</span><span class="o">(</span><span class="n">Person</span> <span class="n">manager</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">manager</span> <span class="o">=</span> <span class="n">manager</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>Person.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;restaurant&quot;</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.service.Restaurant&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;manager&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">&quot;huangbowen.net.PAndCNamespace.Person&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/property&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;manager.age&quot;</span> <span class="na">value=</span><span class="s">&quot;20&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>需注意除了最后一个属性，其他属性不能为空值。</p>
-
-<h2>使用depends-on属性</h2>
-
-<p>当你初始化一个bean时，需要另一个bean先被初始化，这种情况很常见。虽然Spring在最大程度上能自动按照你期望的顺序来初始化bean（比如构造器注入的bean会优先初始化），但是不保证总能符合你的心意。你可以使用depends-on属性来显示指定bean的初始化顺序。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;beans&gt;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>   <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;movieService&quot;</span> <span class="na">class=</span><span class="s">&quot;DefaultMovieService&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;cinema&quot;</span> <span class="na">class=</span><span class="s">“Cinema”</span> <span class="na">depends-on=</span><span class="s">&quot;movieService&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;serviceRef&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;idref</span> <span class="na">bean=</span><span class="s">&quot;movieService&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/property&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;/beans&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>也可以同时deppends-on多个对象。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;cinema&quot;</span> <span class="na">class=</span><span class="s">“Cinema”</span> <span class="na">depends-on=</span><span class="s">“movieService,accountService&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;serviceRef&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;idref</span> <span class="na">bean=</span><span class="s">&quot;movieService&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/property&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/bean&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   
