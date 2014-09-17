@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-09-15T23:53:51+10:00</updated>
+  <updated>2014-09-17T21:59:11+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -19,6 +19,9 @@
     <updated>2014-09-11T02:12:19+10:00</updated>
     <id>http://www.huangbowen.net/blog/2014/09/11/jieshi</id>
     <content type="html"><![CDATA[<p>自己闲着无聊写的，当然有些描述不是十分准确，毕竟一句话不能表达太多意思。</p>
+
+<!-- more -->
+
 
 <ul>
 <li><p>委托:把方法当做参数进行传递。</p></li>
