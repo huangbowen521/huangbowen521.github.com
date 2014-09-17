@@ -29,6 +29,12 @@ footer: true
 
 [gtShell](https://github.com/huangbowen521/gtShell):一个shell脚本，简化目录跳转。
 
+## 我翻译的书
+
+[《Effective JavaScript》](http://book.douban.com/subject/25786138/)
+
+[响应式Web设计:HTML5和CSS3实践指南](http://product.china-pub.com/3770378)
+
 ## 联系方式
 
 微博: [@无敌北瓜](http://www.weibo.com/2246154347/profile?topnav=1&wvr=5&user=1)
