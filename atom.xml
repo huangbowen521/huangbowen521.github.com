@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-09-21T13:21:54+10:00</updated>
+  <updated>2014-09-22T20:35:54+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,83 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[翻译-高效DevOps的10项实践]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/09/22/ten-practices-for-effective-devops/"/>
+    <updated>2014-09-22T20:29:44+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/09/22/ten-practices-for-effective-devops</id>
+    <content type="html"><![CDATA[<p>原文链接： <a href="http://www.drdobbs.com/architecture-and-design/top-10-practices-for-effective-devops/240149363?pgno=1">http://www.drdobbs.com/architecture-and-design/top-10-practices-for-effective-devops/240149363?pgno=1</a>, 作者Scott W. Ambler。</p>
+
+<h2><strong>采用这些DevOps实践可以实现高效协作，平滑运营，更整洁的代码等目标。</strong></h2>
+
+<p><a href="http://www.drdobbs.com/architecture-and-design/what-exactly-is-devops/240009147">DevOps</a>已经成为了我们行业最热门的流行语之一。然而出人意料的是，在更紧密的愿景和开发团队和运营团队更有效的协作之上，很少有共识DevOps到底意味着什么。不同组织对DevOps有着不同的定义，其实DevOps有个新兴的最佳实践核心,其更进一步的目标是高度协作以生产更好的软件。在这里我考验了这些实践。但是坦白说，我并不只从开发人员角度来观察这些实践。</p>
+
+<!-- more -->
+
+
+<p>我按优先级从高到低列出了这些实践条目，后面的实践往往依赖于前面的实践。</p>
+
+<h2><strong>实践1：利益相关者的积极参与</strong></h2>
+
+<p>DevOps的根本原则是开发人员,运营人员以及支持人员必须定期紧密的工作在一起。言外之意是他们必须互相视对方为重要的利益相关人，并积极争取一起工作。敏捷社区中一个普遍的实践是“现场客户”。这个实践出自于极限编程，它鼓励开发人员应该与业务人员紧密合作。规范的敏捷团队将该实践更进一步，即利益相关的积极参与，这意味着开发人员应该与所有利益相关者一起紧密工作，包括运营人员及支持人员，而不仅仅是业务人员。这是双向的：运营人员和支持人员也必须愿意和开发人员紧密工作。</p>
+
+<h2><strong>实践2：自动化测试</strong></h2>
+
+<p>敏捷软件开发人员被称为质量感染者，这是因为他们关注于编写高质量的代码，渴望测试越早开始越好。结果，自动化的回归测试是敏捷团队普遍采用的实践。该实践有时又被扩展为测试先行的方式，比如测试驱动开发（TDD），以及行为驱动开发（BDD）。由于敏捷团队经常一天多次运行他们的自动化测试集，并且能够马上修复发现的问题，所以他们比普通团队能达到更高的质量。对于运营人员而言，在同意一个解决方案发布到产品环境前，坚持足够的质量审查，这是件好事情。</p>
+
+<h2><strong>实践3：集成配置管理</strong></h2>
+
+<p>要实现以集成的方式来进行配置管理（CM），开发团队不仅要习惯于在解决方案层级应用CM，还需要考虑自身的解决方案与组织的其余基础设施之间的
+产品环境配置问题。对于一些开发人员而言这是个不小的转变，因为他们往往习惯于只考虑当前他们工作的解决方案的CM。在DevOps环境中，开发人员需要拥有企业级视角，在更高的层次看待问题。他们的解决方案如何能在产品环境结合其它资源带来优势？其它资源是否能支持被开发的解决方案？言外之意是开发团队需要了解及管理他们产品的所有范围的依赖。集成配置管理也使得运营人员了解新的发布潜在的影响，从而更容易决定进行发布的时间。</p>
+
+<h2><strong>实践4：综合变更管理</strong></h2>
+
+<p>从IT的角度来看，变更管理是一门确保IT基础设施的演化能对整体组织的支持成功及有意义的艺术。但是对于项目-团队层级则颇具挑战。这是因为非常多的技术，甚至相似技术的多个版本会被使用在单个解决方案的开发过程中。由于DevOps引入了与运营有关的企业级问题，综合变更管理策略会变得越来越复杂，因为需要考虑大量的解决方案能够在产品环境中同时运行和交互。为了实现综合变更管理，开发团队必须与运营团队紧密合作，来从组织层面了解任何技术的改变带来的影响。该方式依赖于前面的实践-利益相关者的积极参与，集成配置管理及自动化测试。</p>
+
+<h2><strong>实践5：持续集成</strong></h2>
+
+<p>持续集成（CI）是构建及验证项目的规范，当有代码更新被迁入到版本控制系统时，会进行自动化的回归测试及代码分析。CI是与DevOps相关的性感的敏捷开发实践之一（至少从开发人员角度来说是如此）。CI确保开发人员以较小的，可以对代码缺陷立即反馈的常规步骤来开发一个高质量的可以工作的解决方案。</p>
+
+<h2><strong>实践6：集成部署计划</strong></h2>
+
+<p>从开发团队角度而言，部署计划总是需要与该组织的运营人员交互。有些情况下，与运营人员接口的专家被特称为发布工程师。经验丰富的团队将使开发，运营及支持团队这些利益相关者一起持续的制定部署计划。当你采用了DevOps策略，你会很快意识到需要一种跨团队的方式来完成发布计划，因为需要运营人员与整个开发团队一起工作。对于运营人员来说这不是什么新鲜事，但是对于只习惯工作于孤立环境的开发团队来说却很惊奇。如果你的团队还没有这样做，你需要开始从组织层面来考虑部署时间表。更远一步，为了支持持续部署，发布工程师需要增加发布次数，因为敏捷团队已经可以持续及一致地达到发布的质量要求。</p>
+
+<h2><strong>实践7：持续部署</strong></h2>
+
+<p>持续部署是持续集成实践的扩展。对于持续部署，当集成在一个沙盒中成功完成时，变更会被自动升迁到另一个沙盒中，集成会自动的在这里进行。自动升迁一直持续，直到有人验证了所有的变更，特别是开发向运营的过渡期。</p>
+
+<p>持续部署使得开发团队减少了新功能从被验证到部署到产品环境的时间，使得业务更具响应性。然而，持续部署增加了运营风险，因为如果开发团队没严格遵守规范，会增加缺陷被引入到产品环境的潜在风险。在企业级环境中成功的执行持续部署要求实现前面介绍的所有实践。</p>
+
+<h2><strong>实践8：产品支持</strong></h2>
+
+<p>企业级环境中，大多数的应用程序开发团队工作在已经存在于产品环境的解决方案的新的功能上。他们不仅工作于该新功能，还有解决严重的产品问题的职责。开发团队往往被称为产品的“第3级支持”，因为他们是解决棘手的产品问题的第三个（也是最后一个）团队。尽管做第三级产品支持的需要是普遍的，但是看板和规范敏捷交付（Disciplined Agile Delivery， DAD）则是例外，很多敏捷方法只解决传递这些影响。该实践的一个重要的副作用是给予了开发者发生在产品中的此类问题的鉴别能力，提供给他们一种学习机会，从而在设计解决方案时就考虑到相应的问题。</p>
+
+<h2><strong>实践9：应用监控</strong></h2>
+
+<p>正如其名称所示，这是一个运营实践，监控已经发布到产品的环境的正在运行的解决方案和应用程序。技术基础设施平台（比如操作系统），应用程序服务器，以及通讯服务通常提供监控功能，可以工作于一些监控工具（比如微软管理终端，IBM Tivoli 监控， 以及jManage）。然而，为了监控特定应用程序的功能，比如只给特定用户使用的用户界面，仪表化该信息需要与你组织的监控基础设施兼容，这需要构建到应用程序中。开发团队需要知道该运营要求，或者，更好的方式是可以访问一个框架，该框架可以直接提供相应的仪表化。</p>
+
+<h2><strong>实践10：自动化的仪表盘</strong></h2>
+
+<p>使用自动化仪表盘的实践是IT领域的商业智能（business intelligence， BI）。该实践分为两个方面,开发智能以及运营智能。开发智能需要使用开发工具来仪表化产生的指标。例如，你的配置管理（CM）工具已经记录了谁以及什么时候迁入代码。持续集成工具可能同样记录了构建发生的时间，运行了多少个测试，测试运行的时间，构建是成功还是失败，运行成功的测试数量等。这些原始数据会被分析并显示在一个自动化的仪表盘中。运营智能是之前讨论过的应用程序监控的一个方面。使用了自动化仪表盘，组织的整体指标开销将被显著降低（但是不能完全淘汰，因为不是所有的事情都能被自动化）。自动化仪表盘提供了实时的对组织的管理团队的洞察。</p>
+
+<h2><strong>DevOps与文化息息相关</strong></h2>
+
+<p>在讨论了这些苛刻的支持DevOps的实践之后，我需要强调主要的限制成功的因素是能否建立一个贯穿整个IT组织的相互协作的相互尊敬的文化。我的经验是，当决定采用高效的DevOps策略时，人及他们相互工作的方式是成功的主要决定因素。不幸的是，在组织中带来文化变迁比采用一些新的实践要难得多。在接下来的文章中会讨论这些。</p>
+
+<h2><strong>更多信息</strong></h2>
+
+<p><a href="http://www.drdobbs.com/architecture-and-design/what-exactly-is-devops/240009147">DevOps究竟是什么？</a> 解释了DevOps为什么对开发人员如此重要。</p>
+
+<p><a href="http://www.drdobbs.com/architecture-and-design/getting-devops-right-the-lay-of-the-land/240062639">正确采用DevOps：落地</a> 描述了采用DevOsp策略相关的一些挑战。</p>
+
+<p><a href="http://www.drdobbs.com/architecture-and-design/disciplined-agile-change-management/240001474">规范敏捷变更管理</a> 讨论了修改管理选项。</p>
+
+<p><a href="http://www.discipinedagiledelivery.com/">规范敏捷交付</a> 讲述了DAA流程框架的更多信息。</p>
+
+<p>Scott Ambler是Dr. Dobb&rsquo;s 的长期撰稿人，也是<a href="http://www.amazon.com/Disciplined-Agile-Delivery-Practitioners-Enterprise/dp/0132810131/?tag=drdos-20">Disciplined Agile Delivery: A Practitioner&rsquo;s Guide to Agile Software Delivery in the Enterprise</a>一书的核心作者。你可以在<a href="http://twitter.com/scottwambler/">Twitter</a>上follow他。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[布里斯班Twilight Bay Run半程马拉松]]></title>
@@ -4130,109 +4207,6 @@ Gatling can be started with several options listed below:</p></blockquote>
 <p>经过了这么多事情，我已经习惯了坚持。当自己想做一件事情的时候，不要先给自己找借口，自己把自己吓趴下，而应该把精力放到如何解决面临的困难上，如何推动想做的事情。纵使最后事情没达到预期，自己也努力过，也有收获，下次接着干。</p>
 
 <p>人，有的时候就是要对自己狠一点，把坚持这个习惯应用到各种小事中，这样遇到大事你才能习惯性坚持。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[使用ruby过程中遇到安装gem失败的一些通用解决方案]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/04/05/some-tips-to-resolve-ruby-gem-installation-issues/"/>
-    <updated>2014-04-05T21:45:31+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/04/05/some-tips-to-resolve-ruby-gem-installation-issues</id>
-    <content type="html"><![CDATA[<p>ruby语言升级还是比较勤快的。但是数量众多的版本使得程序库的兼容性成了大问题。有些gem表示明确不支持某个特定版本以前的ruby，而有些gem则与较高的版本不兼容。再加上gem本身也有版本，简直是乱成了一锅粥。即使使用了rvm、rbenv之类ruby版本管理工具也避免不了掉入坑中。并且时不时的一些其它环境设置也给你捣乱。所以一般使用ruby程序时，对升级ruby版本或各种gem版本都是比较慎重的，避免一时手贱掉入坑中。</p>
-
-<!-- more -->
-
-
-<p>当然你也不能因此就做缩头乌龟，某些情况下还是不得不升级的。比如想使用ruby或gem新版本的特性。而我本人无论使用什么软件都喜欢升级到最新版本，ruby程序也不例外。时间久了栽的次数多了也慢慢摸索出了一些经验。这里分享一下，希望大家都能避免这些坑，大胆的升级。</p>
-
-<p>由于本人使用的操作系统是mac，所以这些tips都是基于MAC系统的。</p>
-
-<p>当运行ruby脚本或者bundle install时，出错了首先一定要仔细看错误日志。如果有明确的出错日志，自己能解决的就可以着手解决，不知如何解决的可以选取关键词google之，一般也能找到解决方案。怕就怕google一圈以后还是不知如何是好。那么可以尝试下下面的几种方法。</p>
-
-<h2>升级ruby的小版本。</h2>
-
-<p>首先将当前的rvm升级到最新版本。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rvm get stable
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后查看当前使用的ruby版本和服务端可用的ruby版本。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rvm list
-</span><span class='line'>
-</span><span class='line'><span class="nv">$ </span>rvm list known
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>虽然不打算升级ruby主版本，但是小版本是可以尝试升级下，看是否能解决问题。比如当前你的ruby使用的是ruby-1.9.3-p448，但是查看到目前可用的1.9.3最新版本为ruby-1.9.3-p545。那么可以尝试切换到这个新版本下看能否解决问题。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rvm install ruby-1.9.3-p545
-</span><span class='line'>
-</span><span class='line'><span class="nv">$ </span>rvm use ruby-1.9.3-p545
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>确保Xcode及Command line developer tools为最新版本</h2>
-
-<p>请确保本机的Xcode的 command line developer tools已经安装并且是最新版本。把Xcode升级到最新版本以后，在命令行下输入：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>xcode-select —install
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样会弹出来一个升级对话框来升级相应的软件。</p>
-
-<h2>确保GCC为最新版本</h2>
-
-<p>查看目前电脑的gcc的版本。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gcc -v
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果需要更新gcc的话推荐通过homebrew来更新。首先更新homebrew。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>brew update
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后输入下列命令。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>brew tap homebrew/dupes
-</span><span class='line'><span class="nv">$ </span>brew search gcc
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>brew会告诉你当前最新的gcc版本。例如是apple-gcc42。然后安装新版本gcc。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>brew install apple-gcc42
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后查看系统是否应用了这个版本的gcc。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>which gcc-4.2
-</span><span class='line'>/usr/local/bin/gcc-4.2
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>基本上以上的一些检查会解决掉一批由于ruby环境造成的问题。</p>
 ]]></content>
   </entry>
   
