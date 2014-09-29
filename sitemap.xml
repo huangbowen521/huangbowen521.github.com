@@ -487,16 +487,22 @@
         <lastmod>2014-09-23T23:49:46+10:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://www.huangbowen.net/blog/2014/09/29/geting-devops-right-the-lay-of-the-land/
+        </loc>
+        <lastmod>2014-09-29T23:45:08+10:00</lastmod>
+    </url>
+    <url>
         <loc>http://www.huangbowen.net/about/</loc>
         <lastmod>2014-09-17T21:57:59+10:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/blog/archives/</loc>
-        <lastmod>2014-09-23T23:49:46+10:00</lastmod>
+        <lastmod>2014-09-29T23:45:08+10:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/</loc>
-        <lastmod>2014-09-23T23:49:46+10:00</lastmod>
+        <lastmod>2014-09-29T23:45:08+10:00</lastmod>
     </url>
     <url>
         <loc>http://www.huangbowen.net/robots.txt</loc>

@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-09-23T23:54:31+10:00</updated>
+  <updated>2014-09-29T23:45:25+10:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,57 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[(翻译)正确实施DevOps-The Lay of the Land]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/09/29/geting-devops-right-the-lay-of-the-land/"/>
+    <updated>2014-09-29T23:38:28+10:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/09/29/geting-devops-right-the-lay-of-the-land</id>
+    <content type="html"><![CDATA[<p>原文地址:<a href="http://www.drdobbs.com/architecture-and-design/getting-devops-right-the-lay-of-the-land/240062639">http://www.drdobbs.com/architecture-and-design/getting-devops-right-the-lay-of-the-land/240062639</a>，作者Scott W. Ambler。</p>
+
+<p><strong>对于不同的利益相关人DevOps含义不同，但是基本组成部分是相同的。</strong></p>
+
+<!-- more -->
+
+
+<p>在过去的1，2年，媒体上有很多关于DevOps的争论。有关DevOps的声音越来越杂乱，导致听众也越来越困惑。DevOps提供了针对IT市场的敬业精神和生产力一个潜在增长点。但是，与在它之前的所有运动一样，误解和误用DevOps是非常危险的。本文章以及随后的系列文章，将提供有条理的严肃的建议来解开这些困惑。</p>
+
+<p>让我们先从一些定义开始。首先，在本文章中我会用两种方式表述词条“产品”。当我使用IT短语“发布产品”时，如果上下文与商业产品有关，我也隐含了“发布到市场”。当我使用单词“产品”时，意味着运营和支持（有时也被称为“help desk”）的结合。一些组织认为运营和支持是两个概念，但其它组织结合了这两个概念。&#8221;DevOps&#8221;是开发（development）和运营（operations）两个单词组成的混合词。在该上下文中的开发包括了解决方案被发布到产品环境之前发生的所有活动，即项目初始化时明确初始概念一直到可以部署。DevOps上下文中的运营包括了部署之后的所有活动。即“与产品相关的东西”（production stuff），包括了对所部署的解决方案的运营和支持。</p>
+
+<p>定义DevOps词条，说起来容易做起来难，这是因为需要综合考虑多个视角，即主要的DevOps利益相关者的视角。你的谈话对象不同，DevOps是什么的定义的回答也不相同。DevOps的利益相关者以及他们的视角如下：</p>
+
+<p>*开发人员，尤其是有经验的敏捷开发人员，认为DevOps是交付产品的一个持续的流程，有可能一天数次。</p>
+
+<p>*运营专家往往认为DevOps提倡与开发团队建立更有效的关系，不仅包括整个开发生命周期，也包括解决方案被部署到产品环境的过程。有经验的运营人员也意识到他们内部过程往往基于<a href="http://en.wikipedia.org/wiki/Information_Technology_Infrastructure_Library">ITIL</a>或<a href="http://en.wikipedia.org/wiki/IT_service_management">ITSM</a>，需要被精简以便更好的与开发团队协作。</p>
+
+<p>*支持专家（有时也被称为help desk专家）对DevOps的认识与运营专家类似，但稍微有点区别：他们想和开发团队一起工作来保证解决方案被发布到产品环境前他们的需求能被正确理解和满足。他们也想确保有一个流程，一旦当解决方案被使用后，能够处理需求更改（包括缺陷）。</p>
+
+<p>*高级管理团队认为DevOps是可以通过简化所有人一起工作的方式从而提高IT部门整体效率的一种成果。</p>
+
+<h2>规范DevOps</h2>
+
+<p>现在来看看规范DevOps。图1展示了采用规范DevOps前以及规范DevOps努力想达到的效果的对比图。目前在很多组织中，开发团队和运营团队间尽管有流程和组织级障碍存在，但仍努力达到有效协作。</p>
+
+<p>开发团队的部署并无规律-“快速”的团队一年进行1到2次发布，偶尔为发现的产品问题打个补丁。</p>
+
+<p>运营团队反而推进变更请求，包括缺陷报告，返回给开发组织。这两个组织一起协作就可以保证这些活动是成功的，但仍有一个明显的地方可以提高。规范DevOps通过增加开发，运营和支持人员之间的协作这一策略来提高这一点。向开发团队引入持续交付实践，向IT引入新的组织级架构；采用商业智能工艺和技术来支持开发智能和运营智能，即支持改进的IT管理。不规范的DevOps和规范的DevOps的不同之处在于，规范的方式以整体视角来考虑所有DevOps利益相关者的渴望，而不仅仅关注于一个视角。</p>
+
+<p><img src="http://www.huangbowen.net/images/closingdevopsgap.gif">
+图1：缩小DevOps差距</p>
+
+<p>要想成功实践DevOps，你需要在5个方面实现提高：人，准则，实践，产品及流程。这些问题以从高到低的优先级顺序排列。人及他们相互交互的方式是任何IT努力达到成功的决定因素。而规范DevOps清楚的需要人们重新思考他们的技能，如何定义自己的角色，如何一起工作。IT组织采用DevOps需要重新思考他们所做的决定的底层准则。例如，采用与业务更紧密交互的准则将激励他们采用更频繁的发布产品的方式。组织需要采用诸如持续集成，持续部署，运营智能，协作支持等实践。如果他们决定采用DevOps，有更多新鲜的事情需要去做。新的产品，包括开发工具，商业智能工具，以及运营监控工具等需要被采用。最终，流程框架（比如规范敏捷交付，DAD），将DevOps策略变为开发流程，还有ITIL或ITSM的更新版也需要考虑是否使用。</p>
+
+<h2>误解</h2>
+
+<p>组织运行DevOps似乎有着普遍的方式。我担心这样的观点，即“云=DevOps”，这种观点似乎越来越受欢迎。采用云技术可以早点接触到DevOps的一些方面，但只是5个方面的其中之一（即产品方面）。相似的，一些厂商的工具驱动的消息工具，以及一些开源社区（的产品）也令人不安，新的工具仅仅是DevOps大局观的一部分而已。第三个误解之前有提到过，即过于关注于一个DevOps利息相关人的视角。特别常见的是过于关注开发过程，因为效果显而易见，特别是持续交付实践可以带来潜在的更高效的提高。该问题是仅关注了5个方面的实践部分。</p>
+
+<p>这些误解，确定会导致他们遇到问题，在之后的文章中会详细讨论这些问题的解决之道。</p>
+
+<hr />
+
+<p>Scott Ambler 在IBM Rational工作了6年时间，在这里他帮助客户采用及适应敏捷技术。现在是该领域的咨询师。他也是Dr.Dobb&#8217;s的长期撰稿人。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[程序员翻译技术类书籍的总结]]></title>
@@ -3936,287 +3987,6 @@ Gatling can be started with several options listed below:</p></blockquote>
 <p>在这里，将DNS换为之前AWS自动生成的NS地址。</p>
 
 <p>这样就大功告成了，要等待2小时到1天来让新的解析方式生效。这下可以达到全年99.99%可访问率了吧。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Java中测试异常的多种方式]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/04/14/testing-exceptions-in-java/"/>
-    <updated>2014-04-14T01:32:48+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/04/14/testing-exceptions-in-java</id>
-    <content type="html"><![CDATA[<p>使用JUnit来测试Java代码中的异常有很多种方式，你知道几种？</p>
-
-<!-- more -->
-
-
-<p>给定这样一个class。</p>
-
-<figure class='code'><figcaption><span>Person.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">age</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">(</span><span class="s">&quot;age is invalid&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们来测试setAge方法。</p>
-
-<h2>Try-catch 方式</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Test</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetExceptionWhenAgeLessThan0</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
-</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">person</span><span class="o">.</span><span class="na">setAge</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
-</span><span class='line'>            <span class="n">fail</span><span class="o">(</span><span class="s">&quot;should get IllegalArgumentException&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalArgumentException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">assertThat</span><span class="o">(</span><span class="n">ex</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span><span class="n">containsString</span><span class="o">(</span><span class="s">&quot;age is invalid&quot;</span><span class="o">));</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这是最容易想到的一种方式，但是太啰嗦。</p>
-
-<h2>JUnit annotation方式</h2>
-
-<p>JUnit中提供了一个<code>expected</code>的annotation来检查异常。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Test</span><span class="o">(</span><span class="n">expected</span> <span class="o">=</span> <span class="n">IllegalArgumentException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetExceptionWhenAgeLessThan0</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">person</span><span class="o">.</span><span class="na">setAge</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这种方式看起来要简洁多了，但是无法检查异常中的消息。</p>
-
-<h2>ExpectedException rule</h2>
-
-<p>JUnit7以后提供了一个叫做<code>ExpectedException</code>的Rule来实现对异常的测试。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Rule</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">ExpectedException</span> <span class="n">exception</span> <span class="o">=</span> <span class="n">ExpectedException</span><span class="o">.</span><span class="na">none</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nd">@Test</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetExceptionWhenAgeLessThan0</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">exception</span><span class="o">.</span><span class="na">expect</span><span class="o">(</span><span class="n">IllegalArgumentException</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">exception</span><span class="o">.</span><span class="na">expectMessage</span><span class="o">(</span><span class="n">containsString</span><span class="o">(</span><span class="s">&quot;age is invalid&quot;</span><span class="o">));</span>
-</span><span class='line'>        <span class="n">person</span><span class="o">.</span><span class="na">setAge</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这种方式既可以检查异常类型，也可以验证异常中的消息。</p>
-
-<h2>使用catch-exception库</h2>
-
-<p>有个catch-exception库也可以实现对异常的测试。</p>
-
-<p>首先引用该库。</p>
-
-<figure class='code'><figcaption><span>pom.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>com.googlecode.catch-exception<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>catch-exception<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;version&gt;</span>1.2.0<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span> <span class="c">&lt;!-- test scope to use it only in tests --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后这样书写测试。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Test</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetExceptionWhenAgeLessThan0</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">catchException</span><span class="o">(</span><span class="n">person</span><span class="o">).</span><span class="na">setAge</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">caughtException</span><span class="o">(),</span><span class="n">instanceOf</span><span class="o">(</span><span class="n">IllegalArgumentException</span><span class="o">.</span><span class="na">class</span><span class="o">));</span>
-</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">caughtException</span><span class="o">().</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">containsString</span><span class="o">(</span><span class="s">&quot;age is invalid&quot;</span><span class="o">));</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样的好处是可以精准的验证异常是被测方法抛出来的，而不是其它方法抛出来的。</p>
-
-<p>catch-exception库还提供了多种API来进行测试。</p>
-
-<p>先加载fest-assertion库。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>org.easytesting<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>fest-assert-core<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;version&gt;</span>2.0M10<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后可以书写BDD风格的测试。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Test</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetExceptionWhenAgeLessThan0</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="c1">// given</span>
-</span><span class='line'>        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// when</span>
-</span><span class='line'>        <span class="n">when</span><span class="o">(</span><span class="n">person</span><span class="o">).</span><span class="na">setAge</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// then</span>
-</span><span class='line'>        <span class="n">then</span><span class="o">(</span><span class="n">caughtException</span><span class="o">())</span>
-</span><span class='line'>                <span class="o">.</span><span class="na">isInstanceOf</span><span class="o">(</span><span class="n">IllegalArgumentException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-</span><span class='line'>                <span class="o">.</span><span class="na">hasMessage</span><span class="o">(</span><span class="s">&quot;age is invalid&quot;</span><span class="o">)</span>
-</span><span class='line'>                <span class="o">.</span><span class="na">hasNoCause</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果喜欢Hamcrest风格的验证风格的话，catch-exception也提供了相应的Matcher API。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Test</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetExceptionWhenAgeLessThan0</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="c1">// given</span>
-</span><span class='line'>        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// when</span>
-</span><span class='line'>        <span class="n">when</span><span class="o">(</span><span class="n">person</span><span class="o">).</span><span class="na">setAge</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// then</span>
-</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">caughtException</span><span class="o">(),</span> <span class="n">allOf</span><span class="o">(</span>
-</span><span class='line'>                <span class="n">instanceOf</span><span class="o">(</span><span class="n">IllegalArgumentException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-</span><span class='line'>                <span class="o">,</span> <span class="n">hasMessage</span><span class="o">(</span><span class="s">&quot;age is invalid&quot;</span><span class="o">)</span>
-</span><span class='line'>                <span class="o">,</span><span class="n">hasNoCause</span><span class="o">()));</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>第一种最土鳖，第二种最简洁，第四种最靠谱。</p>
 ]]></content>
   </entry>
   
