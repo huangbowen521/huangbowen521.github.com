@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Cloud | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/cloud/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-10-03T23:36:05+10:00</updated>
+  <updated>2014-10-22T21:16:27+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[AWS系列之三 使用EBS]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/07/31/use-ebs/"/>
-    <updated>2014-07-31T01:10:32+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/07/31/use-ebs</id>
+    <link href="http://www.huangbowen.net/blog/2014/07/30/use-ebs/"/>
+    <updated>2014-07-30T23:10:32+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/07/30/use-ebs</id>
     <content type="html"><![CDATA[<p>Amazon Elastic Block Store（EBS）可作为EC2实例的持久性数据块级存储。其具有高可用性和持久性的特点，可用性高达99.999%。给现有的EC2实例扩展新的存储块只需要几分钟的时间，省时省力。每个EBS块都被放置在一个特定的可用区内，并且会自动维护一个副本，随时保护数据安全。</p>
 
 <!-- more -->
@@ -179,7 +179,7 @@ xvdf    202:80   0  20G  0 disk /boot2
   <entry>
     <title type="html"><![CDATA[AWS系列之二  使用EC2]]></title>
     <link href="http://www.huangbowen.net/blog/2014/07/26/using-ec2/"/>
-    <updated>2014-07-26T18:27:22+10:00</updated>
+    <updated>2014-07-26T16:27:22+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/07/26/using-ec2</id>
     <content type="html"><![CDATA[<p>在本文中我们有三个任务。
 第一：使用Amazon management console创建一个EC2实例。
@@ -306,7 +306,7 @@ $: sudo service httpd start
   <entry>
     <title type="html"><![CDATA[AWS系列之一 亚马逊云服务概述]]></title>
     <link href="http://www.huangbowen.net/blog/2014/07/11/aws-overview/"/>
-    <updated>2014-07-11T17:50:26+10:00</updated>
+    <updated>2014-07-11T15:50:26+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/07/11/aws-overview</id>
     <content type="html"><![CDATA[<p>云计算经过这几年的发展，已经不再是是一个高大上的名词，而是已经应用到寻常百姓家的技术。每天如果你和互联网打交道，那么或多或少都会和云扯上关系。gmail、github、各种网盘、GAE、heroku等各种服务都属于云服务的范畴。那么云计算的定义到底是什么？这里有摘自wiki的定义。</p>
 
@@ -415,7 +415,7 @@ $: sudo service httpd start
   <entry>
     <title type="html"><![CDATA[成都亚马逊AWSome Day回顾]]></title>
     <link href="http://www.huangbowen.net/blog/2014/07/07/awsome-day-memo/"/>
-    <updated>2014-07-07T15:54:42+10:00</updated>
+    <updated>2014-07-07T13:54:42+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/07/07/awsome-day-memo</id>
     <content type="html"><![CDATA[<p>昨天我和公司同仁一起参加了亚马逊在成都的第一场AWSome Day活动。整个活动时间异常紧促，短短一天包含了7堂session，讲师的狂轰乱炸使得我们同学们普遍觉得比上班累多了。好了，废话不多说，让我们来回顾一下昨天都讲了那些东西。</p>
 
@@ -449,7 +449,7 @@ $: sudo service httpd start
   <entry>
     <title type="html"><![CDATA[将我的博客迁移到亚马逊云端(1)]]></title>
     <link href="http://www.huangbowen.net/blog/2013/09/30/migrate-octopress-to-aws/"/>
-    <updated>2013-09-30T14:09:00+10:00</updated>
+    <updated>2013-09-30T14:09:00+08:00</updated>
     <id>http://www.huangbowen.net/blog/2013/09/30/migrate-octopress-to-aws</id>
     <content type="html"><![CDATA[<p><img src="/images/cloudcompute.png" width="400"></p>
 

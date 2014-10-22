@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 翻译 | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/fan-yi/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-10-03T23:36:05+10:00</updated>
+  <updated>2014-10-22T21:16:27+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[HTML5和CSS3响应式WEB设计指南 译者序]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/05/31/translators-words-of-html5/"/>
-    <updated>2014-05-31T01:30:32+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/05/31/translators-words-of-html5</id>
+    <link href="http://www.huangbowen.net/blog/2014/05/30/translators-words-of-html5/"/>
+    <updated>2014-05-30T23:30:32+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/05/30/translators-words-of-html5</id>
     <content type="html"><![CDATA[<p>&ldquo;不是我不明白，这世界变化快。”崔健的这首歌使用在互联网领域最合适不过。只短短数年的功夫，互联网的浪潮还没过去，移动互联网的时代已经来临。人们已经习惯将越来越多的时间花在各种移动设备上。各大互联网公司先知先觉，在移动互联网领域杀的不可开交，甚至很多传统行业公司也在积极寻求自身领域与移动互联网的结合点。</p>
 
 <p>终端设备种类繁多，要给所有用户群带来一致的用户体验实属不易。在这种背景下，响应式设计应运而生。响应式Web设计的理念是，页面的设计与开发应当根据用户行为及设备环境进行相应的响应和调整。响应式设计并不是单纯设计者的事情，它是一系列技术栈的结合。HTML5和CSS3酝酿了多年终于落地,其在响应式设计中扮演着举足轻重的角色。</p>
@@ -35,7 +35,7 @@
   <entry>
     <title type="html"><![CDATA[Effective JavaScript译者序]]></title>
     <link href="http://www.huangbowen.net/blog/2013/08/25/preface-of-effective-javascript/"/>
-    <updated>2013-08-25T12:17:00+10:00</updated>
+    <updated>2013-08-25T12:17:00+08:00</updated>
     <id>http://www.huangbowen.net/blog/2013/08/25/preface-of-effective-javascript</id>
     <content type="html"><![CDATA[<p><img class="<a" src="href="http://img3.douban.com/lpic/s24868715.jpg">http://img3.douban.com/lpic/s24868715.jpg</a>"></p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-10-03T23:36:05+10:00</updated>
+  <updated>2014-10-22T21:16:27+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,9 +14,158 @@
 
   
   <entry>
+    <title type="html"><![CDATA[AWS助理架构师样题解析]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/10/22/aws-cert-sample-question/"/>
+    <updated>2014-10-22T20:33:42+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/10/22/aws-cert-sample-question</id>
+    <content type="html"><![CDATA[<p>AWS 认证是对其在 AWS 平台上设计、部署和管理应用程序所需的技能和技术知识的一种认可。获得证书有助于证明您使用 AWS 的丰富经验和可信度，同时还能提升您所在的组织熟练使用基于 AWS 云服务应用的整体水平。</p>
+
+<!-- more -->
+
+
+<p>目前亚马逊推出了Solutions Architect,Developer和SysOps Administrator三个方向的认证。每个方向又分为Associate Level(助理级)，Professional Level（专家级）和Master Level（大师级）。当然目前只有Solutions Architect开放了Professional Level,其他层级会逐步开放中。</p>
+
+<p><img src="http://www.huangbowen.net/images/cert_roadmap_Q214_EN.png"></p>
+
+<p>最近在打算备考AWS的Solutions Architect的Associate Level。关于这个考试AWS出了一个考试样题。下载链接：<a href="http://awstrainingandcertification.s3.amazonaws.com/production/AWS_certified_solutions_architect_associate_blueprint.pdf">http://awstrainingandcertification.s3.amazonaws.com/production/AWS_certified_solutions_architect_associate_blueprint.pdf</a></p>
+
+<p>我把样题都做了一遍，并且都尽力找到了答案在AWS文档中的出处。以下是样题和解答。</p>
+
+<p>Amazon Glacier is designed for: (Choose 2 answers)</p>
+
+<p>A.active database storage.</p>
+
+<p>B.infrequently accessed data.</p>
+
+<p>C.data archives.</p>
+
+<p>D.frequently accessed data.</p>
+
+<p>E.cached session data.</p>
+
+<p>答案：B和C</p>
+
+<p>出处文档：<a href="http://aws.amazon.com/glacier/?nc2=h_ls">http://aws.amazon.com/glacier/?nc2=h_ls</a></p>
+
+<blockquote><blockquote><p>Amazon Glacier is an extremely low-cost cloud archive storage service that provides secure and durable storage for data archiving and online backup. In order to keep costs low, Amazon Glacier is optimized for data that is infrequently accessed and for which retrieval times of several hours are suitable.</p></blockquote></blockquote>
+
+<p>Your web application front end consists of multiple EC2 instances behind an Elastic Load Balancer. You
+configured ELB to perform health checks on these EC2 instances. If an instance fails to pass health
+checks, which statement will be true?</p>
+
+<p>A.The instance is replaced automatically by the ELB.</p>
+
+<p>B.The instance gets terminated automatically by the ELB.</p>
+
+<p>C.The ELB stops sending traffic to the instance that failed its health check.</p>
+
+<p>D.The instance gets quarantined by the ELB for root cause analysis.</p>
+
+<p>答案：C</p>
+
+<p>出处文档：<a href="http://aws.amazon.com/elasticloadbalancing/?nc2=h_ls">http://aws.amazon.com/elasticloadbalancing/?nc2=h_ls</a></p>
+
+<blockquote><blockquote><p>Elastic Load Balancing ensures that only healthy Amazon EC2 instances receive traffic by detecting unhealthy instances and rerouting traffic across the remaining healthy instances.</p></blockquote></blockquote>
+
+<p>You are building a system to distribute confidential training videos to employees. Using CloudFront, what
+method could be used to serve content that is stored in S3, but not publically accessible from S3
+directly?</p>
+
+<p>A.Create an Origin Access Identity (OAI) for CloudFront and grant access to the objects in your S3
+bucket to that OAI.</p>
+
+<p>B.Add the CloudFront account security group “amazon-cf/amazon-cf-sg” to the appropriate S3 bucket
+policy.</p>
+
+<p>C.Create an Identity and Access Management (IAM) User for CloudFront and grant access to the
+objects in your S3 bucket to that IAM User.</p>
+
+<p>D.Create a S3 bucket policy that lists the CloudFront distribution ID as the Principal and the target
+bucket as the Amazon Resource Name (ARN).</p>
+
+<p>答案：A</p>
+
+<p>OAI介绍：<a href="http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html">http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html</a></p>
+
+<p>OAI基本上就是专为这个场景引入的。</p>
+
+<p>Which of the following will occur when an EC2 instance in a VPC (Virtual Private Cloud) with an
+associated Elastic IP is stopped and started? (Choose 2 answers)</p>
+
+<p>A.The Elastic IP will be dissociated from the instance</p>
+
+<p>B.All data on instance-store devices will be lost</p>
+
+<p>C.All data on EBS (Elastic Block Store) devices will be lost</p>
+
+<p>D.The ENI (Elastic Network Interface) is detached</p>
+
+<p>E.The underlying host for the instance is changed</p>
+
+<p>答案：B E</p>
+
+<p>这个题难度比较高。可以用排除法，A，C，D肯定不能选，B是对的，那么剩下一个答案只有E了啊。</p>
+
+<p>In the basic monitoring package for EC2, Amazon CloudWatch provides the following metrics:</p>
+
+<p>A.web server visible metrics such as number failed transaction
+requests</p>
+
+<p>B.operating system visible metrics such as memory utilization</p>
+
+<p>C.database visible metrics such as number of connections</p>
+
+<p>D.hypervisor visible metrics such as CPU utilization</p>
+
+<p>答案：D</p>
+
+<p>注意题干说的是basic monitoring,A,B,C肯定不对。具体支持的监控指标可见<a href="http://docs.aws.amazon.com/zh_cn/AmazonCloudWatch/latest/DeveloperGuide/ec2-metricscollected.html#ec2-metrics">http://docs.aws.amazon.com/zh_cn/AmazonCloudWatch/latest/DeveloperGuide/ec2-metricscollected.html#ec2-metrics</a>。D是唯一接近正确答案的，但是我对hypervisor了解不多，有些迷惑人。</p>
+
+<p>Which is an operational process performed by AWS for data security?</p>
+
+<p>A.AES-256 encryption of data stored on any shared storage device</p>
+
+<p>B.Decommissioning of storage devices using industry-standard practices</p>
+
+<p>C.Background virus scans of EBS volumes and EBS snapshots</p>
+
+<p>D.Replication of data across multiple AWS Regions</p>
+
+<p>E.Secure wiping of EBS data when an EBS volume is unmounted</p>
+
+<p>答案：B</p>
+
+<p>具体可以查看 was security whitepaper: <a href="https://media.amazonwebservices.com/pdf/AWS_Security_Whitepaper.pdf">https://media.amazonwebservices.com/pdf/AWS_Security_Whitepaper.pdf</a></p>
+
+<p>Storage Device Decommissioning 小节里面有这么一句话：</p>
+
+<blockquote><blockquote><p>All decommissioned magnetic storage devices are
+degaussed and physically destroyed in accordance with industry-standard practices.</p></blockquote></blockquote>
+
+<p>To protect S3 data from both accidental deletion and accidental overwriting, you should:</p>
+
+<p>A.enable S3 versioning on the bucket</p>
+
+<p>B.access S3 data using only signed URLs</p>
+
+<p>C.disable S3 delete using an IAM bucket policy</p>
+
+<p>D.enable S3 Reduced Redundancy Storage</p>
+
+<p>E.enable Multi-Factor Authentication (MFA) protected access</p>
+
+<p>答案：A</p>
+
+<p>出处文档:<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/Versioning.html">http://docs.aws.amazon.com/AmazonS3/latest/dev/Versioning.html</a></p>
+
+<blockquote><blockquote><p>Versioning-enabled buckets enable you to recover objects from accidental deletion or overwrite.</p></blockquote></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[翻译-DevOps究竟是什么？]]></title>
     <link href="http://www.huangbowen.net/blog/2014/10/03/what-exactly-is-devops/"/>
-    <updated>2014-10-03T23:34:43+10:00</updated>
+    <updated>2014-10-03T21:34:43+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/10/03/what-exactly-is-devops</id>
     <content type="html"><![CDATA[<p>原文地址:<a href="http://www.drdobbs.com/architecture-and-design/what-exactly-is-devops/240009147">http://www.drdobbs.com/architecture-and-design/what-exactly-is-devops/240009147</a>
 作者:Neil Garnichaud</p>
@@ -77,7 +226,7 @@
   <entry>
     <title type="html"><![CDATA[(翻译)正确实施DevOps-The Lay of the Land]]></title>
     <link href="http://www.huangbowen.net/blog/2014/09/29/geting-devops-right-the-lay-of-the-land/"/>
-    <updated>2014-09-29T23:38:28+10:00</updated>
+    <updated>2014-09-29T21:38:28+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/09/29/geting-devops-right-the-lay-of-the-land</id>
     <content type="html"><![CDATA[<p>原文地址:<a href="http://www.drdobbs.com/architecture-and-design/getting-devops-right-the-lay-of-the-land/240062639">http://www.drdobbs.com/architecture-and-design/getting-devops-right-the-lay-of-the-land/240062639</a>，作者Scott W. Ambler。</p>
 
@@ -128,7 +277,7 @@
   <entry>
     <title type="html"><![CDATA[程序员翻译技术类书籍的总结]]></title>
     <link href="http://www.huangbowen.net/blog/2014/09/23/some-tips-to-translate-books/"/>
-    <updated>2014-09-23T23:48:55+10:00</updated>
+    <updated>2014-09-23T21:48:55+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/09/23/some-tips-to-translate-books</id>
     <content type="html"><![CDATA[<p>2013年到现在，已经翻译了3本书了，其它杂七杂八的文章也不少。其中有一些经验和教训，势必要总结一下。</p>
 
@@ -168,7 +317,7 @@
   <entry>
     <title type="html"><![CDATA[翻译-高效DevOps的10项实践]]></title>
     <link href="http://www.huangbowen.net/blog/2014/09/22/ten-practices-for-effective-devops/"/>
-    <updated>2014-09-22T20:29:44+10:00</updated>
+    <updated>2014-09-22T18:29:44+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/09/22/ten-practices-for-effective-devops</id>
     <content type="html"><![CDATA[<p>原文链接： <a href="http://www.drdobbs.com/architecture-and-design/top-10-practices-for-effective-devops/240149363?pgno=1">http://www.drdobbs.com/architecture-and-design/top-10-practices-for-effective-devops/240149363?pgno=1</a>, 作者Scott W. Ambler。</p>
 
@@ -245,7 +394,7 @@
   <entry>
     <title type="html"><![CDATA[布里斯班Twilight Bay Run半程马拉松]]></title>
     <link href="http://www.huangbowen.net/blog/2014/09/21/brisbane-twilight-bay-run/"/>
-    <updated>2014-09-21T13:07:15+10:00</updated>
+    <updated>2014-09-21T11:07:15+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/09/21/brisbane-twilight-bay-run</id>
     <content type="html"><![CDATA[<p>自从8月3日跑了半马以后，又一鼓作气报了11月份的西昌马拉松。与第一次马拉松的只求完赛目标不同，第二次当然想取得一个更好的成绩。所以8月份练的比较猛，基本上是练2、3天休息一天，周么还要拉个长于21公里的LSD。拒不完全统计，8月份总跑量达到了260公里+。并且有一天周末跑了个人最好的半马成绩1小时53分。</p>
 
@@ -289,7 +438,7 @@
   <entry>
     <title type="html"><![CDATA[一句话解释c#中的特性]]></title>
     <link href="http://www.huangbowen.net/blog/2014/09/11/jieshi/"/>
-    <updated>2014-09-11T02:12:19+10:00</updated>
+    <updated>2014-09-11T00:12:19+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/09/11/jieshi</id>
     <content type="html"><![CDATA[<p>自己闲着无聊写的，当然有些描述不是十分准确，毕竟一句话不能表达太多意思。</p>
 
@@ -317,7 +466,7 @@
   <entry>
     <title type="html"><![CDATA[翻译-使用Spring调用SOAP Web Service]]></title>
     <link href="http://www.huangbowen.net/blog/2014/09/10/consuming-web-service/"/>
-    <updated>2014-09-10T23:02:41+10:00</updated>
+    <updated>2014-09-10T21:02:41+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/09/10/consuming-web-service</id>
     <content type="html"><![CDATA[<p>原文链接: <a href="http://spring.io/guides/gs/consuming-web-service/">http://spring.io/guides/gs/consuming-web-service/</a></p>
 
@@ -1250,7 +1399,7 @@
   <entry>
     <title type="html"><![CDATA[分享最新的博客到LinkedIn Timeline]]></title>
     <link href="http://www.huangbowen.net/blog/2014/09/07/share-latest-post-to-linkedin/"/>
-    <updated>2014-09-07T18:14:16+10:00</updated>
+    <updated>2014-09-07T16:14:16+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/09/07/share-latest-post-to-linkedin</id>
     <content type="html"><![CDATA[<p>使用Octopress作为我的博客框架有两年了。使用起来一直很顺手，这个工具真正的把博客跟写代码等同起来，非常酷炫。再加上各种各样的定制化，简直是随心所欲。我针对自己的需求对Octopress框架进行了一些定制化，比如编写了一些插件自动将博客同步到博客园，以及部署时将博客部署到亚马逊云的S3上等。这个周末闲着无事，写了一个插件将最新的博客信息推送到LinkedIn的timeline上去。</p>
 
@@ -1308,7 +1457,7 @@
   <entry>
     <title type="html"><![CDATA[翻译-使用Spring WebService生成SOAP Web Service]]></title>
     <link href="http://www.huangbowen.net/blog/2014/09/05/producing-web-service-using-spring/"/>
-    <updated>2014-09-05T19:50:02+10:00</updated>
+    <updated>2014-09-05T17:50:02+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/09/05/producing-web-service-using-spring</id>
     <content type="html"><![CDATA[<p>原文链接：<a href="http://spring.io/guides/gs/producing-web-service/">http://spring.io/guides/gs/producing-web-service/</a></p>
 
@@ -2334,7 +2483,7 @@
   <entry>
     <title type="html"><![CDATA[在Gradle中使用jaxb的xjc插件]]></title>
     <link href="http://www.huangbowen.net/blog/2014/08/30/use-jaxb-in-gradle/"/>
-    <updated>2014-08-30T22:25:45+10:00</updated>
+    <updated>2014-08-30T20:25:45+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/08/30/use-jaxb-in-gradle</id>
     <content type="html"><![CDATA[<p>jaxb，全称为Java Architecture for Xml Binding,是一种将java对象与xml建立起映射的技术。其主要提供两个功能，一是将java对象映射为xml，二是将xml映射为java对象。JAXB有1.0版和2.0版。2.0版对应的JSR（Java specification request, java规格要求）是JSR 222。jaxb中的xjc工具能够将XML Schema转换为对应的java类。支持的XML类型包括XML DTD，XSD以及WSDL。而schemagen工具则可以将具有相应annotation标记的java类转换为XML结构。</p>
 
@@ -2926,9 +3075,9 @@
   
   <entry>
     <title type="html"><![CDATA[Gradle中的buildScript代码块]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/08/28/buildscript-in-gradle/"/>
-    <updated>2014-08-28T00:12:45+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/08/28/buildscript-in-gradle</id>
+    <link href="http://www.huangbowen.net/blog/2014/08/27/buildscript-in-gradle/"/>
+    <updated>2014-08-27T22:12:45+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/08/27/buildscript-in-gradle</id>
     <content type="html"><![CDATA[<p>在编写Gradle脚本的时候，在build.gradle文件中经常看到这样的代码：</p>
 
 <!-- more -->
@@ -3096,7 +3245,7 @@
   <entry>
     <title type="html"><![CDATA[健身4个月总结]]></title>
     <link href="http://www.huangbowen.net/blog/2014/08/23/bodybuliding-4-month/"/>
-    <updated>2014-08-23T16:23:15+10:00</updated>
+    <updated>2014-08-23T14:23:15+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/08/23/bodybuliding-4-month</id>
     <content type="html"><![CDATA[<p>不知不觉，已经健身4个月了。刚开始健身的时候也没想到自己能坚持这么久，也没想到需要花费这么多的时间。不过目前一切都好，虽然健身花费了一些时间，但是也算有所收获，给自己的生活注入了一股新力量。也能每天有1到2个小时把自己从电脑前拉起来，去外面跑跑步，呼吸一下新鲜空气，去健身房聚聚哑铃，练习引体向上，突破身体的极限，或者去游泳池学习蛙泳、仰泳，与水亲密接触。</p>
 
@@ -3123,9 +3272,9 @@
   
   <entry>
     <title type="html"><![CDATA[程序员健身之马拉松篇]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/08/07/my-first-marathon/"/>
-    <updated>2014-08-07T01:13:15+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/08/07/my-first-marathon</id>
+    <link href="http://www.huangbowen.net/blog/2014/08/06/my-first-marathon/"/>
+    <updated>2014-08-06T23:13:15+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/08/06/my-first-marathon</id>
     <content type="html"><![CDATA[<p>程序员的身体差，似乎已经是大家的共识。整天对着电脑不运动，长此以往导致各种疾病缠身。新闻里也时不时的报道些程序员加班猝死的新闻。本人虽然是程序员，但是还是比较热爱运动的。毕业后有4，5年了，每周还时不时的踢踢球、打打篮球。每天上下班都是骑自行车，来回有26公里。加上大学时候经常锻炼，身体底子还不错。只不过上班后吃的比以前好了，运动量也没以前大了，体重蹭蹭的往上涨，最重的时候已经达到了80kg。</p>
 
 <!-- more -->
@@ -3154,9 +3303,9 @@ kg左右。</p>
   
   <entry>
     <title type="html"><![CDATA[AWS系列之三 使用EBS]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/07/31/use-ebs/"/>
-    <updated>2014-07-31T01:10:32+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/07/31/use-ebs</id>
+    <link href="http://www.huangbowen.net/blog/2014/07/30/use-ebs/"/>
+    <updated>2014-07-30T23:10:32+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/07/30/use-ebs</id>
     <content type="html"><![CDATA[<p>Amazon Elastic Block Store（EBS）可作为EC2实例的持久性数据块级存储。其具有高可用性和持久性的特点，可用性高达99.999%。给现有的EC2实例扩展新的存储块只需要几分钟的时间，省时省力。每个EBS块都被放置在一个特定的可用区内，并且会自动维护一个副本，随时保护数据安全。</p>
 
 <!-- more -->
@@ -3350,7 +3499,7 @@ kg左右。</p>
   <entry>
     <title type="html"><![CDATA[AWS系列之二 使用EC2]]></title>
     <link href="http://www.huangbowen.net/blog/2014/07/26/using-ec2/"/>
-    <updated>2014-07-26T18:27:22+10:00</updated>
+    <updated>2014-07-26T16:27:22+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/07/26/using-ec2</id>
     <content type="html"><![CDATA[<p>在本文中我们有三个任务。
 第一：使用Amazon management console创建一个EC2实例。
@@ -3486,7 +3635,7 @@ kg左右。</p>
   <entry>
     <title type="html"><![CDATA[Gradle与Gatling脚本集成]]></title>
     <link href="http://www.huangbowen.net/blog/2014/07/23/integrate-gatling-with-gradle/"/>
-    <updated>2014-07-23T16:12:23+10:00</updated>
+    <updated>2014-07-23T14:12:23+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/07/23/integrate-gatling-with-gradle</id>
     <content type="html"><![CDATA[<p>Gatling作为次时代的性能测试工具，由于其API简洁明了、性能出众，越来越受欢迎。但是运行Gatling脚本却有诸多不便，其提供的默认方式不是很方便。考虑到Gatling脚本本质上是Scala类，运行的时候还是使用的是java虚拟机，我们可以将其脚本的运行与Gradle结合起来。这样子就可以通过Gradle来运行Gatling脚本了。</p>
 
@@ -3640,7 +3789,7 @@ Gatling can be started with several options listed below:</p></blockquote>
   <entry>
     <title type="html"><![CDATA[AWS系列之一 亚马逊云服务概述]]></title>
     <link href="http://www.huangbowen.net/blog/2014/07/11/aws-overview/"/>
-    <updated>2014-07-11T17:50:26+10:00</updated>
+    <updated>2014-07-11T15:50:26+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/07/11/aws-overview</id>
     <content type="html"><![CDATA[<p>云计算经过这几年的发展，已经不再是是一个高大上的名词，而是已经应用到寻常百姓家的技术。每天如果你和互联网打交道，那么或多或少都会和云扯上关系。gmail、github、各种网盘、GAE、heroku等各种服务都属于云服务的范畴。那么云计算的定义到底是什么？这里有摘自wiki的定义。</p>
 
@@ -3749,7 +3898,7 @@ Gatling can be started with several options listed below:</p></blockquote>
   <entry>
     <title type="html"><![CDATA[成都亚马逊AWSome Day回顾]]></title>
     <link href="http://www.huangbowen.net/blog/2014/07/07/awsome-day-memo/"/>
-    <updated>2014-07-07T15:54:42+10:00</updated>
+    <updated>2014-07-07T13:54:42+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/07/07/awsome-day-memo</id>
     <content type="html"><![CDATA[<p>昨天我和公司同仁一起参加了亚马逊在成都的第一场AWSome Day活动。整个活动时间异常紧促，短短一天包含了7堂session，讲师的狂轰乱炸使得我们同学们普遍觉得比上班累多了。好了，废话不多说，让我们来回顾一下昨天都讲了那些东西。</p>
 
@@ -3783,7 +3932,7 @@ Gatling can be started with several options listed below:</p></blockquote>
   <entry>
     <title type="html"><![CDATA[微服务-分解应用程序从而实现更好的部署特性及可伸缩性]]></title>
     <link href="http://www.huangbowen.net/blog/2014/06/08/microservice/"/>
-    <updated>2014-06-08T21:07:01+10:00</updated>
+    <updated>2014-06-08T19:07:01+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/06/08/microservice</id>
     <content type="html"><![CDATA[<p>本文是我翻译INFQ上的一篇文章。作者Chris由简入深的讲解了微服务的来龙去脉、使用场景、优势劣势、以及现有技术栈向微服务架构的重构步骤。是一篇微服务主题的不可多得的好文。</p>
 
@@ -3987,25 +4136,6 @@ Gatling can be started with several options listed below:</p></blockquote>
 <h3>关于作者</h3>
 
 <p>Chris Richardson是一个开发者和架构师。他是Java拥护者，JavaOne 摇滚明星以及POJOs in Action一书的作者。该书描述了如何使用POJOs和诸如Spring和Hibernate的框架构建企业级Java应用。Chris也是original Cloud Foundry（一个针对Amazon EC2的早期Java PaaS）的创始人。他向组织机构做咨询从而提高人们的开发和部署技能，比如使用云计算，微服务，以及NoSQL。Twitter ID @crichardson。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[HTML5和CSS3响应式WEB设计指南 译者序]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/05/31/translators-words-of-html5/"/>
-    <updated>2014-05-31T01:30:32+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/05/31/translators-words-of-html5</id>
-    <content type="html"><![CDATA[<p>&ldquo;不是我不明白，这世界变化快。”崔健的这首歌使用在互联网领域最合适不过。只短短数年的功夫，互联网的浪潮还没过去，移动互联网的时代已经来临。人们已经习惯将越来越多的时间花在各种移动设备上。各大互联网公司先知先觉，在移动互联网领域杀的不可开交，甚至很多传统行业公司也在积极寻求自身领域与移动互联网的结合点。</p>
-
-<p>终端设备种类繁多，要给所有用户群带来一致的用户体验实属不易。在这种背景下，响应式设计应运而生。响应式Web设计的理念是，页面的设计与开发应当根据用户行为及设备环境进行相应的响应和调整。响应式设计并不是单纯设计者的事情，它是一系列技术栈的结合。HTML5和CSS3酝酿了多年终于落地,其在响应式设计中扮演着举足轻重的角色。</p>
-
-<p>本书作者Benjamin LaGrone具有丰富的互联网设计和开发经验。本书共7章，系统的介绍了利用HTML5和CSS3进行响应式Web设计的方方面面。每一小节基本都分为准备工作、实现方式、工作原理三部分，每个知识点逐步展开。并且每个小节所对应的方法都有详实的示例代码，可供读者参考学习。</p>
-
-<p>在翻译此书的过程中，我和同事饶勋荣合作非常愉快。同时也感谢华章公司的编辑们对我们工作的支持。另外，还要感谢家人对我的包容和照顾。</p>
-
-<p>最后，希望本书能给大家带来超凡的阅读体验。</p>
-
-<p>黄博文</p>
 ]]></content>
   </entry>
   

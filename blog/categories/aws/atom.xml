@@ -4,7 +4,7 @@
   <title><![CDATA[Category: AWS | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-10-03T23:36:05+10:00</updated>
+  <updated>2014-10-22T21:16:27+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -14,10 +14,159 @@
 
   
   <entry>
+    <title type="html"><![CDATA[AWS助理架构师样题解析]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/10/22/aws-cert-sample-question/"/>
+    <updated>2014-10-22T20:33:42+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/10/22/aws-cert-sample-question</id>
+    <content type="html"><![CDATA[<p>AWS 认证是对其在 AWS 平台上设计、部署和管理应用程序所需的技能和技术知识的一种认可。获得证书有助于证明您使用 AWS 的丰富经验和可信度，同时还能提升您所在的组织熟练使用基于 AWS 云服务应用的整体水平。</p>
+
+<!-- more -->
+
+
+<p>目前亚马逊推出了Solutions Architect,Developer和SysOps Administrator三个方向的认证。每个方向又分为Associate Level(助理级)，Professional Level（专家级）和Master Level（大师级）。当然目前只有Solutions Architect开放了Professional Level,其他层级会逐步开放中。</p>
+
+<p><img src="/images/cert_roadmap_Q214_EN.png"></p>
+
+<p>最近在打算备考AWS的Solutions Architect的Associate Level。关于这个考试AWS出了一个考试样题。下载链接：<a href="http://awstrainingandcertification.s3.amazonaws.com/production/AWS_certified_solutions_architect_associate_blueprint.pdf">http://awstrainingandcertification.s3.amazonaws.com/production/AWS_certified_solutions_architect_associate_blueprint.pdf</a></p>
+
+<p>我把样题都做了一遍，并且都尽力找到了答案在AWS文档中的出处。以下是样题和解答。</p>
+
+<p>Amazon Glacier is designed for: (Choose 2 answers)</p>
+
+<p>A.active database storage.</p>
+
+<p>B.infrequently accessed data.</p>
+
+<p>C.data archives.</p>
+
+<p>D.frequently accessed data.</p>
+
+<p>E.cached session data.</p>
+
+<p>答案：B和C</p>
+
+<p>出处文档：<a href="http://aws.amazon.com/glacier/?nc2=h_ls">http://aws.amazon.com/glacier/?nc2=h_ls</a></p>
+
+<blockquote><blockquote><p>Amazon Glacier is an extremely low-cost cloud archive storage service that provides secure and durable storage for data archiving and online backup. In order to keep costs low, Amazon Glacier is optimized for data that is infrequently accessed and for which retrieval times of several hours are suitable.</p></blockquote></blockquote>
+
+<p>Your web application front end consists of multiple EC2 instances behind an Elastic Load Balancer. You
+configured ELB to perform health checks on these EC2 instances. If an instance fails to pass health
+checks, which statement will be true?</p>
+
+<p>A.The instance is replaced automatically by the ELB.</p>
+
+<p>B.The instance gets terminated automatically by the ELB.</p>
+
+<p>C.The ELB stops sending traffic to the instance that failed its health check.</p>
+
+<p>D.The instance gets quarantined by the ELB for root cause analysis.</p>
+
+<p>答案：C</p>
+
+<p>出处文档：<a href="http://aws.amazon.com/elasticloadbalancing/?nc2=h_ls">http://aws.amazon.com/elasticloadbalancing/?nc2=h_ls</a></p>
+
+<blockquote><blockquote><p>Elastic Load Balancing ensures that only healthy Amazon EC2 instances receive traffic by detecting unhealthy instances and rerouting traffic across the remaining healthy instances.</p></blockquote></blockquote>
+
+<p>You are building a system to distribute confidential training videos to employees. Using CloudFront, what
+method could be used to serve content that is stored in S3, but not publically accessible from S3
+directly?</p>
+
+<p>A.Create an Origin Access Identity (OAI) for CloudFront and grant access to the objects in your S3
+bucket to that OAI.</p>
+
+<p>B.Add the CloudFront account security group “amazon-cf/amazon-cf-sg” to the appropriate S3 bucket
+policy.</p>
+
+<p>C.Create an Identity and Access Management (IAM) User for CloudFront and grant access to the
+objects in your S3 bucket to that IAM User.</p>
+
+<p>D.Create a S3 bucket policy that lists the CloudFront distribution ID as the Principal and the target
+bucket as the Amazon Resource Name (ARN).</p>
+
+<p>答案：A</p>
+
+<p>OAI介绍：<a href="http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html">http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html</a></p>
+
+<p>OAI基本上就是专为这个场景引入的。</p>
+
+<p>Which of the following will occur when an EC2 instance in a VPC (Virtual Private Cloud) with an
+associated Elastic IP is stopped and started? (Choose 2 answers)</p>
+
+<p>A.The Elastic IP will be dissociated from the instance</p>
+
+<p>B.All data on instance-store devices will be lost</p>
+
+<p>C.All data on EBS (Elastic Block Store) devices will be lost</p>
+
+<p>D.The ENI (Elastic Network Interface) is detached</p>
+
+<p>E.The underlying host for the instance is changed</p>
+
+<p>答案：B E</p>
+
+<p>这个题难度比较高。可以用排除法，A，C，D肯定不能选，B是对的，那么剩下一个答案只有E了啊。</p>
+
+<p>In the basic monitoring package for EC2, Amazon CloudWatch provides the following metrics:</p>
+
+<p>A.web server visible metrics such as number failed transaction
+requests</p>
+
+<p>B.operating system visible metrics such as memory utilization</p>
+
+<p>C.database visible metrics such as number of connections</p>
+
+<p>D.hypervisor visible metrics such as CPU utilization</p>
+
+<p>答案：D</p>
+
+<p>注意题干说的是basic monitoring,A,B,C肯定不对。具体支持的监控指标可见<a href="http://docs.aws.amazon.com/zh_cn/AmazonCloudWatch/latest/DeveloperGuide/ec2-metricscollected.html#ec2-metrics">http://docs.aws.amazon.com/zh_cn/AmazonCloudWatch/latest/DeveloperGuide/ec2-metricscollected.html#ec2-metrics</a>。D是唯一接近正确答案的，但是我对hypervisor了解不多，有些迷惑人。</p>
+
+<p>Which is an operational process performed by AWS for data security?</p>
+
+<p>A.AES-256 encryption of data stored on any shared storage device</p>
+
+<p>B.Decommissioning of storage devices using industry-standard practices</p>
+
+<p>C.Background virus scans of EBS volumes and EBS snapshots</p>
+
+<p>D.Replication of data across multiple AWS Regions</p>
+
+<p>E.Secure wiping of EBS data when an EBS volume is unmounted</p>
+
+<p>答案：B</p>
+
+<p>具体可以查看 was security whitepaper: <a href="https://media.amazonwebservices.com/pdf/AWS_Security_Whitepaper.pdf">https://media.amazonwebservices.com/pdf/AWS_Security_Whitepaper.pdf</a></p>
+
+<p>Storage Device Decommissioning 小节里面有这么一句话：</p>
+
+<blockquote><blockquote><p>All decommissioned magnetic storage devices are
+degaussed and physically destroyed in accordance with industry-standard practices.</p></blockquote></blockquote>
+
+<p>To protect S3 data from both accidental deletion and accidental overwriting, you should:</p>
+
+<p>A.enable S3 versioning on the bucket</p>
+
+<p>B.access S3 data using only signed URLs</p>
+
+<p>C.disable S3 delete using an IAM bucket policy</p>
+
+<p>D.enable S3 Reduced Redundancy Storage</p>
+
+<p>E.enable Multi-Factor Authentication (MFA) protected access</p>
+
+<p>答案：A</p>
+
+<p>出处文档:<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/Versioning.html">http://docs.aws.amazon.com/AmazonS3/latest/dev/Versioning.html</a></p>
+
+<blockquote><blockquote><p>Versioning-enabled buckets enable you to recover objects from accidental deletion or overwrite.</p></blockquote></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[使用亚马逊的Route53服务]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/04/24/use-aws-route53/"/>
-    <updated>2014-04-24T01:36:22+10:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/04/24/use-aws-route53</id>
+    <link href="http://www.huangbowen.net/blog/2014/04/23/use-aws-route53/"/>
+    <updated>2014-04-23T23:36:22+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/04/23/use-aws-route53</id>
     <content type="html"><![CDATA[<p>自从自己的博客从github迁移到AWS以上，再也不用担心Github被墙了。再加上CloudFront的CDN功能，那访问速度真是杠杆的，无论是在中国内陆，还是澳洲海边，秒开无压力。</p>
 
 <!-- more -->
@@ -58,7 +207,7 @@
   <entry>
     <title type="html"><![CDATA[亚马逊云服务之CloudFormation]]></title>
     <link href="http://www.huangbowen.net/blog/2013/10/23/aws-cloudformation/"/>
-    <updated>2013-10-23T16:07:00+10:00</updated>
+    <updated>2013-10-23T16:07:00+08:00</updated>
     <id>http://www.huangbowen.net/blog/2013/10/23/aws-cloudformation</id>
     <content type="html"><![CDATA[<p>亚马逊的Web Service其实包含了一套云服务。云服务主要分为三种:</p>
 
@@ -205,7 +354,7 @@
   <entry>
     <title type="html"><![CDATA[将我的博客迁移到亚马逊云端（2）]]></title>
     <link href="http://www.huangbowen.net/blog/2013/10/01/migrate-octopress-to-aws-step-2/"/>
-    <updated>2013-10-01T21:54:00+10:00</updated>
+    <updated>2013-10-01T21:54:00+08:00</updated>
     <id>http://www.huangbowen.net/blog/2013/10/01/migrate-octopress-to-aws-step-2</id>
     <content type="html"><![CDATA[<p><img src="/images/edgelocation.png"></p>
 
