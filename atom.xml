@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-10-27T21:40:04+08:00</updated>
+  <updated>2014-10-27T22:04:09+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -19,6 +19,9 @@
     <updated>2014-10-27T21:06:36+08:00</updated>
     <id>http://www.huangbowen.net/blog/2014/10/27/how-to-pass-the-aws-certification</id>
     <content type="html"><![CDATA[<p>上周考了亚马逊的解决方案架构师-助理级别的认证考试并顺利通过。这也算是对自己AWS服务熟悉程度的一种检验。在准备考试的过程中，把自己学习到的AWS知识都梳理了一遍，也算是收获颇丰。这次特意分享了该认证考经。</p>
+
+<!-- more -->
+
 
 <h2>什么是AWS认证？</h2>
 
