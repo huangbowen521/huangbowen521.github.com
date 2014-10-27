@@ -233,7 +233,7 @@ end
 desc "Deploy website via s3cmd"
 task :s3 do
   puts "## Deploying website via s3cmd"
-  ok_failed system("s3cmd sync --acl-public --reduced-redundancy --add-header \"Cache-Control: max-age=#{s3_cache_secs}\"  public/* s3://#{s3_bucket}/")
+  ok_failed system("/usr/local/bin/s3cmd sync --acl-public --reduced-redundancy --add-header \"Cache-Control: max-age=#{s3_cache_secs}\"  public/* s3://#{s3_bucket}/")
 end
 
 desc "Generate website and deploy"
