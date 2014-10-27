@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 rake generate 
 rake sync_post
 rake deploy
