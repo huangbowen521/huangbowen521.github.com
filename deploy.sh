@@ -1,4 +1,4 @@
-#!/bin/bash
+ruby -v
 rake generate 
 rake sync_post
 rake deploy
