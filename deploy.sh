@@ -1,3 +1,4 @@
+#! /bin/zsh
 ruby -v
 rake generate 
 rake sync_post
