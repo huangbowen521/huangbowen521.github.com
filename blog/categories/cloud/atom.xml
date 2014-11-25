@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Cloud | 黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/blog/categories/cloud/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-11-18T23:40:13+08:00</updated>
+  <updated>2014-11-25T11:42:55+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,78 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS re:Invent 2014回顾]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/11/25/aws-reinvent-conference/"/>
+    <updated>2014-11-25T11:38:26+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/11/25/aws-reinvent-conference</id>
+    <content type="html"><![CDATA[<p>亚马逊在2014年11月11-14日的拉斯维加斯举行了一年一度的re:Invent大会。在今年的大会上，亚马逊一股脑发布和更新了很多服务。现在就由我来带领大家了解一下这些新服务。</p>
+
+<!-- more -->
+
+
+<h2>安全及规范相关</h2>
+
+<h3>AWS Key Management Service</h3>
+
+<p>该服务可用于管理数据加密秘钥，以及使用硬件设备来保护秘钥。它与Amazon EBS，Amazon S3及Amazon Redshift高度集成。还与CloudTrail集成，可提供所有秘钥使用情况的日志。</p>
+
+<h3>AWS Config(预览)</h3>
+
+<p>这是个配置管理服务，可以监控和记录你对AWS资源的使用情况及配置修改历史。通过它你能轻易得到你所使用的所有AWS资源情况，以及各自的配置细节，并且能够追溯任何资源的历史配置情况。</p>
+
+<h3>AWS Service Catalog</h3>
+
+<p>AWS Service Catalog可以让管理员创建和管理一组资源，只有包含在该组中的资源才能被指定终端用户访问。这保证了服务的隔离性和安全性，快速响应市场变化。</p>
+
+<h2>应用程序生命周期管理工具</h2>
+
+<h3>AWS CodeDeploy</h3>
+
+<p>顾名思义，就是代码部署服务。其实现将代码部署到EC2实例的自动化功能。并且它与你的基础设施紧密结合，天生具有可伸缩性，不管是部署到1台EC2还是1千EC2都得心应手。</p>
+
+<h3>AWS CodeCommit</h3>
+
+<p>一个云端的代码托管服务。如果你的程序使用的是Git版本控制工具，可以与它很轻松的集成。CodeCommit还提供一个在线代码工具，可以通过它来浏览、编辑项目，进行项目协作。（这Y听起来有点像GitHub啊）。</p>
+
+<h3>AWS CodePipeline</h3>
+
+<p>难道是另一款Jenkins或Go Server工具？CodePipeline提供了持续部署和发布的自动化服务。从迁入代码、构建代码、测试、部署、上线一气呵成。并且可以将第三方工具集成到发布流程中。这款工具我还是比较期待的，不知道它会给持续交付带来什么样的变化。</p>
+
+<h2>数据库服务</h2>
+
+<h3>Amazon RDS for Aurora</h3>
+
+<p>Amazon Aurora是一款兼容MySQL的关系型数据库引擎。它既具备高档商业数据库的的速度及可用性优点，也具有开源数据库的简单和成本低廉等优点。其实我并不明白在当前No SQL大行其道的情况下，为什么亚马逊会推出一款关系型数据库引擎，让我们拭目以待吧。</p>
+
+<h2>容器服务</h2>
+
+<h3>Amazon EC2 Container Service</h3>
+
+<p>最近一段时间Docker火的不行，亚马逊对Docker容器的支持也不甘落后。它直接发布了一个EC2 Container Service，内置对Docker的支持，提供了一系列API来方便对Docker容器程序的管理。</p>
+
+<h2>计算服务</h2>
+
+<h3>AWS Lambda</h3>
+
+<p>AWS Lambda是一个计算服务，提供对事件或通知的快速响应机制。看起来是一个神奇的服务。收费方式是根据请求次数以及计算执行时间，完全是按需收费。具体使用场景目前还不得而知。</p>
+
+<h2>对一些已有服务的更新</h2>
+
+<h3>Amazon EC2 C4 instances</h3>
+
+<p>这次亚马逊提供了个全新的EC2类型- C4。 C4实例基于Intel Xeon E5-2666 V3,主频高达2.9GHz，专门设计用来进行计算密集型的操作。可适用于高性能计算要求的场景，比如运行应用程序，游戏服务，Web服务等。</p>
+
+<h3>Amazon EBS</h3>
+
+<p>亚马逊将会增加普通用途的SSD及Provisioned IOPS(SSD)卷的性能和大小。普通用途的SSD最大可达16TB，IOPS可达10000。而Provisioned IOPS(SSD)卷最大可达16TB，IOPS可达20000。当将EBS附加到优化EBS实例上时，普通用途的SSD卷MBps最高可达160，而Provisioned IOPS(SSD)可达320 MBps。</p>
+
+<hr />
+
+<p>这次大会发布的服务大部分要等到2015年初才能开始体验。中国区region就更晚了。总体来说，体现出re:Invent的服务不是很多，但也有不少值得期待。AWS作为云服务厂商的领军人物，自身实力毋庸置疑，改革、创新也是大刀阔斧。只不过我感觉它横跨IASS,PASS,SASS三大领域，包罗万象，越来越臃肿，有些服务是否画蛇添足不得而知。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AWS助理架构师认证考经]]></title>
@@ -482,40 +554,6 @@ $: sudo service httpd start
 <p>如果想获取更多知识可以访问亚马逊AWS的官网<a href="http://aws.amazon.com/">http://aws.amazon.com/</a>。如果想查看每个服务的详细信息，可以查看它们的官方文档<a href="https://aws.amazon.com/documentation/?nc1=h_su_dm">https://aws.amazon.com/documentation/?nc1=h_su_dm</a>。还有亚马逊的所有云服务都提供了API接口进行调用，并且提供了命令行工具Amazon CLI（Command Line Interface）来使用，详细信息请参见<a href="http://docs.aws.amazon.com/cli/latest/index.html">http://docs.aws.amazon.com/cli/latest/index.html</a>。</p>
 
 <p>另外，亚马逊提供了一个网址用于练习对AWS服务的使用。地址是<a href="https://run.qwiklabs.com">https://run.qwiklabs.com</a>,还没有申请AWS账号的同学有福了，里面有6节免费的课程，可以根据提示一步步操作AWS资源，并且消耗的资源都是免费的。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[成都亚马逊AWSome Day回顾]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/07/07/awsome-day-memo/"/>
-    <updated>2014-07-07T13:54:42+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/07/07/awsome-day-memo</id>
-    <content type="html"><![CDATA[<p>昨天我和公司同仁一起参加了亚马逊在成都的第一场AWSome Day活动。整个活动时间异常紧促，短短一天包含了7堂session，讲师的狂轰乱炸使得我们同学们普遍觉得比上班累多了。好了，废话不多说，让我们来回顾一下昨天都讲了那些东西。</p>
-
-<!-- more -->
-
-
-<p>第一个session主题是AWS技术推动的创新。听名称就知道给亚马逊云服务打广告了。里面讲述了AWS各种服务的牛逼，讲师说AWS计算量=其余15家云计算平台总计算量 * 5。是不是吹牛不得而知了。还有一点是AWS自从2006年发布以来经历了43次主动降价。就我个人使用AWS服务而言，感觉价格还是挺公道的。我的个人博客使用了AWS的Route53，S3，CloudFrond等服务，一个月收费也不过1刀多。这个session一句话来总结就是我们最牛B，其它的都是渣渣。当然亚马逊讲师这样说毕竟还是有一定底气的。</p>
-
-<p>第二个session主题是AWS服务概览。讲师带领我们对AWS的服务做了一个整体回顾。其计算服务主要包括EC2，存储服务包括S3，EBS，Glacier。数据库服务包括Redshift，DynamoDB，RDS，ElasticCache。部署与自动化服务包括CloudFormation，BeanStalk，OpsWorks。认证与访问服务IAM。网络服务VPC，Route53，ELB，Direct Connect。分布式计算服务包括Amazon EMR, Auto Scaling。内容传输服务CloudFront。大家看到这里是不是有点头晕了？</p>
-
-<p>第三个session主题是AWS存储服务。讲师仔细介绍了S3，EBS，Glacier三种存储服务的不同与适用场景。S3的容灾率最高，可用性最高，并且每个存储文件附带一个url，可以直接访问。EBS价格公道，需要配合S3或EC2来访问使用。而Glacier相当于存档文件，可以保存10年以上，价格最低。如果你上存储的数据大于1TB，甚至PB级别，亚马逊还贴心的提供了数据Import/Export服务，那速度是杠杠的，可以达到几十GB的传输速率。那么亚马逊是如何达到这样的带宽那？方法是你把你的硬盘邮寄给亚马逊数据中心，亚马逊数据中心直接外挂你的硬盘进行数据导入。</p>
-
-<p>吃了免费的午餐，下午的一大波session又来袭了。</p>
-
-<p>下午第一场session是关于AWS计算服务和网络。讲师介绍了最常用的EC2服务，还有用于大数据分析和挖掘的EMR系统。并且顺带讲述了CloudFront，Rout53，ELB等是如何协作来提供网络应用程序的访问速度的。还有亚马逊那神奇的Auto Scalling技术。安全是云服务的重中之重。亚马逊采用了IAM来统一管理和分配对云上的资源的各种访问。用户可以创建用户名和密码，创建access key，创建用户组等多种方式来控制对各种资源的访问。亚马逊也提供了VPC和路由机制来实现公网和私有局域网的的隔离和访问。</p>
-
-<p>第二场session是关于AWS管理的服务和数据库。亚马逊提供DynamoDB，RDS，Redshift，ElasticCache等与数据库有关的服务。其中DynamoDB是亚马逊自护研发的no sql数据库系统，自然少不了一番大吹特吹。RDS数据库支持mysql，Oracle，sql server等。这些数据库服务都支持自动备份，每隔5分钟备份一次，备份文件可保存0-35天。用户也可以手动备份，将备份文件放置到S3中永久保存。Redshift是亚马逊提供的数据仓库服务，可帮助你使用现有的商业智能工具进行大数据分析和处理。ElasticCache是亚马逊内置的缓存服务，DynamoDB，RDS数据库都可使用，可有效提高数据库吞吐量。</p>
-
-<p>第三场session是AWS的部署和管理。CloudWacth可以检测云上的资源，并根据配置的policy来自动进行scale out和scale in。比如如果CloudWatch发现EC2实例的cpu占用率在90%以上并保持5分钟，则会自动setup新的EC2服务器并注册到ELB上。使用的好的话运维人员再也不同半夜从床上爬起来解决问题了。而CloudFormation，Elastic Beanstalk，OpsWorks都是DevOps工具箱中不可缺少的工具，如果要实现inforstructure as code，这些工具可助你一臂之力。</p>
-
-<p>最后一个session是AWS解决方案参考架构概览。这里主要说明了你的应用程序如果要放到云上，在设计架构的时候需要遵守一定的准则，否则无法使用到云的优势，结果适得其反。比如AWS提供给你菜刀切肉，水果刀切水果。你偏偏拿个水果刀切肉还直吆喝着不好使，那就不对了。总之一句话，架构设计时一定要SOA，SOA，SOA。</p>
-
-<p>OK，大概内容就是这样了。听了以后是不是想亲自动手。什么？还有没有AWS账号？什么？还没有信用卡？什么？不知道哪里有详细的学习文档？</p>
-
-<p>统统忘掉这些吧。AWS祭出了神器：<a href="https://run.qwiklabs.com">https://run.qwiklabs.com</a>。这是一个用于学习和演练亚马逊各种服务的实验室，只需花一分钟注册即可使用。里面有各种服务的详细操作文档，并且支持真实演练。当你选择一堂课后，qwiklabs会自动给你生成一个AWS账号，你可以使用该账号登陆到真实的亚马逊云服务终端中进行各种破坏而不花费你一毛钱。想当年我自己play with AWS各种云服务时可没少花冤枉钱。</p>
-
-<p>熟悉了亚马逊云，学习其它云还不是小菜一碟。</p>
 ]]></content>
   </entry>
   

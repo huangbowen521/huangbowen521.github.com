@@ -4,7 +4,7 @@
   <title><![CDATA[黄博文的地盘]]></title>
   <link href="http://www.huangbowen.net/atom.xml" rel="self"/>
   <link href="http://www.huangbowen.net/"/>
-  <updated>2014-11-18T23:40:13+08:00</updated>
+  <updated>2014-11-25T11:42:55+08:00</updated>
   <id>http://www.huangbowen.net/</id>
   <author>
     <name><![CDATA[黄博文]]></name>
@@ -12,6 +12,78 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS re:Invent 2014回顾]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/11/25/aws-reinvent-conference/"/>
+    <updated>2014-11-25T11:38:26+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/11/25/aws-reinvent-conference</id>
+    <content type="html"><![CDATA[<p>亚马逊在2014年11月11-14日的拉斯维加斯举行了一年一度的re:Invent大会。在今年的大会上，亚马逊一股脑发布和更新了很多服务。现在就由我来带领大家了解一下这些新服务。</p>
+
+<!-- more -->
+
+
+<h2>安全及规范相关</h2>
+
+<h3>AWS Key Management Service</h3>
+
+<p>该服务可用于管理数据加密秘钥，以及使用硬件设备来保护秘钥。它与Amazon EBS，Amazon S3及Amazon Redshift高度集成。还与CloudTrail集成，可提供所有秘钥使用情况的日志。</p>
+
+<h3>AWS Config(预览)</h3>
+
+<p>这是个配置管理服务，可以监控和记录你对AWS资源的使用情况及配置修改历史。通过它你能轻易得到你所使用的所有AWS资源情况，以及各自的配置细节，并且能够追溯任何资源的历史配置情况。</p>
+
+<h3>AWS Service Catalog</h3>
+
+<p>AWS Service Catalog可以让管理员创建和管理一组资源，只有包含在该组中的资源才能被指定终端用户访问。这保证了服务的隔离性和安全性，快速响应市场变化。</p>
+
+<h2>应用程序生命周期管理工具</h2>
+
+<h3>AWS CodeDeploy</h3>
+
+<p>顾名思义，就是代码部署服务。其实现将代码部署到EC2实例的自动化功能。并且它与你的基础设施紧密结合，天生具有可伸缩性，不管是部署到1台EC2还是1千EC2都得心应手。</p>
+
+<h3>AWS CodeCommit</h3>
+
+<p>一个云端的代码托管服务。如果你的程序使用的是Git版本控制工具，可以与它很轻松的集成。CodeCommit还提供一个在线代码工具，可以通过它来浏览、编辑项目，进行项目协作。（这Y听起来有点像GitHub啊）。</p>
+
+<h3>AWS CodePipeline</h3>
+
+<p>难道是另一款Jenkins或Go Server工具？CodePipeline提供了持续部署和发布的自动化服务。从迁入代码、构建代码、测试、部署、上线一气呵成。并且可以将第三方工具集成到发布流程中。这款工具我还是比较期待的，不知道它会给持续交付带来什么样的变化。</p>
+
+<h2>数据库服务</h2>
+
+<h3>Amazon RDS for Aurora</h3>
+
+<p>Amazon Aurora是一款兼容MySQL的关系型数据库引擎。它既具备高档商业数据库的的速度及可用性优点，也具有开源数据库的简单和成本低廉等优点。其实我并不明白在当前No SQL大行其道的情况下，为什么亚马逊会推出一款关系型数据库引擎，让我们拭目以待吧。</p>
+
+<h2>容器服务</h2>
+
+<h3>Amazon EC2 Container Service</h3>
+
+<p>最近一段时间Docker火的不行，亚马逊对Docker容器的支持也不甘落后。它直接发布了一个EC2 Container Service，内置对Docker的支持，提供了一系列API来方便对Docker容器程序的管理。</p>
+
+<h2>计算服务</h2>
+
+<h3>AWS Lambda</h3>
+
+<p>AWS Lambda是一个计算服务，提供对事件或通知的快速响应机制。看起来是一个神奇的服务。收费方式是根据请求次数以及计算执行时间，完全是按需收费。具体使用场景目前还不得而知。</p>
+
+<h2>对一些已有服务的更新</h2>
+
+<h3>Amazon EC2 C4 instances</h3>
+
+<p>这次亚马逊提供了个全新的EC2类型- C4。 C4实例基于Intel Xeon E5-2666 V3,主频高达2.9GHz，专门设计用来进行计算密集型的操作。可适用于高性能计算要求的场景，比如运行应用程序，游戏服务，Web服务等。</p>
+
+<h3>Amazon EBS</h3>
+
+<p>亚马逊将会增加普通用途的SSD及Provisioned IOPS(SSD)卷的性能和大小。普通用途的SSD最大可达16TB，IOPS可达10000。而Provisioned IOPS(SSD)卷最大可达16TB，IOPS可达20000。当将EBS附加到优化EBS实例上时，普通用途的SSD卷MBps最高可达160，而Provisioned IOPS(SSD)可达320 MBps。</p>
+
+<hr />
+
+<p>这次大会发布的服务大部分要等到2015年初才能开始体验。中国区region就更晚了。总体来说，体现出re:Invent的服务不是很多，但也有不少值得期待。AWS作为云服务厂商的领军人物，自身实力毋庸置疑，改革、创新也是大刀阔斧。只不过我感觉它横跨IASS,PASS,SASS三大领域，包罗万象，越来越臃肿，有些服务是否画蛇添足不得而知。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[2014年西昌邛海湿地马拉松赛]]></title>
@@ -3800,160 +3872,6 @@ kg左右。</p>
 <p><img src="http://www.huangbowen.net/images/website.png" width="700"></p>
 
 <p>好了，这三个任务也就都完成了。希望大家喜欢这次EC2之旅。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Gradle与Gatling脚本集成]]></title>
-    <link href="http://www.huangbowen.net/blog/2014/07/23/integrate-gatling-with-gradle/"/>
-    <updated>2014-07-23T14:12:23+08:00</updated>
-    <id>http://www.huangbowen.net/blog/2014/07/23/integrate-gatling-with-gradle</id>
-    <content type="html"><![CDATA[<p>Gatling作为次时代的性能测试工具，由于其API简洁明了、性能出众，越来越受欢迎。但是运行Gatling脚本却有诸多不便，其提供的默认方式不是很方便。考虑到Gatling脚本本质上是Scala类，运行的时候还是使用的是java虚拟机，我们可以将其脚本的运行与Gradle结合起来。这样子就可以通过Gradle来运行Gatling脚本了。</p>
-
-<!-- more -->
-
-
-<p>废话少说，接下来就讲述下如何来进行配置。</p>
-
-<p>创建一个标准的maven结构的工程目录，如下图所示。</p>
-
-<p><img src="http://www.huangbowen.net/images/gradle-gatling.png" width="600"></p>
-
-<p>conf目录存放Gatling的基本配置文件。
-Gatling的脚本文件存放在src/test/scala/simulations包里面。可以自行在此包下对脚本文件再分类。</p>
-
-<p>在build.gradle文件中引入scala插件。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;scala&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后引入有gatling库的maven repo。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">repositories</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">mavenCentral</span> <span class="o">()</span>
-</span><span class='line'>    <span class="n">maven</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">url</span> <span class="s1">&#39;http://repository.excilys.com/content/groups/public&#39;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>再加入scala和gatling的依赖项。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">dependencies</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="s1">&#39;org.scala-lang:scala-library:2.10.1&#39;</span>
-</span><span class='line'>    <span class="n">testCompile</span> <span class="s1">&#39;io.gatling.highcharts:gatling-charts-highcharts:2.0.0-M3a&#39;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>把conf文件夹作为test的source文件。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">sourceSets</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">test</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">resources</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">srcDir</span> <span class="s1">&#39;conf&#39;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>创建一个名为gatling的task，目的是运行所有的gatling脚本。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="nf">gatling</span> <span class="o">(</span><span class="nl">dependsOn:</span> <span class="s1">&#39;compileTestScala&#39;</span><span class="o">)</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">logger</span><span class="o">.</span><span class="na">lifecycle</span> <span class="o">(</span><span class="s2">&quot; ---- Executing all Gatling scenarios from: ${sourceSets.test.output.classesDir} ----&quot;</span><span class="o">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">sourceSets</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">output</span><span class="o">.</span><span class="na">classesDir</span><span class="o">.</span><span class="na">eachFileRecurse</span> <span class="o">{</span> <span class="n">file</span> <span class="o">-&gt;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">isFile</span> <span class="o">())</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="kt">def</span> <span class="n">gatlingScenarioClass</span> <span class="o">=</span> <span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">getPath</span> <span class="o">()</span> <span class="o">-</span> <span class="o">(</span><span class="n">sourceSets</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">output</span><span class="o">.</span><span class="na">classesDir</span><span class="o">.</span><span class="na">getPath</span> <span class="o">()</span> <span class="o">+</span> <span class="n">File</span><span class="o">.</span><span class="na">separator</span><span class="o">)</span> <span class="o">-</span> <span class="s1">&#39;.class&#39;</span><span class="o">)</span>
-</span><span class='line'>                    <span class="o">.</span><span class="na">replace</span> <span class="o">(</span><span class="n">File</span><span class="o">.</span><span class="na">separator</span><span class="o">,</span> <span class="s1">&#39;.&#39;</span><span class="o">)</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="n">javaexec</span> <span class="o">{</span>
-</span><span class='line'>                <span class="n">main</span> <span class="o">=</span> <span class="s1">&#39;io.gatling.app.Gatling&#39;</span>
-</span><span class='line'>                <span class="n">classpath</span> <span class="o">=</span> <span class="n">sourceSets</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">output</span> <span class="o">+</span> <span class="n">sourceSets</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">runtimeClasspath</span>
-</span><span class='line'>                <span class="n">args</span> <span class="s1">&#39;-sbf&#39;</span><span class="o">,</span>
-</span><span class='line'>                        <span class="n">sourceSets</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">output</span><span class="o">.</span><span class="na">classesDir</span><span class="o">,</span>
-</span><span class='line'>                        <span class="s1">&#39;-s&#39;</span><span class="o">,</span>
-</span><span class='line'>                        <span class="n">gatlingScenarioClass</span><span class="o">,</span>
-</span><span class='line'>                        <span class="s1">&#39;-rf&#39;</span><span class="o">,</span>
-</span><span class='line'>                        <span class="s1">&#39;build/reports/gatling&#39;</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">logger</span><span class="o">.</span><span class="na">lifecycle</span> <span class="o">(</span><span class="s2">&quot; ---- Done executing all Gatling scenarios ----&quot;</span><span class="o">)</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这是借助于Gatling的command line运行功能来实现的。具体参数指定官网上有，这里贴出原文。</p>
-
-<blockquote><p>Command Line Options #
-Gatling can be started with several options listed below:</p></blockquote>
-
-<ul>
-<li> -nr (&ndash;no-reports): Runs simulation but does not generate reports</li>
-<li> -ro <folderName> (&ndash;reports-only <folderName>): Generates the reports for the simulation log file located in <gatling_home>/results/<folderName></li>
-<li> -df <folderAbsolutePath> (&ndash;data-folder <folderAbsolutePath>): Uses <folderAbsolutePath> as the folder where feeders are stored</li>
-<li> -rf <folderAbsolutePath> (&ndash;results-folder <folderAbsolutePath>): Uses <folderAbsolutePath> as the folder where results are stored</li>
-<li> -bf <folderAbsolutePath> (&ndash;request-bodies-folder <folderAbsolutePath>): Uses <folderAbsolutePath> as the folder where request bodies are stored</li>
-<li> -sf <folderAbsolutePath> (&ndash;simulations-folder <folderAbsolutePath>): Uses <folderAbsolutePath> as the folder where simulations are stored</li>
-<li> -sbf <folderAbsolutePath> (&ndash;simulations-binaries-folder <folderAbsolutePath>): Uses <folderAbsolutePath> as the folder where simulation binaries are stored</li>
-<li> -s <className> (&ndash;simulation <className>): Uses <className> as the name of the simulation to be run</li>
-<li> -sd <text> (&ndash;simulation-description <text>): Uses <text> as simulation description</li>
-</ul>
-
-
-<p>我在github上创建了一个示例项目，请参见<a href="https://github.com/huangbowen521/gatling-gradle">https://github.com/huangbowen521/gatling-gradle</a></p>
 ]]></content>
   </entry>
   
