@@ -1,0 +1,480 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ActiveMQ第一弹:安装与运行 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="ActiveMQ使用java写的，所以天然跨平台，windows，各种类Unix系统都可运行，只需要下载对应的分发包即可。当前AciveMQ的最新版本是5.9.0。我目前在自己机子上安装的版本是5.8.0。 安装ActivceMQ需要先设置好系统环境。 空间剩余磁盘大于60M。（这个肯定没问题） &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.1.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+
+<style>#forkongithub a{background:#060;color:#fff;text-decoration:none;font-family:arial, sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#A853B2;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:absolute;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}</style><span id="forkongithub"><a href="https://github.com/huangbowen521">Fork me on GitHub</a></span>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ActiveMQ第一弹:安装与运行</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-20T00:12:00+08:00" pubdate data-updated="true">Feb 20<span>th</span>, 2014</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>ActiveMQ使用java写的，所以天然跨平台，windows，各种类Unix系统都可运行，只需要下载对应的分发包即可。当前AciveMQ的最新版本是5.9.0。我目前在自己机子上安装的版本是5.8.0。</p>
+
+<!-- more -->
+
+
+<p>安装ActivceMQ需要先设置好系统环境。</p>
+
+<ol>
+<li><p>空间剩余磁盘大于60M。（这个肯定没问题）</p></li>
+<li><p>需要预装JDK，版本为1.6.x及其以上。（ActiveMQ就是用java写的，肯定要装java环境的嘛）</p></li>
+</ol>
+
+
+<p>接下来就可以安装ActiveMQ了。</p>
+
+<p>一种是直接下载分发包，地址是<a href="http://activemq.apache.org/">http://activemq.apache.org/</a>。找到想要安装的版本后解压缩即可。</p>
+
+<p>另一种是通过源代码安装，地址是<a href="http://activemq.apache.org/download.html">http://activemq.apache.org/download.html</a>。该源代码是使用maven作为构建工具的，所以需要先安装maven，如何安装可参见<a href="http://maven.apache.org/">maven官网</a>（MAC用户如果安装了homebrew的话，直接运行<code>brew install maven</code>即可）。    然后使用<code>mvn clean install -Dmaven.test.skip=true</code>来构建源代码。如果构建成功的话在target目录下可以看到生成的activemq-x.x-SNAPSHOT.zip文件，解压缩以后就可以使用了。</p>
+
+<p>当然MAC用户的话安装就简单了，直接使用<code>brew install activemq</code>就行（不知道homebrew为何物的参见我写的文章：
+<a href="http://www.huangbowen.net/blog/2013/07/01/homebrew-in-mac/">Homebrew- MAC上的包管理利器</a>）。ActiveMQ会被默认安装到/usr/local/Cellar/activemq。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq<span class="nv">$ </span>ls
+</span><span class='line'>5.7.0 5.8.0
+</span><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq<span class="nv">$ </span><span class="nb">cd </span>5.8.0
+</span><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>ls
+</span><span class='line'>INSTALL_RECEIPT.json NOTICE               bin
+</span><span class='line'>LICENSE              README.txt           libexec
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>HomeBrew会自动将activemq加入到系统路径中。</p>
+
+<p>下表列出了与ActiveMQ有关的一些重要的环境变量。</p>
+
+<ul>
+<li><p>ACTIVEMQ_HOME: /usr/local/Cellar/activemq/5.8.0/libexec</p></li>
+<li><p>ACTIVEMQ_BASE: /usr/local/Cellar/activemq/5.8.0/libexec</p></li>
+<li><p>ACTIVEMQ_CONF: /usr/local/Cellar/activemq/5.8.0/libexec/conf</p></li>
+<li><p>ACTIVEMQ_DATA: /usr/local/Cellar/activemq/5.8.0/libexec/data</p></li>
+</ul>
+
+
+<p><strong>注意一下所有命令有时基于ActiveMQ 5.8.0版本，不同版本命令稍有不同。</strong></p>
+
+<p>先运行<code>activemq setup ~/.activemqrc</code>来指定activemq的环境配置文件。在这个文件中可以自定义activemq使用的JDK路径，jvm参数等信息。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>activemq setup ~/.activemqrc
+</span><span class='line'>INFO: Loading <span class="s1">&#39;/Users/twer/.activemqrc&#39;</span>
+</span><span class='line'>INFO: Creating configuration file: /Users/twer/.activemqrc
+</span><span class='line'>INFO: It<span class="s1">&#39;s recommend to limit access to &#39;</span>/Users/twer/.activemqrc<span class="s1">&#39; to the priviledged user</span>
+</span><span class='line'><span class="s1">INFO: (recommended: chown &#39;</span>twer<span class="s1">&#39;:nogroup &#39;</span>/Users/twer/.activemqrc<span class="s1">&#39;; chmod 600 &#39;</span>/Users/twer/.activemqrc’<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行<code>activemq</code>可以显示activemq相应的配置信息及可用的命令。（注意低版本中此命令是启动ActiveMQ）</p>
+
+<p>运行<code>activemq start</code>可以在一个独立进程中启动activemq。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>activemq start
+</span><span class='line'>INFO: Loading <span class="s1">&#39;/Users/twer/.activemqrc&#39;</span>
+</span><span class='line'>INFO: Using java <span class="s1">&#39;/System/Library/Frameworks/JavaVM.framework/Home/bin/java&#39;</span>
+</span><span class='line'>INFO: Starting - inspect logfiles specified in logging.properties and log4j.properties to get details
+</span><span class='line'>INFO: pidfile created : <span class="s1">&#39;/usr/local/Cellar/activemq/5.8.0/libexec/data/activemq-bowen-huang.local.pid&#39;</span> <span class="o">(</span>pid <span class="s1">&#39;50873&#39;</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到进程id是50873.</p>
+
+<p>终止ActiveMQ的运行有两种方式。一种是使用<code>activemq stop</code>。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>activemq stop
+</span><span class='line'>INFO: Loading <span class="s1">&#39;/Users/twer/.activemqrc&#39;</span>
+</span><span class='line'>INFO: Using java <span class="s1">&#39;/System/Library/Frameworks/JavaVM.framework/Home/bin/java&#39;</span>
+</span><span class='line'>INFO: Waiting at least 30 seconds <span class="k">for </span>regular process termination of pid <span class="s1">&#39;50873&#39;</span> :
+</span><span class='line'>Java Runtime: Apple Inc. 1.6.0_65 /System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
+</span><span class='line'>  Heap sizes: <span class="nv">current</span><span class="o">=</span>1035520k  <span class="nv">free</span><span class="o">=</span>1033420k  <span class="nv">max</span><span class="o">=</span>1035520k
+</span><span class='line'>    JVM args: -Xms1G -Xmx1G -Djava.util.logging.config.file<span class="o">=</span>logging.properties -Dactivemq.classpath<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec/conf; -Dactivemq.home<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec -Dactivemq.base<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec -Dactivemq.conf<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec/conf -Dactivemq.data<span class="o">=</span>/usr/local/Cellar/activemq/5.8.0/libexec/data
+</span><span class='line'>Extensions classpath:
+</span><span class='line'>  <span class="o">[</span>/usr/local/Cellar/activemq/5.8.0/libexec/lib,/usr/local/Cellar/activemq/5.8.0/libexec/lib/camel,/usr/local/Cellar/activemq/5.8.0/libexec/lib/optional,/usr/local/Cellar/activemq/5.8.0/libexec/lib/web,/usr/local/Cellar/activemq/5.8.0/libexec/lib/extra<span class="o">]</span>
+</span><span class='line'>ACTIVEMQ_HOME: /usr/local/Cellar/activemq/5.8.0/libexec
+</span><span class='line'>ACTIVEMQ_BASE: /usr/local/Cellar/activemq/5.8.0/libexec
+</span><span class='line'>ACTIVEMQ_CONF: /usr/local/Cellar/activemq/5.8.0/libexec/conf
+</span><span class='line'>ACTIVEMQ_DATA: /usr/local/Cellar/activemq/5.8.0/libexec/data
+</span><span class='line'>Connecting to pid: 50873
+</span><span class='line'>.Stopping broker: localhost
+</span><span class='line'>… FINISHED
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>另一种则是暴力的杀死进程,即<code>kill 50873</code>。</p>
+
+<p>运行<code>activemq console</code>则会在当前console中启动activemq。这种好处是不用多开一个进程，而且可以直接从console中看到log。关闭activemq也很简单，直接按<code>ctrl</code>+<code>C</code>终止终端运行。</p>
+
+<p>ActiveMQ的默认端口是61616，可以检测这端口来判断ActiveMQ是否启动成功。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0<span class="nv">$ </span>netstat -an|grep 61616
+</span><span class='line'>tcp46      0      0  *.61616                *.*                    LISTEN
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以访问web终端<a href="http://localhost:8161/admin">http://localhost:8161/admin</a>来查看和管理ActiveMQ。（默认用户名密码是admin/admin，你也可以修改配置，其在ActiveMQ安装目录下的libexec/conf/jetty-real.properties文件中）。</p>
+
+<p>ActiveMQ支持xml文件格式对其进行配置。其实我们运行<code>activemq start</code>时，ActiveMQ就是默认使用了其安装目录下的libexec/conf/activemq.xml文件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0/libexec/conf<span class="nv">$ </span>ls
+</span><span class='line'>activemq-command.xml                 broker.ks
+</span><span class='line'>activemq-demo.xml                    broker.ts
+</span><span class='line'>activemq-dynamic-network-broker1.xml camel.xml
+</span><span class='line'>activemq-dynamic-network-broker2.xml client.ks
+</span><span class='line'>activemq-jdbc.xml                    client.ts
+</span><span class='line'>activemq-scalability.xml             credentials-enc.properties
+</span><span class='line'>activemq-security.xml                credentials.properties
+</span><span class='line'>activemq-specjms.xml                 jetty-demo.xml
+</span><span class='line'>activemq-static-network-broker1.xml  jetty-realm.properties
+</span><span class='line'>activemq-static-network-broker2.xml  jetty.xml
+</span><span class='line'>activemq-stomp.xml                   jmx.access
+</span><span class='line'>activemq-throughput.xml              jmx.password
+</span><span class='line'>activemq.xml                         log4j.properties
+</span><span class='line'>broker-localhost.cert                logging.properties
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们当然可以使用自定义的配置文件，比如我们改用activemq-demo.xml。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$:</span>/usr/local/Cellar/activemq/5.8.0/libexec<span class="nv">$ </span>activemq start xbean:./conf/activemq-demo.xml
+</span><span class='line'>INFO: Loading <span class="s1">&#39;/Users/twer/.activemqrc&#39;</span>
+</span><span class='line'>INFO: Using java <span class="s1">&#39;/System/Library/Frameworks/JavaVM.framework/Home/bin/java&#39;</span>
+</span><span class='line'>INFO: Starting - inspect logfiles specified in logging.properties and log4j.properties to get details
+</span><span class='line'>INFO: pidfile created : <span class="s1">&#39;/usr/local/Cellar/activemq/5.8.0/libexec/data/activemq-bowen-huang.local.pid&#39;</span> <span class="o">(</span>pid <span class="err">&#39;</span>51375’<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ActiveMQ在5.8.0版本及之后在安装包中包含了一些demo来演示对ActiveMQ的使用。使用方式很简单，首先采用activemq-demo.xml配置文件来启动ActiveMQ，然后访问<a href="http://localhost:8161/demo/">http://localhost:8161/demo/</a>尽情探索把。</p>
+
+<p>这些demo的源码都在ActiveMQ安装目录下的libexec目录中，里面有个<code>user-guide.html</code>，可以用浏览器直接打开，它详细描述了该如何使用这些demo。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-20T00:12:00+08:00" pubdate data-updated="true">Feb 20<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/activemq/'>ActiveMQ</a>
+  
+</span>
+
+
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/17/how-to-improve-a-legacy-project/" title="Previous Post: 如果让我完善几年前的一个项目，我会做哪些改进?">&laquo; 如果让我完善几年前的一个项目，我会做哪些改进?</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/20/spring-jms-and-activemq-sample/" title="Next Post: ActiveMQ第二弹:使用Spring JMS与ActiveMQ通讯">ActiveMQ第二弹:使用Spring JMS与ActiveMQ通讯 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>攻城狮，程序猿。目前就职于ThoughtWorks。</p>
+</section>
+
+<section>
+  <h1>Tag Cloud</h1>
+    <span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#f2f2f2' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x333333&amp;tcolor2=0x333333&amp;hicolor=0x000000&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Factivemq%27+style%3D%27font-size%3A+36.66666666666667%25%27%3EActiveMQ%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eagile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+23.333333333333336%25%27%3EAgile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fandroid%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EAndroid%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Faws%27+style%3D%27font-size%3A+27.77777777777778%25%27%3EAWS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fc-%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EC%23%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fci%27+style%3D%27font-size%3A+23.333333333333336%25%27%3ECI%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fcloud%27+style%3D%27font-size%3A+50.0%25%27%3ECloud%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdatabase%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EDataBase%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdesign%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Edesign%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdevops%27+style%3D%27font-size%3A+23.333333333333336%25%27%3EDevOps%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fefficient%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eefficient%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fenglish%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EEnglish%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffitness%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Efitness%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffp%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EFP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgatling%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EGatling%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgradle%27+style%3D%27font-size%3A+41.111111111111114%25%27%3EGradle%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhaskell%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EHaskell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhomebrew%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EHomebrew%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+18.88888888888889%25%27%3EJava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjavascript%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EJavaScript%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%E5%AD%A6%E4%B9%A0%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EJava%E5%AD%A6%E4%B9%A0%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flearning%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Elearning%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flife%27+style%3D%27font-size%3A+23.333333333333336%25%27%3ELife%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fmarathon%27+style%3D%27font-size%3A+18.88888888888889%25%27%3EMarathon%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fmicroservice%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Emicroservice%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EOctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fplugin%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eplugin%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fpractise%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Epractise%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Freading%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Ereading%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frefactor%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Erefactor%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fruby%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eruby%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frun%27+style%3D%27font-size%3A+14.444444444444445%25%27%3ERun%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frunning%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Erunning%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fshell%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eshell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring%27+style%3D%27font-size%3A+23.333333333333336%25%27%3ESpring%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring-context%27+style%3D%27font-size%3A+45.55555555555556%25%27%3ESpring-Context%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring-context%27+style%3D%27font-size%3A+14.444444444444445%25%27%3ESpring-context%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fstudy%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Estudy%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fsvn%27+style%3D%27font-size%3A+14.444444444444445%25%27%3ESVN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+18.88888888888889%25%27%3ETesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Etesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftranslation%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Etranslation%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxml%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EXML%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxp%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EXP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fzsh%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EZSH%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%B7%A5%E5%85%B7%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E5%B7%A5%E5%85%B7%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%80%BB%E7%BB%93%27+style%3D%27font-size%3A+18.88888888888889%25%27%3E%E6%80%BB%E7%BB%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E7%94%9F%E6%B4%BB%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+27.77777777777778%25%27%3E%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%27+style%3D%27font-size%3A+36.66666666666667%25%27%3E%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BF%BB%E8%AF%91%27+style%3D%27font-size%3A+18.88888888888889%25%27%3E%E7%BF%BB%E8%AF%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E8%AF%BB%E4%B9%A6%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%27+style%3D%27font-size%3A+18.88888888888889%25%27%3E%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/12/31/my-conclusion-of-2014/">一个程序员的2014年总结</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/26/shudown-ec2-at-certain-time/">定时关闭AWS上的EC2机器实例</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/22/running-on-the-way/">《跑出巅峰》书评</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/25/aws-reinvent-conference/">AWS re:Invent 2014回顾</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/18/xichang-marathon/">2014年西昌邛海湿地马拉松赛</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2014/02/20/install-and-run-activemq/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

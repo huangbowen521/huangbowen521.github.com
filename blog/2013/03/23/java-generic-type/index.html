@@ -1,0 +1,710 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Java基础知识之泛型 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="当我们在定义类，接口和方法时，可以接收一个类型作为参数，这就叫做泛型。 函数可以传入普通的参数，也可以传入一个类型参数。不同之处是普通的参数就是值而已，但是类型参数却是个类型。 使用泛型的好处: 强类型检查。在编译时就可以得到类型错误信息。
+避免显式强制转换。
+方便实现通用算法。 对类使用泛型 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/03/23/java-generic-type">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.1.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+
+<style>#forkongithub a{background:#060;color:#fff;text-decoration:none;font-family:arial, sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#A853B2;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:absolute;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}</style><span id="forkongithub"><a href="https://github.com/huangbowen521">Fork me on GitHub</a></span>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Java基础知识之泛型</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-23T00:26:00+08:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><strong>当我们在定义类，接口和方法时，可以接收一个类型作为参数，这就叫做泛型</strong>。</p>
+
+<p>函数可以传入普通的参数，也可以传入一个类型参数。不同之处是普通的参数就是值而已，但是类型参数却是个类型。</p>
+
+<p>使用泛型的好处:</p>
+
+<ul>
+<li>强类型检查。在编译时就可以得到类型错误信息。</li>
+<li>避免显式强制转换。</li>
+<li>方便实现通用算法。</li>
+</ul>
+
+
+<!-- more -->
+
+
+<h2>对类使用泛型</h2>
+
+<p>我们可以创建一个简单的Class Box。它提供存取一个类型为Object的对象。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Box</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getObject</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">object</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setObject</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">object</span> <span class="o">=</span> <span class="n">object</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Object</span> <span class="n">object</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你可以传给它任何你想要的对象，比如对象String,Integer等，也可以传入自定义的一些对象。但是调用getObject方法返回的对象需要显式的强转为传入的类型，才能使用原来类型的一些方法。</p>
+
+<p>我们可以使用泛型来构造这个对象。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Box</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">T</span> <span class="nf">getObject</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">object</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">T</span> <span class="n">object</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setObject</span><span class="o">(</span><span class="n">T</span> <span class="n">object</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">object</span> <span class="o">=</span> <span class="n">object</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们可以看到，所有的Object被替换成了T。T代表了某种类型，你在实例化Box对象时，必须要给其指定一种类型，String,Integer或者自定义的类，并且调用getObject方法并不需要进行强转就可以使用该类型的方法。</p>
+
+<p>一般来说，类型参数名称越简单越好，并且需要是大写的。为了方便，我们约定了一些命名使用。</p>
+
+<ul>
+<li>E Element</li>
+<li>K key</li>
+<li>N Number</li>
+<li>T type</li>
+<li>V value</li>
+<li>S,U,V 第2，3，4个类型</li>
+</ul>
+
+
+<p>我们可以这样实例化一个Box类。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Box</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">integerBox</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Box</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>同样，我们也支持在一个类中传入多个类型参数。例如下面的Pair对象</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Pair</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">T</span> <span class="n">key</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">V</span> <span class="n">value</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">Pair</span><span class="o">(</span><span class="n">T</span> <span class="n">key</span><span class="o">,</span> <span class="n">V</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">T</span> <span class="nf">getKey</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">key</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">V</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用方法如下。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Pair</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">one</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Pair</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;(</span><span class="mi">1</span><span class="o">,</span> <span class="s">&quot;one&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Pair</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">hello</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Pair</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;(</span><span class="s">&quot;hello&quot;</span><span class="o">,</span> <span class="s">&quot;world&quot;</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>对方法使用泛型</h2>
+
+<p>泛型可以作用与方法上，此时泛型参数只能在方法体中使用。而泛型作用于类时，则在整个类中可以使用。</p>
+
+<p>在静态方法、非静态方法及构造函数都可以使用泛型。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Util</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">,</span> <span class="n">U</span><span class="o">&gt;</span> <span class="kt">boolean</span> <span class="n">compare</span><span class="o">(</span><span class="n">Pair</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span><span class="n">U</span><span class="o">&gt;</span> <span class="n">pair1</span><span class="o">,</span> <span class="n">Pair</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span><span class="n">U</span><span class="o">&gt;</span> <span class="n">pair2</span><span class="o">)</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">pair1</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">pair2</span><span class="o">.</span><span class="na">getKey</span><span class="o">())</span> <span class="o">&amp;&amp;</span> <span class="n">pair1</span><span class="o">.</span><span class="na">getValue</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">pair2</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是对该静态方法的使用。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>       <span class="n">Pair</span> <span class="n">one</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Pair</span><span class="o">(</span><span class="s">&quot;one&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Pair</span> <span class="n">two</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Pair</span><span class="o">(</span><span class="s">&quot;two&quot;</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">Util</span><span class="o">.</span><span class="na">compare</span><span class="o">(</span><span class="n">one</span><span class="o">,</span> <span class="n">two</span><span class="o">),</span> <span class="n">is</span><span class="o">(</span><span class="kc">false</span><span class="o">));</span>
+</span><span class='line'><span class="c1">// pass</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>对泛型进行限定</h2>
+
+<p>默认情况下如果直接使用<T>的话，我们可以给其传任何值。有时候我们想值允许传入某个类及它的子类。这时候在声明泛型时可以使用<strong>extends</strong>关键字。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Box</span><span class="o">&lt;</span><span class="n">T</span> <span class="kd">extends</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">T</span> <span class="nf">getObject</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">object</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">T</span> <span class="n">object</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setObject</span><span class="o">(</span><span class="n">T</span> <span class="n">object</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">object</span> <span class="o">=</span> <span class="n">object</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>      <span class="n">Box</span> <span class="n">box</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Box</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">box</span><span class="o">.</span><span class="na">setObject</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>    <span class="c1">//ok</span>
+</span><span class='line'>        <span class="n">box</span><span class="o">.</span><span class="na">setObject</span><span class="o">(</span><span class="s">&quot;hello&quot;</span><span class="o">);</span>  <span class="c1">//compile-time error</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们也可以给类型参数加多个限定。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">&lt;</span><span class="n">T</span> <span class="kd">extends</span> <span class="n">B1</span> <span class="o">&amp;</span> <span class="n">B2</span> <span class="o">&amp;</span> <span class="n">B3</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>加上限定类或接口以后，我们可以使用泛型参数变量调用该类或接口的方法。</p>
+
+<h2>通配符的使用</h2>
+
+<p>Java中的List<T>就是一个实现了泛型的类，假如我们写了一个方法，获取List<T>中元素的个数。只不过这个方法限定T类型为Number。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getCount</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Number</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">{</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>      <span class="k">for</span><span class="o">(</span><span class="n">Number</span> <span class="n">n</span> <span class="o">:</span> <span class="n">list</span><span class="o">)</span>
+</span><span class='line'>      <span class="o">{</span>
+</span><span class='line'>          <span class="n">i</span><span class="o">++;</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">i</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后我们这样试图调用它。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;(){</span>
+</span><span class='line'>        <span class="o">{</span>
+</span><span class='line'>            <span class="n">add</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">add</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">add</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Util</span><span class="o">.</span><span class="na">getCount</span><span class="o">(</span><span class="n">list</span><span class="o">);</span> <span class="c1">//compile-time error</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>为什么会产生错误那？因为我们要求方法的参数是List<Number>,而我们实际传入的是List<Integer>。虽然Integer是Number的子类，但是List<Integer>却不是List<Number>的子类，他们其实是平等的关系。这点一定要注意。我们在方法定义时已经明确表示T的类型是Number了，所以只能接收List<Number>，而不能接收其它类型的参数。
+这时候<code>?</code>通配符就起作用了。我们可以使用<code>？</code>通配符重新定义这个方法。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Util</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getCount</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">{</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>      <span class="k">for</span><span class="o">(</span><span class="n">Number</span> <span class="n">n</span> <span class="o">:</span> <span class="n">list</span><span class="o">)</span>
+</span><span class='line'>      <span class="o">{</span>
+</span><span class='line'>          <span class="n">i</span><span class="o">++;</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">i</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;(){</span>
+</span><span class='line'>        <span class="o">{</span>
+</span><span class='line'>            <span class="n">add</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">add</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">add</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">assertThat</span><span class="o">(</span><span class="n">Util</span><span class="o">.</span><span class="na">getCount</span><span class="o">(</span><span class="n">list</span><span class="o">),</span> <span class="n">is</span><span class="o">(</span><span class="mi">3</span><span class="o">));</span>  <span class="c1">// pass</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>既然能限定到一个类及其子类上，当然也能限定到一个类及其父类上。语法如下:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">&lt;?</span> <span class="n">supper</span> <span class="n">A</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>对泛型使用的总结</h2>
+
+<ul>
+<li><p><strong>类型参数不能是原始类型</strong>（int, char，double）,只能传入这些类型的封转类(Integer,Char,Double)。</p></li>
+<li><p><strong>不能直接创建类型参数的实例。</strong></p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="kt">void</span> <span class="n">append</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">)</span> <span class="o">{</span>    <span class="n">E</span> <span class="n">elem</span> <span class="o">=</span> <span class="k">new</span> <span class="n">E</span><span class="o">();</span>  <span class="c1">// compile-time error    list.add(elem); </span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但有通过反射可以实现。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="kt">void</span> <span class="n">append</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">,</span> <span class="n">Class</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">cls</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>    <span class="n">E</span> <span class="n">elem</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>   <span class="c1">// OK    list.add(elem);}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你可以这样调用它:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">ls</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+</span><span class='line'><span class="n">append</span><span class="o">(</span><span class="n">ls</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>静态字段的类型不能为类型参数。</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Box</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>    <span class="kd">private</span> <span class="kd">static</span> <span class="n">T</span> <span class="n">object</span><span class="o">;</span> <span class="c1">// compile-time error</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>不能创建类型参数变量的数组。</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;[]</span> <span class="n">arrayOfLists</span> <span class="o">=</span> <span class="k">new</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;[</span><span class="mi">2</span><span class="o">];</span>  <span class="c1">// compile-time error</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>不能重载一个方法，该方法的形参都来自于同一个类型参数对象。</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">integers</span><span class="o">)</span> <span class="o">{}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="n">doubles</span><span class="o">)</span> <span class="o">{}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>参考文档：<a href="http://docs.oracle.com/javase/tutorial/java/generics/index.html">http://docs.oracle.com/javase/tutorial/java/generics/index.html</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-23T00:26:00+08:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/cheng-xu-yu-yan/'>程序语言</a>
+  
+</span>
+
+
+      
+
+<span class="tags">
+  
+    <a class='tag' href='/blog/tags/generic/'>generic</a>, <a class='tag' href='/blog/tags/java/'>java</a>, <a class='tag' href='/blog/tags/泛型/'>泛型</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/03/17/haskell-functional-programming-feature/" title="Previous Post: Haskell函数式编程之特性篇">&laquo; Haskell函数式编程之特性篇</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/03/24/senior-programer-good-habits/" title="Next Post: 优秀程序员无他-善假于物也">优秀程序员无他-善假于物也 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>攻城狮，程序猿。目前就职于ThoughtWorks。</p>
+</section>
+
+<section>
+  <h1>Tag Cloud</h1>
+    <span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#f2f2f2' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x333333&amp;tcolor2=0x333333&amp;hicolor=0x000000&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Factivemq%27+style%3D%27font-size%3A+36.66666666666667%25%27%3EActiveMQ%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eagile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+23.333333333333336%25%27%3EAgile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fandroid%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EAndroid%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Faws%27+style%3D%27font-size%3A+27.77777777777778%25%27%3EAWS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fc-%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EC%23%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fci%27+style%3D%27font-size%3A+23.333333333333336%25%27%3ECI%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fcloud%27+style%3D%27font-size%3A+50.0%25%27%3ECloud%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdatabase%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EDataBase%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdesign%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Edesign%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdevops%27+style%3D%27font-size%3A+23.333333333333336%25%27%3EDevOps%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fefficient%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eefficient%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fenglish%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EEnglish%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffitness%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Efitness%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffp%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EFP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgatling%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EGatling%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgradle%27+style%3D%27font-size%3A+41.111111111111114%25%27%3EGradle%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhaskell%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EHaskell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhomebrew%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EHomebrew%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+18.88888888888889%25%27%3EJava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjavascript%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EJavaScript%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%E5%AD%A6%E4%B9%A0%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EJava%E5%AD%A6%E4%B9%A0%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flearning%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Elearning%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flife%27+style%3D%27font-size%3A+23.333333333333336%25%27%3ELife%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fmarathon%27+style%3D%27font-size%3A+18.88888888888889%25%27%3EMarathon%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fmicroservice%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Emicroservice%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EOctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fplugin%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eplugin%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fpractise%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Epractise%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Freading%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Ereading%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frefactor%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Erefactor%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fruby%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eruby%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frun%27+style%3D%27font-size%3A+14.444444444444445%25%27%3ERun%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frunning%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Erunning%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fshell%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eshell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring%27+style%3D%27font-size%3A+23.333333333333336%25%27%3ESpring%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring-context%27+style%3D%27font-size%3A+45.55555555555556%25%27%3ESpring-Context%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring-context%27+style%3D%27font-size%3A+14.444444444444445%25%27%3ESpring-context%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fstudy%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Estudy%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fsvn%27+style%3D%27font-size%3A+14.444444444444445%25%27%3ESVN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+18.88888888888889%25%27%3ETesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Etesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftranslation%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Etranslation%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxml%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EXML%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxp%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EXP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fzsh%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EZSH%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%B7%A5%E5%85%B7%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E5%B7%A5%E5%85%B7%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%80%BB%E7%BB%93%27+style%3D%27font-size%3A+18.88888888888889%25%27%3E%E6%80%BB%E7%BB%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E7%94%9F%E6%B4%BB%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+27.77777777777778%25%27%3E%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%27+style%3D%27font-size%3A+36.66666666666667%25%27%3E%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BF%BB%E8%AF%91%27+style%3D%27font-size%3A+18.88888888888889%25%27%3E%E7%BF%BB%E8%AF%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E8%AF%BB%E4%B9%A6%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%27+style%3D%27font-size%3A+18.88888888888889%25%27%3E%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/12/31/my-conclusion-of-2014/">一个程序员的2014年总结</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/26/shudown-ec2-at-certain-time/">定时关闭AWS上的EC2机器实例</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/22/running-on-the-way/">《跑出巅峰》书评</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/25/aws-reinvent-conference/">AWS re:Invent 2014回顾</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/18/xichang-marathon/">2014年西昌邛海湿地马拉松赛</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/03/23/java-generic-type/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/03/23/java-generic-type/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

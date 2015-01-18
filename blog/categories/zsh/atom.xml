@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ZSH | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/categories/zsh/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-12-31T17:09:42+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[切换到ZSH以后遇到的坑]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/29/using-zsh/"/>
+    <updated>2014-03-29T00:51:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/29/using-zsh</id>
+    <content type="html"><![CDATA[<p>了解到ZSH的强大以后打算将自己目前使用的bash切换到ZSH。具体ZSH比bash强在那里就不多少了，网上的文章一搜一大把。个人主要是被ZSH强大的自动补全吸引过来的。虽然bash装了bash-completaion以后也有了一定的自动补全能力，但是和ZSH比起来还是差距太大。</p>
+
+<!-- more -->
+
+
+<p>ZSH虽然功能强大，但是配置繁琐，并且shell脚本的语法一向比较奇葩，如果自己定制还需要对shell脚本有一定的了解。本来想用ZSH来节省时间，但是还要花大量时间来配置ZSH无疑会生使众多程序员望而却步。好在github有oh-my-ZSH这个项目，自动把大量的配置给你搞好了，基本上做到了开箱即用。</p>
+
+<p>具体如何安装ZSH和配置oh-my-zsh就不多说了，请参见<a href="https://github.com/robbyrussell/oh-my-zsh">https://github.com/robbyrussell/oh-my-zsh</a>。</p>
+
+<p>安装完毕后运行<code>chsh -s /bin/zsh</code>将当前默认的shell切换为zsh。另外需要做的是要将以前~/.bash_profile中的配置复制到~/.zshrc中，这样保证以前在bash中定义的别名、命令等可以继续正常工作。</p>
+
+<p>虽然说ZSH无缝兼容bash，但是刚开始使用还是遇到了一些坑，好歹都一一解决了。</p>
+
+<h2>编码问题</h2>
+
+<p>当我运行Octopress博客的生成博客命令时，遇到了这个奇怪的错。</p>
+
+<pre><code class="bash">
+$ rake generate
+
+YAML Exception reading 2013-12-15-responsive-menu-by-media-queries.markdown: invalid byte sequence in US-ASCII
+</code></pre>
+
+<p>看起来貌似是默认编码的问题，ZSH使用的默认编码是US-ASCII，但我期望的是UTF-8。</p>
+
+<p>ok,查看当前zsh shell下的编码是什么。</p>
+
+<pre><code class="bash">
+$ locale
+LANG=
+LC_COLLATE="C"
+LC_CTYPE="C"
+LC_MESSAGES="C"
+LC_MONETARY="C"
+LC_NUMERIC="C"
+LC_TIME="C"
+LC_ALL=
+</code></pre>
+
+<p>由于没设值，所以ZSH就选取了US-ASCII。</p>
+
+<p>解决办法也很简单，在<code>~/.zshrc</code>中加入以下两行。</p>
+
+<p>```text ~/.zshrc</p>
+
+<p>export LC_ALL=en_US.UTF-8  export LANG=en_US.UTF-8```然后重新加载zshrc文件并查看编码。$ source ~/.zshrc$ locale</p>
+
+<h1>Compilation flagsLANG=&ldquo;en_US.UTF-8&rdquo;</h1>
+
+<p>LC_COLLATE=&ldquo;en_US.UTF-8&rdquo;
+LC_CTYPE=&ldquo;en_US.UTF-8&rdquo;
+LC_MESSAGES=&ldquo;en_US.UTF-8&rdquo;
+LC_MONETARY=&ldquo;en_US.UTF-8&rdquo;
+LC_NUMERIC=&ldquo;en_US.UTF-8&rdquo;
+LC_TIME=&ldquo;en_US.UTF-8&rdquo;
+LC_ALL=&ldquo;en_US.UTF-8”</p>
+
+<pre><code>
+## 通配符问题
+
+
+我又发现如果命令行中有[] *等字符会被zsh优先作为通配符处理，这样导致某些命令会被ZSH错误解析。
+
+比如:
+</code></pre>
+
+<p>$ rake new_post[‘a new post’]</p>
+
+<pre><code>
+这里的[]是ruby语言中的语法，但是被ZSH解析成了通配符，所以报错。解决方法也简单，关闭ZSH的这一特性。
+
+
+在~/.zshrc中加入下面一行即可搞定。
+</code></pre>
+
+<p>setopt no_nomatch</p>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+</feed>

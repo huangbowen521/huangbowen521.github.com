@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tag: Spring | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/spring/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-12-31T17:09:42+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Spring-Context之三:使用XML和Groovy DSL配置Bean]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/13/use-groovy-dsl-in-spring/"/>
+    <updated>2014-03-13T02:13:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/13/use-groovy-dsl-in-spring</id>
+    <content type="html"><![CDATA[<p>在第一讲中显示了如何使用注解配置bean，其实这是Spring3引进的特性,Spring2使用的是XML的方式来配置Bean，那时候漫天的XML文件使得Spring有着<code>配置地狱</code>的称号。Spring也一直在力求改变这一缺陷。Spring3引入的注解方式确实使配置精简不少，而Spring4则引入了Groovy DSL来配置，其语法比XML要简单很多，而且Groovy本身是门语言，其配置文件就相当于代码，可以用来实现复杂的配置。</p>
+
+<!-- more -->
+
+
+<p>废话少说，让我们来对Groovy DSL配置来个第一次亲密接触。</p>
+
+<p>首先我们先实现一个XML的bean配置，沿用第一讲中的例子。</p>
+
+<pre><code class="xml configuration.xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+
+    &lt;bean id="movieService" class="huangbowen.net.service.DefaultMovieService"/&gt;
+
+    &lt;bean id="cinema" class="huangbowen.net.service.Cinema"&gt;
+        &lt;property name="movieService" ref="movieService"/&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;
+</code></pre>
+
+<p>这个XML文件就不用我多做解释了，很清晰明了。Ok，照例写个测试来测一下。</p>
+
+<pre><code class="java XmlConfigurationTest.java">
+package huangbowen.net;
+
+import huangbowen.net.service.Cinema;
+import huangbowen.net.service.DefaultMovieService;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"/configuration.xml"})
+public class XmlConfigurationTest {
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    private Cinema cinema;
+
+    @Test
+    public void shouldGetCinemaInstance()  {
+        Cinema cinema = applicationContext.getBean(Cinema.class);
+        assertNotNull(cinema);
+    }
+
+    @Test
+    public void shouldGetAutowiredCinema() {
+        assertNotNull(cinema);
+    }
+
+    @Test
+    public void shouldGetMovieServiceInstance() {
+        assertNotNull(cinema.getMovieService());
+        assertThat(cinema.getMovieService(), instanceOf(DefaultMovieService.class));
+    }
+
+
+}
+</code></pre>
+
+<p>这个测试与第二讲中的测试基本上一样，不过Spring配置的读取是从configuration.xml来的，在@ContextConfiguration中指定了该xml文件为Spring配置文件。</p>
+
+<p>如果想使用Groovy DSL的话第一步需要引入groovy依赖。</p>
+
+<pre><code class="xml pom.xml">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.codehaus.groovy&lt;/groupId&gt;
+    &lt;artifactId&gt;groovy-all&lt;/artifactId&gt;
+    &lt;version&gt;2.2.2&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<p>然后就可以新建一个groovy文件来实现配置编写。</p>
+
+<pre><code class="groovy Configuration.groovy">
+beans {
+
+   movieService huangbowen.net.service.DefaultMovieService
+
+   cinema huangbowen.net.service.Cinema, movieService : movieService
+
+}
+</code></pre>
+
+<p>这其实体现不出来Groovy DSL的强大灵活，因为我们的例子太简单了。</p>
+
+<p>beans相当于xml中的beans标签，第一行中是 bean id + class的形式。
+第二行是bean id + class + properties map的形式。第二个参数是一个map数组，分别对应property和值。</p>
+
+<p>实现同样的Bean配置有很多种写法。</p>
+
+<pre><code class="groovy">
+movieService (huangbowen.net.service.DefaultMovieService)
+
+cinema(huangbowen.net.service.Cinema, {movieService : movieService})
+</code></pre>
+
+<p>上面这种其实是Groovy语法的一个特性，在调用方法时括号是可选的，既可以加，也可以不加。</p>
+
+<pre><code class="groovy">
+movieService huangbowen.net.service.DefaultMovieService
+
+cinema (huangbowen.net.service.Cinema) {
+    movieService :ref movieService
+}
+</code></pre>
+
+<p>上面这中使用了另一个设置属性的方法，通过一个闭包将属性设置进去。</p>
+
+<pre><code class="groovy">
+movieService huangbowen.net.service.DefaultMovieService
+
+cinema (huangbowen.net.service.Cinema) {
+    movieService : movieService
+}
+</code></pre>
+
+<p>这种更好理解了，ref方法也是可选的。</p>
+
+<p>来照旧写个测试来测一下。</p>
+
+<pre><code class="java GroovyDSLConfigurationTest.java">
+package huangbowen.net;
+
+import huangbowen.net.service.Cinema;
+import huangbowen.net.service.DefaultMovieService;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.groovy.GroovyBeanDefinitionReader;
+import org.springframework.beans.factory.support.BeanDefinitionReader;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AbstractGenericContextLoader;
+
+import static huangbowen.net.GroovyDSLConfigurationTest.*;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(value = "classpath:Configuration.groovy", loader = GenericGroovyContextLoader.class)
+public class GroovyDSLConfigurationTest {
+
+    public static class GenericGroovyContextLoader extends
+            AbstractGenericContextLoader {
+
+        @Override
+        protected BeanDefinitionReader createBeanDefinitionReader(
+                GenericApplicationContext context) {
+            return new GroovyBeanDefinitionReader(context);
+        }
+
+        @Override
+        protected String getResourceSuffix() {
+            return ".groovy";
+        }
+
+    }
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    private Cinema cinema;
+
+    @Test
+    public void shouldGetCinemaInstance()  {
+        Cinema cinema = applicationContext.getBean(Cinema.class);
+        assertNotNull(cinema);
+    }
+
+    @Test
+    public void shouldGetAutowiredCinema() {
+        assertNotNull(cinema);
+    }
+
+    @Test
+    public void shouldGetMovieServiceInstance() {
+        assertNotNull(cinema.getMovieService());
+        assertThat(cinema.getMovieService(), instanceOf(DefaultMovieService.class));
+    }
+
+
+}
+</code></pre>
+
+<p>在集成测试中如果加载xml配置文件，Spring提供了GenericXmlContextLoader类，如果加载注解方式的配置类，Spring提供了AnnotationConfigContextLoader类。但是对于Groovy配置文件Spring testContext框架还未提供相应的Loader，所以在本测试方法中需要自己实现一个Loader，其实也简单，只要实现两个方法即可。</p>
+
+<p>本例中的源码请在<a href="https://github.com/huangbowen521/Study">我的GitHub</a>上自行下载。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[使用自定义的MessageSource实现对properties的复用]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/05/29/using-spring-message-source/"/>
+    <updated>2013-05-29T14:48:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/05/29/using-spring-message-source</id>
+    <content type="html"><![CDATA[<p>Spring框架的Web项目中可以使用properties文件来存储需要显示在jsp页面的一些值，比如label值或者error messages。然后通过Spring提供的ResourceBundleMessageSource将这些properties文件注入进来使用。一个简单的配置如下。</p>
+
+<!-- more -->
+
+
+<pre><code class="xml">
+    &lt;bean id="messageSource"
+          class="org.springframework.context.support.ResourceBundleMessageSource"&gt;
+        &lt;property name="basenames"&gt;
+            &lt;list&gt;
+                &lt;value&gt;labels&lt;/value&gt;
+                &lt;value&gt;errors&lt;/value&gt;
+            &lt;/list&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+</code></pre>
+
+<p>而在我们的项目中有这样一个需求。假设现在项目中有三个properties文件。</p>
+
+<p><img src="/images/properties.png"></p>
+
+<p>其中aami和apia是我们项目需要支持的两个品牌。当一个用户登陆我们的web项目时，会自动将其当前所使用的品牌信息存到session中。而如果是aami用户的话，前端jsp页面显示的message读取的顺序是这样的：如果在aami.properties文件中没找到的话，就在default.properties文件中找。对于apia用户，则先在apia.properties中找，然后查找default.properties。</p>
+
+<p>举个例子，如果default.properties中有一个键值对<code>helloWorld.label = Welcome</code>。那么在jsp上使用时会显示Welcome。但是对于ammi来说需要用同样的键<code>hello.world.label</code>但是显示<code>Welcome to AAMI</code>。</p>
+
+<p>这样可以最大程度的复用default.properties中的数据，同时又可以根据自身品牌定义一些自身的数据在自身品牌的properties文件中。</p>
+
+<p>ResourceBundleMessageSource中有一个<code>parentMessageSource</code>属性，如果在当前MessageSource中找不到code的值，会在<code>parentMessageSource</code>中查找。一个简单的配置如下。</p>
+
+<pre><code class="xml">
+    &lt;bean id="messageSource"
+          class="org.springframework.context.support.ResourceBundleMessageSource"&gt;
+        &lt;property name="parentMessageSource"&gt;
+            &lt;bean class="org.springframework.context.support.ResourceBundleMessageSource"&gt;
+                &lt;property name="basename"&gt;
+                    &lt;value&gt;default&lt;/value&gt;
+                &lt;/property&gt;
+            &lt;/bean&gt;
+        &lt;/property&gt;
+        &lt;property name="basenames"&gt;
+            &lt;list&gt;
+                &lt;value&gt;aami&lt;/value&gt;
+            &lt;/list&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+</code></pre>
+
+<p>如果给给定一个code，程序会先在aami.properties文件中查找，如果未找到，则会在default中查找。
+这似乎能满足我们的要求。其实不行。假如我们现在将apia品牌也加入，如果想让程序根据当前用户的品牌来选择适合的properties做成首选,当前这个功能是不满足的。我们需要自定义一个继承自<code>ResourceBundleMessageSource</code>的类来实现。</p>
+
+<pre><code class="java SessionMessageSource.java">
+public class SessionMessageSource extends ResourceBundleMessageSource {
+
+    static final Logger logger = LoggerFactory.getLogger(SessionMessageSource.class);
+
+    private String[] basenames = new String[0];
+
+    @Override
+    protected String resolveCodeWithoutArguments(String code, Locale locale) {
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final String brand = (String) attr.getAttribute("brand", RequestAttributes.SCOPE_SESSION);
+
+        logger.debug(brand);
+
+        ArrayList&lt;String&gt; basenameList = Lists.newArrayList(basenames);
+
+        for(String basename : basenameList) {
+            if (StringUtils.endsWithIgnoreCase(basename,brand)) {
+                ResourceBundle bundle = getResourceBundle(basename, locale);
+                if (bundle != null) {
+                    return getStringOrNull(bundle, code);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public void setBasenames(String... basenames) {
+        if (basenames != null) {
+            this.basenames = new String[basenames.length];
+            for (int i = 0; i &lt; basenames.length; i++) {
+                String basename = basenames[i];
+                Assert.hasText(basename, "Basename must not be empty");
+                this.basenames[i] = basename.trim();
+            }
+        }
+        else {
+            this.basenames = new String[0];
+        }
+        super.setBasenames(basenames);
+    }
+
+    private String getStringOrNull(ResourceBundle bundle, String key) {
+        try {
+            return bundle.getString(key);
+        }
+        catch (MissingResourceException ex) {
+            // Assume key not found
+            // -&gt; do NOT throw the exception to allow for checking parent message source.
+            return null;
+        }
+    }
+}
+</code></pre>
+
+<p>我们首先重写了<code>setBeanNames</code>方法。该方法用于在配置文件中注入properties文件。之所以在这里拿到basenames是为了在<code>resolveCodeWithoutArguments</code>方法中使用。如果父类暴露了<code>basenames</code>属性我们就无需在自己的类中再记录这个属性。</p>
+
+<p>此类重写了父类中的<code>resolveCodeWithoutArguments</code>方法。父类中该方法的职责是在查找自身的ResourceBundle中是否能找到对应code的值，如果找不到就返回null。由于<code>resolveCodeWithoutArguments</code>方法是被<code>getMessageInternal</code>方法调用的。而<code>getMessageInternal</code>方法的大概职责是查看自身的ResourceBundle能否找到code值，否则查找parentMessageSource。所以我们只需对<code>resolveCodeWithoutArguments</code>动手术即可。</p>
+
+<p>在这个方法中，我们首先获取存储在session中的brand值，根据brand值找到对应的propeties文件，使用ResourceBundle来读取code值，如果未找到则返回null，以委托给getMessageInternal来找寻父MessageSource。这样可以有效地将不同的brand隔离开来。</p>
+
+<p>那么在xml中的配置如下。</p>
+
+<pre><code class="xml">
+    &lt;bean id="messageSource"
+          class="com.thoughtworks.config.SessionMessageSource"&gt;
+        &lt;property name="parentMessageSource"&gt;
+            &lt;bean class="org.springframework.context.support.ResourceBundleMessageSource"&gt;
+                &lt;property name="basename"&gt;
+                    &lt;value&gt;default&lt;/value&gt;
+                &lt;/property&gt;
+            &lt;/bean&gt;
+        &lt;/property&gt;
+        &lt;property name="basenames"&gt;
+            &lt;list&gt;
+                &lt;value&gt;aami&lt;/value&gt;
+                &lt;value&gt;apia&lt;/value&gt;
+            &lt;/list&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+</code></pre>
+
+<p>此外还需要在适当的时候设置session。</p>
+
+<pre><code class="java StartFlowController.java">
+@Controller
+public class StartFlowController {
+
+    @RequestMapping(value= "/aami", method = RequestMethod.GET)
+    public String onAAMIPage(HttpServletRequest request) {
+        request.getSession().setAttribute("brand", "aami");
+        return "redirect:aami/index";
+    }
+
+    @RequestMapping(value= "/apia", method = RequestMethod.GET)
+    public String onAPIAPage(HttpServletRequest request) {
+        request.getSession().setAttribute("brand", "apia");
+        return "redirect:apia/index";
+    }
+}
+</code></pre>
+
+<p>这些代码可以在我的github中找到。地址是<a href="https://github.com/huangbowen521/SpringMessageSpike">https://github.com/huangbowen521/SpringMessageSpike</a>。</p>
+]]></content>
+  </entry>
+  
+</feed>

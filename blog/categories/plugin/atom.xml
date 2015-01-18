@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: plugin | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/categories/plugin/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-12-31T17:09:42+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[一款Octopress插件用于同步博客到其他站点]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post/"/>
+    <updated>2013-04-14T22:05:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/04/14/octopress-plugin-to-sync-post</id>
+    <content type="html"><![CDATA[<p>即使用octopress写博客又需要同步到其他站点的同学们有福了。本人写了一个octopress下的插件，用于将octopress中的最新的一篇博客同步到支持MetaWeblog API的博客站点中去。（wordpress、博客园、CSDN、51CTO、新浪、网易&hellip;&hellip;）</p>
+
+<p>这款插件源码被host在github上，地址是<a href="https://github.com/huangbowen521/octopress-syncPost">https://github.com/huangbowen521/octopress-syncPost</a>。</p>
+
+<!-- more -->
+
+
+<p>下面介绍下如何配置和使用。</p>
+
+<h2>配置</h2>
+
+<ul>
+<li><p>迁出源码，将源码里的_custom文件夹及其里面的文件拷贝到你的octopress根目录中。</p></li>
+<li><p>在Gemfile中加入这两个依赖.</p></li>
+</ul>
+
+
+<pre><code class="ruby">  gem 'metaweblog', '~&gt; 0.1.0'
+  gem 'nokogiri', '~&gt; 1.5.9'
+</code></pre>
+
+<p>(The first gem is used to send post with MetaWeblog API.
+The second gem is used to parse html.)</p>
+
+<p>然后在终端下运行<code>bundle install</code> 安装这两个Gem.</p>
+
+<ul>
+<li>在_config.yml文件中加入MetaWeblog的配置。</li>
+</ul>
+
+
+<pre><code class="yaml">
+# MetaWeblog
+MetaWeblog_username: *YOURUSERNAME*
+MetaWeblog_password: *YOURPASSWORD*
+MetaWeblog_url: *YOURBLOGMETAWEBLOGURL*
+MetaWeblog_blogid: *BlogID*  //can be any number
+</code></pre>
+
+<p>下面是配置<a href="http://www.cnblogs.com/">cnblogs</a>的一个示例。</p>
+
+<pre><code class="yaml">
+# MetaWeblog
+MetaWeblog_username: huang0925
+MetaWeblog_password: XXXXXXXXXX
+MetaWeblog_url: http://www.cnblogs.com/huang0925/services/metaweblog.aspx
+MetaWeblog_blogid: 145005
+</code></pre>
+
+<ul>
+<li>在Rakefile加入这个task。</li>
+</ul>
+
+
+<pre><code class="ruby">
+desc "sync post to MetaWeblog site"
+task :sync_post do
+  puts "Sync the latest post to MetaWeblog site"
+  system "ruby _custom/sync_post.rb"
+end
+</code></pre>
+
+<h2>如何使用</h2>
+
+<ol>
+<li><p>运行 <code>rake generate</code> 生成最新的站点文件。</p></li>
+<li><p>运行 <code>rake sync_post</code> 将最新的一篇博客同步到你的站点。</p></li>
+</ol>
+
+
+<p><strong>请注意:</strong></p>
+
+<ol>
+<li><p>发布完后请检查image的链接是否正确（如果原博客使用的image链接是相对路径则需要进行修正）。</p></li>
+<li><p>一些站点需要你启用MetaWeblog功能。（如<a href="http://www.cnblogs.com/">cnblogs</a>的管理页面有这个设置选项。）</p></li>
+</ol>
+
+
+<h2>如何保持相应的样式。</h2>
+
+<p>使用<a href="http://www.cnblogs.com/">cnblogs</a>作为一个例子.</p>
+
+<ol>
+<li><p>将你的octopress中的screen.css通过博客园提供的文件管理上传到博客园中.</p></li>
+<li><p>在博客设置中的'页首html代码'中加入对screen.css文件的使用.</p></li>
+</ol>
+
+
+<h2>一些支持MetaWeblog API的站点.</h2>
+
+<ul>
+<li><p>Wordpress</p>
+
+<p>  If your WordPress root is <a href="http://example.com/wordpress/,">http://example.com/wordpress/,</a> then you have:
+  Server: <a href="http://example.com/">http://example.com/</a> (some tools need just the &lsquo;example.com&rsquo; hostname part)
+  Path: /wordpress/xmlrpc.php
+  complete URL (just in case): <a href="http://example.com/wordpress/xmlrpc.php">http://example.com/wordpress/xmlrpc.php</a></p></li>
+<li><p>51CTO.com</p>
+
+<p>  URL：<a href="http://">http://</a><yourBlogUrl>/xmlrpc.php（example: <a href="http://magong.blog.51cto.com/xmlrpc.php%EF%BC%89">http://magong.blog.51cto.com/xmlrpc.php%EF%BC%89</a></p></li>
+<li><p>博客大巴</p>
+
+<p>  URL：<a href="http://www.blogbus.com/">http://www.blogbus.com/</a><accountName>/app.php（example: <a href="http://www.blogbus.com/holly0801/app.php">http://www.blogbus.com/holly0801/app.php</a></p></li>
+<li><p>CSDN</p>
+
+<p>  URL：<a href="http://hi.csdn.net/">http://hi.csdn.net/</a><accountName>/services/metablogapi.aspx（example: <a href="http://hi.csdn.net/bvbook/services/metablogapi.aspx%EF%BC%89">http://hi.csdn.net/bvbook/services/metablogapi.aspx%EF%BC%89</a></p></li>
+<li><p>博客园</p>
+
+<p>  URL：<a href="http://www.cnblogs.com/">http://www.cnblogs.com/</a><accountName>/services/metaweblog.aspx（example: <a href="http://www.cnblogs.com/bvbook/services/metaweblog.aspx%EF%BC%89">http://www.cnblogs.com/bvbook/services/metaweblog.aspx%EF%BC%89</a></p></li>
+<li><p>网易</p>
+
+<p>  URL: <a href="http://">http://</a><accountName>.blog.163.com/ (example: <a href="http://huang0925.blog.163.com/">http://huang0925.blog.163.com/</a>).</p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

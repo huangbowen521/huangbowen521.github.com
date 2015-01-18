@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tag: practice | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/practice/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-12-31T17:09:42+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[使用WebDriver遇到的那些坑]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/06/25/practice-of-webdriver/"/>
+    <updated>2013-06-25T22:00:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/06/25/practice-of-webdriver</id>
+    <content type="html"><![CDATA[<p><img src="/images/automatedRobot.png"></p>
+
+<p>在做web项目的自动化端到端测试时主要使用的是<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>来驱动浏览器。<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>的优点是支持的语言多，支持的浏览器多。主流的浏览器Chrome、Firefox、IE等都支持，手机上的浏览器Android、IPhone等也支持，甚至还支持<a href="http://phantomjs.org/">PhantomJS</a>（由于PhantomJS跑测试时并不需要渲染元素，所以执行速度快）。</p>
+
+<!-- more -->
+
+
+<p>但是我在使用<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>时，遇到了很多坑。这些问题，有的是因为<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>与浏览器不同版本之间兼容性的问题，有的是<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>本身的bug，当然也不乏自己对<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>某些功能理解不透彻。我花时间总结了一下，分享给大家，希望大家以后遇到问题可以避过这些坑，少走弯路。另外也总结了一些使用WebDriver的比较好的实践，也一并分享给大家。</p>
+
+<ul>
+<li><strong>WebDriver每次启动一个Firefox的实例时，会生成一个匿名的profile，并不会使用当前Firefox的profile。这点一定要注意。比如如果访问被测试的web服务需要通过代理，你想直接设置Firefox的代理是行不通的，因为WebDriver启动的Firefox实例并不会使用你这个profile，正确的做法是通过FirefoxProfile来设置。</strong></li>
+</ul>
+
+
+<pre><code class="java">
+public WebDriver create() {
+
+    FirefoxProfile firefoxProfile = new FirefoxProfile();
+    firefoxProfile.setPreference("network.proxy.type",1);
+    firefoxProfile.setPreference("network.proxy.http",yourProxy);
+    firefoxProfile.setPreference("network.proxy.http_port",yourPort);
+    firefoxProfile.setPreference("network.proxy.no_proxies_on","");
+
+    return new FirefoxDriver(firefoxProfile);
+
+}
+</code></pre>
+
+<p>通过FirefoProfile也可以设置Firefox其它各种配置。如果要默认给Firefox安装插件的话，可以将插件放置到Firefox安装目录下的默认的plugin文件夹中，这样即使是使用一个全新的profile也可以应用此plugin。</p>
+
+<ul>
+<li><strong>使用WebDriver点击界面上Button元素时，如果当前Button元素被界面上其他元素遮住了，或没出现在界面中（比如Button在页面底部，但是屏幕只能显示页面上半部分），使用默认的WebElement.Click()可能会触发不了Click事件。</strong></li>
+</ul>
+
+
+<p>修正方案是找到该页面元素后直接发送一条Click的JavaScript指令。</p>
+
+<pre><code class="java">
+((JavascriptExecutor)webDriver).executeScript("arguments[0].click();", webElement);
+</code></pre>
+
+<ul>
+<li><strong>当进行了一些操作发生页面跳转时，最好加一个Wait方法等待page load完成再进行后续操作。方法是在某个时间段内判断document.readyState是不是complete。</strong></li>
+</ul>
+
+
+<pre><code class="java">
+    protected Function&lt;WebDriver, Boolean&gt; isPageLoaded() {
+        return new Function&lt;WebDriver, Boolean&gt;() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete");
+            }
+        };
+    }
+
+    public void waitForPageLoad() {
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+        wait.until(isPageLoaded());
+    }
+</code></pre>
+
+<ul>
+<li><strong>如果页面有Ajax操作，需要写一个Wait方法等待Ajax操作完成。方式与上一条中的基本相同。比如一个Ajax操作是用于向DropDownList中填充数据，则写一个方法判断该DropDownList中元素是否多余0个。</strong></li>
+</ul>
+
+
+<pre><code class="java">
+    private Function&lt;WebDriver, Boolean&gt; haveMoreThanOneOption(final By element) {
+        return new Function&lt;WebDriver, Boolean&gt;() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                WebElement webElement = driver.findElement(element);
+                if (webElement == null) {
+                    return false;
+                } else {
+                    int size = webElement.findElements(By.tagName("option")).size();
+                    return size &gt;= 1;
+                }
+            }
+        };
+    }
+
+    public void waitForDropDownListLoaded() {
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+        wait.until(isPageLoaded());
+    }
+</code></pre>
+
+<p>以此类推，我们可以判断某个元素是否呈现、某个class是否append成功等一系列方法来判断ajax是否执行完成。</p>
+
+<ul>
+<li><strong>如果网站使用了JQuery的动画效果，我们在运行测试的时候其实可以disable JQuery的animation，一方面可以加快测试的速度，另一方面可以加强测试的稳定性（如果启用了Animation，使用WebDriver驱动浏览器时可能会出现一些无法预料的异常）。</strong></li>
+</ul>
+
+
+<pre><code class="java">
+((JavascriptExecutor)driver).executeScript("jQuery.fx.off=true");
+</code></pre>
+
+<ul>
+<li><strong>由于WebDriver要驱动浏览器，所以测试运行的时间比较长，我们可以并行跑测试以节省时间。如果你使用的是maven构建工具，可以配置surefire plugin时，在configruation节点加入以下配置。</strong></li>
+</ul>
+
+
+<pre><code class="xml">
+&lt;parallel&gt;classes&lt;/parallel&gt;
+&lt;threadCount&gt;3&lt;/threadCount&gt;
+&lt;perCoreThreadCount&gt;false&lt;/perCoreThreadCount&gt;
+</code></pre>
+
+<ul>
+<li><strong>当测试fail的时候，如果当前使用的WebDriver实现了TakesScreenshot接口，我们就可以调用相应的方法截下当前浏览器呈现的web页面，这样有利于快速定位出错的原因。</strong></li>
+</ul>
+
+
+<pre><code class="java">
+    public void getScreenShot() {
+        if (webDriver instanceof TakesScreenshot) {
+            TakesScreenshot screenshotTaker = (TakesScreenshot) webDriver;
+            File file = screenshotTaker.getScreenshotAs(savePath);
+        }
+    }
+</code></pre>
+
+<ul>
+<li><p><strong>如果页面弹出了浏览器自带的警告框（使用JavaScript的Alert方法），<a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium WebDriver</a>在点选次警告框时会偶发性失败。具体原因还未查明。解决方案是尽量不使用Alert方法的警告框，而是自己实现模式窗口（比如Jquery UI的模式窗口）来实现警告框效果。这样即保证了测试的稳定性，另外我们自己可以控制警告框的样式，给用户带来更好的体验。</strong></p></li>
+<li><p><strong>经常更新Selenium的版本。注意经常上Selenium的<a href="http://docs.seleniumhq.org/">官网</a>看是否发布了新的版本，新的版本都修复了那些bug，如果包含你遇到的bug，就可以升级到目前的版本。</strong></p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[持续改进-《高效程序员的45个习惯》读后感]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/05/24/the-practices-of-an-agile-developer/"/>
+    <updated>2013-05-24T11:23:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/05/24/the-practices-of-an-agile-developer</id>
+    <content type="html"><![CDATA[<p>原书标题为<a href="http://www.amazon.cn/mn/detailApp/ref=asc_df_B0033WSFAO622894/?asin=B0033WSFAO&amp;tag=douban-23&amp;creative=2384&amp;creativeASIN=B0033WSFAO&amp;linkCode=asn">《Practices of An Agile Developer》</a>。中文名为<a href="http://book.douban.com/subject/4164024/">《高效程序员的45个习惯-敏捷开发修炼之道》</a>。敏捷这个词已经烂大街了，关于敏捷的书籍俯拾皆是。很多人是敏捷的狂热粉丝，而另一些人却讨厌敏捷，认为只是个噱头。我觉得很可能的原因之一是敏捷这个名字没起好。它的原名为“轻量型软件开发过程”（"lightweight process"），但后来阴差阳错成了agile(敏捷)。</p>
+
+<!-- more -->
+
+
+<p>既然书名是敏捷开发者的实践，那么就必须认识敏捷。只有深入的理解了这些实践的来源和目的，才能更好的践行甚至改进实践。</p>
+
+<p><strong>敏捷可以用一句话来概括：敏捷开发就是在一个高度协作的环境中，不断的使用反馈进行自我调整和完善，最终交付用户想要的软件。</strong></p>
+
+<p>从这句话中可以得出很多东西。</p>
+
+<h2>首先，项目适不适合敏捷有两个先决条件：</h2>
+
+<ol>
+<li><p><strong>项目是以价值为导向的。</strong>也就是整个团队有一个总体一致的目标，那就是产出高质量、高价值、符合用户需求的软件。以价值为导向，看似简单，实则很难，甚至某些时候要要求公司的组织架构做出一定的调整。试想在一个等级森严、官僚化严重、各种无谓的考评泛滥的公司，有多少人能静下心来好好的搞开发，搞产品？只有打造一个相对扁平的组织，给予充分的信任和自由度，才有利于敏捷的实施。这反过来又要求团队中的每个人有高度的自律性。</p></li>
+<li><p><strong>团队能够达到高度协作。</strong>必须能够保证团队中的成员能够流畅的交流。如果在团队中大搞一言堂，信息不透明，很容易打击团队人员工作的积极性，致使团队分崩离析。另外，客户也属于团队中的一员。我们做出的产品最终是给客户看的，如果客户不能保证与团队紧密的合作，那么很容易使产品偏离客户的期望，最终交付失败。</p></li>
+</ol>
+
+
+<h2>再次，可以看到敏捷的基础：反馈。</h2>
+
+<p>一旦你意识到走错了路方向，就要立即做出决策。举个例子，办公室另个团队给我们分享了这样一个故事。在项目刚开始时他们设计了叫做CoreService的类来封装所有的服务。随着项目的进行，CoreService类由于需要处理的服务越来越多，导致类越来越庞大。每个人在修改这个类时，写单元测试要建立对N个服务的mock，苦不堪言。问题在于，没人及时的提出这个bad smell，导致了人们花费了大量的时间来维护它。</p>
+
+<p>这说明了及时反馈的重要性。<strong>反馈包含提出反馈和接受反馈。</strong></p>
+
+<p><strong>提出反馈需要勇气和时机。</strong>要勇敢的提出自己的想法，这既需要自身具有对项目负责的精神，还要团队提供安全的环境。要及时的指出项目中不好的地方，千里之堤，毁于蚁穴。大灾难是逐步演化而来的，项目中切忌温水煮青蛙。</p>
+
+<p><strong>接受反馈需要气度和行动。</strong>这就要求团队成员做事要有专业的态度，对事不对人，重结果轻过程。同时要拿出具体的行动，否则很容易打击积极性。</p>
+
+<h2>其次，可以看到敏捷的精髓：拥抱变化。</h2>
+
+<p>软件开发行业是一个不停发展和永远变化的领域。现在没有将来也不会有一个人能够了解你的项目的方方面面。</p>
+
+<p>变化无处不在，这就要求我们不断的学习。而迭代和增量式的学习则不失为一个好办法。一个学习型的团队才是较好的团队。当然，在学习的同时，你也要懂得丢弃。打破旧习惯很难，更难的是自己还没意识到这个问题。丢弃的第一步，首先是意识到你还在使用过时的方法，这也是最难的部分。</p>
+
+<p>同时，变化意味着我们要主动应对。德国陆军元帅Helmuth von Moltke说过一句话“没有任何计划在遇敌后还能继续执行。”在软件开发中，我们可以这样理解，任何设计在开发中只是一个起点，它如何你的代码一样，会不停地进一步发展和提炼。</p>
+
+<h2>最后，敏捷的目的：交付用户想要的软件。</h2>
+
+<p>试想客户将需求交付给你，要你几年后交付系统。然后，你基于这些需求构建了系统并按时交付。客户看了软件以后连声称赞。从此你多了一个忠实客户，接着开心的投入到下个项目中。请问这样的事情在你的项目中发生过吗？</p>
+
+<p>通常情况是客户看到后暴跳如雷，这根本不是我想要的。这是因为用户的需要、技术和我们对需求的理解，都会随着时间的推移而变化。</p>
+
+<p>那么，如何解决这个问题那？方法之一就是采用敏捷的迭代式开发。每个迭代至少有两个活动不可或缺。一个是展示会议（show case），向客户展示目前的项目进展，已完成的功能，从而收集客户的反馈，即时对产品的方向做出调整。另一个是回顾会议（retro)。回顾会议则是提出反馈的一个好时机。通过回顾会议分析出这个迭代中的做的好的地方和不好的地方，并提出具体的改进行动。</p>
+
+<p>要将团队带入新的领域，必须首先要以身作则。我们需要的是领导者，而不是管理者。无论你目前的项目是否是敏捷项目，这本书中你都可以找到能够借鉴和提高的地方。敏捷中的持续改进不仅局限于项目开发，其实更适合于个人。通过持续改进自己的习惯、处事方法，保持一颗好奇心，勇敢的尝试未知领域，只要自己能力提高了，何惧其他？</p>
+
+<p>改变从自身做起，不能自暴自弃，而要奋起直追。</p>
+]]></content>
+  </entry>
+  
+</feed>

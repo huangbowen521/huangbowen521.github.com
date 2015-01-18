@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Gradle | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/categories/gradle/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-12-31T17:09:42+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[在Gradle中使用jaxb的xjc插件]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/08/30/use-jaxb-in-gradle/"/>
+    <updated>2014-08-30T20:25:45+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/08/30/use-jaxb-in-gradle</id>
+    <content type="html"><![CDATA[<p>jaxb，全称为Java Architecture for Xml Binding,是一种将java对象与xml建立起映射的技术。其主要提供两个功能，一是将java对象映射为xml，二是将xml映射为java对象。JAXB有1.0版和2.0版。2.0版对应的JSR（Java specification request, java规格要求）是JSR 222。jaxb中的xjc工具能够将XML Schema转换为对应的java类。支持的XML类型包括XML DTD，XSD以及WSDL。而schemagen工具则可以将具有相应annotation标记的java类转换为XML结构。</p>
+
+<!-- more -->
+
+
+<p>ant脚本有xjc插件来实现对xml schema文件转换为java类的工作。而由于ant任务是gradle中的一等公民，所以我们可以直接在gradle脚本中使用ant的xjc插件来实现对xml schema和java类的映射。以下代码演示了如何将xsd格式和wsdl格式的xml转换为具体的java类。</p>
+
+<pre><code class="groovy build.gradle">
+configurations {
+    jaxb
+}
+
+dependencies {
+    jaxb 'com.sun.xml.bind:jaxb-impl:2.2.7'
+    jaxb 'com.sun.xml.bind:jaxb-xjc:2.2.7'
+}
+
+ext {
+    generatedSourceDir = 'src/main/generated'
+}
+
+
+task jaxb {
+
+    doLast {
+        file(generatedSourceDir).mkdirs()
+
+        ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.jaxb.asPath)
+
+        ant.xjc(destdir: generatedSourceDir,
+                package: 'jaxb.ws.ship',
+                schema: 'schema/shiporder.xsd'
+        )
+
+        ant.xjc(destdir: generatedSourceDir,
+                package: 'jaxb.ws.hello',
+                schema: 'schema/weather.wsdl'
+        ) {
+            arg(value: '-wsdl')
+        }
+
+    }
+}
+
+clean {
+    ant.delete(dir: generatedSourceDir)
+}
+</code></pre>
+
+<p>这里实现了将xsd和wsdl格式的xml文档转换为具体的java类。注意一点是如果wsdl中的schema过于简单，可能不会有具体的类生成。另外附上使用的示例文件。</p>
+
+<p>shiporder.xsd文件如下：</p>
+
+<pre><code class="xml shiporder.xsd">
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
+
+    &lt;xs:element name="shiporder"&gt;
+        &lt;xs:complexType&gt;
+            &lt;xs:sequence&gt;
+                &lt;xs:element name="orderperson" type="xs:string"/&gt;
+                &lt;xs:element name="shipto"&gt;
+                    &lt;xs:complexType&gt;
+                        &lt;xs:sequence&gt;
+                            &lt;xs:element name="name" type="xs:string"/&gt;
+                            &lt;xs:element name="address" type="xs:string"/&gt;
+                            &lt;xs:element name="city" type="xs:string"/&gt;
+                            &lt;xs:element name="country" type="xs:string"/&gt;
+                        &lt;/xs:sequence&gt;
+                    &lt;/xs:complexType&gt;
+                &lt;/xs:element&gt;
+                &lt;xs:element name="item" maxOccurs="unbounded"&gt;
+                    &lt;xs:complexType&gt;
+                        &lt;xs:sequence&gt;
+                            &lt;xs:element name="title" type="xs:string"/&gt;
+                            &lt;xs:element name="note" type="xs:string" minOccurs="0"/&gt;
+                            &lt;xs:element name="quantity" type="xs:positiveInteger"/&gt;
+                            &lt;xs:element name="price" type="xs:decimal"/&gt;
+                        &lt;/xs:sequence&gt;
+                    &lt;/xs:complexType&gt;
+                &lt;/xs:element&gt;
+            &lt;/xs:sequence&gt;
+            &lt;xs:attribute name="orderid" type="xs:string" use="required"/&gt;
+        &lt;/xs:complexType&gt;
+    &lt;/xs:element&gt;
+
+&lt;/xs:schema&gt;
+</code></pre>
+
+<p>weather.wsdl文件内容如下：</p>
+
+<pre><code class="xml weather.wsdl">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.webserviceX.NET" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://www.webserviceX.NET" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"&gt;
+    &lt;wsdl:types&gt;
+        &lt;s:schema elementFormDefault="qualified" targetNamespace="http://www.webserviceX.NET"&gt;
+            &lt;s:element name="GetWeather"&gt;
+                &lt;s:complexType&gt;
+                    &lt;s:sequence&gt;
+                        &lt;s:element minOccurs="0" maxOccurs="1" name="CityName" type="s:string" /&gt;
+                        &lt;s:element minOccurs="0" maxOccurs="1" name="CountryName" type="s:string" /&gt;
+                    &lt;/s:sequence&gt;
+                &lt;/s:complexType&gt;
+            &lt;/s:element&gt;
+            &lt;s:element name="GetWeatherResponse"&gt;
+                &lt;s:complexType&gt;
+                    &lt;s:sequence&gt;
+                        &lt;s:element minOccurs="0" maxOccurs="1" name="GetWeatherResult" type="s:string" /&gt;
+                    &lt;/s:sequence&gt;
+                &lt;/s:complexType&gt;
+            &lt;/s:element&gt;
+            &lt;s:element name="GetCitiesByCountry"&gt;
+                &lt;s:complexType&gt;
+                    &lt;s:sequence&gt;
+                        &lt;s:element minOccurs="0" maxOccurs="1" name="CountryName" type="s:string" /&gt;
+                    &lt;/s:sequence&gt;
+                &lt;/s:complexType&gt;
+            &lt;/s:element&gt;
+            &lt;s:element name="GetCitiesByCountryResponse"&gt;
+                &lt;s:complexType&gt;
+                    &lt;s:sequence&gt;
+                        &lt;s:element minOccurs="0" maxOccurs="1" name="GetCitiesByCountryResult" type="s:string" /&gt;
+                    &lt;/s:sequence&gt;
+                &lt;/s:complexType&gt;
+            &lt;/s:element&gt;
+            &lt;s:element name="string" nillable="true" type="s:string" /&gt;
+        &lt;/s:schema&gt;
+    &lt;/wsdl:types&gt;
+    &lt;wsdl:message name="GetWeatherSoapIn"&gt;
+        &lt;wsdl:part name="parameters" element="tns:GetWeather" /&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:message name="GetWeatherSoapOut"&gt;
+        &lt;wsdl:part name="parameters" element="tns:GetWeatherResponse" /&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:message name="GetCitiesByCountrySoapIn"&gt;
+        &lt;wsdl:part name="parameters" element="tns:GetCitiesByCountry" /&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:message name="GetCitiesByCountrySoapOut"&gt;
+        &lt;wsdl:part name="parameters" element="tns:GetCitiesByCountryResponse" /&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:message name="GetWeatherHttpGetIn"&gt;
+        &lt;wsdl:part name="CityName" type="s:string" /&gt;
+        &lt;wsdl:part name="CountryName" type="s:string" /&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:message name="GetWeatherHttpGetOut"&gt;
+        &lt;wsdl:part name="Body" element="tns:string" /&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:message name="GetCitiesByCountryHttpGetIn"&gt;
+        &lt;wsdl:part name="CountryName" type="s:string" /&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:message name="GetCitiesByCountryHttpGetOut"&gt;
+        &lt;wsdl:part name="Body" element="tns:string" /&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:message name="GetWeatherHttpPostIn"&gt;
+        &lt;wsdl:part name="CityName" type="s:string" /&gt;
+        &lt;wsdl:part name="CountryName" type="s:string" /&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:message name="GetWeatherHttpPostOut"&gt;
+        &lt;wsdl:part name="Body" element="tns:string" /&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:message name="GetCitiesByCountryHttpPostIn"&gt;
+        &lt;wsdl:part name="CountryName" type="s:string" /&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:message name="GetCitiesByCountryHttpPostOut"&gt;
+        &lt;wsdl:part name="Body" element="tns:string" /&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:portType name="GlobalWeatherSoap"&gt;
+        &lt;wsdl:operation name="GetWeather"&gt;
+            &lt;wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"&gt;Get weather report for all major cities around the world.&lt;/wsdl:documentation&gt;
+            &lt;wsdl:input message="tns:GetWeatherSoapIn" /&gt;
+            &lt;wsdl:output message="tns:GetWeatherSoapOut" /&gt;
+        &lt;/wsdl:operation&gt;
+        &lt;wsdl:operation name="GetCitiesByCountry"&gt;
+            &lt;wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"&gt;Get all major cities by country name(full / part).&lt;/wsdl:documentation&gt;
+            &lt;wsdl:input message="tns:GetCitiesByCountrySoapIn" /&gt;
+            &lt;wsdl:output message="tns:GetCitiesByCountrySoapOut" /&gt;
+        &lt;/wsdl:operation&gt;
+    &lt;/wsdl:portType&gt;
+    &lt;wsdl:portType name="GlobalWeatherHttpGet"&gt;
+        &lt;wsdl:operation name="GetWeather"&gt;
+            &lt;wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"&gt;Get weather report for all major cities around the world.&lt;/wsdl:documentation&gt;
+            &lt;wsdl:input message="tns:GetWeatherHttpGetIn" /&gt;
+            &lt;wsdl:output message="tns:GetWeatherHttpGetOut" /&gt;
+        &lt;/wsdl:operation&gt;
+        &lt;wsdl:operation name="GetCitiesByCountry"&gt;
+            &lt;wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"&gt;Get all major cities by country name(full / part).&lt;/wsdl:documentation&gt;
+            &lt;wsdl:input message="tns:GetCitiesByCountryHttpGetIn" /&gt;
+            &lt;wsdl:output message="tns:GetCitiesByCountryHttpGetOut" /&gt;
+        &lt;/wsdl:operation&gt;
+    &lt;/wsdl:portType&gt;
+    &lt;wsdl:portType name="GlobalWeatherHttpPost"&gt;
+        &lt;wsdl:operation name="GetWeather"&gt;
+            &lt;wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"&gt;Get weather report for all major cities around the world.&lt;/wsdl:documentation&gt;
+            &lt;wsdl:input message="tns:GetWeatherHttpPostIn" /&gt;
+            &lt;wsdl:output message="tns:GetWeatherHttpPostOut" /&gt;
+        &lt;/wsdl:operation&gt;
+        &lt;wsdl:operation name="GetCitiesByCountry"&gt;
+            &lt;wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"&gt;Get all major cities by country name(full / part).&lt;/wsdl:documentation&gt;
+            &lt;wsdl:input message="tns:GetCitiesByCountryHttpPostIn" /&gt;
+            &lt;wsdl:output message="tns:GetCitiesByCountryHttpPostOut" /&gt;
+        &lt;/wsdl:operation&gt;
+    &lt;/wsdl:portType&gt;
+    &lt;wsdl:binding name="GlobalWeatherSoap" type="tns:GlobalWeatherSoap"&gt;
+        &lt;soap:binding transport="http://schemas.xmlsoap.org/soap/http" /&gt;
+        &lt;wsdl:operation name="GetWeather"&gt;
+            &lt;soap:operation soapAction="http://www.webserviceX.NET/GetWeather" style="document" /&gt;
+            &lt;wsdl:input&gt;
+                &lt;soap:body use="literal" /&gt;
+            &lt;/wsdl:input&gt;
+            &lt;wsdl:output&gt;
+                &lt;soap:body use="literal" /&gt;
+            &lt;/wsdl:output&gt;
+        &lt;/wsdl:operation&gt;
+        &lt;wsdl:operation name="GetCitiesByCountry"&gt;
+            &lt;soap:operation soapAction="http://www.webserviceX.NET/GetCitiesByCountry" style="document" /&gt;
+            &lt;wsdl:input&gt;
+                &lt;soap:body use="literal" /&gt;
+            &lt;/wsdl:input&gt;
+            &lt;wsdl:output&gt;
+                &lt;soap:body use="literal" /&gt;
+            &lt;/wsdl:output&gt;
+        &lt;/wsdl:operation&gt;
+    &lt;/wsdl:binding&gt;
+    &lt;wsdl:binding name="GlobalWeatherSoap12" type="tns:GlobalWeatherSoap"&gt;
+        &lt;soap12:binding transport="http://schemas.xmlsoap.org/soap/http" /&gt;
+        &lt;wsdl:operation name="GetWeather"&gt;
+            &lt;soap12:operation soapAction="http://www.webserviceX.NET/GetWeather" style="document" /&gt;
+            &lt;wsdl:input&gt;
+                &lt;soap12:body use="literal" /&gt;
+            &lt;/wsdl:input&gt;
+            &lt;wsdl:output&gt;
+                &lt;soap12:body use="literal" /&gt;
+            &lt;/wsdl:output&gt;
+        &lt;/wsdl:operation&gt;
+        &lt;wsdl:operation name="GetCitiesByCountry"&gt;
+            &lt;soap12:operation soapAction="http://www.webserviceX.NET/GetCitiesByCountry" style="document" /&gt;
+            &lt;wsdl:input&gt;
+                &lt;soap12:body use="literal" /&gt;
+            &lt;/wsdl:input&gt;
+            &lt;wsdl:output&gt;
+                &lt;soap12:body use="literal" /&gt;
+            &lt;/wsdl:output&gt;
+        &lt;/wsdl:operation&gt;
+    &lt;/wsdl:binding&gt;
+    &lt;wsdl:binding name="GlobalWeatherHttpGet" type="tns:GlobalWeatherHttpGet"&gt;
+        &lt;http:binding verb="GET" /&gt;
+        &lt;wsdl:operation name="GetWeather"&gt;
+            &lt;http:operation location="/GetWeather" /&gt;
+            &lt;wsdl:input&gt;
+                &lt;http:urlEncoded /&gt;
+            &lt;/wsdl:input&gt;
+            &lt;wsdl:output&gt;
+                &lt;mime:mimeXml part="Body" /&gt;
+            &lt;/wsdl:output&gt;
+        &lt;/wsdl:operation&gt;
+        &lt;wsdl:operation name="GetCitiesByCountry"&gt;
+            &lt;http:operation location="/GetCitiesByCountry" /&gt;
+            &lt;wsdl:input&gt;
+                &lt;http:urlEncoded /&gt;
+            &lt;/wsdl:input&gt;
+            &lt;wsdl:output&gt;
+                &lt;mime:mimeXml part="Body" /&gt;
+            &lt;/wsdl:output&gt;
+        &lt;/wsdl:operation&gt;
+    &lt;/wsdl:binding&gt;
+    &lt;wsdl:binding name="GlobalWeatherHttpPost" type="tns:GlobalWeatherHttpPost"&gt;
+        &lt;http:binding verb="POST" /&gt;
+        &lt;wsdl:operation name="GetWeather"&gt;
+            &lt;http:operation location="/GetWeather" /&gt;
+            &lt;wsdl:input&gt;
+                &lt;mime:content type="application/x-www-form-urlencoded" /&gt;
+            &lt;/wsdl:input&gt;
+            &lt;wsdl:output&gt;
+                &lt;mime:mimeXml part="Body" /&gt;
+            &lt;/wsdl:output&gt;
+        &lt;/wsdl:operation&gt;
+        &lt;wsdl:operation name="GetCitiesByCountry"&gt;
+            &lt;http:operation location="/GetCitiesByCountry" /&gt;
+            &lt;wsdl:input&gt;
+                &lt;mime:content type="application/x-www-form-urlencoded" /&gt;
+            &lt;/wsdl:input&gt;
+            &lt;wsdl:output&gt;
+                &lt;mime:mimeXml part="Body" /&gt;
+            &lt;/wsdl:output&gt;
+        &lt;/wsdl:operation&gt;
+    &lt;/wsdl:binding&gt;
+    &lt;wsdl:service name="GlobalWeather"&gt;
+        &lt;wsdl:port name="GlobalWeatherSoap" binding="tns:GlobalWeatherSoap"&gt;
+            &lt;soap:address location="http://www.webservicex.net/globalweather.asmx" /&gt;
+        &lt;/wsdl:port&gt;
+        &lt;wsdl:port name="GlobalWeatherSoap12" binding="tns:GlobalWeatherSoap12"&gt;
+            &lt;soap12:address location="http://www.webservicex.net/globalweather.asmx" /&gt;
+        &lt;/wsdl:port&gt;
+        &lt;wsdl:port name="GlobalWeatherHttpGet" binding="tns:GlobalWeatherHttpGet"&gt;
+            &lt;http:address location="http://www.webservicex.net/globalweather.asmx" /&gt;
+        &lt;/wsdl:port&gt;
+        &lt;wsdl:port name="GlobalWeatherHttpPost" binding="tns:GlobalWeatherHttpPost"&gt;
+            &lt;http:address location="http://www.webservicex.net/globalweather.asmx" /&gt;
+        &lt;/wsdl:port&gt;
+    &lt;/wsdl:service&gt;
+&lt;/wsdl:definitions&gt;
+</code></pre>
+
+<p>另外github上还有一些Gradle的插件来帮你实现xml和java对象的转换，但是本质上其实还是使用了jaxb的xjc ant插件实现的，只不过隐藏了实现细节，使用起来更加方便。感兴趣的可以看<a href="https://github.com/jacobono/gradle-jaxb-plugin">https://github.com/jacobono/gradle-jaxb-plugin</a>。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Gradle中的buildScript代码块]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/08/27/buildscript-in-gradle/"/>
+    <updated>2014-08-27T22:12:45+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/08/27/buildscript-in-gradle</id>
+    <content type="html"><![CDATA[<p>在编写Gradle脚本的时候，在build.gradle文件中经常看到这样的代码：</p>
+
+<!-- more -->
+
+
+<pre><code class="groovy build.gradle">
+
+buildScript {
+     repositories {
+         mavenCentral()
+}
+}
+
+repositories {
+     mavenCentral()
+}
+</code></pre>
+
+<p>这样子很容易让人奇怪，为什么repositories要声明两次哪？buildscript代码块中的声明与下半部分声明有什么不同？</p>
+
+<p>其实答案非常简单。buildscript中的声明是gradle脚本自身需要使用的资源。可以声明的资源包括依赖项、第三方插件、maven仓库地址等。而在build.gradle文件中直接声明的依赖项、仓库地址等信息是项目自身需要的资源。</p>
+
+<p>gradle是由groovy语言编写的，支持groovy语法，可以灵活的使用已有的各种ant插件、基于jvm的类库，这也是它比maven、ant等构建脚本强大的原因。虽然gradle支持开箱即用，但是如果你想在脚本中使用一些第三方的插件、类库等，就需要自己手动添加对这些插件、类库的引用。而这些插件、类库又不是直接服务于项目的，而是支持其它build脚本的运行。所以你应当将这部分的引用放置在buildscript代码块中。gradle在执行脚本时，会优先执行buildscript代码块中的内容，然后才会执行剩余的build脚本。</p>
+
+<p>举个例子，假设我们要编写一个task，用于解析csv文件并输出其内容。虽然我们可以使用gradle编写解析csv文件的代码，但其实apache有个库已经实现了一个解析csv文件的库供我们直接使用。我们如果想要使用这个库，需要在gradle.build文件中加入对该库的引用。</p>
+
+<pre><code class="groovy build.gradle">
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.apache.commons:commons-csv:1.0'
+    }
+}
+
+import org.apache.commons.csv.*
+
+task printCSV() {
+    doLast {
+        def records = CSVFormat.EXCEL.parse(new FileReader('config/sample.csv'))
+        for (item in records) {
+            print item.get(0) + ' '
+            println item.get(1)
+        }
+
+    }
+}
+</code></pre>
+
+<p>buildscript代码块中的repositories和dependencies的使用方式与直接在build.gradle文件中的使用方式几乎完全一样。唯一不同之处是在buildscript代码块中你可以对dependencies使用classpath声明。该classpath声明说明了在执行其余的build脚本时，class loader可以使用这些你提供的依赖项。这也正是我们使用buildscript代码块的目的。</p>
+
+<p>而如果你的项目中需要使用该类库的话，就需要定义在buildscript代码块之外的dependencies代码块中。所以有可能会看到在build.gradle中出现以下代码：</p>
+
+<pre><code class="groovy build.gradle">
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.springframework.ws:spring-ws-core:2.2.0.RELEASE',
+            'org.apache.commons:commons-csv:1.0'
+}
+
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.apache.commons:commons-csv:1.0'
+    }
+}
+
+import org.apache.commons.csv.*
+
+task printCSV() {
+    doLast {
+        def records = CSVFormat.EXCEL.parse(new FileReader('config/sample.csv'))
+        for (item in records) {
+            print item.get(0) + ' '
+            println item.get(1)
+        }
+
+    }
+}
+</code></pre>
+
+<p>官方具体解释请参见：<a href="http://chimera.labs.oreilly.com/books/1234000001741/ch04.html#_buildscript_dependencies">http://chimera.labs.oreilly.com/books/1234000001741/ch04.html#_buildscript_dependencies</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[使用Gradle运行集成测试]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/12/10/integration-test-in-gradle/"/>
+    <updated>2013-12-10T13:17:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/12/10/integration-test-in-gradle</id>
+    <content type="html"><![CDATA[<p>如果Gradle构建的项目是一个web项目的话，里面可能包含一些集成测试和功能性测试。这些测试和单元测试不同之处是在运行之前要先在本地将web服务启动起来，并且跑完测试后能够自动的关闭web服务。</p>
+
+<!-- more -->
+
+
+<p>在本地启动web服务我们可以使用Gradle内置的jetty插件。jetty是一个轻量级的web容器，其执行速度快，配置简单，远程调试方便。启用jetty只需在build.gradle中加入对这个插件的引用。</p>
+
+<pre><code class="groovy build.gradle">
+apply plugin: 'jetty'
+</code></pre>
+
+<p>之后可以配置war包的名称，启动的端口等属性。</p>
+
+<pre><code class="groovy build.gradle">
+apply plugin: 'jetty'
+
+httpPort = 9876
+
+[jettyRun, jettyRunWar, jettyStop]*.stopPort = 9966
+[jettyRun, jettyRunWar, jettyStop]*.stopKey = 'stopKey'
+</code></pre>
+
+<p>我们需要将集成测试与一般的单元测试分开。因为单元测试并不需要事先启动web服务，保证其执行速度快，能够得到更快的反馈。一般做法是单元测试后缀名为Test.java，集成测试后缀名为IntegrationTest.java。</p>
+
+<p>配置单元测试执行的测试集合。</p>
+
+<pre><code class="groovy build.gradle">
+test {
+    include '**/*Test.class'
+    exclude '**/*IntegrationTest.class'
+}
+</code></pre>
+
+<p>然后新建一个Task，用于运行集成测试。</p>
+
+<pre><code class="groovy build.gradle">
+task intTest(type: Test, dependsOn: test) {
+
+    include '**/*IntegrationTest.class'
+
+    doFirst {
+
+        jettyRun.daemon = true
+        jettyRun.execute()
+
+    }
+
+    doLast {
+        jettyStop.execute()
+    }
+}
+</code></pre>
+
+<p>上述代码首先是创建一个名为intTest的task，其类型为Test,依赖于test task。该集成测试只会运行后缀名为IntegrationTest的测试类。在运行测试之前，首先采用后台模式启动jetty服务器，运行完测试后再调用jettyStop task停止jetty服务。</p>
+
+<p>为了使我们在运行<code>gradle build</code>时也会运行intTest task，可以添加对intTest的依赖。</p>
+
+<pre><code class="groovy build.gradle">
+build.dependsOn intTest
+</code></pre>
+
+<p>这样在运行<code>gradle build</code>时也会运行集成测试。并且在集成测试前后web服务会自动的启动和关闭。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Gradle中使用idea插件的一些实践]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/12/04/use-idea-plugin-in-gradle/"/>
+    <updated>2013-12-04T22:19:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/12/04/use-idea-plugin-in-gradle</id>
+    <content type="html"><![CDATA[<p>如果你的项目使用了Gradle作为构建工具，那么你一定要使用Gradle来自动生成IDE的项目文件，无需再手动的将源代码导入到你的IDE中去了。</p>
+
+<!-- more -->
+
+
+<p>如果你使用的是eclipse，可以在build.gradle中加入这么一行.</p>
+
+<pre><code class="groovy">
+apply plugin: 'eclipse'
+</code></pre>
+
+<p>然后在命令行中输入<code>gradle eclipse</code>就可以生成eclipse的项目文件，直接使用eclipse打开生成的项目文件即可。</p>
+
+<p>当然作为Java程序开发者，最好使的IDE还是Intellij,昨天听闻Intellij 13已经发布了，增加了不少新功能，看来又要掏腰包了。如果要让Gradle自动生成Intellij的项目文件，需要使用idea插件。</p>
+
+<pre><code class="groovy">
+apply plugin: 'idea'
+</code></pre>
+
+<p>命令行下输入<code>gradle idea</code>，就会生成Intellij的项目文件，真是省时省力。如果在已经存在Intellij的项目文件情况下，想根据build.gradle中的配置来更新项目文件，可以输入<code>gradle cleanIdea idea</code>。<code>cleanIdea</code>可以清除已有的Intellij项目文件。</p>
+
+<p>Intellij项目文件主要有三种类型。</p>
+
+<ul>
+<li><p>.ipr Intellij工程文件</p></li>
+<li><p>.iml Intellij 模块文件</p></li>
+<li><p>.iws Intellij 工作区文件</p></li>
+</ul>
+
+
+<p>如果只简单的使用<code>gradle idea</code>生成Intellij的工程文件，其实在使用Intellij打开项目以后，我们还要做一些手工配置，比如指定JDK的版本，指定源代码管理工具等。Gradle的idea命令本质上就是生成这三个xml文件,所以Gradle提供了生成文件时的hook(钩子)，让我们可以方便的做定制化，实现最大程度的自动化。这就需要自定义idea这个任务了。</p>
+
+<pre><code class="groovy">
+idea.project {
+     jdkName = '1.6'
+     languageLevel = '1.6' 
+}
+</code></pre>
+
+<p>这个用来配置项目的jdk及languageLevel。</p>
+
+<p>如果要指定源代码管理工具类型，就需要调用hook修改生成的ipr文件。</p>
+
+<pre><code class="groovy">
+idea.project {
+
+    ipr {
+        withXml { provider -&gt;
+            provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
+        }
+    }
+
+}
+</code></pre>
+
+<p>通过这种方式可以最大限度的实现对Intellij项目文件的定制化。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Gradle的属性设置大全]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/09/12/setup-properties-in-gradle/"/>
+    <updated>2013-09-12T22:41:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/09/12/setup-properties-in-gradle</id>
+    <content type="html"><![CDATA[<p>Gradle作为一款项目构建工具，由于其强大、灵活、快速、完全兼容Ant等特性，越来越受到人们欢迎。Gradle的灵活有时候也会引起人们的困惑。比如在Gradle中设置变量和属性就有N种办法。由于Gradle的理念是Convention over configruation(约定优于配置),所以如果了解了这些约定，那么在使用Gradle的属性配置时一定会如鱼得水。</p>
+
+<!-- more -->
+
+
+<hr />
+
+<p><strong>在项目根目录下建立名为gradle.properties文件，在该文件中定义需要的属性。这些属性在Gradle构建Gradle领域对象（即project对象实例）时会被自动加到project对象实例中作为其属性被直接调用。</strong></p>
+
+<pre><code class="xml gradle.properties">
+guestName= Bowen 
+</code></pre>
+
+<pre><code class="groovy build.gradle">
+task hello &lt;&lt; {
+     println $guestName
+     println "hello, $guestName"
+}
+</code></pre>
+
+<pre><code class="bash">
+$ gradle hello -q
+Bowen
+hello, Bowen
+
+$ gradle properties | grep guestName
+guestName: Bowen
+</code></pre>
+
+<hr />
+
+<p><strong>定义在build.gradle中的ext块中。ext准确的说是Gradle领域对象的一个属性，我们可以将自定义的属性添加到ext对象上，Build.gradle中的其它代码片段可以使用。</strong></p>
+
+<pre><code class="groovy build.gradle">
+ext {
+     guestName='Bowen'
+}
+
+task hello &lt;&lt; {
+     println guestName
+     println "hello, $guestName"
+}
+</code></pre>
+
+<pre><code class="bash">
+$ gradle hello -q
+Bowen
+hello, Bowen
+
+$ gradle properties | grep guestName
+guestName: Bowen
+$ gradle properties | grep ext
+ext: org.gradle.api.internal.plugins.DefaultExtraPropertiesExtension@10ef5fa0
+</code></pre>
+
+<p>从上述可以看到ext对象其实是DefaultExtraPropertiesExtension对象的一个实例。</p>
+
+<hr />
+
+<p><strong>在命令行中通过<code>-D</code>或者<code>-P</code>给Gradle实时创建属性。</strong>
+<code>-D</code>属性会被传送给启动Gradle的jvm，作为一个系统属性被jvm使用。</p>
+
+<pre><code class="groovy build.gradle">
+task hello &lt;&lt; {
+     println System.properties['guestName']
+}
+</code></pre>
+
+<pre><code class="bash">
+$ gradle hello -DguestName='Bowen' -q
+Bowen
+</code></pre>
+
+<p><code>-P</code>属性则会被直接加载到Gradle领域对象上。</p>
+
+<pre><code class="groovy build.gradle">
+task hello &lt;&lt; {
+      println "hello, $guestName"
+}
+</code></pre>
+
+<pre><code class="bash">
+$ gradle hello -PguestName='Bowen' -q
+hello, Bowen
+</code></pre>
+
+<hr />
+
+<p><strong>在Gradle配置文件中创建系统属性。刚讲过在gradle.properties文件可以创建属性，同时我们也可以创建系统属性。如果有<code>systemProp.</code>前缀的属性会被识别为系统属性。</strong></p>
+
+<pre><code class="xml gradle.properties">
+systemProp.guestName = 'Bowen' 
+</code></pre>
+
+<pre><code class="groovy build.gradle">
+task hello &lt;&lt; {
+      println "hello, " + System.properties['guestName']
+}
+</code></pre>
+
+<pre><code class="bash">
+$ gradle hello -q
+hello, Bowen
+</code></pre>
+
+<hr />
+
+<p><strong>将特殊前缀的系统属性或环境变量自动加入到Gradle领域对象中。</strong></p>
+
+<p>如果有环境变量以<code>ORG_GRADLE_PROJECT.</code>为前缀，那么该变量会被自动添加到Gradle领域对象中。同样，如果有系统属性以<code>org.gradle.project.</code>为前缀，那么也会被自动加入到Gradl领域对象中。这一特性的目的之一是为了隐藏一些敏感的信息。比如在执行Gradle脚本时需要传入密码信息，如果以<code>-P</code>的方式传送会被别人看到。而把该属性保存为环境变量，只有系统管理员才有权访问和修改。在运行Gralde的时候该环境变量会被自动加入到Gradle对象中被使用，隔离了明暗数据，又不行影响其他用户使用。（其他用户可以通过<code>-P</code>方式是设置该属性）。</p>
+
+<pre><code class="groovy build.gradle">
+task hello &lt;&lt; {
+      println "hello, " + guestName 
+}
+</code></pre>
+
+<pre><code class="bash">
+$ gradle hello -Dorg.gradle.project.guestName=Bowen -q
+hello, Bowen
+
+$ export ORG_GRADLE_PROJECT_guestName=Bob
+$ gradle hello -q
+hello, Bob
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

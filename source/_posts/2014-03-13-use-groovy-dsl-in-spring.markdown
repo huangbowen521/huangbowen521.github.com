@@ -1,3 +1,4 @@
+<<<<<<< HEAD:source/_posts/2014-03-13-use-groovy-dsl-in-spring.markdown
 ---
 layout: post
 title: Spring-Context之三:使用XML和Groovy DSL配置Bean
@@ -8,6 +9,29 @@ tags: [Groovy, Spring]
 ---
 
 在第一讲中显示了如何使用注解配置bean，其实这是Spring3引进的特性,Spring2使用的是XML的方式来配置Bean，那时候漫天的XML文件使得Spring有着`配置地狱`的称号。Spring也一直在力求改变这一缺陷。Spring3引入的注解方式确实使配置精简不少，而Spring4则引入了Groovy DSL来配置，其语法比XML要简单很多，而且Groovy本身是门语言，其配置文件就相当于代码，可以用来实现复杂的配置。
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tag: Groovy | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/groovy/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-12-31T17:09:42+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Spring-Context之三:使用XML和Groovy DSL配置Bean]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/13/use-groovy-dsl-in-spring/"/>
+    <updated>2014-03-13T02:13:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/13/use-groovy-dsl-in-spring</id>
+    <content type="html"><![CDATA[<p>在第一讲中显示了如何使用注解配置bean，其实这是Spring3引进的特性,Spring2使用的是XML的方式来配置Bean，那时候漫天的XML文件使得Spring有着<code>配置地狱</code>的称号。Spring也一直在力求改变这一缺陷。Spring3引入的注解方式确实使配置精简不少，而Spring4则引入了Groovy DSL来配置，其语法比XML要简单很多，而且Groovy本身是门语言，其配置文件就相当于代码，可以用来实现复杂的配置。</p>
+>>>>>>> 09615b67c1384817f01948313cc9bfa79d82b402:blog/tags/groovy/atom.xml
 
 <!-- more -->
 

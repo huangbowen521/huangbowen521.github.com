@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Java | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/categories/java/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-12-31T17:09:42+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Java中测试异常的多种方式]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/04/13/testing-exceptions-in-java/"/>
+    <updated>2014-04-13T23:32:48+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/04/13/testing-exceptions-in-java</id>
+    <content type="html"><![CDATA[<p>使用JUnit来测试Java代码中的异常有很多种方式，你知道几种？</p>
+
+<!-- more -->
+
+
+<p>给定这样一个class。</p>
+
+<pre><code class="java Person.java">
+public class Person {
+
+    private String name;
+    private int age;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+
+        if (age &lt; 0 ) {
+            throw new IllegalArgumentException("age is invalid");
+        }
+        this.age = age;
+    }
+}
+</code></pre>
+
+<p>我们来测试setAge方法。</p>
+
+<h2>Try-catch 方式</h2>
+
+<pre><code class="java">
+
+    @Test
+    public void shouldGetExceptionWhenAgeLessThan0() {
+        Person person = new Person();
+        try {
+        person.setAge(-1);
+            fail("should get IllegalArgumentException");
+        } catch (IllegalArgumentException ex) {
+            assertThat(ex.getMessage(),containsString("age is invalid"));
+        }
+
+    }
+</code></pre>
+
+<p>这是最容易想到的一种方式，但是太啰嗦。</p>
+
+<h2>JUnit annotation方式</h2>
+
+<p>JUnit中提供了一个<code>expected</code>的annotation来检查异常。</p>
+
+<pre><code class="java">
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldGetExceptionWhenAgeLessThan0() {
+        Person person = new Person();
+        person.setAge(-1);
+
+    }
+</code></pre>
+
+<p>这种方式看起来要简洁多了，但是无法检查异常中的消息。</p>
+
+<h2>ExpectedException rule</h2>
+
+<p>JUnit7以后提供了一个叫做<code>ExpectedException</code>的Rule来实现对异常的测试。</p>
+
+<pre><code class="java">
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Test
+    public void shouldGetExceptionWhenAgeLessThan0() {
+
+        Person person = new Person();
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage(containsString("age is invalid"));
+        person.setAge(-1);
+
+    }
+</code></pre>
+
+<p>这种方式既可以检查异常类型，也可以验证异常中的消息。</p>
+
+<h2>使用catch-exception库</h2>
+
+<p>有个catch-exception库也可以实现对异常的测试。</p>
+
+<p>首先引用该库。</p>
+
+<pre><code class="xml pom.xml">
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.googlecode.catch-exception&lt;/groupId&gt;
+            &lt;artifactId&gt;catch-exception&lt;/artifactId&gt;
+            &lt;version&gt;1.2.0&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt; &lt;!-- test scope to use it only in tests --&gt;
+        &lt;/dependency&gt;
+</code></pre>
+
+<p>然后这样书写测试。</p>
+
+<pre><code class="java">
+
+    @Test
+    public void shouldGetExceptionWhenAgeLessThan0() {
+        Person person = new Person();
+        catchException(person).setAge(-1);
+        assertThat(caughtException(),instanceOf(IllegalArgumentException.class));
+        assertThat(caughtException().getMessage(), containsString("age is invalid"));
+
+    }
+</code></pre>
+
+<p>这样的好处是可以精准的验证异常是被测方法抛出来的，而不是其它方法抛出来的。</p>
+
+<p>catch-exception库还提供了多种API来进行测试。</p>
+
+<p>先加载fest-assertion库。</p>
+
+<pre><code class="xml">
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.easytesting&lt;/groupId&gt;
+            &lt;artifactId&gt;fest-assert-core&lt;/artifactId&gt;
+            &lt;version&gt;2.0M10&lt;/version&gt;
+        &lt;/dependency&gt;
+</code></pre>
+
+<p>然后可以书写BDD风格的测试。</p>
+
+<pre><code class="java">
+    @Test
+    public void shouldGetExceptionWhenAgeLessThan0() {
+        // given
+        Person person = new Person();
+
+        // when
+        when(person).setAge(-1);
+
+        // then
+        then(caughtException())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("age is invalid")
+                .hasNoCause();
+    }
+</code></pre>
+
+<p>如果喜欢Hamcrest风格的验证风格的话，catch-exception也提供了相应的Matcher API。</p>
+
+<pre><code class="java">
+    @Test
+    public void shouldGetExceptionWhenAgeLessThan0() {
+        // given
+        Person person = new Person();
+
+        // when
+        when(person).setAge(-1);
+
+        // then
+        assertThat(caughtException(), allOf(
+                instanceOf(IllegalArgumentException.class)
+                , hasMessage("age is invalid")
+                ,hasNoCause()));
+    }
+</code></pre>
+
+<p>第一种最土鳖，第二种最简洁，第四种最靠谱。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Java中的Set, List, Map漫谈]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/01/02/set/"/>
+    <updated>2014-01-02T23:45:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/01/02/set</id>
+    <content type="html"><![CDATA[<p>在编程语言中，集合是指代表一组对象的对象。Java平台专门有一个集合框架(Collections Framework)。集合框架是指表示和操作集合的统一架构，隔离了集合的操作和实现细节。</p>
+
+<!-- more -->
+
+
+<p>集合框架中的集合接口主要分为两大部分，一部分继承自<code>java.util.Collection</code>，另一部分继承自<code>java.util.Map</code> （其实Map本质上并不是集合，只是看起来好像可以像集合一样操作）。一个有趣的事情是这些接口的实现不一定都需要实现这些接口中的修改方法（如add，remove等），可以给某些不想实现的修改方法抛出一个运行时异常(UnsupportedOperationException)。</p>
+
+<h2>List</h2>
+
+<p>List是Java中的一个接口，继承了Collection接口。它是一个有序集合，又称序列，允许存储重复元素。其实现类常用的有ArrayList、LinkedList等。ArrayList是实现了List接口的可变长数组。它的特点是add方法操作时间复杂度为分期常量时间（amortized constant time），意思即如果添加n个元素则耗时O(n)，其它操作耗时则是线性时间。每个ArrayList都有个容量，即存放元素能力的大小。这个容量是list中元素个数。当添加新的元素时，这个容量也会自动添加，这需要消耗一定时间。如果要添加大量数据到ArrayList，可以先调用<code>ensureCapacity</code>操作，从而减少每次添加新元素容量自动调整的时间。</p>
+
+<p>需要注意的是ArrayList并不是线程同步的。如果多个线程同时访问一个ArrayList实例，至少一个线程修改了其结构（添加或删除元素，或显式的调整了其大小，仅仅设置元素值并不属于结构修改），则会使程序进入不确定的状态。解决方式之一就是使用一个线程同步的对象来封装该ArrayList。或者也可以用Collections.synchronizedList来封装。</p>
+
+<pre><code class="java">
+List list = Collections.synchronizedList(new ArrayList(...));
+</code></pre>
+
+<p>实现原理就是Collections.synchronizedList返回的类的iterator做了特殊处理。如果iterator被创建后，除了自己的add和delete方法，有其他行为导致了List结构被修改，iterator将会抛出一个<code>ConcurrentModificationException</code>异常。当然iterate这种处理方式并不能担保它能处理所有的异步并发修改，只能降低程序陷入不确定状态的概率。</p>
+
+<p>LikedList是一个双重链表，它既实现了List接口，也实现了Deque接口。LikedList也不是线程安全的，解决方式与ArrrayList基本相同。</p>
+
+<h2>Set</h2>
+
+<p>Set也是Java中的一个接口，同样继承于Collection。与List不同的是，Set不允许放置重复元素,并且最多只能放置一个null元素。其实现类有HashSet、TreeSet等。</p>
+
+<p>HashSet的实现其实是依托了一个HashMap的实例。HashSet并不保证元素的迭代顺序每次都是一致的。HashSet的基本操作（add,remove,contains及size）耗时都是常数时间，即迭代Set的耗时与Set的大小乘以HashMap实例的乘积成正比。HashSet也不是线程安全的。</p>
+
+<h2>Map</h2>
+
+<p>Map则是另一种重要的数据结构，是一组键值对的集合。Map不允许有重复的key存在。
+它的实现中有HashTable和HashMap。两者非常相似，最大的不同是HashMap不是线程安全的，并且允许null值作为key或value，而HashTable则不允许。</p>
+
+<p>HashMap的性能取决于两个因素：一个是初始容量，一个是负载因数。容量是哈希表中bucket的数量。初始容量则是HashMap被创建时容量。负载因数则是当容量需要自动增加的阀值。当HashMap中的元素超过了负载因数和当前容量的乘积，HashMap则会重新进行hash计算，以便bucket数量增加到以前的近似两倍。一般负载因子的默认值是0.75，这能达到时间和空间的一个平衡。负载因子过大，虽然会减少空间消耗，但是增加查找时间。</p>
+]]></content>
+  </entry>
+  
+</feed>

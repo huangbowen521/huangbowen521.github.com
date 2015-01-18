@@ -1,0 +1,831 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 编程开发 | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/categories/bian-cheng-kai-fa/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-12-31T17:09:42+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Haskell函数式编程之特性篇]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature/"/>
+    <updated>2013-03-17T12:46:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/03/17/haskell-functional-programming-feature</id>
+    <content type="html"><![CDATA[<p>函数式编程的定义是：</p>
+
+<p>In computer science, functional programming is a programming paradigm that treats computation as the evaluation of mathematical functions and avoids stateand mutable data.
+即：函数式编程是一种编程模型，他将计算机运算看做是数学中函数的计算，并且避免了引入状态及可变数据。</p>
+
+<p>它更强调函数的应用，而不像命令式编程更强调状态的改变。</p>
+
+<h2>无副作用（side effect）</h2>
+
+<p>命令式函数可能会改变程序的状态，这就会对其产生<strong>副作用</strong>。在命令式编程中，在执行程序不同的状态下同一个函数的返回结果会发生改变。例如，下面是一个使用JavaScript写的函数。</p>
+
+<pre><code class="javascript">
+var state = true;
+var getVal = function () [
+     return state;
+}
+</code></pre>
+
+<pre><code class="javascript">
+console.log(getVal()); //true
+state = false;
+console.log(getVal()); // false
+</code></pre>
+
+<!-- more -->
+
+
+<p>注意我们调用了两次getVal(),但是其输出了不同的结果。而在Haskell中，对变量只有声明，没有赋值。即如果声明了一个值为true的state变量，就无法再将其修改为false。这叫做<strong>变量的不变性</strong>。</p>
+
+<p>而函数式编程中如果描述状态的变化那，就是将状态变化作为函数的参数进行传递。</p>
+
+<h2>延迟计算（lazy evaluation）</h2>
+
+<p>正因为函数式编程无副作用，所以<strong>延迟计算</strong>（又称为惰性求值）就成为可能。
+<strong>延迟计算</strong>指将一个表达式的值推迟到直到被需要时才进行计算。（delays the evaluation of an expression until its value is needed ）</p>
+
+<p>它的优点是：</p>
+
+<ul>
+<li>避免了不需要的运算，从而提高的性能。</li>
+<li>使创建无限的数据结构成为可能。</li>
+</ul>
+
+
+<p>例如，我们写一个将指定参数放置到一个无限长的数组中的函数。</p>
+
+<pre><code class="haskell">
+repeat' :: a -&gt; [a]
+repeat' x = x : repeat' x
+</code></pre>
+
+<p>第一行是对repeat'参数及返回值的定义，它接收一个类型a,返回a的数组。
+第二行是repeat'函数的实现，它将x放置到一个无穷大的数组中。</p>
+
+<p>在没有延迟计算特性的编程语言中，这种函数是根本无法使用的。因为一旦调用就会陷入死循环。
+即使在支持延迟计算的编程语言中，我们直接输出这个数组:<code>print $ repeat' 10</code>,也会进入死循环。那么如何使用它那？我们可以写一个take函数，其可以返回数组中前几位元素。</p>
+
+<pre><code class="haskell">take' :: Int -&gt; [a] -&gt; [a]
+take' 1 (x:xs) = [x]
+take' index (x:xs) = x : (take' (index-1) xs)
+</code></pre>
+
+<p>我们这样调用它，</p>
+
+<pre><code class="bash">
+Prelude&gt; take' 3 (repeat' 5) 
+[5,5,5]
+Prelude&gt; take' 3 (repeat' 'a') 
+"aaa"
+</code></pre>
+
+<p>Haskell对函数参数默认采取延迟计算的求值策略。所以这样在调用repeat'函数时并不是先将repeat'函数的结果数组计算出来，再进行take操作，而是take操作需要前几位元素，repeat'函数才会生成前几位元素。</p>
+
+<h2>高阶函数(Higher-order function)</h2>
+
+<p>一个函数成为<strong>高阶函数</strong>需要满足下面两条中的至少一条:</p>
+
+<ol>
+<li>将一个或多个函数作为输入。</li>
+<li>输出是一个函数。</li>
+</ol>
+
+
+<p>换句话说，<strong>高阶函数就是将函数作为参数或者作为返回值的函数</strong>。其他函数都成<strong>为一阶函数</strong>(first order function)。其实这个概念最早来源于数学领域。</p>
+
+<p>函数是Haskell世界中的一等公民，所以肯定支持高阶函数。举个例子，Haskell中有个map函数，它的定义是这样的:
+map:: (a -> b) -> [a] -> [b]
+它的作用是传入一个函数及一个数组，对该数组中的每一个元素应用此函数，从而转换为另一个数组。
+我们可以自己实现一个map函数。</p>
+
+<pre><code class="haskell">
+map' :: (a -&gt; b) -&gt; [a] -&gt; [b]
+map' f [] = []
+map' f (x:xs) =f x : map' f xs
+</code></pre>
+
+<p>map'函数接收两个参数，第一个参数是一个函数，该函数输入值为a类型的值，输出值为b类型的值，第二个参数为源数组。
+我们调用ma p'函数时，可以直接写一个lambda表达式，对源数组进行各种操作。</p>
+
+<pre><code class="bash">
+Prelude&gt; map' (\x -&gt; x + 5)  [1,2,3]
+[6,7,8]
+Prelude&gt; map' (\x -&gt; x * x)  [1,2,3] 
+[1,4,9]
+</code></pre>
+
+<p>如果我们有这样一个需求，我们想通过map'函数对数组的每个对象都加上一个值n，这个n我不想直接定义在此lambda表达式中，能实现吗？答案是可以。</p>
+
+<pre><code class="haskell">
+outer = let n = 5 in map' (\x -&gt; x + n) [1,2,3] 
+[6,7,8]
+</code></pre>
+
+<p>对于匿名函数(\x -> x + n)来说，n就是<strong>non-local variable</strong>。什么是<strong>non-local variable</strong>那？如果一个函数使用了一个变量，这个变量既不属于全局变量，也不属于在此函数中定义的变量，那这个变量对于此函数来说就是<strong>non-local variable</strong>。
+所谓的闭包就是使用了non-local variable的函数。</p>
+
+<h2>curry function</h2>
+
+<p>curry function还真比较难翻译，先看看<a href="http://en.wikipedia.org/wiki/Currying">wiki</a>百科的翻译：</p>
+
+<p>In mathematics and computer science, currying is the technique of transforming a function that takes multiple arguments (or a tuple of arguments) in such a way that it can be called as a chain of functions, each with a single argument (partial application).</p>
+
+<p><strong>在数学领域和计算机科学领域，currying是一项将接收多个参数（或参数元组）函数转换为函数的链式调用的技术，链条中的每个函数接收单个参数。</strong></p>
+
+<p>这句话看起来真费解。那么我用一个例子说明一个。</p>
+
+<p>假设现在有一个函数为<code>f(x,y) = x/y</code>。那么<code>f(2,3)</code>的执行过程是什么样的那？ 首先，我们将x替换为2.那么得到了<code>f(2,y) = 2/y</code>。我们定义一个新的函数<code>g(y)= f(2,y) = 2/y</code>。再将y替换成3，那么得到了<code>g(3) = f(2,3) = 2/3</code>。这个<code>g(y)</code>函数就是<code>f(x,y)</code>的一个curried function.</p>
+
+<p>举个例子。上文中我们构造了一个map'函数，它接收一个函数及一个数组。如果我们想实现一个名为doubleMe的函数，它接收一个数组，将数组中每个元素都翻一倍。这个可以这样写:</p>
+
+<pre><code class="haskell">
+doubleMe = map' (\x -&gt; x * x) 
+</code></pre>
+
+<p>注意看，定义doubleMe时我们使用了map'函数，但是给map'函数只传递了一个参数，并没有提供第二个参数。所以在调用doubleMe时，要给其传递一个数组。</p>
+
+<pre><code class="bash">
+Prelude&gt; doubleMe [1,2,3] 
+[1,4,9] 
+</code></pre>
+
+<p>doubleMe的函数完全等价于:</p>
+
+<pre><code class="haskell">
+doubleMe ary = map' (\x-&gt; x * x) ary
+</code></pre>
+
+<p>换句话说，如果一个函数接收多个参数，那么接收部分参数的该函数也是一个函数。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Haskell函数式编程之递归]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/03/14/haskell-recursion/"/>
+    <updated>2013-03-14T21:46:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/03/14/haskell-recursion</id>
+    <content type="html"><![CDATA[<p>在Haskell的世界中，没有变量赋值，流程跳转，如果要实现一些简单的功能，比如求一个数组中的最大值，都需要借助递归实现。</p>
+
+<p><strong>递归函数的定义:</strong></p>
+
+<p><strong>A function may be partly defined in terms of itself.</strong>
+<strong>即如果一个函数的定义中使用了其自身，这个函数就叫做递归函数。</strong></p>
+
+<h2>普通递归(traditional recursion)</h2>
+
+<p>我们就写一个简单的对数组求和的函数。</p>
+
+<pre><code class="haskell">
+sum' :: (Num a) =&gt; [a] -&gt; a 
+sum' (x:xs) = x + sum' xs
+sum' [] = 0
+</code></pre>
+
+<!-- more -->
+
+
+<p>第一行定义了了一个名为<code>sum'</code>的函数的参数及返回值。这个函数接收一个类型为Num的数组并返回一个Num型的数值。（这里的<code>'</code>是函数名的一部分，因为Haskell允许<code>'</code>作为函数名的一部分。由于系统已经有了sum函数，所以我们加个<code>'</code>与标准sum函数区分开。）</p>
+
+<p>第二行的(x:xs)就是我们传入的数组参数。我们这里使用了Haskell的pattern matching。x表示的是数组中的第一个元素，xs表示数组中的其它元素。我们可以描述求数组中值的和的行为为：数组中的第一个元素与数组中剩余元素的和。所以这就是我们的实现。</p>
+
+<p>第三行则说明了如果给一个空的数组则直接返回0。这也叫做递归的退出条件，否则递归会没完没了。</p>
+
+<p>第二行和第三行共同完成了这个<code>sum'</code>函数的定义。当你传递给它一个参数时，它会根据参数的情况自动选择调用那个实现。</p>
+
+<p>假设我们这样调用它：<code>sum'  [1,2,3]</code>,程序的执行过程是这样子的：</p>
+
+<pre><code class="console">
+sum' [1,2,3] -&gt;
+
+1 + sum' [2,3] -&gt;
+
+1 + (2 + sum' [3]) -&gt;
+
+1 + (2 + (3 + sum' [])) -&gt;
+
+1 + (2 + (3 + 0)) -&gt;
+
+1 + (2 + 3) -&gt;
+
+1 + 5 -&gt;
+
+6
+</code></pre>
+
+<p>这种递归有个问题就是我们一直到等到递归结束才进行算术运算，这样在执行过程既要保存函数调用的堆栈，还要保存中间计算结果的堆栈，如果递归过深，很容易引起stackOverFlow.</p>
+
+<h2><strong>尾递归</strong>(tail recursion)</h2>
+
+<p>针对上述问题，我们可以换种写法。</p>
+
+<pre><code class="haskell">
+sum' :: (Num a) =&gt; [a] -&gt; a -&gt; a 
+
+sum' (x:xs) temp = sum' xs x+ temp 
+
+sum' [] temp = temp
+</code></pre>
+
+<p>我们这样调用它: <code>sum' [1,2,3] 0</code>。</p>
+
+<p>它的执行顺序是这样的:</p>
+
+<pre><code class="console">
+sum' [1,2,3] 0 -&gt;
+
+sum' [2,3] 1 -&gt;
+
+sum' [3] 3 -&gt;
+
+sum' []  6 -&gt;
+
+6
+</code></pre>
+
+<p>第二种写法其实就是尾递归。</p>
+
+<p><strong>尾递归的定义：</strong></p>
+
+<p><strong>A recursive function is tail recursive if the final result of the recursive call is the final result of the function itself.</strong></p>
+
+<p><strong>即:如果一个递归函数，它的最终的递归调用结果就是这个函数的最终结果，那它就是尾递归的。</strong></p>
+
+<p>所以我们可以明显看出，第一个不是尾递归，第二个是。</p>
+
+<h3>尾递归优化(tail recursion optimization)</h3>
+
+<p>在大多数编程语言中，调用函数需要消费堆栈空间，一个实现了尾递归的递归函数在进行递归调用时，其实只关心递归调用的结果，所以当我们调用下层函数时，可以舍去上层函数的堆栈调用情况，下层递归调用可以重用这个堆栈空间，这种就叫做<strong>尾递归优化</strong>。一个可能的实现方式是：只需要把汇编代码call改成jmp, 并放弃所有 局部变量压栈处理，就可以了。</p>
+
+<p>尽管尾递归比递归更节省堆栈空间，但并非所有的递归算法都可以转成尾递归的，因为尾递归本质上执行的是迭代的计算过程。这与并非所有的递归算法都可以转成迭代算法的原因是一样的。</p>
+
+<h2>互递归(mutual recursion)</h2>
+
+<p>互递归就是多个递归函数之间相互调用。互递归的一个简单的例子就是判断一个自然数是偶数还是还是奇数。</p>
+
+<pre><code class="haskell">
+isOdd :: Int -&gt; Bool
+isOdd x
+ | x == 0 = False
+ | otherwise = isEven (x-1)
+
+
+isEven :: Int -&gt; Bool
+isEven x
+ | x == 0 = True
+ | otherwise = isOdd (x-1)
+</code></pre>
+
+<p>这个实现很有意思。</p>
+
+<p>任何一个互递归都可以被转变为<strong>直接递归</strong>(direct recursion)，即将另一个调用inline到当前递归函数中。</p>
+
+<p>下面是isOdd和isEven的<strong>直接递归</strong>版本。</p>
+
+<pre><code class="haskell">
+isOdd :: Int -&gt; Bool
+isOdd x
+ | x == 0 = False
+ | x == 1 = True
+ | otherwise = isOdd (x-2)
+
+
+isEven :: Int -&gt; Bool
+isEven x
+ | x == 0 = True
+ | x == 1 = False
+ | otherwise = isEven (x-2)
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Java基础学习之Enum]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/03/12/enum-in-java/"/>
+    <updated>2013-03-12T22:17:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/03/12/enum-in-java</id>
+    <content type="html"><![CDATA[<p>Enum是在Java中用来定义枚举类型的关键字。Enum一般用来表示一组相同类型的常量,如性别、日期 、颜色等.</p>
+
+<p>下面是一个最简单的枚举。</p>
+
+<pre><code class="java">public enum Color
+{
+
+RED,
+
+GREEN,
+
+BLUE
+
+}
+</code></pre>
+
+<!-- more -->
+
+
+<p>实际上在Java中枚举类型本质上就是一个类，其继承自java.lang.Enum类。</p>
+
+<p>通过默认提供的<code>GetValues()</code>方法可以获取所有枚举对象，其以一个数组的形式返回。</p>
+
+<pre><code class="java">
+for(Color color : Color.values())
+{
+
+System.out.printf("%s: %s%n",color,color.toString());
+
+}
+</code></pre>
+
+<p>输出结果为：</p>
+
+<pre><code class="console">
+RED: RED
+
+GREEN: GREEN
+
+BLUE: BLUE
+</code></pre>
+
+<p>既然是enum本质上是类，那么我们当然可以给其加一些方法。注意最后一个枚举对象要使用“；”结尾，说明枚举值结束使用。</p>
+
+<pre><code class="java">
+public enum Color
+{
+
+RED("Red Color"),
+
+GREEN("Green Color"),
+
+BLUE("Blue Color");
+
+private final String color;
+
+private Color(String color) {
+
+    this.color = color;
+
+}
+
+public String getColor() {
+
+return color;
+
+}
+
+}
+</code></pre>
+
+<p>注意在enum中是不能声明public的构造函数的，这样是为了避免直接实例化enum对象。</p>
+
+<p>我们可以通过<code>getValues()</code>方法调用<code>getColor()</code>方法。</p>
+
+<pre><code class="java">
+for(Color color : Color.values())
+{
+
+System.out.printf("%s: %s%n",color,color.getColor());
+
+}
+</code></pre>
+
+<p>以下是输出结果：</p>
+
+<pre><code class="console">
+RED: Red Color
+
+GREEN: Green Color
+
+BLUE: Blue Color
+</code></pre>
+
+<p>如果大家还是看不太明白的话，我可以展示一个类来对个对比。</p>
+
+<pre><code class="java">
+public final class Color extends java.lang.Enum{
+
+    public static final Color RED;
+
+    public static final Color GREEN;
+
+    public static final Color  BLUE;
+
+    static {};
+
+    public java.lang.String getColor();
+
+    public static Color[] values();
+
+    public static Color valueOf(java.lang.String);
+
+}
+</code></pre>
+
+<p>这个类的作用等同于我们的Color枚举对象。而每个被枚举的成员其实就是定义的枚举类型的一个实例，它们都被默认为final。无法改变常数名称所设定的值，它们也是public和static的成员，这与接口中的常量限制相同。可以通过类名称直接使用它们。</p>
+
+<p>所以我们大胆的在里面增加一些其它的方法来实现我们的新特性。</p>
+
+<p>在这里我增加了一个新的方法isRed()来判断当前枚举实例是否是红色的。</p>
+
+<pre><code class="java">
+public enum Color
+{
+
+RED("Red Color"),
+
+GREEN("Green Color"),
+
+BLUE("Blue Color");
+
+
+private final String color;
+
+
+
+private Color(String color) {
+
+    this.color = color;
+
+}
+
+
+public String getColor() {
+
+return color;
+
+}
+
+
+public boolean isRed() {
+
+return this.equals(RED);
+
+}
+
+}
+</code></pre>
+
+<p>可以对其进行一个测试。</p>
+
+<pre><code class="java">
+Color green = Color.GREEN;
+
+System.out.print(green.isRed());
+
+
+Color red = Color.RED;
+
+System.out.print(red.isRed());
+</code></pre>
+
+<p>第一个输出结果为false，第二个输出结果为true。</p>
+
+<p>通过对Java中enum的运用，往往会产生奇效。比如有这样一个例子，有一个Rover对象，它有一个类型为Enum的direction属性，我们要给Rover实现左转的指令。你可能会写出这样的代码：</p>
+
+<pre><code class="java Direction.java">
+public enum Direction {
+    North,
+    East,
+    South,
+    West
+}
+</code></pre>
+
+<pre><code class="java Rover.java">
+public class Rover {
+
+    private Direction direction;
+
+    public Rover(Direction direction) {
+        this.direction = direction;
+    }
+
+    public void turnLeft() {
+        if (direction.equals(Direction.East)) {
+            direction = Direction.North;
+        } else if (direction.equals(Direction.North)) {
+            direction = Direction.West;
+        } else if (direction.equals(Direction.West)) {
+            direction = Direction.South;
+        } else if (direction.equals(Direction.South)) {
+            direction = Direction.East;
+        }
+
+    }
+}
+</code></pre>
+
+<p>一大堆<code>if...else</code>的代码看起来真的很丑陋。这还好，如果让你给Rover再加几个方法，比如向右转，旋转到反方向等，那代码就没法看了。
+我们可以这样分析一下，其实给定一个方向之后，向左转的方向也就确定了，所以我们可以将这些逻辑放置到Direction对象中去。下面是改进后的版本。</p>
+
+<pre><code class="java Direction.java">
+public enum Direction {
+    North {
+        @Override
+        public Direction turnLeft() {
+        return West;
+        }
+    },
+    East {
+        @Override
+        public Direction turnLeft() {
+            return North;
+        }
+
+    },
+    South {
+        @Override
+        public Direction turnLeft() {
+            return East;
+        }
+    },
+    West {
+        @Override
+        public Direction turnLeft() {
+            return South;
+        }
+    };
+
+    public abstract Direction turnLeft();
+}
+</code></pre>
+
+<pre><code class="java Rover.java">
+public class Rover {
+
+    private Direction direction;
+
+    public Rover(Direction direction) {
+        this.direction = direction;
+    }
+
+    public void turnLeft() {
+        direction = direction.turnLeft();
+    }
+}
+</code></pre>
+
+<p>这样的代码看起来要舒服的多.</p>
+
+<h2>C#中的Enum</h2>
+
+<p>我也可以简单的讲解下c#中的枚举对象。在c#中声明枚举对象的关键字是enum。</p>
+
+<pre><code class="c#">
+ 访问修辞符 enum 枚举名:基础类型
+    {
+        枚举成员
+    }
+</code></pre>
+
+<p>基础类型必须能够表示该枚举中定义的所有枚举数值。枚举声明可以显式地声明 byte、sbyte、short、ushort、int、uint、long 或 ulong 类型作为对应的基础类型。没有显式地声明基础类型的枚举声明意味着所对应的基础类型是 int.</p>
+
+<pre><code class="c#">
+public enum Color
+
+{
+
+RED,
+
+GREEN,
+
+BLUE
+
+}
+</code></pre>
+
+<p>所以我们可以直接将一个枚举类型强制转换成其对应的基础类型。</p>
+
+<pre><code class="c#">Int  num = (int)Color.Red;
+</code></pre>
+
+<p>Num的值为0.</p>
+
+<p>我们也可以反向转换。</p>
+
+<pre><code class="c#">
+Color color = (Color)num;
+</code></pre>
+
+<p>甚至我们还可以对枚举类型进行与或运算。这些就不细说了，有兴趣的可以查阅相关资料。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Haskell-函数式编程语言之初体验]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch/"/>
+    <updated>2013-03-02T14:55:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/03/02/haskell-programming-language-first-touch</id>
+    <content type="html"><![CDATA[<p>如果你是使用面向对像语言进行编程的程序员，那么你应该去了解掌握一门动态语言。而动态语言的魔力之一就是函数式编程。而要学习了解函数式编程，那么haskell是一个不错的选择。</p>
+
+<p>Haskell是是一门纯函数式编程语言(purely functional programming language)。在其世界中函数是第一等对象。并且在haskell中没有赋值，例如你指派a的值为5，然后你无法再给a分配其它的值。所以你不能像命令式语言那样命令电脑“要做什么”，而是通过函数来描述出问题“是什么”。</p>
+
+<p>作为一个纯的函数式编程语言，它支持惰性求值、模式匹配、列表解析、类型类、类型多态……</p>
+
+<p>别着急，让我们慢慢来解开函数式编程的面纱。</p>
+
+<!-- more -->
+
+
+<h2>安装Haskell</h2>
+
+<ol>
+<li><p>可以去<a href="http://www.Haskell.org/Haskellwiki/Haskell">官网</a>下载安装包进行安装。</p></li>
+<li><p>mac平台的用户可以通过<a href="http://mxcl.github.com/homebrew/">homebrew</a>进行安装。</p></li>
+</ol>
+
+
+<p>在terminal下输入<code>brew install haskell-platform</code>即可。</p>
+
+<h2>使用Haskell</h2>
+
+<p>安装完毕后haskell platform的解释器GHC就已经在你的电脑上了。GHC可以解释执行Haskell脚本，即后缀名为.hs的文件。你可可以通过在terminal输入<code>ghci</code>进入交互模式。</p>
+
+<pre><code class="bash">
+twer@bowen-huang:~$ ghci
+GHCi, version 7.4.2: http://www.haskell.org/ghc/ :? for help
+Loading package ghc-prim ... linking … done.
+Loading package integer-gmp ... linking … done.
+Loading package base ... linking … done.
+Prelude&gt; 1+2
+3
+Prelude&gt; 3*4
+12
+Prelude&gt; 5/1
+5.0
+</code></pre>
+
+<p>关于Haskell的编辑器你可以使用任何喜欢的编辑器:Vim、Emacs、Sublime、TextMate…..我比较喜欢Sublime。因为在Sublime自带Haskell的快捷编译执行。只需要按Ctrl+B来直接运行Scripts脚本。</p>
+
+<p>在ghci交互模式下可以使用<code>:l</code>命令来load一个Haskell脚本，然后就可以调用此脚本中的函数。我们先写一个'Hello world!’程序，然后通过ghci来load和调用.</p>
+
+<pre><code class="haskell HelloWorld.hs">
+main = print $ "Hello world!"
+</code></pre>
+
+<pre><code class="bash">Prelude&gt; :l HelloWorld.hs
+[1 of 1] Compiling Main ( HelloWorld.hs, interpreted )
+Ok, modules loaded: Main.
+*Main&gt; main
+"Hello world!"
+</code></pre>
+
+<p>如果对文件进行了修改，也可以直接通过<code>:r</code>来重新加载文件。</p>
+
+<h2>Haskell的基本语法</h2>
+
+<h3>加减乘除操作</h3>
+
+<pre><code class="bash">
+Prelude&gt; 1 + 2
+3
+Prelude&gt; 3 - 1
+2
+Prelude&gt; 3 * 4
+12
+Prelude&gt; 5 / 1
+5.0
+Prelude&gt; 10 / (-5)
+-2.0
+</code></pre>
+
+<p>注意对负数进行操作时要将其用()括起来，否则系统会报错。</p>
+
+<h3>判等与比较操作</h3>
+
+<pre><code class="bash">
+Prelude&gt; 5 == 5
+True
+Prelude&gt; 10 == 8
+False
+Prelude&gt; 5 /= 5
+False
+Prelude&gt; 10 /= 8
+True
+Prelude&gt; 5 &gt;= 3
+True
+Prelude&gt; 5 &lt;= 3
+False
+Prelude&gt; True &amp;&amp; True
+True
+Prelude&gt; True &amp;&amp; False
+False
+Prelude&gt; False || False
+False
+Prelude&gt; True || False
+True
+Prelude&gt; not True
+False
+Prelude&gt; not False
+True
+</code></pre>
+
+<h3>控制流转</h3>
+
+<pre><code class="bash">
+Prelude&gt; let isHello x = if x == "Hello" then True else False
+Prelude&gt; isHello "Hello"
+True
+Prelude&gt; isHello "World"
+False
+</code></pre>
+
+<p>注意这里的条件判断中的else是不可以省略的，这样保证条件语句总会返回一个值。所以我们可以将整个<code>if..then..else</code> pattern看做一个表达式。</p>
+
+<p>如果在脚本文件中写的话不需要使用<code>let</code>关键字。并且也可以采用另一个写法。</p>
+
+<pre><code class="haskell isHello.hs">
+isHello x
+ | x == "Hello" = True
+ | otherwise     = False
+</code></pre>
+
+<p>|表示或，otherwise关键字表示其它的情况。当然你也可以将这三行代码写成一行，这样也是能够正常运行的。分成三行只是为了更加可读。</p>
+
+<p>还有第三种写法，实际上与面对对象语言中的<code>switch…case</code>语句有些类似。</p>
+
+<pre><code class="haskell isHello.hs">
+isHello x = case x of
+ "Hello" -&gt; True
+ otherwise -&gt; False
+</code></pre>
+
+<p>这和第二种写法很类似。其实第二种写法本质上就是<code>case</code>语句，它只是<code>case</code>语句的一个语法糖而已。</p>
+
+<p>另外，在Haskell中是没有各种循环语句的，如果要实现相似的特性当然要使用递归了。</p>
+
+<p>第二节中，我们会讨论这个问题。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[避免每次输入bundler exec命令]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling/"/>
+    <updated>2013-02-04T00:24:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/02/04/bi-mian-mei-ci-shu-ru-bundler-execming-ling</id>
+    <content type="html"><![CDATA[<p>bundle在ruby的世界里是个好东西，它可以用来管理应用程序的依赖库。它能自动的下载和安装指定的gem，也可以随时更新指定的gem。</p>
+
+<p><a href="https://rvm.io/">rvm</a>则是一个命令行工具，能帮助你轻松的安装，管理多个ruby环境。每个环境可以指定一系列的gem。它允许你为每一个项目指定其ruby的版本，需要的gem的版本。这能最大限度的避免由于ruby环境的差异，或者不同版本的gem造成的各种问题。</p>
+
+<p>当我在项目中引入了rvm后，使用rake命令时，每次都会出现这样的异常。</p>
+
+<pre><code class="bash">rake aborted!
+You have already activated rake 10.0.0, but your Gemfile requires rake 0.9.2.2. Using bundle exec may solve this.
+/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/runtime.rb:31:in `block in setup'
+/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/runtime.rb:17:in `setup'
+/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler.rb:116:in `setup'
+/usr/local/rvm/gems/ruby-1.9.3-p194/gems/bundler-1.2.3/lib/bundler/setup.rb:7:in `&lt;top (required)&gt;'
+/Users/twer/sourcecode/octopress/Rakefile:2:in `&lt;top (required)&gt;'
+(See full trace by running task with --trace)
+</code></pre>
+
+<!-- more -->
+
+
+<p>从这个异常中我们可以看到，由于我在自己机器上已经安装了rake的<code>10.0.0</code>版本，但是这个项目中配置的rake版本却是<code>0.9.2.2</code>，所以在执行rake命令时应该使用Gemfile的。</p>
+
+<p>而<code>bundle exec</code>可以在当前bundle的上下文中执行一段脚本。通过它可以调用本项目中指定的rake版本来执行命令。</p>
+
+<p>下面是官方文档的说明。</p>
+
+<blockquote><p>In some cases, running executables without bundle exec may work, if the executable happens to be installed in your system and does not pull in any gems that conflict with your bundle. However, this is unreliable and is the source of considerable pain. Even if it looks like it works, it may not work in the future or on another machine.</p></blockquote>
+
+<p>所以我们只要每次执行命令的时候加上<code>bundle exec</code>的前缀就可以额。但是这样搞的很烦人，试想每天都要敲上百次这样的字符，而且还常常忘记。</p>
+
+<p>有一个方法可以避免每次都要键入<code>bundle exec</code>作为前缀。</p>
+
+<p>安装<a href="https://github.com/mpapis/rubygems-bundler">rubygems-bundler</a>。
+<code>bash
+$ gem install rubygems-bundler
+</code>
+然后运行：
+<code>bash
+$ gem regenerate_binstubs
+</code></p>
+
+<p>启用RVM hook:
+<code>bash
+$ rvm get head &amp;&amp; rvm reload
+$ chmod +x $rvm_path/hooks/after_cd_bundler
+</code>
+为自己的项目创建bundler stubs.
+<code>bash
+$ cd your_project_path
+$ bundle install --binstubs=./bundler_stubs
+</code></p>
+
+<p>最后重新打开terminal就可以直接执行ruby命令，不需要加上<code>bundler exec</code>前缀。</p>
+
+<p>如果想禁用次bundler的话，只需要在命令前面加上<code>NOEXEC_DISABLE=1</code>前缀。更详细的信息可以看[rubygems-bundler]的<a href="https://github.com/mpapis/rubygems-bundler">文档</a>。</p>
+]]></content>
+  </entry>
+  
+</feed>

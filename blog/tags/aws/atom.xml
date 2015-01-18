@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tag: aws | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/tags/aws/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-12-31T17:09:42+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[AWS助理架构师认证考经]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/10/27/how-to-pass-the-aws-certification/"/>
+    <updated>2014-10-27T21:06:36+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/10/27/how-to-pass-the-aws-certification</id>
+    <content type="html"><![CDATA[<p>上周考了亚马逊的解决方案架构师-助理级别的认证考试并顺利通过。这也算是对自己AWS服务熟悉程度的一种检验。在准备考试的过程中，把自己学习到的AWS知识都梳理了一遍，也算是收获颇丰。这次特意分享了该认证考经。</p>
+
+<!-- more -->
+
+
+<h2>什么是AWS认证？</h2>
+
+<p>AWS 认证是对其在 AWS 平台上设计、部署和管理应用程序所需的技能和技术知识的一种认可。获得证书有助于证明您使用 AWS 的丰富经验和可信度，同时还能提升您所在的组织熟练使用基于 AWS 云服务应用的整体水平。</p>
+
+<p>目前亚马逊推出了Solutions Architect,Developer和SysOps Administrator三个方向的认证。每个方向又分为Associate Level(助理级)，Professional Level（专家级）和Master Level（大师级）。当然目前只有Solutions Architect开放了Professional Level,其他层级会逐步开放中。</p>
+
+<p><img src="/images/cert_roadmap_Q214_EN.png"></p>
+
+<h2>我的AWS使用经验</h2>
+
+<ul>
+<li><p>本人于2013年注册了AWS账号，开始只是做些小实验玩，后来把自己的整个博客都迁移到了AWS上，使用了Route53，S3，CloudFront等服务。</p></li>
+<li><p>在办公室做过Chef，CloudFormation，AWS云服务Overview等session。</p></li>
+<li><p>2014年参加过亚马逊在成都举办的AWSome day活动，也算是对AWS云服务有了一个系统性了解。</p></li>
+<li><p>使用Qwiklabs动手实验室在里面做过所有免费的实验，也借助里面的资源做了一些其它实验。</p></li>
+<li><p>参加了一次亚马逊的在线课堂，内容是Auto Scaling。</p></li>
+</ul>
+
+
+<h2>考前准备</h2>
+
+<ul>
+<li><p>仔细研究了<a href="http://awstrainingandcertification.s3.amazonaws.com/production/AWS_certified_solutions_architect_associate_blueprint.pdf">AWS助理架构师考试大纲</a>，明确了自己和大纲要求的差距。</p></li>
+<li><p>仔细研读了样题，了解了考试体型和方式，并且写了篇文章解析了样题。地址：<a href="http://www.huangbowen.net/blog/2014/10/22/aws-cert-sample-question/">http://www.huangbowen.net/blog/2014/10/22/aws-cert-sample-question/</a></p></li>
+<li><p>进行过两次模拟考试。每次模拟考试20美元，每次有20道题。第一次是考前一周做的，只对了9道，惨败。第二次是考试前一天做的，对了14道，过关。</p></li>
+<li><p>根据模拟考试的薄弱环节进行了补强，深入了解了VPN，IAM，Data Security等方面的知识。</p></li>
+<li><p>大量查阅了<a href="http://aws.amazon.com/cn/documentation/">AWS的文档</a></p></li>
+</ul>
+
+
+<h2>考试</h2>
+
+<p>考试地点还是比较高大上的，在春熙路附近一座写字楼里。考试中心其实地方很小，就一个前台和一个办公室。前台接待我过后，就在会议室电脑上连接上了考试系统，然后她就出去了。也就是说基本算无人监考。正式考试有55道题，考试时间80分钟，全英文。题目都是选择题，有单选与多选，题目会明确告诉你有几个正确选项（如果没说就只有一个）。</p>
+
+<p>可以说这些考题综合性非常强。有些很考察动手经验，有些则会考察具体服务的应用场景。如果只是对AWS云服务有肤浅认识的话，绝对是过不了的。我用了50多分钟时间做完了全部55道题，有25道题不确定答案。这给我留下了20多分钟来对这20多道题再进行斟酌。时间还是挺充裕的。有些题目你不知道就是不知道，除非能查阅相应文档或者动手做一下实验看一下，光想是想不出来的。</p>
+
+<p>80分钟后自动交卷，这次正确率是65%，涉险过关（听别人说拿证的最低正确率就是65%）。我感觉做对的比例要高于65%的，可能还是自己对AWS有些知识点不熟悉。</p>
+
+<p>交卷以后会立马知道成绩，邮箱里也会收到认证证书与可以使用的认证logo。</p>
+
+<h2>一些Tips</h2>
+
+<p>接下来是一些Tips给想要考取该证的人。</p>
+
+<ul>
+<li><p>首先了解AWS认证:<a href="http://aws.amazon.com/certification/">http://aws.amazon.com/certification/</a>，了解助理架构师考试大纲：<a href="http://awstrainingandcertification.s3.amazonaws.com/production/AWS_certified_solutions_architect_associate_blueprint.pdf">http://awstrainingandcertification.s3.amazonaws.com/production/AWS_certified_solutions_architect_associate_blueprint.pdf</a></p></li>
+<li><p>阅读考试常见问题：<a href="http://aws.amazon.com/cn/certification/faqs/">http://aws.amazon.com/cn/certification/faqs/</a></p></li>
+<li><p>必须读AWS白皮书：<a href="http://media.amazonwebservices.com/AWS_Overview.pdf">http://media.amazonwebservices.com/AWS_Overview.pdf</a></p></li>
+<li><p>熟悉考试样题：<a href="http://awstrainingandcertification.s3.amazonaws.com/production/AWS_certified_solutions_architect_associate_examsample.pdf">http://awstrainingandcertification.s3.amazonaws.com/production/AWS_certified_solutions_architect_associate_examsample.pdf</a></p></li>
+<li><p>动手做实验，可以使用动手实验室，免费蹭资源：<a href="https://run.qwiklab.com">https://run.qwiklab.com</a></p></li>
+<li><p>AWS文档中主要的service必须要过一遍，比如EC2，S3，VPC，EBS等。<a href="http://aws.amazon.com/cn/documentation/">http://aws.amazon.com/cn/documentation/</a></p></li>
+<li><p>阅读各种云服务的常见问题：<a href="http://aws.amazon.com/cn/faqs/">http://aws.amazon.com/cn/faqs/</a></p></li>
+<li><p>最好做一次模拟考试，熟悉考试的方式，题目类型，记住不熟悉的知识点然后加强。</p></li>
+<li><p>这是从网上找的一个部分题目，可以了解下。<a href="http://quizlet.com/35935418/detailed-questions-flash-cards/">http://quizlet.com/35935418/detailed-questions-flash-cards/</a></p></li>
+</ul>
+
+
+<hr />
+
+<p>总体来说AWS助理级架构师考试不算很难，但前提是你做好了充分准备的基础了。虽然你有可能长期使用AWS服务，但并不保证你能裸考过关。因为这是架构师认证，有些问题和场景可能你并没有经历过，有些服务你并没有使用过，在考试中这些缺点都会被放大。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[AWS系列之一 亚马逊云服务概述]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/07/11/aws-overview/"/>
+    <updated>2014-07-11T15:50:26+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/07/11/aws-overview</id>
+    <content type="html"><![CDATA[<p>云计算经过这几年的发展，已经不再是是一个高大上的名词，而是已经应用到寻常百姓家的技术。每天如果你和互联网打交道，那么或多或少都会和云扯上关系。gmail、github、各种网盘、GAE、heroku等各种服务都属于云服务的范畴。那么云计算的定义到底是什么？这里有摘自wiki的定义。</p>
+
+<!-- more -->
+
+
+<blockquote><blockquote><p>Cloud computing in general can be defined as a computer network which includes, computing hardware machine or group of computing hardware machines commonly referred as a server or servers connected through a communication network such as the Internet, an intranet, a local area network(LAN) or wide area network(WAN).</p></blockquote></blockquote>
+
+<p>从上面的定义可以看出，云计算可以看做一个计算网络，其由一组硬件主机作为服务器，然后通过通讯网络连接，从而给其他用户提供各种各样的服务。</p>
+
+<p>以下是云计算的一个概念图。</p>
+
+<p><img src="/images/cloudComputer.png" width="800"></p>
+
+<p>从该图中可以看出，云计算提供的服务可以分为三层，第一层是基础设施（Infrastructure）,第二层是平台（Platform）,第三层是应用软件（Application）。基础设置的服务包括虚拟或实体计算机、块级存储、网络设施（如负载均衡，内容交付网络，DNS解析）等，平台的服务包括对象存储、认证服务和访问服务、各种程序的运行时、队列服务、数据库服务等，而应用软件的服务则包括的多了，比如邮件服务、代码托管服务等等。用户可以通过台式电脑、手提电脑、手机、平板等各种互联网终端设备访问和使用这些服务。</p>
+
+<p>其实这三层就是我们常说的IaaS（Infrastructure as a Service）、PaaS（Platform as a Service）、SaaS(Software as a Service)。</p>
+
+<p><img src="/images/cloudService.png" width="800"></p>
+
+<p>亚马逊的云服务提供了多达几十种服务，涵盖了IaaS、PaaS、SaaS这三层。既然是亚马逊云服务，那么为什么通常都叫做Amazon Web Service（AWS）那，为什么不叫Amazon Cloud Service之类的那？这个就不得而知了，估计当时AWS第一个服务出来的时候是2006年，那时候云的概念还没有这么火，而web service则如日中天，所以起了个这个名字。好了不八卦了，先看看亚马逊云计算的架构图。</p>
+
+<p><img src="/images/awsstructure.png" width="800"></p>
+
+<p>从该架构图可以看出，亚马逊云服务由7部分组成。接下来对这7部分的主要服务做一个简要的介绍。</p>
+
+<h2>AWS Global Infrastructure(AWS 全局基础设施)</h2>
+
+<p>在全局基础设施中有3个很重要的概念。第一个是Region（区域），每个Region是相互独立的，自成一套云服务体系，分布在全球各地。目前全球有10个Region，北京的Region已经在内测当中，不久就会开放使用。</p>
+
+<p>第二个是Availability Zone(可用区)，每个Region又由数个可用区组成，每个可用区可以看做一个数据中心，相互之间通过光纤连接。</p>
+
+<p>第三个是Edge Locations（边缘节点）。全球目前有50多个边缘节点，是一个内容分发网络（CDN，Content Distrubtion Network），可以降低内容分发的延迟，保证终端用户获取资源的速度。它是实现全局DNS基础设施（Route53）和CloudFront CDN的基石。</p>
+
+<h2>Networking（网络）</h2>
+
+<p>AWS提供的网络服务主要有：</p>
+
+<ul>
+<li><p>Direct Connect： 支持企业自身的数据中心直接与AWS的数据中心直连，充分利用企业现有的资源。</p></li>
+<li><p>VPN Connection：通过VPN连接AWS，保证数据的安全性。</p></li>
+<li><p>Virtual Private Cloud： 私有云，从AWS云资源中分一块给你使用，进一步提高安全性。</p></li>
+<li><p>Route 53：亚马逊提供的高可用的可伸缩的域名解析系统。</p></li>
+</ul>
+
+
+<h2>Compute（计算）</h2>
+
+<p>这可是亚马逊的计算核心，包括了众多的服务。</p>
+
+<ul>
+<li><p>EC2： Elastic Computer service,亚马逊的虚拟机，支持Windows和Linux的多个版本，支持API创建和销毁，有多种型号可供选择，按需使用。并且有auto scaling功能，有效解决应用程序性能问题。</p></li>
+<li><p>ELB： Elastic Load Balancing， 亚马逊提供的负载均衡器，可以和EC2无缝配合使用，横跨多个可用区，可以自动检查实例的健康状况，自动剔除有问题的实例，保证应用程序的高可用性。</p></li>
+</ul>
+
+
+<h2>Storage（存储）</h2>
+
+<ul>
+<li><p>S3： Simple Storage Service，简单存储服务，是亚马逊对外提供的对象存储服务。不限容量，单个对象大小可达5TB，支持静态网站。其高达99.999999999%的可用性让其它竞争对手胆寒。</p></li>
+<li><p>EBS： Elastic Block Storage，块级存储服务，支持普通硬盘和SSD硬盘，加载方便快速，备份非常简单。</p></li>
+<li><p>Glacier：主要用于较少使用的存储存档文件和备份文件，价格便宜量又足，安全性高。</p></li>
+</ul>
+
+
+<h2>Database（数据库）</h2>
+
+<p>亚马逊提供关系性数据库和no sql数据库，以及一些cache等数据库服务。</p>
+
+<ul>
+<li><p>DynamoDB： DynamoDB是亚马逊自主研发的no sql型数据库，性能高，容错性强，支持分布式，并且与Cloud Watch、EMR等其它云服务高度集成。</p></li>
+<li><p>RDS： Relational Database Service，关系型数据库服务。支持MySql，SQL Server和Oracle等数据库，具有自动备份功能，IO吞吐量可按需调整。</p></li>
+<li><p>Amazon ElastiCache： 数据库缓存服务。</p></li>
+</ul>
+
+
+<h2>Application Service（应用程序服务）</h2>
+
+<p>这里的服务可就多了。</p>
+
+<ul>
+<li><p>Cloud Search: 一个弹性的搜索引擎，可用于企业级搜索。</p></li>
+<li><p>Amazon SQS： 队列服务，存储和分发消息。</p></li>
+<li><p>Simple Workflow：一个工作流框架。</p></li>
+<li><p>CloudFront：世界范围的内容分发网络。</p></li>
+<li><p>EMR： Elastic MapReduce，一个hadoop框架的实例，可用于大数据处理。</p></li>
+</ul>
+
+
+<h2>Deployment &amp; Admin (部署和管理)</h2>
+
+<ul>
+<li><p>Elastic BeanStalk: 一键式创建各种开发环境和运行时。</p></li>
+<li><p>CloudFormation：采用jason格式的模板文件来创建和管理一系列亚马逊云资源。</p></li>
+<li><p>OpsWorks： OpsWorks允许用户将应用程序的部署模块化，可以实现对数据库、运行时、服务器软件等自动化设置和安装。</p></li>
+<li><p>IAM： Identity &amp; Access Management，认证和访问管理服务。用户使用云服务最担心的事情之一就是安全问题。亚马逊通过IAM提供了立体化的安全策略，保证用户在云上的资源绝对的安全。用户通过IAM可以管理对AWS资源的访问。通过IAM可以创建group和role来授权或禁止对各种云资源的访问。</p></li>
+</ul>
+
+
+<p>如果想获取更多知识可以访问亚马逊AWS的官网<a href="http://aws.amazon.com/">http://aws.amazon.com/</a>。如果想查看每个服务的详细信息，可以查看它们的官方文档<a href="https://aws.amazon.com/documentation/?nc1=h_su_dm">https://aws.amazon.com/documentation/?nc1=h_su_dm</a>。还有亚马逊的所有云服务都提供了API接口进行调用，并且提供了命令行工具Amazon CLI（Command Line Interface）来使用，详细信息请参见<a href="http://docs.aws.amazon.com/cli/latest/index.html">http://docs.aws.amazon.com/cli/latest/index.html</a>。</p>
+
+<p>另外，亚马逊提供了一个网址用于练习对AWS服务的使用。地址是<a href="https://run.qwiklabs.com">https://run.qwiklabs.com</a>,还没有申请AWS账号的同学有福了，里面有6节免费的课程，可以根据提示一步步操作AWS资源，并且消耗的资源都是免费的。</p>
+]]></content>
+  </entry>
+  
+</feed>

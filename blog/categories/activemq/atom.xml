@@ -1,0 +1,702 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ActiveMQ | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/categories/activemq/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-12-31T17:09:42+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveMQ第六弹:设置多个并行的消费者]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/23/use-multiple-consumers-in-activemq/"/>
+    <updated>2014-03-23T01:52:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/23/use-multiple-consumers-in-activemq</id>
+    <content type="html"><![CDATA[<p>消息队列本来就是一种经典的生产者与消费者模式。生产者向消息队列中发送消息，消费者从消息队列中获取消息来消费。</p>
+
+<!-- more -->
+
+
+<p><img src="/images/singleQ.png"></p>
+
+<p>消息的传送一般由一个代理来实现的，那就是Message broker（即消息代理）。Message broker有两大职责，一是消息路由，二是数据转换。这就好比A给B寄信，如果不使用邮局的话，就要自己想办法送达，费时费力，而通过邮局的话，只要B的地址在邮局中注册过，那么天涯海角也能送达。这里的邮局扮演的角色就像消息系统中的Message broker。</p>
+
+<p><img src="/images/queueAndMB.png"></p>
+
+<p>众所周知，消息队列是典型的’send and forget’原则的体现，生产者只管发送，不管消息的后续处理。为了最大效率的完成对消息队列中的消息的消费，一般可以同时起多个一模一样的消费者，以并行的方式来拉取消息队列中的消息。这样的好处有多个：</p>
+
+<ol>
+<li><p>加快处理消息队列中的消息。</p></li>
+<li><p>增强稳定性，如果一个消费者出现问题，不会影响对消息队列中消息的处理。</p></li>
+</ol>
+
+
+<p><img src="/images/multipleCunsumer.png"></p>
+
+<p>使用Spring JMS来配置多个Listener实例其实也相当简单，只需要配置下MessageListenerContainer就行。</p>
+
+<pre><code class="xml">
+&lt;bean class="org.springframework.jms.listener.SimpleMessageListenerContainer"&gt;
+    &lt;property name="connectionFactory" ref="connectionFactory"/&gt;
+    &lt;property name="destinationName" value="${jms.queue.name}"/&gt;
+    &lt;property name="messageListener" ref="messageReceiver"/&gt;
+    &lt;property name="concurrentConsumers" value="4"/&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p>多配置一个属性<code>concurrentConsumers</code>，设置值为4，就是同时启动4个Listener实例来消费消息。</p>
+
+<p>使用MessageSender来发送100条消息，可以检查消息处理的顺序会发生变化。</p>
+
+<pre><code class="java">
+    for (int i = 0; i &lt; 100; i++) {
+        messageSender.send(String.format("message %d",i));
+    }
+</code></pre>
+
+<pre><code class="text">
+...
+Received: message 4
+Received: message 7
+Received: message 6
+Received: message 5
+Received: message 8
+Received: message 10
+Received: message 9
+…
+</code></pre>
+
+<p>除了设置一个固定的Listener数量，也可以设置一个Listener区间，这样MessageListenerContainer可以根据消息队列中的消息规模自动调整并行数量。</p>
+
+<pre><code class="xml">
+    &lt;bean class="org.springframework.jms.listener.SimpleMessageListenerContainer"&gt;
+        &lt;property name="connectionFactory" ref="connectionFactory"/&gt;
+        &lt;property name="destinationName" value="${jms.queue.name}"/&gt;
+        &lt;property name="messageListener" ref="messageReceiver"/&gt;
+        &lt;property name="concurrency" value="4-8"/&gt;
+    &lt;/bean&gt;
+</code></pre>
+
+<p>这次使用的是<code>concurrency</code>属性，4-8表示最小并发数是4，最大并发数为8，当然也可以给一个固定值，比如5，这样就相当于concurrentConsumers属性了。</p>
+
+<p>本章中的完整源码可从完整代码可从<a href="https://github.com/huangbowen521/SpringJMSSample">https://github.com/huangbowen521/SpringJMSSample</a>下载。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveMQ第五弹:增加ReDelivery功能]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/03/10/use-redelivery-in-activemq/"/>
+    <updated>2014-03-10T01:17:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/03/10/use-redelivery-in-activemq</id>
+    <content type="html"><![CDATA[<p>在使用Message Queue的过程中，总会由于种种原因而导致消息失败。一个经典的场景是一个生成者向Queue中发消息，里面包含了一组邮件地址和邮件内容。而消费者从Queue中将消息一条条读出来，向指定邮件地址发送邮件。消费者在发送消息的过程中由于种种原因会导致失败，比如网络超时、当前邮件服务器不可用等。这样我们就希望建立一种机制，对于未发送成功的邮件再重新发送，也就是重新处理。重新处理超过一定次数还不成功，就放弃对该消息的处理，记录下来，继续对剩余消息进行处理。</p>
+
+<!-- more -->
+
+
+<p>ActiveMQ为我们实现了这一功能，叫做ReDelivery(重新投递)。当消费者在处理消息时有异常发生，会将消息重新放回Queue里，进行下一次处理。当超过重试次数时，消息会被放置到一个特殊的Queue中，即Dead Letter Queue,简称DLQ，用于进行后续分析。</p>
+
+<p>废话不多说，一起来实现吧。（该示例中的全部代码已放置到<a href="https://github.com/huangbowen521/SpringJMSSample">GitHub</a>上，请自行下载。）</p>
+
+<p>还是接着本系列中的示例代码来进行。要实现ReDelivery功能，要给LinsterContainer加上事务处理。设置SimpleMessageListenerContainer的sessionTransacted属性为true。</p>
+
+<pre><code class="xml activeMQConnection.xml">
+    &lt;!-- Message Receiver Definition --&gt;
+    &lt;bean id="messageReceiver" class="huangbowen.net.jms.retry.MessageReceiver"&gt;
+    &lt;/bean&gt;
+    &lt;bean class="org.springframework.jms.listener.SimpleMessageListenerContainer"&gt;
+        &lt;property name="connectionFactory" ref="connectionFactory"/&gt;
+        &lt;property name="destinationName" value="${jms.queue.name}"/&gt;
+        &lt;property name="messageListener" ref="messageReceiver"/&gt;
+        &lt;property name="sessionTransacted" value="true" /&gt;
+    &lt;/bean&gt;
+</code></pre>
+
+<p>然后创建一个ReDeliveryPolicy，来定义ReDelivery的机制。</p>
+
+<pre><code class="xml activeMQConnection.xml">
+    &lt;amq:redeliveryPolicy id="activeMQRedeliveryPolicy" destination="#defaultDestination" redeliveryDelay="100" maximumRedeliveries="4" /&gt;
+</code></pre>
+
+<p>这里设置ReDelivery的时间间隔是100毫秒，最大重发次数是4次。</p>
+
+<p>在ActiveMQ的Connection Factory中应用这个Policy。就是给Connection Factory设置属性redeliveryPolicy为我们刚刚创建的Policy。</p>
+
+<pre><code class="xml activeMQConnection.xml">
+    &lt;!-- Activemq connection factory --&gt;
+    &lt;bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+        &lt;property name="brokerURL" value="${jms.broker.url}?"/&gt;
+        &lt;property name="useAsyncSend" value="true"/&gt;
+        &lt;property name="redeliveryPolicy" ref="activeMQRedeliveryPolicy" /&gt;
+    &lt;/bean&gt;
+</code></pre>
+
+<p>这样ReDelivery机制就设置好了。那么怎么能证明我不是在忽悠你们那？当然最好的办法是写自动化测试来测试这个功能了。</p>
+
+<p>首先修改下broker的配置，将其对消息的持久化设置为false，这样每次运行测试时Queue中消息都为0，用于还原现场。然后设置一个Destination Policy，当消息超过重试次数仍未被正确处理时，就把它放入到以<code>DLQ.</code>为前缀的Queue中。由于ActiveMQ默认对非持久化的Message不放入DLQ中的，所以手动设置processNonPersistent为true。</p>
+
+<pre><code class="xml activeMQConnection.xml">
+    &lt;amq:broker id="activeMQBroker" persistent="false"&gt;
+        &lt;amq:transportConnectors&gt;
+            &lt;amq:transportConnector uri="${jms.broker.url}"/&gt;
+        &lt;/amq:transportConnectors&gt;
+        &lt;amq:destinationPolicy&gt;
+            &lt;amq:policyMap&gt;
+                &lt;amq:policyEntries&gt;
+                    &lt;amq:policyEntry queue="&gt;"&gt;
+                        &lt;amq:deadLetterStrategy&gt;
+                            &lt;amq:individualDeadLetterStrategy
+                                    queuePrefix="DLQ." useQueueForQueueMessages="true" processExpired="true"
+                                    processNonPersistent="true" /&gt;
+                        &lt;/amq:deadLetterStrategy&gt;
+                    &lt;/amq:policyEntry&gt;
+                &lt;/amq:policyEntries&gt;
+            &lt;/amq:policyMap&gt;
+        &lt;/amq:destinationPolicy&gt;
+    &lt;/amq:broker&gt;
+</code></pre>
+
+<p>然后新建一个MessageListener，当接收到消息就抛出一个异常，这样用以启动ReDelivery机制。</p>
+
+<pre><code class="java retry/MessageReceiver">
+package huangbowen.net.jms.retry;
+
+import org.springframework.jms.support.JmsUtils;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.TextMessage;
+
+public class MessageReceiver implements MessageListener {
+
+    public void onMessage(Message message) {
+        if(message instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) message;
+            try {
+                String text = textMessage.getText();
+                System.out.println(String.format("Received: %s",text));
+                throw new JMSException("process failed");
+            } catch (JMSException e) {
+                System.out.println("there is JMS exception: " + e.getMessage() );
+                throw JmsUtils.convertJmsAccessException(e);
+            }
+        }
+    }
+}
+</code></pre>
+
+<p>最后新建一个集成测试类。</p>
+
+<pre><code class="java ReDeliveryFunctionIntegrationTest.java">
+package huangbowen.net;
+
+import huangbowen.net.jms.MessageSender;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.BrowserCallback;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+
+import javax.jms.JMSException;
+import javax.jms.QueueBrowser;
+import javax.jms.Session;
+import java.util.Enumeration;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+@ContextConfiguration(locations = {"/retry/activeMQConnection.xml"})
+@DirtiesContext
+public class ReDeliveryFunctionIntegrationTest extends AbstractJUnit4SpringContextTests {
+
+
+    private final static String DLQ = "DLQ.bar";
+    @Autowired
+    public JmsTemplate jmsTemplate;
+
+    @Autowired
+    public MessageSender messageSender;
+
+
+    private int getMessagesInDLQ() {
+        return jmsTemplate.browse(DLQ, new BrowserCallback&lt;Integer&gt;() {
+            @Override
+            public Integer doInJms(Session session, QueueBrowser browser) throws JMSException {
+                Enumeration messages = browser.getEnumeration();
+                int total = 0;
+                while(messages.hasMoreElements()) {
+                    messages.nextElement();
+                    total++;
+                }
+
+                return  total;
+            }
+        });
+    }
+
+    @Test
+    public void shouldRetryIfExceptionHappened() throws Exception {
+
+        assertThat(getMessagesInDLQ(), is(0));
+
+        messageSender.send("this is a message");
+        Thread.sleep(5000);
+
+        assertThat(getMessagesInDLQ(), is(1));
+    }
+} 
+</code></pre>
+
+<p>我们通过Spring的Autowired功能拿到配置中的JmsTemplate和MessageSender。使用JmsTemplate的brower方法来读取当前DLQ.bar Queue中有多少剩余的消息。用MessageSender来发送一条消息，这样即使我们有Listener来处理这条消息，但是由于每次都会抛出异常，超过限定次数后，被放置到了DLQ.bar中。我们检测DLQ.bar中的消息数量就可以知道ReDelivery功能是否正确。</p>
+
+<p>运行测试，成功通过。这是日志信息：</p>
+
+<pre><code class="text">
+send: this is a message
+Received: this is a message
+there is JMS exception: process failed
+Received: this is a message
+there is JMS exception: process failed
+Received: this is a message
+there is JMS exception: process failed
+Received: this is a message
+there is JMS exception: process failed
+Received: this is a message
+there is JMS exception: process failed
+
+Process finished with exit code 0
+</code></pre>
+
+<p>本系列的全部示例代码请在<a href="https://github.com/huangbowen521/SpringJMSSample">https://github.com/huangbowen521/SpringJMSSample</a>下载。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveMQ第四弹:在HermesJMS中创建ActiveMQ session]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms/"/>
+    <updated>2014-02-23T15:03:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/02/23/configure-activemq-session-in-hermesjms</id>
+    <content type="html"><![CDATA[<p>Hermes JMS是一个开源免费的跨平台的JMS消息监听工具。它可以很方便和各种JMS框架集成和交互，可以用来监听、发送、接收、修改、存储消息等。这篇文章将讲解HermesJMS如何集成ActiveMQ并与其交互。</p>
+
+<!-- more -->
+
+
+<p>ActiveMQ在通过命令行运行时会自动启动一个Web终端，默认地址是<a href="http://localhost:8161/admin">http://localhost:8161/admin</a>，默认用户名/密码为admin/admin。通过这个web终端可以监控和操作ActiveMQ。但是这个Web终端有两个缺陷，第一是功能较弱，有些需求不能满足；第二是只有通过命令行启动ActiveMQ才会启动这个Web终端，如果是使用内置的broker，则无法使用该Web终端。而HermesJMS恰好弥补了这两个缺陷。</p>
+
+<p>要想使用HermesJMS，首先要下载它。HermesJMS的官方网站是<a href="http://www.hermesjms.com/confluence/display/HJMS/Home">http://www.hermesjms.com/confluence/display/HJMS/Home</a>。其源码放置在sourceforge上。目前最新版本是1.14，已经两年多没推出新版本了。下载地址:<a href="http://sourceforge.net/projects/hermesjms/files/hermesjms/1.14/">http://sourceforge.net/projects/hermesjms/files/hermesjms/1.14/</a>。MAC系统的要下载dmg文件，其余系统可下载jar文件。</p>
+
+<p>下载完成以后，要配置ActiveMQ到provider去。打开Hermes，点击<code>create new session</code>按钮，然后在界面下方选中Providers tab，添加对ActiveMQ的配置。我们以ActiveMQ5.8.0版本为例。首先创建一个名为ActiveMQ5.8.0的group，然后向其添加两个jar包:activemq-all-5.8.0.jar及geronimo-j2ee-management_1.1_spec_1.0.1.jar。这两个jar包都可以在ActiveMQ安装目录下找到。</p>
+
+<p><img src="/images/setupProvider.png" width="800"></p>
+
+<p>然后就可以创建一个ActiveMQ的Session了。点击Sessions tab，输入以下配置信息。</p>
+
+<p><img src="/images/setupSession.png" width="800"></p>
+
+<p>设置Plugin为ActiveMQ是为了能够自动检测当前Provider中的Queue和Topic信息。</p>
+
+<p>然后启动一个ActiveMQ broker。</p>
+
+<pre><code class="bash">
+$:/usr/local/Cellar/activemq/5.8.0/libexec$ activemq console xbean:./conf/activemq-demo.xml 
+</code></pre>
+
+<p>这样就可以通过hermesJMS和其进行交互了。双击左侧菜单树中的msgQueue节点，可以查看该Queue中的信息。右键点击该节点选择<code>send message</code>向Queue中发送信息。</p>
+
+<p><img src="/images/sendMessage.png" width="800"></p>
+
+<p>然后刷新Queue就可以看到消息已经在Queue里了。</p>
+
+<p><img src="/images/monitorQueue.png" width="800"></p>
+
+<p>我们也可以打开ActiveMQ的Web终端向msgQueue中发送消息。地址:<a href="http://localhost:8161/admin/queues.jsp">http://localhost:8161/admin/queues.jsp</a></p>
+
+<p><img src="/images/webconsole.png" width="800"></p>
+
+<p>然后在HermesJMS中刷新即可看到新的消息。</p>
+
+<p><img src="/images/msgFromWebConsole.png" width="800"></p>
+
+<p>Hermes JMS还支持将消息存储到一个JDBC数据库中，具体可以查阅官方文档。</p>
+
+<p>在使用Hermes JMS的过程中可以说到处是坑，软件弹出异常的次数不少于20次。可以说这个软件在健壮性、和兼容性方面还需要增强。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveMQ第三弹:在Spring中使用内置的Message Broker]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/02/22/using-embeded-broker-in-spring/"/>
+    <updated>2014-02-22T19:16:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/02/22/using-embeded-broker-in-spring</id>
+    <content type="html"><![CDATA[<p>在上个例子中我们演示了如何使用Spring JMS来向ActiveMQ发送消息和接收消息。但是这个例子需要先从控制台使用ActiveMQ提供的命令行功能启动一个Message Broker,然后才能运行示例。这个Message Broker就相当于一个server，无论是发送方还是接收方都可以连接到这个Server进行消息的处理。在某些情况下，让Message Broker和consumer启动在同一个JVM里面，通信效率肯定会高不少。</p>
+
+<!-- more -->
+
+
+<p>ActiveMQ提供了很多方式来创建内置的broker。这篇文章主要介绍使用Spring及XBean来创建一个内置的broker。</p>
+
+<p>首先需要在项目中引入xbean-spring依赖项。</p>
+
+<pre><code class="xml pom.xml">
+      &lt;dependency&gt;
+          &lt;groupId&gt;org.apache.xbean&lt;/groupId&gt;
+          &lt;artifactId&gt;xbean-spring&lt;/artifactId&gt;
+          &lt;version&gt;3.16&lt;/version&gt;
+      &lt;/dependency&gt; 
+</code></pre>
+
+<p>然后在Spring配置文件中加入以下代码:</p>
+
+<pre><code class="xml ">
+    &lt;amq:broker id="activeMQBroker"&gt;
+        &lt;amq:transportConnectors&gt;
+            &lt;amq:transportConnector uri="${jms.broker.url}" /&gt;
+        &lt;/amq:transportConnectors&gt;
+    &lt;/amq:broker&gt; 
+</code></pre>
+
+<p>注意在Spring配置文件中还要加入Namespace的定义。</p>
+
+<pre><code class="xml">
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.8.0.xsd"&gt; 
+
+...
+...
+...
+
+&lt;/beans&gt;
+</code></pre>
+
+<p>完整的Spring配置如下。</p>
+
+<pre><code class="xml embedBroker.xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.8.0.xsd"&gt;
+
+    &lt;bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"&gt;
+        &lt;property name="location"&gt;
+            &lt;value&gt;application.properties&lt;/value&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- Activemq connection factory --&gt;
+    &lt;bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+        &lt;!--&lt;property name="brokerURL" value="${jms.broker.url}"/&gt;--&gt;
+        &lt;constructor-arg index="0" value="${jms.broker.url}"/&gt;
+        &lt;property name="useAsyncSend" value="true"/&gt;
+    &lt;/bean&gt;
+
+    &lt;amq:broker id="activeMQBroker"&gt;
+        &lt;amq:transportConnectors&gt;
+            &lt;amq:transportConnector uri="${jms.broker.url}" /&gt;
+        &lt;/amq:transportConnectors&gt;
+    &lt;/amq:broker&gt;
+
+    &lt;!-- ConnectionFactory Definition --&gt;
+    &lt;bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory"&gt;
+        &lt;constructor-arg ref="amqConnectionFactory"/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--  Default Destination Queue Definition--&gt;
+    &lt;bean id="defaultDestination" class="org.apache.activemq.command.ActiveMQQueue"&gt;
+        &lt;constructor-arg index="0" value="${jms.queue.name}"/&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- JmsTemplate Definition --&gt;
+    &lt;bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate"&gt;
+        &lt;property name="connectionFactory" ref="connectionFactory"/&gt;
+        &lt;property name="defaultDestination" ref="defaultDestination"/&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- Message Sender Definition --&gt;
+    &lt;bean id="messageSender" class="huangbowen.net.jms.MessageSender"&gt;
+        &lt;constructor-arg index="0" ref="jmsTemplate"/&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- Message Receiver Definition --&gt;
+    &lt;bean id="messageReceiver" class="huangbowen.net.jms.MessageReceiver"&gt;
+    &lt;/bean&gt;
+    &lt;bean class="org.springframework.jms.listener.SimpleMessageListenerContainer"&gt;
+        &lt;property name="connectionFactory" ref="connectionFactory"/&gt;
+        &lt;property name="destinationName" value="${jms.queue.name}"/&gt;
+        &lt;property name="messageListener" ref="messageReceiver"/&gt;
+    &lt;/bean&gt;
+
+&lt;/beans&gt; 
+</code></pre>
+
+<p>在<a href="https://github.com/huangbowen521/SpringJMSSample">示例项目</a>中我新加了一个Main方法来进行测试。可以运行EmbedBrokerApp中的Main方法来进行测试。</p>
+
+<p><img src="/images/messageTest.png"></p>
+
+<p>如果客户端和broker在相同的JVM进程中，客户端连接时可以使用broker url为“vm://localhost:61616”,进程外连接则需要使用”tcp://localhost:61616"。如果有多个broker的话可以给每个broker起个名字。</p>
+
+<pre><code class="xml">
+    &lt;amq:broker brokerName="broker1"&gt;
+        &lt;amq:transportConnectors&gt;
+            &lt;amq:transportConnector uri="tcp://localhost:61616" /&gt;
+        &lt;/amq:transportConnectors&gt;
+    &lt;/amq:broker&gt;
+
+    &lt;amq:broker brokerName="broker2"&gt;
+        &lt;amq:transportConnectors&gt;
+            &lt;amq:transportConnector uri="tcp://localhost:61617" /&gt;
+        &lt;/amq:transportConnectors&gt;
+    &lt;/amq:broker&gt; 
+</code></pre>
+
+<p>客户端连接时候可以直接使用broker名称连接，比如使用”vm://broker1”来使用第一个broker。</p>
+
+<p>本章中的完整源码可从完整代码可从<a href="https://github.com/huangbowen521/SpringJMSSample">https://github.com/huangbowen521/SpringJMSSample</a>下载。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveMQ第二弹:使用Spring JMS与ActiveMQ通讯]]></title>
+    <link href="http://www.huangbowen.net/blog/2014/02/20/spring-jms-and-activemq-sample/"/>
+    <updated>2014-02-20T23:18:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2014/02/20/spring-jms-and-activemq-sample</id>
+    <content type="html"><![CDATA[<p>本文章的完整代码可从我的github中下载：<a href="https://github.com/huangbowen521/SpringJMSSample.git">https://github.com/huangbowen521/SpringJMSSample.git</a></p>
+
+<p>上一篇文章中介绍了如何安装和运行ActiveMQ。这一章主要讲述如何使用Spring JMS向ActiveMQ的Message Queue中发消息和读消息。</p>
+
+<!-- more -->
+
+
+<p>首先需要在项目中引入依赖库。</p>
+
+<ul>
+<li><p>spring-core: 用于启动Spring容器，加载bean。</p></li>
+<li><p>spring-jms:使用Spring JMS提供的API。</p></li>
+<li><p>activemq-all:使用ActiveMQ提供的API。</p></li>
+</ul>
+
+
+<p>在本示例中我使用maven来导入相应的依赖库。</p>
+
+<pre><code class="xml pom.xml">
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;junit&lt;/groupId&gt;
+      &lt;artifactId&gt;junit&lt;/artifactId&gt;
+      &lt;version&gt;4.11&lt;/version&gt;
+      &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+      &lt;dependency&gt;
+          &lt;groupId&gt;org.apache.activemq&lt;/groupId&gt;
+          &lt;artifactId&gt;activemq-all&lt;/artifactId&gt;
+          &lt;version&gt;5.9.0&lt;/version&gt;
+      &lt;/dependency&gt;
+      &lt;dependency&gt;
+          &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+          &lt;artifactId&gt;spring-jms&lt;/artifactId&gt;
+          &lt;version&gt;4.0.2.RELEASE&lt;/version&gt;
+      &lt;/dependency&gt;
+      &lt;dependency&gt;
+          &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+          &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+          &lt;version&gt;4.0.2.RELEASE&lt;/version&gt;
+      &lt;/dependency&gt;
+  &lt;/dependencies&gt; 
+</code></pre>
+
+<p>接下来配置与ActiveMQ的连接，以及一个自定义的MessageSender。</p>
+
+<pre><code class="xml springJMSConfiguration.xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+
+    &lt;bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"&gt;
+        &lt;property name="location"&gt;
+            &lt;value&gt;application.properties&lt;/value&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- Activemq connection factory --&gt;
+    &lt;bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+        &lt;constructor-arg index="0" value="${jms.broker.url}"/&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- ConnectionFactory Definition --&gt;
+    &lt;bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory"&gt;
+        &lt;constructor-arg ref="amqConnectionFactory"/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--  Default Destination Queue Definition--&gt;
+    &lt;bean id="defaultDestination" class="org.apache.activemq.command.ActiveMQQueue"&gt;
+        &lt;constructor-arg index="0" value="${jms.queue.name}"/&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- JmsTemplate Definition --&gt;
+    &lt;bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate"&gt;
+        &lt;property name="connectionFactory" ref="connectionFactory"/&gt;
+        &lt;property name="defaultDestination" ref="defaultDestination"/&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- Message Sender Definition --&gt;
+    &lt;bean id="messageSender" class="huangbowen.net.jms.MessageSender"&gt;
+        &lt;constructor-arg index="0" ref="jmsTemplate"/&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt; 
+</code></pre>
+
+<p>在此配置文件中，我们配置了一个ActiveMQ的connection factory,使用的是ActiveMQ提供的ActiveMQConnectionFactory类。然后又配置了一个Spring JMS提供的CachingConnectionFactory。我们定义了一个ActiveMQQueue作为消息的接收Queue。并创建了一个JmsTemplate，使用了之前创建的ConnectionFactory和Message Queue作为参数。最后自定义了一个MessageSender，使用该JmsTemplate进行消息发送。</p>
+
+<p>以下MessageSender的实现。</p>
+
+<pre><code class="java MessageSender.java">
+package huangbowen.net.jms;
+
+import org.springframework.jms.core.JmsTemplate;
+
+public class MessageSender {
+
+    private final JmsTemplate jmsTemplate;
+
+    public MessageSender(final JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
+    }
+
+    public void send(final String text) {
+        jmsTemplate.convertAndSend(text);
+    }
+} 
+</code></pre>
+
+<p>这个MessageSender很简单，就是通过jmsTemplate发送一个字符串信息。</p>
+
+<p>我们还需要配置一个Listener来监听和处理当前的Message Queue。</p>
+
+<pre><code class="xml springJMSReceiver.xml ">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+
+    &lt;!-- Message Receiver Definition --&gt;
+    &lt;bean id="messageReceiver" class="huangbowen.net.jms.MessageReceiver"&gt;
+    &lt;/bean&gt;
+    &lt;bean class="org.springframework.jms.listener.SimpleMessageListenerContainer"&gt;
+        &lt;property name="connectionFactory" ref="connectionFactory"/&gt;
+        &lt;property name="destinationName" value="${jms.queue.name}"/&gt;
+        &lt;property name="messageListener" ref="messageReceiver"/&gt;
+    &lt;/bean&gt;
+
+&lt;/beans&gt; 
+</code></pre>
+
+<p>在上述xml文件中,我们自定义了一个MessageListener，并且使用Spring提供的SimpleMessageListenerContainer作为Container。</p>
+
+<p>以下是MessageLinser的具体实现。</p>
+
+<pre><code class="java MessageReceiver.java">
+package huangbowen.net.jms;
+
+import javax.jms.*;
+
+public class MessageReceiver implements MessageListener {
+
+    public void onMessage(Message message) {
+        if(message instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) message;
+            try {
+                String text = textMessage.getText();
+                System.out.println(String.format("Received: %s",text));
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+} 
+</code></pre>
+
+<p>这个MessageListener也相当的简单，就是从Queue中读取出消息以后输出到当前控制台中。</p>
+
+<p>另外有关ActiveMQ的url和所使用的Message Queue的配置在application.properties文件中。</p>
+
+<pre><code class="xml application.properties">
+jms.broker.url=tcp://localhost:61616
+jms.queue.name=bar 
+</code></pre>
+
+<p>好了，配置大功告成。如何演示那？我创建了两个Main方法，一个用于发送消息到ActiveMQ的MessageQueue中，一个用于从MessageQueue中读取消息。</p>
+
+<pre><code class="java SenderApp">
+package huangbowen.net;
+
+import huangbowen.net.jms.MessageSender;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.StringUtils;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class SenderApp
+{
+    public static void main( String[] args ) throws IOException {
+        MessageSender sender = getMessageSender();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String text = br.readLine();
+
+        while (!StringUtils.isEmpty(text)) {
+            System.out.println(String.format("send message: %s", text));
+            sender.send(text);
+            text = br.readLine();
+        }
+    }
+
+    public static MessageSender getMessageSender() {
+        ApplicationContext context = new ClassPathXmlApplicationContext("springJMSConfiguration.xml");
+       return (MessageSender) context.getBean("messageSender");
+    }
+} 
+</code></pre>
+
+<pre><code class="java ReceiverApp.java">
+package huangbowen.net;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class ReceiverApp {
+    public static void main( String[] args )
+    {
+        new ClassPathXmlApplicationContext("springJMSConfiguration.xml", "springJMSReceiver.xml");
+    }
+} 
+</code></pre>
+
+<p>OK，如果运行的话要先将ActiveMQ服务启动起来（更多启动方式参见我上篇文章）。</p>
+
+<pre><code class="bash">
+$:/usr/local/Cellar/activemq/5.8.0/libexec$ activemq start xbean:./conf/activemq-demo.xml 
+</code></pre>
+
+<p>然后运行SenderApp中的Main方法，就可以在控制台中输入消息发送到ActiveMQ的Message Queue中了。运行ReceiverApp中的Main方法，则会从Queue中将消息读出来，打印到控制台。</p>
+
+<p>这就是使用Spring JMS与ActiveMQ交互的一个简单例子了。完整代码可从<a href="https://github.com/huangbowen521/SpringJMSSample%E4%B8%8B%E8%BD%BD%E3%80%82">https://github.com/huangbowen521/SpringJMSSample%E4%B8%8B%E8%BD%BD%E3%80%82</a></p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Homebrew | 黄博文的地盘]]></title>
+  <link href="http://www.huangbowen.net/blog/categories/homebrew/atom.xml" rel="self"/>
+  <link href="http://www.huangbowen.net/"/>
+  <updated>2014-12-31T17:09:42+08:00</updated>
+  <id>http://www.huangbowen.net/</id>
+  <author>
+    <name><![CDATA[黄博文]]></name>
+    <email><![CDATA[huangbowen521@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Homebrew- MAC上的包管理利器]]></title>
+    <link href="http://www.huangbowen.net/blog/2013/07/01/homebrew-in-mac/"/>
+    <updated>2013-07-01T14:33:00+08:00</updated>
+    <id>http://www.huangbowen.net/blog/2013/07/01/homebrew-in-mac</id>
+    <content type="html"><![CDATA[<p><img src="/images/lotsOfDogs.jpg"></p>
+
+<p>包管理器是神马东西?让我们看看<a href="http://en.wikipedia.org/wiki/Package_management_system">wikipedia</a>上的介绍。</p>
+
+<blockquote><p>In software, a package management system, also called package manager, is a collection of software tools to automate the process of installing, upgrading, configuring, and removing software packages for a computer&rsquo;s operating system in a consistent manner.</p></blockquote>
+
+<p>简单的来说，包管理器就是一个提供对一系列软件包的安装、卸载、升级的自动化工具。
+包管理器大体分为两种，一种是管理预编译好的软件（Binary installation/Precomplied packages)，如MAC上的App Store，Windows下的Windows installer。另一种是基于源码的安装包，通过编译脚本来安装软件（Sourcecode-based installation/installing using compile scripts），如MAC上的<a href="http://mxcl.github.io/homebrew/">Homebrew</a>，Linux上的apt-build。</p>
+
+<!-- more -->
+
+
+<p>今天就给大家讲解下<a href="http://mxcl.github.io/homebrew/">Homebrew</a>。</p>
+
+<p><a href="http://mxcl.github.io/homebrew/">Homebrew</a>官网上称自己为:</p>
+
+<blockquote><p>The missing package manager for OS X</p></blockquote>
+
+<p>即自己弥补了在OS X上无包管理器的缺陷。</p>
+
+<h2>需求环境</h2>
+
+<ol>
+<li><p>OS X 10.5及其以上版本。</p></li>
+<li><p>安装XCode里的<a href="https://developer.apple.com/downloads">开发者工具</a>。主要是因为开发者工具中有mac下的gcc编译器，很多软件需要它。</p></li>
+<li><p>ruby。<a href="http://mxcl.github.io/homebrew/">Homebrew</a>使用ruby写的，所以ruby不可或缺。</p></li>
+</ol>
+
+
+<h2>安装<a href="http://mxcl.github.io/homebrew/">Homebrew</a></h2>
+
+<p>只需要在terminal下敲这样一行代码就行。</p>
+
+<pre><code class="bash">
+ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+</code></pre>
+
+<p>brew会被默认安装到/usr/local文件夹中。从上述命令可以看出homebrew是基于ruby的一款包管理器，并且host在github上。</p>
+
+<h2>使用</h2>
+
+<p>在<a href="http://mxcl.github.io/homebrew/">Homebrew</a>中支持安装的软件被称为Formula。</p>
+
+<ul>
+<li><p>查看所有支持的Formual。可以在<a href="https://github.com/mxcl/homebrew/tree/master/Library/Formula/">这里</a>查看。如果不能上网的话可以通过<code>brew server</code>来在本地开启一个server来查看。</p></li>
+<li><p><code>brew search [Formula]</code>, 搜索某个Formula是否被支持。</p></li>
+<li><p><code>brew install [Formula]</code>, 安装某个Formula。</p></li>
+<li><p><code>brew upgrade [Formula]</code>, 升级某个Formula。</p></li>
+<li><p><code>brew uninstall [Formula]</code>, 删除某个Formula。</p></li>
+<li><p><code>brew update</code>, 更新brew支持的Formula列表。</p></li>
+</ul>
+
+
+<p>所有的软件都会默认被安装到<code>/usr/local/Cellar</code>目录下，然后将部分可执行脚本文件通过软链接链接到<code>/usr/local\bin</code>目录下，这样我们就可以在Terminal下使用这些软件。</p>
+
+<p><a href="http://mxcl.github.io/homebrew/">Homebrew</a>对于Formula的管理是基于git的。你可以在<code>/usr/local/</code>下发现有一个<code>.git</code>的文件夹。通过查看<code>.git</code>目录下的<code>config</code>文件，可以知道其实目录是被链接到github上的一个repository。</p>
+
+<pre><code class="xml config">
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+        ignorecase = true
+        autocrlf = false
+[remote "origin"]
+        url = https://github.com/mxcl/homebrew.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+</code></pre>
+
+<p>你也可以为自己的软件加入到<a href="http://mxcl.github.io/homebrew/">Homebrew</a>的支持列表中。只需要写一个ruby脚本check in到其<a href="https://github.com/mxcl/homebrew">github</a>中。
+下面是一个脚本示例。</p>
+
+<pre><code class="ruby">
+require 'formula'
+
+class Wget &lt; Formula
+  homepage 'http://www.gnu.org/wget/'
+  url 'http://ftp.gnu.org/wget-1.12.tar.gz'
+  md5 '308a5476fc096a8a525d07279a6f6aa3'
+
+  def install
+    system "./configure --prefix=#{prefix}"
+    system 'make install'
+  end
+end
+</code></pre>
+
+<p>当然<a href="http://mxcl.github.io/homebrew/">Homebrew</a>接收这些软件也是有一定条件的，可以看<a href="https://github.com/mxcl/homebrew/wiki/Acceptable-Formulae">这个文档</a>。</p>
+]]></content>
+  </entry>
+  
+</feed>

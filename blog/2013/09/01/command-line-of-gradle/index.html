@@ -1,0 +1,707 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Gradle命令行黑魔法 - 黄博文的地盘</title>
+  <meta name="author" content="黄博文">
+
+  
+  <meta name="description" content="毫无疑问，现在Gradle已经成为java世界最火的构建工具，风头已经盖过了冗余的ant，落后的maven。Gradle是以Groovy语言编写的一套构建脚本的DSL，由于Groovy语法的优雅，所以导致Gradle天生就有简洁、可读性强、灵活等特性。 Gradle的命令行功能也非常强大。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.huangbowen.net/blog/2013/09/01/command-line-of-gradle">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="黄博文的地盘" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.1.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+
+<style>#forkongithub a{background:#060;color:#fff;text-decoration:none;font-family:arial, sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#A853B2;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:absolute;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}</style><span id="forkongithub"><a href="https://github.com/huangbowen521">Fork me on GitHub</a></span>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38174207-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">黄博文的地盘</a></h1>
+  
+    <h2>我是一个程序员.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.huangbowen.net" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Gradle命令行黑魔法</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-01T22:25:00+08:00" pubdate data-updated="true">Sep 1<span>st</span>, 2013</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.huangbowen.net">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/building.jpg"></p>
+
+<p>毫无疑问，现在Gradle已经成为java世界最火的构建工具，风头已经盖过了冗余的ant，落后的maven。Gradle是以Groovy语言编写的一套构建脚本的DSL，由于Groovy语法的优雅，所以导致Gradle天生就有简洁、可读性强、灵活等特性。</p>
+
+<p>Gradle的命令行功能也非常强大。本人从maven转到Gradle，深深被gradle强大的命令行功能折服。通过命令行来实现Gradle的各种特性，就像魔法师在表演魔法一样。</p>
+
+<!-- more -->
+
+
+<ul>
+<li><strong>日志输出。</strong> Gradle中的日志有6个层级。从高到低分别是 ERROR（错误信息）、QUIET（重要信息）、WARNGING（警告信息）、LIFECYCLE（进程信息）、INFO（一般信息）、DEBUG（调试信息）。在执行gradle task时可以适时的调整信息输出等级，以便更方便的观看执行结果。</li>
+</ul>
+
+
+<p><code>-q</code>(或<code>--quiet</code>)是启用重要信息级别，该级别下只会输出自己在命令行下打印的信息及错误信息。</p>
+
+<p><code>-i</code>(或<code>--info</code>)则会输出除debug以外的所有信息。</p>
+
+<p><code>-d</code>（或<code>--debug</code>)会输出所有日志信息。</p>
+
+<p>比如一个build.gradle有这样一个task。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">hello</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
+</span><span class='line'>     <span class="n">println</span> <span class="s1">&#39;hello world!&#39;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>加入<code>-q</code>与不加<code>-q</code>的输出结果不同。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle hello
+</span><span class='line'>:hello
+</span><span class='line'>hello world!
+</span><span class='line'>
+</span><span class='line'>BUILD SUCCESSFUL
+</span><span class='line'>
+</span><span class='line'>Total <span class="nb">time</span>: 3.546 secs
+</span><span class='line'><span class="nv">$ </span>gradle -q hello
+</span><span class='line'>hello world!
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p><strong>堆栈跟踪。</strong>如果执行gradle task失败时，如果想得到更详细的错误信息，那么就可以使用<code>-s</code>(或<code>--stacktrace</code>)来输出详细的错误堆栈。你还可以使用<code>-S</code>(或<code>--full-stacktrace</code>)来输出全部堆栈信息，不过一般不推荐这样做，因为gradle是基于groovy语言，而groovy作为一门动态语言可能会输出与你的错误代码毫不相关的信息。</p></li>
+<li><p><strong>跳过指定的测试。</strong>如果你在执行build的时候想跳过test task，那么可以使用<code>-x</code>命令。</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle build -x <span class="nb">test</span>
+</span><span class='line'>:compileJava UP-TO-DATE
+</span><span class='line'>:processResources UP-TO-DATE
+</span><span class='line'>:classes UP-TO-DATE
+</span><span class='line'>:jar UP-TO-DATE
+</span><span class='line'>:assemble UP-TO-DATE
+</span><span class='line'>:check
+</span><span class='line'>:build
+</span><span class='line'>
+</span><span class='line'>BUILD SUCCESSFUL
+</span><span class='line'>
+</span><span class='line'>Total <span class="nb">time</span>: 3.529 secs
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p><strong>继续执行task而忽略前面失败的task。</strong>默认情况下，如果有某个task失败，后续的task就不会继续执行。但是有时候我们想运行所有的task来一次性得到所有的构建错误，那么我们可以使用<code>--continue</code>命令。使用<code>--continue</code>命令后即使遇到某些task失败也不会停止后续task的执行。但是需要注意的是如果某个task失败了，那么依赖于这个task的其他task依旧不会执行，因为这会带来不安全的因素。</p></li>
+<li><p><strong>调用task时使用短名或缩写。</strong>如果一个task的名称过长，那么调用时可以只输入部分名称即可调用，无需输入全名。</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">helloWorld</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
+</span><span class='line'>     <span class="n">println</span> <span class="s1">&#39;hello world!&#39;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>比如调用helloWorld可以通过全名调用、前缀调用或首字母调用。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle -q helloWorld
+</span><span class='line'>hello world!
+</span><span class='line'><span class="nv">$ </span>gradle -q hell
+</span><span class='line'>hello world!
+</span><span class='line'><span class="nv">$ </span>gradle -q hW
+</span><span class='line'>hello world!
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>使用指定的gradle文件调用task。</strong>默认情况下，如果你调用gradle task，那么首先会寻找当前目录下的build.gradle文件,以及根据settings.gradle中的配置寻找子项目的build.gradle。但是有时候我们想指定使用某个gradle文件，那么可以使用<code>-b</code>命令。
+比如当前目录有个子目录subproject1,里面有个叫hello.gradle。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span>subproject1/hello.gradle</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">task</span> <span class="n">helloWorld</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
+</span><span class='line'>     <span class="n">println</span> <span class="s1">&#39;hello world!&#39;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么在当前目录可以使用以下命令调用这个task。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle -b subproject1/hello.gradle  helloWorld
+</span><span class='line'>:helloWorld
+</span><span class='line'>hello world!
+</span><span class='line'>
+</span><span class='line'>BUILD SUCCESSFUL
+</span><span class='line'>
+</span><span class='line'>Total <span class="nb">time</span>: 3.752 secs
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>使用指定的项目目录调用task。</strong>前面已经说过，执行gradle的task默认会在当前目录寻找build.gradle及settings.gradle文件。如果我们想在任何地方执行某个项目的task，那么可以使用<code>-p</code>来指定使用的项目。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">gradle</span> <span class="o">-</span><span class="n">q</span> <span class="o">-</span><span class="n">p</span> <span class="n">learnGradle</span> <span class="n">helloWorld</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这条命令是调用learnGradle这个项目下的helloWorld task。</p>
+
+<ul>
+<li><strong>显示task之间的依赖关系。</strong>众所周知，使用<code>gradle tasks</code>可以列出当前所有可被使用的task，但是并没有显示task之间的依赖关系。我们可以加上<code>--all</code>来显示
+task的依赖关系。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle tasks --all
+</span><span class='line'>………………
+</span><span class='line'>
+</span><span class='line'>Other tasks
+</span><span class='line'>-----------
+</span><span class='line'>task0
+</span><span class='line'>    task1
+</span><span class='line'>    task2
+</span><span class='line'>    task3
+</span><span class='line'>
+</span><span class='line'>…………
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>从上面可以看出task0依赖task1、task2及task3。
+</code></pre>
+
+<ul>
+<li><strong>查看指定阶段的依赖关系。</strong>使用<code>gradle dependencies</code> 可以查看项目中包的依赖关系。不过是列出了所有阶段的依赖，如果项目中依赖复杂的话看起来有点头痛。那么可以使用<code>--configuration</code>来查看指定阶段的依赖情况。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">$</span> <span class="n">gradle</span> <span class="o">-</span><span class="n">q</span> <span class="n">dependencies</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">------------------------------------------------------------</span>
+</span><span class='line'><span class="n">Root</span> <span class="n">project</span>
+</span><span class='line'><span class="o">------------------------------------------------------------</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">archives</span> <span class="o">-</span> <span class="n">Configuration</span> <span class="k">for</span> <span class="n">archive</span> <span class="n">artifacts</span><span class="o">.</span>
+</span><span class='line'><span class="n">No</span> <span class="n">dependencies</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">compile</span> <span class="o">-</span> <span class="n">Compile</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;main&#39;</span><span class="o">.</span>
+</span><span class='line'><span class="n">No</span> <span class="n">dependencies</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">default</span> <span class="o">-</span> <span class="n">Configuration</span> <span class="k">for</span> <span class="k">default</span> <span class="n">artifacts</span><span class="o">.</span>
+</span><span class='line'><span class="n">No</span> <span class="n">dependencies</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">runtime</span> <span class="o">-</span> <span class="n">Runtime</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;main&#39;</span><span class="o">.</span>
+</span><span class='line'><span class="n">No</span> <span class="n">dependencies</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">testCompile</span> <span class="o">-</span> <span class="n">Compile</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;test&#39;</span><span class="o">.</span>
+</span><span class='line'><span class="err">\</span><span class="o">---</span> <span class="nl">junit:junit:</span><span class="mf">4.11</span>
+</span><span class='line'>     <span class="err">\</span><span class="o">---</span> <span class="n">org</span><span class="o">.</span><span class="na">hamcrest</span><span class="o">:</span><span class="n">hamcrest</span><span class="o">-</span><span class="nl">core:</span><span class="mf">1.3</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">testRuntime</span> <span class="o">-</span> <span class="n">Runtime</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;test&#39;</span><span class="o">.</span>
+</span><span class='line'><span class="err">\</span><span class="o">---</span> <span class="nl">junit:junit:</span><span class="mf">4.11</span>
+</span><span class='line'>     <span class="err">\</span><span class="o">---</span> <span class="n">org</span><span class="o">.</span><span class="na">hamcrest</span><span class="o">:</span><span class="n">hamcrest</span><span class="o">-</span><span class="nl">core:</span><span class="mf">1.3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用<code>gradle -q dependencies --configuration testCompile</code>可以只查看testComiple的依赖。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">$</span> <span class="n">gradle</span> <span class="o">-</span><span class="n">q</span> <span class="n">dependencies</span> <span class="o">--</span><span class="n">configuration</span> <span class="n">testCompile</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">------------------------------------------------------------</span>
+</span><span class='line'><span class="n">Root</span> <span class="n">project</span>
+</span><span class='line'><span class="o">------------------------------------------------------------</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">testCompile</span> <span class="o">-</span> <span class="n">Compile</span> <span class="n">classpath</span> <span class="k">for</span> <span class="n">source</span> <span class="n">set</span> <span class="s1">&#39;test&#39;</span><span class="o">.</span>
+</span><span class='line'><span class="err">\</span><span class="o">---</span> <span class="nl">junit:junit:</span><span class="mf">4.11</span>
+</span><span class='line'>     <span class="err">\</span><span class="o">---</span> <span class="n">org</span><span class="o">.</span><span class="na">hamcrest</span><span class="o">:</span><span class="n">hamcrest</span><span class="o">-</span><span class="nl">core:</span><span class="mf">1.3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>查看指定dependency的依赖情况。</strong>
+假如我想查看项目中有没有引入junit，那些阶段引入了junit，那么可以使用<code>dependecyInsight</code>来查看。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle dependencyInsight --dependency junit --configuration testCompile
+</span><span class='line'>:dependencyInsight
+</span><span class='line'>junit:junit:4.11
+</span><span class='line'><span class="se">\-</span>-- testCompile
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意<code>dependencyInsight</code>默认只会查看compile阶段的依赖，如果要查看其他阶段可以使用<code>--configuration</code>来指定。</p>
+
+<ul>
+<li><strong>使用<code>--profile</code>命令行可以产生build运行时间的报告。</strong>该报告存储在build/report/profile目录，名称为build运行的时间。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle build --profile
+</span><span class='line'>:compileJava UP-TO-DATE
+</span><span class='line'>:processResources UP-TO-DATE
+</span><span class='line'>:classes UP-TO-DATE
+</span><span class='line'>:jar UP-TO-DATE
+</span><span class='line'>:assemble UP-TO-DATE
+</span><span class='line'>:compileTestJava UP-TO-DATE
+</span><span class='line'>:processTestResources UP-TO-DATE
+</span><span class='line'>:testClasses UP-TO-DATE
+</span><span class='line'>:test UP-TO-DATE
+</span><span class='line'>:check UP-TO-DATE
+</span><span class='line'>:build UP-TO-DATE
+</span><span class='line'>
+</span><span class='line'>BUILD SUCCESSFUL
+</span><span class='line'>
+</span><span class='line'>Total <span class="nb">time</span>: 3.726 secs
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后在build/report/profile目录下可以看到build的report。</p>
+
+<p><img src="/images/gradle_profile.png" width="600"></p>
+
+<p>这个报表非常有用，尤其是在在缩短build时间时可以快速定位那些耗时长的task。</p>
+
+<ul>
+<li><strong>试运行build。</strong>如果你想知道某个task执行时那些task会被一起执行，但是你又不想真正的执行这些task，可以使用<code>-m</code>来试运行。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle -m build
+</span><span class='line'>:compileJava SKIPPED
+</span><span class='line'>:processResources SKIPPED
+</span><span class='line'>:classes SKIPPED
+</span><span class='line'>:jar SKIPPED
+</span><span class='line'>:assemble SKIPPED
+</span><span class='line'>:compileTestJava SKIPPED
+</span><span class='line'>:processTestResources SKIPPED
+</span><span class='line'>:testClasses SKIPPED
+</span><span class='line'>:test SKIPPED
+</span><span class='line'>:check SKIPPED
+</span><span class='line'>:build SKIPPED
+</span><span class='line'>
+</span><span class='line'>BUILD SUCCESSFUL
+</span><span class='line'>
+</span><span class='line'>Total <span class="nb">time</span>: 3.53 secs
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样我们可以一目了然的看到那些task被执行了，又不需要花太多的时间。</p>
+
+<ul>
+<li><strong>Gradle的图形界面。</strong></li>
+</ul>
+
+
+<p>其实Gradle自带一个图形界面来让习惯gui操作的人来操作Gradle。打开方式很简单。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gradle --gui
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就会弹出一个gui界面。</p>
+
+<p><img src="/images/gradle_gui.png" width="600"></p>
+
+<p>通过这个gui界面可以很方面的执行gradle的各种命令，还可以将常用的命令保存为favorites。该gui的配置信息默认被存储在当前项目的gradle-app.setting文件中。</p>
+
+<p>注意使用<code>gradle --gui</code>会阻塞当前终端，可以使用<code>gradle --gui&amp;</code>来实现后台运行。</p>
+
+<ul>
+<li><strong>重新编译Gradle脚本。</strong>第一次运行Gradle命令，会在项目更目录下生成一个.gradle目录来存放编译后的脚本。只有当构建脚本发生修改时采用重新编译。我们可以使用<code>--recompile-scripts</code>来强行重新编译。</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+<span class="byline author vcard">Posted by <span class="fn">黄博文</span></span>
+
+
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-01T22:25:00+08:00" pubdate data-updated="true">Sep 1<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gradle/'>Gradle</a>
+  
+</span>
+
+
+      
+
+<span class="tags">
+  
+    <a class='tag' href='/blog/tags/gradle/'>Gradle</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/08/25/the-books-i-read-in-the-half-past-2013/" title="Previous Post: 2013年上半年我读过的那些书">&laquo; 2013年上半年我读过的那些书</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/09/04/hot-deploy-for-jetty-gradle-plugin/" title="Next Post: Gradle里配置jetty实现静态资源的热部署">Gradle里配置jetty实现静态资源的热部署 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>攻城狮，程序猿。目前就职于ThoughtWorks。</p>
+</section>
+
+<section>
+  <h1>Tag Cloud</h1>
+    <span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#f2f2f2' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x333333&amp;tcolor2=0x333333&amp;hicolor=0x000000&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Factivemq%27+style%3D%27font-size%3A+36.66666666666667%25%27%3EActiveMQ%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eagile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fagile%27+style%3D%27font-size%3A+23.333333333333336%25%27%3EAgile%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fandroid%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EAndroid%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Faws%27+style%3D%27font-size%3A+27.77777777777778%25%27%3EAWS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fc-%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EC%23%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fci%27+style%3D%27font-size%3A+23.333333333333336%25%27%3ECI%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fcloud%27+style%3D%27font-size%3A+50.0%25%27%3ECloud%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdatabase%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EDataBase%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdesign%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Edesign%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fdevops%27+style%3D%27font-size%3A+23.333333333333336%25%27%3EDevOps%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fefficient%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eefficient%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fenglish%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EEnglish%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffitness%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Efitness%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ffp%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EFP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgatling%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EGatling%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fgradle%27+style%3D%27font-size%3A+41.111111111111114%25%27%3EGradle%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhaskell%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EHaskell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fhomebrew%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EHomebrew%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+18.88888888888889%25%27%3EJava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjavascript%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EJavaScript%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fjava%E5%AD%A6%E4%B9%A0%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EJava%E5%AD%A6%E4%B9%A0%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flearning%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Elearning%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Flife%27+style%3D%27font-size%3A+23.333333333333336%25%27%3ELife%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fmarathon%27+style%3D%27font-size%3A+18.88888888888889%25%27%3EMarathon%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fmicroservice%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Emicroservice%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EOctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fplugin%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eplugin%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fpractise%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Epractise%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Freading%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Ereading%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frefactor%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Erefactor%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fruby%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eruby%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frun%27+style%3D%27font-size%3A+14.444444444444445%25%27%3ERun%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Frunning%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Erunning%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fshell%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Eshell%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring%27+style%3D%27font-size%3A+23.333333333333336%25%27%3ESpring%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring-context%27+style%3D%27font-size%3A+45.55555555555556%25%27%3ESpring-Context%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fspring-context%27+style%3D%27font-size%3A+14.444444444444445%25%27%3ESpring-context%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fstudy%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Estudy%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fsvn%27+style%3D%27font-size%3A+14.444444444444445%25%27%3ESVN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+18.88888888888889%25%27%3ETesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftesting%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Etesting%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Ftranslation%27+style%3D%27font-size%3A+14.444444444444445%25%27%3Etranslation%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxml%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EXML%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fxp%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EXP%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2Fzsh%27+style%3D%27font-size%3A+14.444444444444445%25%27%3EZSH%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%B7%A5%E5%85%B7%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E5%B7%A5%E5%85%B7%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%80%BB%E7%BB%93%27+style%3D%27font-size%3A+18.88888888888889%25%27%3E%E6%80%BB%E7%BB%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E5%BE%97%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E6%89%80%E6%80%9D%E6%89%80%E6%83%B3%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E7%94%9F%E6%B4%BB%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E7%94%9F%E6%B4%BB%E6%84%9F%E6%82%9F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%27+style%3D%27font-size%3A+27.77777777777778%25%27%3E%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E7%A8%8B%E5%BA%8F%E8%AF%AD%E8%A8%80%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%27+style%3D%27font-size%3A+36.66666666666667%25%27%3E%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E7%BF%BB%E8%AF%91%27+style%3D%27font-size%3A+18.88888888888889%25%27%3E%E7%BF%BB%E8%AF%91%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%27+style%3D%27font-size%3A+14.444444444444445%25%27%3E%E8%AF%BB%E4%B9%A6%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fwww.huangbowen.net%2Fblog%2Fcategories%2F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%27+style%3D%27font-size%3A+18.88888888888889%25%27%3E%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/12/31/my-conclusion-of-2014/">一个程序员的2014年总结</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/26/shudown-ec2-at-certain-time/">定时关闭AWS上的EC2机器实例</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/22/running-on-the-way/">《跑出巅峰》书评</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/25/aws-reinvent-conference/">AWS re:Invent 2014回顾</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/18/xichang-marathon/">2014年西昌邛海湿地马拉松赛</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/huangbowen521">@huangbowen521</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'huangbowen521',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no"
+        src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=2246154347&verifier=149f357d&dpc=1"></iframe>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - 黄博文 -
+  huangbowen521@gmail.com
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'bowenhuang';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.huangbowen.net/blog/2013/09/01/command-line-of-gradle/';
+        var disqus_url = 'http://www.huangbowen.net/blog/2013/09/01/command-line-of-gradle/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
