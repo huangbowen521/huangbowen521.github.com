@@ -1,4 +1,5 @@
 ---
+author: bowen
 layout: post
 title: 膝盖中了一箭之康复篇-第五个月
 date: 2015-12-01 17:23:25 +0800
