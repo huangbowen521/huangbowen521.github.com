@@ -33,7 +33,9 @@ footer: true
 
 [《Effective JavaScript》](http://book.douban.com/subject/25786138/)
 
-[响应式Web设计:HTML5和CSS3实践指南](http://product.china-pub.com/3770378)
+[响应式Web设计:HTML5和CSS3实践指南](http://book.douban.com/subject/25996883/)
+
+[C#多线程编程实战](http://book.douban.com/subject/26574917/)
 
 ## 联系方式
 
