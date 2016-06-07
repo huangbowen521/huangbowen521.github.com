@@ -1,10 +1,3 @@
----
-layout: post
-title: 谈谈命名
-date: 2016-06-06 17:46:38 +0800
-comments: true
-categories: 
----
 
 Martin Fowler曾经在[一篇文章](http://martinfowler.com/bliki/TwoHardThings.html)中曾经引用过Phil Karlton的话：
 
