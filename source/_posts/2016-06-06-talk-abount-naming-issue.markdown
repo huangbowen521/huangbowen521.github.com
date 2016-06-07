@@ -1,3 +1,10 @@
+---
+layout: post
+title: 谈谈命名
+date: 2016-06-06 19:54:17 +0800
+comments: true
+categories: Coding
+---
 
 Martin Fowler曾经在[一篇文章](http://martinfowler.com/bliki/TwoHardThings.html)中曾经引用过Phil Karlton的话：
 
