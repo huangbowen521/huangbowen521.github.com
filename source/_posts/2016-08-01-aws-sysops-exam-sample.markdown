@@ -148,6 +148,9 @@ D. Upload data to S3 and use life-cycle policies to move the data into Glacier f
 
 -----------------------
 Given the following IAM policy:
+
+```javascript
+
 {
 "Version": "2012-10-17",
 "Statement": [
@@ -165,6 +168,10 @@ Given the following IAM policy:
 }
 ]
 }
+
+```
+
+
 What does the IAM policy allow? (Pick 3 correct answers)
 A. The user is allowed to read objects from all S3 buckets owned by the account
 B. The user is allowed to write objects into the bucket named 'corporate_bucket'
