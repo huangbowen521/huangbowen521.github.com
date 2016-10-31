@@ -7,7 +7,7 @@ categories: 持续集成
 tags: [Go, Agent]
 ---
 
-Go是一款先进的持续集成和发布管理系统,由ThoughtWorks开发。（不要和Google的编程语言Go混淆了！）其前身为Cruise,是ThoughtWorks在做咨询和交付交付项目时自己开发的一款开源的持续集成工具。后来随着持续集成及持续部署的火热，ThoughtWorks专门成立了一个项目组，基于Cruise开发除了Go这款工具。
+Go是一款先进的持续集成和发布管理系统,由ThoughtWorks开发。（不要和Google的编程语言Go混淆了！）其前身为Cruise,是ThoughtWorks在做咨询和交付交付项目时自己开发的一款开源的持续集成工具。后来随着持续集成及持续部署的火热，ThoughtWorks专门成立了一个项目组，基于Cruise开发出了Go这款工具。
 
 <!-- more -->
 
