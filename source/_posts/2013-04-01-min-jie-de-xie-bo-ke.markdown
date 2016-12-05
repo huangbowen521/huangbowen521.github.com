@@ -42,7 +42,7 @@ tags: [agile, blog]
 
 在一个敏捷团队中，一个典型的用户故事的声明周期是这样的。
 
-![story lifecycle](http://images.cnblogs.com/cnblogs_com/huang0925/462982/o_storyLifeCycle.png)
+{% img /images/t_storyLifeCycle.png 400 %}
 
 其实我们可以将一篇博客看做一个用户故事。你既是IM(迭代经理),又是BA(业务分析师)，DEV（开发者）,QA(质量保证)，而阅读你博客的人就是你的产品的最终用户。你的目标是让你的产品大卖（有越来越多的人关注你的博客）。
 
@@ -61,6 +61,8 @@ tags: [agile, blog]
 我的同事[@IM_ZhangYve](http://www.weibo.com/illusionking)使用[evernote]来管理自己的文章。他将category建成了这个样子。
 
 ![evernote category](http://images.cnblogs.com/cnblogs_com/huang0925/462982/o_evernote.jpg)
+
+{% img /images/t_evernote.jpg 400 %}
 
 这样[evernote]就成了一个故事墙，每个用户故事就是一篇博客，当前那些处于backlog，那些处于WIP,一目了然。你所需要做的就是尽量把用户故事往done里面挪。
 
