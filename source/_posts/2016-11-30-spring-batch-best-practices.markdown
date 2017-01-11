@@ -55,13 +55,18 @@ compile("org.springframework.boot:spring-boot-starter-batch")
 而支持JobScope后我们可以随时为对象注入当前Job实例的上下文信息。只要我们制定Bean的scope为job scope，那么就可以随时使用jobParameters和jobExecutionContext等信息。
 
 ```
-<bean id="..." class="..." scope="job">
-    <property name="name" value="#{jobParameters[input]}" />
-</bean>
-                
-<bean id="..." class="..." scope="job">
-    <property name="name" value="#{jobExecutionContext['input.name']}.txt" />
-</bean>
+
+@Component
+@JobScope
+public class CustomClass {
+    
+    @Value("#{jobParameters[jobDate]}")
+    private String jobDate;
+
+    @Value("#{jobExecutionContext['input.name']}.")
+    private String fileName;
+}
+
 ```
 
 ## 使用Java Config而不是xml的配置方式
@@ -96,13 +101,14 @@ compile("org.springframework.boot:spring-boot-starter-batch")
 
 ## 本地集成测试中使用内存数据库
 
-Spring batch在运行时需要数据库支持，因为它需要在数据库中建立一套schema来存储job和step运行的统计信息。而在本地集成测试中我们可以借助Spring batch提供的内存Repository来存储Spring batch的任务执行信息，这样即避免了在本地配置一个数据库，又可以加快job的执行。
+Spring batch在运行时需要数据库支持，因为它需要在数据库中建立一套schema来存储job和step运行的统计信息。而在本地集成测试中我们可以借助Spring batch提供的内存Repository来存储Spring batch的任务执行信息，这样即避免了在本地配置一个数据库，又可以加快job的执行。先为Job的配置类添加扩展类：DefaultBatchConfigurer。
 
 ```
-<bean id="jobRepository"
-  class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
-    <property name="transactionManager" ref="transactionManager"/>
-</bean>
+public class CustomJobConfiguration extends DefaultBatchConfigurer {
+    
+    ...
+}
+
 ```
 
 我们在build.gradle中加入对hsqldb的依赖：
@@ -181,13 +187,15 @@ public class CustomSkipListener {
 
 
 ## 使用Retry和Skip增强批处理工作的健壮性
-在处理百万级的数据过程过程中难免会出现异常。如果一旦出现异常而导致整个批处理工作终止的话那么会导致后续的数据无法被处理。Spring Batch内置了Retry（重试）和Skip（跳过）机制帮助我们轻松处理各种异常。适合Retry的异常的特点是这些异常可能会随着时间推移而消失，比如数据库目前有锁无法写入、web服务当前不可用、web服务满载等。所以对这些异常我们可以配置Retry机制。而有些异常则不应该配置Retry，比如解析文件出现异常等，因为这些异常即使Retry也会始终失败。
 
-即使Retry多次仍然失败也无需让整个step失败，可以对指定的异常设置Skip选项从而保证后续的数据能够被继续处理。我们也可以配置SkipLimit选项保证当Skip的数据条目达到一定数量后及时终止整个Job。
+在处理百万级的数据过程过程中难免会出现异常。如果一旦出现异常而导致整个批处理工作终止的话那么会导致后续的数据无法被处理。Spring Batch内置了Retry（重试）和Skip（跳过）机制帮助我们轻松处理各种异常。我们需要将异常分为三种类型。第一种是需要进行Retry的异常，它们的特点是该异常可能会随着时间推移而消失，比如数据库目前有锁无法写入、web服务当前不可用、web服务满载等。所以对它们适合配置Retry机制。第二种是需要Skip的异常，比如解析文件的某条数据出现异常等，因为对这些异常即使执行Retry每次的结果也都是相同，但又不想由于某条数据出错而停止对后续数据的处理。第三种异常是需要让整个Job立刻失败的异常，比如如果出现了OutOfMemory的异常，那么需要整个Job立刻运行。
+
+一般来说需要Retry的异常也要配置Skip选项，从而保证后续的数据能够被继续处理。我们也可以配置SkipLimit选项保证当Skip的数据条目达到一定数量后及时终止整个Job。
 
 有时候我们需要在每次Retry中间隔做一些操作，比如延长Retry时间，恢复操作现场等，Spring Batch提供了BackOffPolicy来达到目的。下面是一个配置了Retry机制、Skip机制以及BackOffPolicy的step示例。
 
 ```
+
 @Bean
 public Step step(){
     return stepBuilders.get("step")
@@ -199,6 +207,7 @@ public Step step(){
             .faultTolerant()
             .skipLimit(10)
             .skip(UnknownGenderException.class)
+            .skip(ServiceUnavailableException.class)
             .retryLimit(5)
             .retry(ServiceUnavailableException.class)
             .backOffPolicy(backoffPolicy)
