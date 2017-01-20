@@ -2,6 +2,9 @@
 rake generate 
 rake deploy
 git add -A
-
-git ci -m "$1"
+message=$1
+if [ -z "$message" ]; then
+	message="modify"
+fi
+git ci -m "$message"
 git push origin source
