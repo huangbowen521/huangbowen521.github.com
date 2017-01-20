@@ -1,9 +1,9 @@
 #!/bin/bash
 ruby -v
 rake generate 
-rake sync_post
 rake deploy
 rake weibo
+rake sync_post
 rake linkedin
 git add -A
 message=$1
