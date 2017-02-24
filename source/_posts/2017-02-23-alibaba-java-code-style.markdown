@@ -9,6 +9,8 @@ categories:
 
 2016年底的时候阿里巴巴公开了其在内部使用的Java编程规范。随后进行了几次版本修订，目前的版本为v1.0.2版。下载地址可以在其官方社区-云栖社区[https://yq.aliyun.com/articles/69327](https://yq.aliyun.com/articles/69327)找到。
 
+<!-- more -->
+
 笔者作为一名有数年工作经验的Java程序员，仔细研读了这份手册，觉得其是一份不可多得的好材料。阿里巴巴在发布时所说，“阿里巴巴集团推出的《阿里巴巴Java开发手册（正式版）》是阿里巴巴近万名开发同学集体智慧的结晶，以开发视角为中心，详细列举如何开发更加高效、更加容错、更加有协作性，力求知其然，更知其不然，结合正反例，让Java开发者能够提升协作效率、提高代码质量。” 同时，阿里巴巴也期望这套Java统一规范标准将有助于提高行业编码规范化水平，帮助行业人员提高开发质量和效率、大大降低代码维护成本。
 
 其实早在多年前，Google就已经把公司内部采用的所有语言的编码规范(其称为Style Guide)都开源在github上，地址为[https://github.com/google/styleguide](https://github.com/google/styleguide)。在这份清单中，包括了[C++](https://google.github.io/styleguide/cppguide.html)、[Objective-C](https://google.github.io/styleguide/objcguide.xml)、[Java](https://google.github.io/styleguide/javaguide.html)、[Python](Python Style Guide)、[R](https://google.github.io/styleguide/Rguide.xml)、[Shell](https://google.github.io/styleguide/shell.xml)、[HTML/CSS](https://google.github.io/styleguide/htmlcssguide.xml)、[JavaScript](https://google.github.io/styleguide/jsguide.html)、[AngularJS](https://google.github.io/styleguide/angularjs-google-style.html)、[Common Lisp](https://google.github.io/styleguide/lispguide.xml)、[Vimscript](https://google.github.io/styleguide/vimscriptguide.xml)等语言的编程规范。并且Google还发布了一个用于检查样式合规性的工具[cpplint](https://github.com/google/styleguide/tree/gh-pages/cpplint)以及Emacs中使用Google编程样式的配置文件[google-c-style.el](https://raw.githubusercontent.com/google/styleguide/gh-pages/google-c-style.el)。看来Google中Emacs粉比Vim粉要强势的多。
