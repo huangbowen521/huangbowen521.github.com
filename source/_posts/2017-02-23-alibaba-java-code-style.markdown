@@ -231,7 +231,7 @@ Principle of least privilege’ 的体现。我们必须遵循这一原则，但
             }
         }
 
-  其while和if关键字与小括号之间并没有空格，违反了该手册中`3. 【强制】if/for/while/switch/do 等保留字与左右括号之间都必须加空格。`这一规则。
+	其while和if关键字与小括号之间并没有空格，违反了该手册中`3. 【强制】if/for/while/switch/do 等保留字与左右括号之间都必须加空格。`这一规则。
 
 4. 集合处理中可以多推荐一些Java8的集合操作方法。
 
