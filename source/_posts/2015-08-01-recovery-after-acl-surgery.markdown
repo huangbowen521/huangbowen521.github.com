@@ -3,7 +3,7 @@ layout: post
 title: 膝盖中了一箭之康复篇
 date: 2015-08-01 19:54:17 +0800
 comments: true
-categories: Life
+categories: Life, ACL
 ---
 
 7月1日手术。手术完后即按照护士要求做踝泵及伸腿运动，次数多少记不得了，反正300次应该是有的。护士说不能下地，但我坐床上实在无法撒尿，最后还是站在床边撒的。

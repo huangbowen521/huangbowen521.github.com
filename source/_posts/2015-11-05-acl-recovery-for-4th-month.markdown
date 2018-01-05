@@ -3,7 +3,7 @@ layout: post
 title: 膝盖中了一箭之康复篇第四个月
 date: 2015-11-05 23:51:19 +0800
 comments: true
-categories: LIFE
+categories: LIFE, ACL
 tags: [ACL, life]
 ---
 
