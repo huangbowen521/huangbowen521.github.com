@@ -1,0 +1,142 @@
+---
+layout: post
+title: AWS系列之一 亚马逊云服务概述
+date: 2014-07-11 15:50:26 +0800
+comments: true
+categories: Cloud
+tags: [aws, cloud]
+---
+
+云计算经过这几年的发展，已经不再是是一个高大上的名词，而是已经应用到寻常百姓家的技术。每天如果你和互联网打交道，那么或多或少都会和云扯上关系。gmail、github、各种网盘、GAE、heroku等各种服务都属于云服务的范畴。那么云计算的定义到底是什么？这里有摘自wiki的定义。
+
+<!-- more -->
+
+>> Cloud computing in general can be defined as a computer network which includes, computing hardware machine or group of computing hardware machines commonly referred as a server or servers connected through a communication network such as the Internet, an intranet, a local area network(LAN) or wide area network(WAN).
+
+从上面的定义可以看出，云计算可以看做一个计算网络，其由一组硬件主机作为服务器，然后通过通讯网络连接，从而给其他用户提供各种各样的服务。
+
+以下是云计算的一个概念图。
+
+{% img /images/cloudComputer.png  800 %}
+
+从该图中可以看出，云计算提供的服务可以分为三层，第一层是基础设施（Infrastructure）,第二层是平台（Platform）,第三层是应用软件（Application）。基础设置的服务包括虚拟或实体计算机、块级存储、网络设施（如负载均衡，内容交付网络，DNS解析）等，平台的服务包括对象存储、认证服务和访问服务、各种程序的运行时、队列服务、数据库服务等，而应用软件的服务则包括的多了，比如邮件服务、代码托管服务等等。用户可以通过台式电脑、手提电脑、手机、平板等各种互联网终端设备访问和使用这些服务。
+
+其实这三层就是我们常说的IaaS（Infrastructure as a Service）、PaaS（Platform as a Service）、SaaS(Software as a Service)。
+
+{% img /images/cloudService.png 800 %}
+
+
+亚马逊的云服务提供了多达几十种服务，涵盖了IaaS、PaaS、SaaS这三层。既然是亚马逊云服务，那么为什么通常都叫做Amazon Web Service（AWS）那，为什么不叫Amazon Cloud Service之类的那？这个就不得而知了，估计当时AWS第一个服务出来的时候是2006年，那时候云的概念还没有这么火，而web service则如日中天，所以起了个这个名字。好了不八卦了，先看看亚马逊云计算的架构图。
+
+{% img /images/awsstructure.png 800 %}
+
+从该架构图可以看出，亚马逊云服务由7部分组成。接下来对这7部分的主要服务做一个简要的介绍。
+
+## AWS Global Infrastructure(AWS 全局基础设施)
+
+在全局基础设施中有3个很重要的概念。第一个是Region（区域），每个Region是相互独立的，自成一套云服务体系，分布在全球各地。目前全球有10个Region，北京的Region已经在内测当中，不久就会开放使用。
+
+第二个是Availability Zone(可用区)，每个Region又由数个可用区组成，每个可用区可以看做一个数据中心，相互之间通过光纤连接。
+
+第三个是Edge Locations（边缘节点）。全球目前有50多个边缘节点，是一个内容分发网络（CDN，Content Distrubtion Network），可以降低内容分发的延迟，保证终端用户获取资源的速度。它是实现全局DNS基础设施（Route53）和CloudFront CDN的基石。
+
+## Networking（网络）
+
+AWS提供的网络服务主要有：
+
+* Direct Connect： 支持企业自身的数据中心直接与AWS的数据中心直连，充分利用企业现有的资源。
+
+* VPN Connection：通过VPN连接AWS，保证数据的安全性。
+
+* Virtual Private Cloud： 私有云，从AWS云资源中分一块给你使用，进一步提高安全性。
+
+* Route 53：亚马逊提供的高可用的可伸缩的域名解析系统。
+
+
+## Compute（计算）
+
+这可是亚马逊的计算核心，包括了众多的服务。
+
+* EC2： Elastic Computer service,亚马逊的虚拟机，支持Windows和Linux的多个版本，支持API创建和销毁，有多种型号可供选择，按需使用。并且有auto scaling功能，有效解决应用程序性能问题。
+
+* ELB： Elastic Load Balancing， 亚马逊提供的负载均衡器，可以和EC2无缝配合使用，横跨多个可用区，可以自动检查实例的健康状况，自动剔除有问题的实例，保证应用程序的高可用性。
+
+## Storage（存储）
+
+* S3： Simple Storage Service，简单存储服务，是亚马逊对外提供的对象存储服务。不限容量，单个对象大小可达5TB，支持静态网站。其高达99.999999999%的可用性让其它竞争对手胆寒。
+
+
+* EBS： Elastic Block Storage，块级存储服务，支持普通硬盘和SSD硬盘，加载方便快速，备份非常简单。
+
+
+* Glacier：主要用于较少使用的存储存档文件和备份文件，价格便宜量又足，安全性高。
+
+## Database（数据库）
+
+亚马逊提供关系性数据库和no sql数据库，以及一些cache等数据库服务。
+
+* DynamoDB： DynamoDB是亚马逊自主研发的no sql型数据库，性能高，容错性强，支持分布式，并且与Cloud Watch、EMR等其它云服务高度集成。
+
+* RDS： Relational Database Service，关系型数据库服务。支持MySql，SQL Server和Oracle等数据库，具有自动备份功能，IO吞吐量可按需调整。
+
+* Amazon ElastiCache： 数据库缓存服务。
+
+## Application Service（应用程序服务）
+
+这里的服务可就多了。
+
+* Cloud Search: 一个弹性的搜索引擎，可用于企业级搜索。
+
+* Amazon SQS： 队列服务，存储和分发消息。
+
+
+* Simple Workflow：一个工作流框架。
+
+
+* CloudFront：世界范围的内容分发网络。
+
+
+* EMR： Elastic MapReduce，一个hadoop框架的实例，可用于大数据处理。
+
+
+## Deployment & Admin (部署和管理)
+
+
+* Elastic BeanStalk: 一键式创建各种开发环境和运行时。
+
+
+* CloudFormation：采用jason格式的模板文件来创建和管理一系列亚马逊云资源。
+
+* OpsWorks： OpsWorks允许用户将应用程序的部署模块化，可以实现对数据库、运行时、服务器软件等自动化设置和安装。
+
+* IAM： Identity & Access Management，认证和访问管理服务。用户使用云服务最担心的事情之一就是安全问题。亚马逊通过IAM提供了立体化的安全策略，保证用户在云上的资源绝对的安全。用户通过IAM可以管理对AWS资源的访问。通过IAM可以创建group和role来授权或禁止对各种云资源的访问。
+
+
+如果想获取更多知识可以访问亚马逊AWS的官网[http://aws.amazon.com/](http://aws.amazon.com/)。如果想查看每个服务的详细信息，可以查看它们的官方文档[https://aws.amazon.com/documentation/?nc1=h_su_dm](https://aws.amazon.com/documentation/?nc1=h_su_dm)。还有亚马逊的所有云服务都提供了API接口进行调用，并且提供了命令行工具Amazon CLI（Command Line Interface）来使用，详细信息请参见[http://docs.aws.amazon.com/cli/latest/index.html](http://docs.aws.amazon.com/cli/latest/index.html)。
+
+另外，亚马逊提供了一个网址用于练习对AWS服务的使用。地址是[https://run.qwiklabs.com](https://run.qwiklabs.com),还没有申请AWS账号的同学有福了，里面有6节免费的课程，可以根据提示一步步操作AWS资源，并且消耗的资源都是免费的。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+

@@ -1,0 +1,191 @@
+---
+layout: post
+title: AWS系列之三 使用EBS
+date: 2014-07-31 01:10:32 +1000
+comments: true
+categories: Cloud
+tags: [AWS, Cloud, EBS]
+---
+
+Amazon Elastic Block Store（EBS）可作为EC2实例的持久性数据块级存储。其具有高可用性和持久性的特点，可用性高达99.999%。给现有的EC2实例扩展新的存储块只需要几分钟的时间，省时省力。每个EBS块都被放置在一个特定的可用区内，并且会自动维护一个副本，随时保护数据安全。
+
+<!-- more -->
+
+Amazon EBS共提供三种硬盘类型，SSD(固态硬盘)， Provisioned IOPS SSD（特供IOPS固态硬盘）和Magnetic（普通硬盘）。SSD是默认的EC实例的硬盘格式（凶残啊！Amazon真是有钱，自从咱的本本换了SSD后，也离不开SSD了。）Provisioned IOPS SSD更凶残，具有高一致性及超低延迟的性能，专门设计用于I/O密集型操作，比如数据库。IOPS全称为Input/Output Operations Per Second，即每秒进行读写（I/O）操作的次数，用来衡量随机访问的性能。Provisioned IOPS SSD的每GB IOPS可达30。Magnetic Volumes就是俗称的磁卷了，它最便宜，当然性能也最差了。如果你的应用程序不是I/O密集型的，对数据的访问不是很频繁，使用该类型就比较划算。
+
+EBS还有一个功能就是很方便的创建快照，并保存到Amazon S3上去。EBS的快照是增量存储的。比如你有一块100G的硬盘，第一次快照使用了100G容量，第二次快照时只有5G的数据发生了变化，那么你总共只需花105G的存储费用。当然你不不必担心删除其中一个快照导致数据丢失，因为删除一个快照时，系统只会删除其中不会被其它快照使用的数据，所以不会影响其它快照。
+
+好了，接下来是本文的两个主要任务是两个。第一个任务是给一个EC实例附加一个新的EBS卷，并且加入到当前EC实例的文件系统中。第二个任务是为该EC实例创建一个快照。
+
+首先当然是准备工作了，创建一个新的EC2实例。如何创建上一篇文章已经详细介绍了，这里不再累述。如果还没有AWS account的同学可以使用可以qwiklabs提供的免费实验来进行该练习。地址是[https://run.qwiklabs.com](https://run.qwiklabs.com)。说实话qwiklabs真是个好东西，如果我使用自己的account来进行练习，要花不少钱。而qwiklabs里面有几个免费实验，使用AWS的所有资源不收任何费用，真是业界良心。
+
+
+EC2创建完毕后，应该是这个样子。
+
+{% img /images/ec2instance01.png 700 %}
+
+然后远程ssh进去。
+
+```bash
+
+$: ssh ec2-user@54.191.59.163 -i ~/Downloads/key.pem
+
+```
+
+先查看下当前的磁盘情况。
+
+```bash
+
+[ec2-user@ip-172-31-17-37 ~]$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/xvda1      7.8G  1.1G  6.6G  14% /
+devtmpfs        486M   56K  486M   1% /dev
+tmpfs           499M     0  499M   0% /dev/shm
+
+```
+可以看出当前磁盘总大小在8G左右，有三个文件系统。
+
+
+接下来就创建一个硬盘。
+
+点击EC2控制面板左侧的`Volumes`按钮，来到磁盘的控制面板。
+
+{% img /images/volumedb01.png 700 %}
+
+这里展示的一块硬盘就是当前ec2实例使用的硬盘。
+
+我们点击上面的`Create Volumes`来新添加一块硬盘。
+
+{% img /images/createVolume01.png 700 %}
+
+硬盘类型就是我上文的说的那几种，IOPS越高，硬盘就越贵，可用区的选择一定要和当前要使用的EC2实例保持一致，要不然会无法跨可用区附加硬盘。如果提供snapshot ID的话，新创建的硬盘会具有该快照的数据。
+
+硬盘创建完毕后如下图所示。
+
+{% img /images/newVolumes01.png 700 %}
+
+目前它的状态是可用的，如果将其附加到EC2实例则会变为in-use。
+
+点击`Action`按钮并选择`Attach Volume`命令，可以将该硬盘附加到EC2实例上。
+
+{% img /images/attachvolume01.png 700 %}
+
+在该界面中选择实例名及映射的设备地址，然后附加。
+
+{% img /images/volumesStatus01.png 700 %}
+
+可以看到该硬盘状态已经发生改变。
+
+那么再回到终端中查看磁盘情况。
+
+
+```bash
+
+[ec2-user@ip-172-31-17-37 ~]$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/xvda1      7.8G  1.1G  6.6G  14% /
+devtmpfs        486M   60K  486M   1% /dev
+tmpfs           499M     0  499M   0% /dev/shm
+
+```
+
+跟以前的一模一样，没有看到新添加的20G硬盘。这是怎么回事那？这是因为你虽然给机器添加了一块硬盘，但是还没有格式化和创建文件系统，并将文件系统添加到EC2的文件系统树上来。
+
+我们换另一个命令来查看存储情况。
+
+```bash
+
+[ec2-user@ip-172-31-17-37 ~]$ lsblk
+NAME    MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+xvda    202:0    0   8G  0 disk
+└─xvda1 202:1    0   8G  0 part /
+xvdf    202:80   0  20G  0 disk
+
+```
+
+这里可以看到有一块20G的大硬盘xvdf，但是没有MOUNTPOINT，这个MOUNTPOINT你可以理解为EC2实例上针对这个硬盘的根地址。
+
+细心的读者可能会发现我们附加硬盘时输入的地址是`/dev/sdf`，为什么命令行中显示的是`xvdf`那？这是因为调皮的操作系统内核给改了，不同的Linux发行版其修改后的地址也会不太一样。
+
+使用file命令来查看该块硬盘有没有建立文件系统。
+
+
+```bash
+
+[ec2-user@ip-172-31-17-37 ~]$ sudo file -s /dev/xvdf
+/dev/xvdf: data
+
+```
+
+如果输出是data，说明该块硬盘还未创建文件系统。
+
+使用下述命令来给xvdf来创建文件系统。
+
+```bash
+
+[ec2-user@ip-172-31-17-37 ~]$ sudo mkfs -t ext4 /dev/xvdf
+
+```
+
+然后再用file命令确认。
+
+```bash
+
+[ec2-user@ip-172-31-17-37 ~]$ sudo file -s /dev/xvdf
+/dev/xvdf: Linux rev 1.0 ext4 filesystem data, UUID=1e14ec91-156a-4eb5-8846-cb5f2fa51b64 (extents) (large files) (huge files)
+
+```bash
+
+可以看到该块硬盘已经建立了ext4格式的文件系统。
+
+接下来要将该文件系统加入到当前实例的文件系统树中，这里要使用mount命令。
+
+```bash
+
+[ec2-user@ip-172-31-17-37 ~]$ sudo mkdir /boot2
+[ec2-user@ip-172-31-17-37 ~]$ sudo mount /dev/xvdf /boot2
+
+```
+
+搞定，现在看看EC2实例的存储情况。
+
+```bash
+
+[ec2-user@ip-172-31-17-37 ~]$ lsblk
+NAME    MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+xvda    202:0    0   8G  0 disk
+└─xvda1 202:1    0   8G  0 part /
+xvdf    202:80   0  20G  0 disk /boot2
+
+```
+
+可以在/boot2目录下随意创建文件和文件夹了。
+
+这里并不是万事大吉的时候，我们需要将该MOUNTPOINT加入到系统文件中，要不然系统重启后还是找不到该硬盘。编辑`/etc/fstab`文件，在其中加入以下行。
+
+```text
+
+/dev/xvdf       /data   ext4    defaults,nofail        0       2
+
+```
+
+这样就不怕重启的时候丢失该MOUNTPOINT了。添加完毕以后可以试一下fstab文件是否能正常运行。
+
+```bash
+
+[ec2-user@ip-172-31-17-37 ~]$ sudo mount -a
+
+```
+
+如果没有错误就一切万事大吉，如果有错误而你重启了电脑的话，你就等着哭吧。
+
+这是第一个任务，第二任务是给现有硬盘创建快照，非常简单。回到`Volumes`控制面板，选择`Action`里的`Create Snapshot`按钮。
+
+{% img /images/createSnapshot01.png 700 %}
+
+等一会snapshot就会创建成功。
+
+{% img /images/snapshotStatus01.png 700 %}
+
+
+
