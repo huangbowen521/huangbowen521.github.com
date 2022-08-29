@@ -1,2 +1,2 @@
 hexo g
-aws s3 cp public/ s3://huangbowen.net/ --recursive
+aws s3 sync public/ s3://huangbowen.net/
